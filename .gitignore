@@ -83,3 +83,8 @@ results/utility_retention.json
 results/ner_coverage.json
 results/full_run.log
 results/.span_cache_*.json
+
+# Superseded draft: contains the pre-review numbers (15 models, the
+# outlier-driven neutral claim, the misattributed vendor citation).
+# Publishing it alongside the corrected paper invites miscitation.
+legal_paper/Bias_in_neural_rerankers_draft_v01.pdf
