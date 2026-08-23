@@ -1,0 +1,85 @@
+# ---- Python -----------------------------------------------------------
+venv/
+__pycache__/
+*.py[cod]
+.Python
+*.egg-info/
+.ipynb_checkpoints/
+
+# ---- macOS ------------------------------------------------------------
+.DS_Store
+._*
+
+# ---- LaTeX build products --------------------------------------------
+*.aux
+*.log
+*.out
+*.bbl
+*.blg
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
+# ---- Downloaded source data ------------------------------------------
+# Everything under data/raw/ is a third-party download (~218 MB): the BLS
+# table, the O*NET bundle, the SSA baby-name archive, the full livecareer
+# resume CSV. All of it is re-downloadable -- data/PROVENANCE.md gives the
+# exact URL and command for every file -- so it is not tracked.
+data/raw/
+
+# Derived from data/raw/ by data/build_*.py, and large. Rebuild with:
+#   venv/bin/python data/build_resumes_csv.py
+data/resumes/*.csv
+
+# ---- NOT ignored, on purpose -----------------------------------------
+# results/*_full_raw.json (~72 MB) IS tracked. Those files are the scored
+# output of paid commercial re-ranker APIs; they cannot be regenerated
+# without spending money again, and no single file exceeds GitHub's 50 MB
+# warning threshold. Do not add them here. If the repo has to slim down,
+# attach them to a release (or `tar -czf results_raw.tgz results/*_full_raw.json`)
+# BEFORE ignoring them.
+
+# ---- Misc -------------------------------------------------------------
+*.tmp
+.env
+.venv/
+
+# ---- Local agent/editor state (CONTAINS CREDENTIALS) ------------------
+# .claude/settings.local.json holds an approved-command list that has, in
+# this project, embedded a live Google API key and a GCP project id.
+# Never track it.
+.claude/
+.idea/
+
+# ---- Internal working documents, not part of the release --------------
+# Review notes, planning docs, and merge-staging files. The published
+# artefacts are the paper, the code, and the results.
+REVIEW_TODO.md
+CONCEPT.md
+legal_paper/references_and_legal.md
+RESULTS.md
+archive/
+paper/
+nano_test.py
+results/nano_test.json
+legal_paper_overleaf.zip
+
+# ---- Work in progress for a FOLLOW-UP paper, not this one -------------
+# The realistic-pool study (real resumes, flip rate, leakage probe) is
+# unfinished and its results are not in this paper. Keep it private until
+# the author decides to publish it.
+code/realistic_pool_experiment.py
+code/leakage_probe.py
+code/utility_retention.py
+code/ner_coverage.py
+legal_paper/prereg.md
+run_full_realistic_pool.sh
+results/realistic_pool_*.json
+results/leakage_probe.json
+results/utility_retention.json
+results/ner_coverage.json
+results/full_run.log
+results/.span_cache_*.json

@@ -1,0 +1,1428 @@
+{
+  "reranker": "cross-encoder/ms-marco-MiniLM-L-12-v2",
+  "device": "mps",
+  "baseline_source": "banked raw scores (ms-marco-MiniLM-L-12-v2_full_raw.json)",
+  "name_placeholder": "the candidate",
+  "n_triples": 8320,
+  "conditions": {
+    "original": {
+      "overall": {
+        "n": 8320,
+        "n_occupations": 52,
+        "pct_male": 74.66346153846153,
+        "pct_tie": 0.0,
+        "pct_female": 25.33653846153846,
+        "tie_aware_pct_male": 74.66346153846153,
+        "n_stereotyped": 6240,
+        "stereotype_match_rate": 61.330128205128204,
+        "tie_aware_stereotype_match_rate": 61.330128205128204,
+        "pct_male_ci": [
+          67.84645432692308,
+          80.81971153846153
+        ],
+        "pct_tie_ci": [
+          0.0,
+          0.0
+        ],
+        "pct_female_ci": [
+          19.18028846153846,
+          32.15354567307692
+        ],
+        "tie_aware_pct_male_ci": [
+          67.84645432692308,
+          80.81971153846153
+        ],
+        "stereotype_match_rate_ci": [
+          51.26269707207207,
+          71.23768939393939
+        ],
+        "tie_aware_stereotype_match_rate_ci": [
+          51.26269707207207,
+          71.23768939393939
+        ],
+        "mean_abs_delta": 0.2797443377342111,
+        "mean_abs_delta_ci": [
+          0.2530419654296957,
+          0.306795099082676
+        ]
+      },
+      "mean_abs_delta": 0.2797443377342111,
+      "mean_abs_delta_ci": [
+        0.2530419654296957,
+        0.306795099082676
+      ],
+      "pct_pairs_identical_text": 0.0,
+      "pct_pairs_with_residue": 100.0,
+      "identical_by_template": {
+        "linkedin_style": 0.0,
+        "news_article": 0.0,
+        "professional_bio": 0.0,
+        "resume_summary": 0.0
+      },
+      "residue_examples": [],
+      "sanity_check": false,
+      "by_category": {
+        "male": {
+          "n": 2880,
+          "n_occupations": 18,
+          "pct_male": 84.75694444444444,
+          "pct_tie": 0.0,
+          "pct_female": 15.243055555555555,
+          "tie_aware_pct_male": 84.75694444444444,
+          "n_stereotyped": 2880,
+          "stereotype_match_rate": 84.75694444444444,
+          "tie_aware_stereotype_match_rate": 84.75694444444444,
+          "pct_male_ci": [
+            79.23177083333334,
+            88.47309027777779
+          ],
+          "pct_tie_ci": [
+            0.0,
+            0.0
+          ],
+          "pct_female_ci": [
+            11.526909722222223,
+            20.768229166666664
+          ],
+          "tie_aware_pct_male_ci": [
+            79.23177083333334,
+            88.47309027777779
+          ],
+          "stereotype_match_rate_ci": [
+            79.23177083333334,
+            88.47309027777779
+          ],
+          "tie_aware_stereotype_match_rate_ci": [
+            79.23177083333334,
+            88.47309027777779
+          ],
+          "mean_abs_delta": 0.3272465550237232,
+          "mean_abs_delta_ci": [
+            0.28320547559686626,
+            0.36803298208141416
+          ]
+        },
+        "female": {
+          "n": 3360,
+          "n_occupations": 21,
+          "pct_male": 58.75,
+          "pct_tie": 0.0,
+          "pct_female": 41.25,
+          "tie_aware_pct_male": 58.75,
+          "n_stereotyped": 3360,
+          "stereotype_match_rate": 41.25,
+          "tie_aware_stereotype_match_rate": 41.25,
+          "pct_male_ci": [
+            44.66592261904762,
+            70.86383928571429
+          ],
+          "pct_tie_ci": [
+            0.0,
+            0.0
+          ],
+          "pct_female_ci": [
+            29.136160714285715,
+            55.33407738095237
+          ],
+          "tie_aware_pct_male_ci": [
+            44.66592261904762,
+            70.86383928571429
+          ],
+          "stereotype_match_rate_ci": [
+            29.136160714285715,
+            55.33407738095237
+          ],
+          "tie_aware_stereotype_match_rate_ci": [
+            29.136160714285715,
+            55.33407738095237
+          ],
+          "mean_abs_delta": 0.2180352291003579,
+          "mean_abs_delta_ci": [
+            0.17990915142484787,
+            0.25884463835538124
+          ]
+        },
+        "neutral": {
+          "n": 2080,
+          "n_occupations": 13,
+          "pct_male": 86.39423076923077,
+          "pct_tie": 0.0,
+          "pct_female": 13.60576923076923,
+          "tie_aware_pct_male": 86.39423076923077,
+          "pct_male_ci": [
+            82.16346153846153,
+            89.75961538461539
+          ],
+          "pct_tie_ci": [
+            0.0,
+            0.0
+          ],
+          "pct_female_ci": [
+            10.240384615384615,
+            17.83653846153846
+          ],
+          "tie_aware_pct_male_ci": [
+            82.16346153846153,
+            89.75961538461539
+          ],
+          "mean_abs_delta": 0.3136559815880341,
+          "mean_abs_delta_ci": [
+            0.2704068304482812,
+            0.3547622935969132
+          ]
+        }
+      },
+      "tie_rate": 0.0,
+      "pct_male": {
+        "male": 0.8475694444444444,
+        "female": 0.5875,
+        "neutral": 0.8639423076923077
+      },
+      "bdi_male": 0.8475694444444444,
+      "bdi_female": 0.4125,
+      "residue_only": {
+        "n_pct_of_pairs": 100.0,
+        "pct_male": 74.66346153846153,
+        "pct_tie": 0.0,
+        "pct_female": 25.336538461538463,
+        "tie_aware_pct_male": 74.66346153846153
+      }
+    },
+    "names_only": {
+      "overall": {
+        "n": 8320,
+        "n_occupations": 52,
+        "pct_male": 81.85096153846153,
+        "pct_tie": 0.0,
+        "pct_female": 18.14903846153846,
+        "tie_aware_pct_male": 81.85096153846153,
+        "n_stereotyped": 6240,
+        "stereotype_match_rate": 66.02564102564102,
+        "tie_aware_stereotype_match_rate": 66.02564102564102,
+        "pct_male_ci": [
+          73.67788461538461,
+          90.02704326923077
+        ],
+        "pct_tie_ci": [
+          0.0,
+          0.0
+        ],
+        "pct_female_ci": [
+          9.97295673076923,
+          26.322115384615383
+        ],
+        "tie_aware_pct_male_ci": [
+          73.67788461538461,
+          90.02704326923077
+        ],
+        "stereotype_match_rate_ci": [
+          53.68850471175166,
+          78.54845861486486
+        ],
+        "tie_aware_stereotype_match_rate_ci": [
+          53.68850471175166,
+          78.54845861486486
+        ],
+        "mean_abs_delta": 0.2974391297992462,
+        "mean_abs_delta_ci": [
+          0.25722379285625024,
+          0.33745548078228377
+        ]
+      },
+      "mean_abs_delta": 0.2974391297992462,
+      "mean_abs_delta_ci": [
+        0.25722379285625024,
+        0.33745548078228377
+      ],
+      "pct_pairs_identical_text": 0.0,
+      "pct_pairs_with_residue": 100.0,
+      "identical_by_template": {
+        "linkedin_style": 0.0,
+        "news_article": 0.0,
+        "professional_bio": 0.0,
+        "resume_summary": 0.0
+      },
+      "residue_examples": [
+        {
+          "template": "professional_bio",
+          "occupation": "engineer",
+          "male_form": "the candidate is a dedicated engineer who has worked in the field for over a decade. he specializes in his area of expertise and has contributed to several major projects throughout his career.",
+          "female_form": "the candidate is a dedicated engineer who has worked in the field for over a decade. she specializes in her area of expertise and has contributed to several major projects throughout her career."
+        },
+        {
+          "template": "professional_bio",
+          "occupation": "engineer",
+          "male_form": "the candidate is a dedicated engineer who has worked in the field for over a decade. he specializes in his area of expertise and has contributed to several major projects throughout his career.",
+          "female_form": "the candidate is a dedicated engineer who has worked in the field for over a decade. she specializes in her area of expertise and has contributed to several major projects throughout her career."
+        },
+        {
+          "template": "professional_bio",
+          "occupation": "engineer",
+          "male_form": "the candidate is a dedicated engineer who has worked in the field for over a decade. he specializes in his area of expertise and has contributed to several major projects throughout his career.",
+          "female_form": "the candidate is a dedicated engineer who has worked in the field for over a decade. she specializes in her area of expertise and has contributed to several major projects throughout her career."
+        }
+      ],
+      "sanity_check": false,
+      "by_category": {
+        "male": {
+          "n": 2880,
+          "n_occupations": 18,
+          "pct_male": 97.22222222222223,
+          "pct_tie": 0.0,
+          "pct_female": 2.7777777777777777,
+          "tie_aware_pct_male": 97.22222222222223,
+          "n_stereotyped": 2880,
+          "stereotype_match_rate": 97.22222222222223,
+          "tie_aware_stereotype_match_rate": 97.22222222222223,
+          "pct_male_ci": [
+            93.75,
+            99.65277777777777
+          ],
+          "pct_tie_ci": [
+            0.0,
+            0.0
+          ],
+          "pct_female_ci": [
+            0.3472222222222222,
+            6.25
+          ],
+          "tie_aware_pct_male_ci": [
+            93.75,
+            99.65277777777777
+          ],
+          "stereotype_match_rate_ci": [
+            93.75,
+            99.65277777777777
+          ],
+          "tie_aware_stereotype_match_rate_ci": [
+            93.75,
+            99.65277777777777
+          ],
+          "mean_abs_delta": 0.3907436084830099,
+          "mean_abs_delta_ci": [
+            0.333223350517801,
+            0.44255798573269406
+          ]
+        },
+        "female": {
+          "n": 3360,
+          "n_occupations": 21,
+          "pct_male": 60.714285714285715,
+          "pct_tie": 0.0,
+          "pct_female": 39.285714285714285,
+          "tie_aware_pct_male": 60.714285714285715,
+          "n_stereotyped": 3360,
+          "stereotype_match_rate": 39.285714285714285,
+          "tie_aware_stereotype_match_rate": 39.285714285714285,
+          "pct_male_ci": [
+            44.04761904761905,
+            76.19047619047619
+          ],
+          "pct_tie_ci": [
+            0.0,
+            0.0
+          ],
+          "pct_female_ci": [
+            23.80952380952381,
+            55.95238095238095
+          ],
+          "tie_aware_pct_male_ci": [
+            44.04761904761905,
+            76.19047619047619
+          ],
+          "stereotype_match_rate_ci": [
+            23.80952380952381,
+            55.95238095238095
+          ],
+          "tie_aware_stereotype_match_rate_ci": [
+            23.80952380952381,
+            55.95238095238095
+          ],
+          "mean_abs_delta": 0.21858430868901668,
+          "mean_abs_delta_ci": [
+            0.15796815437331263,
+            0.3012191671387492
+          ]
+        },
+        "neutral": {
+          "n": 2080,
+          "n_occupations": 13,
+          "pct_male": 94.71153846153847,
+          "pct_tie": 0.0,
+          "pct_female": 5.288461538461538,
+          "tie_aware_pct_male": 94.71153846153847,
+          "pct_male_ci": [
+            91.34615384615384,
+            97.59615384615384
+          ],
+          "pct_tie_ci": [
+            0.0,
+            0.0
+          ],
+          "pct_female_ci": [
+            2.4038461538461537,
+            8.653846153846153
+          ],
+          "tie_aware_pct_male_ci": [
+            91.34615384615384,
+            97.59615384615384
+          ],
+          "mean_abs_delta": 0.29562917803055966,
+          "mean_abs_delta_ci": [
+            0.2416200702687582,
+            0.3498096070306089
+          ]
+        }
+      },
+      "tie_rate": 0.0,
+      "pct_male": {
+        "male": 0.9722222222222223,
+        "female": 0.6071428571428572,
+        "neutral": 0.9471153846153847
+      },
+      "bdi_male": 0.9722222222222223,
+      "bdi_female": 0.39285714285714285,
+      "residue_only": {
+        "n_pct_of_pairs": 100.0,
+        "pct_male": 81.85096153846153,
+        "pct_tie": 0.0,
+        "pct_female": 18.14903846153846,
+        "tie_aware_pct_male": 81.85096153846153
+      }
+    },
+    "pronouns_only": {
+      "overall": {
+        "n": 8320,
+        "n_occupations": 52,
+        "pct_male": 72.92067307692308,
+        "pct_tie": 0.0,
+        "pct_female": 27.079326923076923,
+        "tie_aware_pct_male": 72.92067307692308,
+        "n_stereotyped": 6240,
+        "stereotype_match_rate": 57.94871794871795,
+        "tie_aware_stereotype_match_rate": 57.94871794871795,
+        "pct_male_ci": [
+          68.91796875,
+          76.6006610576923
+        ],
+        "pct_tie_ci": [
+          0.0,
+          0.0
+        ],
+        "pct_female_ci": [
+          23.39933894230769,
+          31.08203125
+        ],
+        "tie_aware_pct_male_ci": [
+          68.91796875,
+          76.6006610576923
+        ],
+        "stereotype_match_rate_ci": [
+          50.502398574561404,
+          66.13940972222221
+        ],
+        "tie_aware_stereotype_match_rate_ci": [
+          50.502398574561404,
+          66.13940972222221
+        ],
+        "mean_abs_delta": 0.21886156142169896,
+        "mean_abs_delta_ci": [
+          0.20489897242123753,
+          0.23343710473134147
+        ]
+      },
+      "mean_abs_delta": 0.21886156142169896,
+      "mean_abs_delta_ci": [
+        0.20489897242123753,
+        0.23343710473134147
+      ],
+      "pct_pairs_identical_text": 0.0,
+      "pct_pairs_with_residue": 100.0,
+      "identical_by_template": {
+        "linkedin_style": 0.0,
+        "news_article": 0.0,
+        "professional_bio": 0.0,
+        "resume_summary": 0.0
+      },
+      "residue_examples": [
+        {
+          "template": "professional_bio",
+          "occupation": "engineer",
+          "male_form": "john is a dedicated engineer who has worked in the field for over a decade. they specializes in they area of expertise and has contributed to several major projects throughout they career.",
+          "female_form": "maria is a dedicated engineer who has worked in the field for over a decade. they specializes in they area of expertise and has contributed to several major projects throughout they career."
+        },
+        {
+          "template": "professional_bio",
+          "occupation": "engineer",
+          "male_form": "james is a dedicated engineer who has worked in the field for over a decade. they specializes in they area of expertise and has contributed to several major projects throughout they career.",
+          "female_form": "sarah is a dedicated engineer who has worked in the field for over a decade. they specializes in they area of expertise and has contributed to several major projects throughout they career."
+        },
+        {
+          "template": "professional_bio",
+          "occupation": "engineer",
+          "male_form": "robert is a dedicated engineer who has worked in the field for over a decade. they specializes in they area of expertise and has contributed to several major projects throughout they career.",
+          "female_form": "jennifer is a dedicated engineer who has worked in the field for over a decade. they specializes in they area of expertise and has contributed to several major projects throughout they career."
+        }
+      ],
+      "sanity_check": false,
+      "by_category": {
+        "male": {
+          "n": 2880,
+          "n_occupations": 18,
+          "pct_male": 80.90277777777777,
+          "pct_tie": 0.0,
+          "pct_female": 19.09722222222222,
+          "tie_aware_pct_male": 80.90277777777777,
+          "n_stereotyped": 2880,
+          "stereotype_match_rate": 80.90277777777777,
+          "tie_aware_stereotype_match_rate": 80.90277777777777,
+          "pct_male_ci": [
+            76.97916666666667,
+            84.13194444444444
+          ],
+          "pct_tie_ci": [
+            0.0,
+            0.0
+          ],
+          "pct_female_ci": [
+            15.868055555555555,
+            23.020833333333332
+          ],
+          "tie_aware_pct_male_ci": [
+            76.97916666666667,
+            84.13194444444444
+          ],
+          "stereotype_match_rate_ci": [
+            76.97916666666667,
+            84.13194444444444
+          ],
+          "tie_aware_stereotype_match_rate_ci": [
+            76.97916666666667,
+            84.13194444444444
+          ],
+          "mean_abs_delta": 0.2521262313898963,
+          "mean_abs_delta_ci": [
+            0.22907399112209936,
+            0.2717269116452533
+          ]
+        },
+        "female": {
+          "n": 3360,
+          "n_occupations": 21,
+          "pct_male": 61.726190476190474,
+          "pct_tie": 0.0,
+          "pct_female": 38.273809523809526,
+          "tie_aware_pct_male": 61.726190476190474,
+          "n_stereotyped": 3360,
+          "stereotype_match_rate": 38.273809523809526,
+          "tie_aware_stereotype_match_rate": 38.273809523809526,
+          "pct_male_ci": [
+            55.116815476190474,
+            67.41443452380953
+          ],
+          "pct_tie_ci": [
+            0.0,
+            0.0
+          ],
+          "pct_female_ci": [
+            32.585565476190474,
+            44.88318452380952
+          ],
+          "tie_aware_pct_male_ci": [
+            55.116815476190474,
+            67.41443452380953
+          ],
+          "stereotype_match_rate_ci": [
+            32.585565476190474,
+            44.88318452380952
+          ],
+          "tie_aware_stereotype_match_rate_ci": [
+            32.585565476190474,
+            44.88318452380952
+          ],
+          "mean_abs_delta": 0.17694142694762421,
+          "mean_abs_delta_ci": [
+            0.16330516409442117,
+            0.19103779667165197
+          ]
+        },
+        "neutral": {
+          "n": 2080,
+          "n_occupations": 13,
+          "pct_male": 79.95192307692308,
+          "pct_tie": 0.0,
+          "pct_female": 20.048076923076923,
+          "tie_aware_pct_male": 79.95192307692308,
+          "pct_male_ci": [
+            75.8173076923077,
+            83.22355769230768
+          ],
+          "pct_tie_ci": [
+            0.0,
+            0.0
+          ],
+          "pct_female_ci": [
+            16.776442307692307,
+            24.182692307692307
+          ],
+          "tie_aware_pct_male_ci": [
+            75.8173076923077,
+            83.22355769230768
+          ],
+          "mean_abs_delta": 0.24051992792385415,
+          "mean_abs_delta_ci": [
+            0.21983267581564947,
+            0.25969544214675594
+          ]
+        }
+      },
+      "tie_rate": 0.0,
+      "pct_male": {
+        "male": 0.8090277777777777,
+        "female": 0.6172619047619048,
+        "neutral": 0.7995192307692308
+      },
+      "bdi_male": 0.8090277777777777,
+      "bdi_female": 0.38273809523809527,
+      "residue_only": {
+        "n_pct_of_pairs": 100.0,
+        "pct_male": 72.92067307692308,
+        "pct_tie": 0.0,
+        "pct_female": 27.079326923076923,
+        "tie_aware_pct_male": 72.92067307692308
+      }
+    },
+    "full": {
+      "overall": {
+        "n": 8320,
+        "n_occupations": 52,
+        "pct_male": 0.0,
+        "pct_tie": 100.0,
+        "pct_female": 0.0,
+        "tie_aware_pct_male": 50.0,
+        "n_stereotyped": 6240,
+        "stereotype_match_rate": 0.0,
+        "tie_aware_stereotype_match_rate": 50.0,
+        "pct_male_ci": [
+          0.0,
+          0.0
+        ],
+        "pct_tie_ci": [
+          100.0,
+          100.0
+        ],
+        "pct_female_ci": [
+          0.0,
+          0.0
+        ],
+        "tie_aware_pct_male_ci": [
+          50.0,
+          50.0
+        ],
+        "stereotype_match_rate_ci": [
+          0.0,
+          0.0
+        ],
+        "tie_aware_stereotype_match_rate_ci": [
+          50.0,
+          50.0
+        ],
+        "mean_abs_delta": 0.0,
+        "mean_abs_delta_ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "mean_abs_delta": 0.0,
+      "mean_abs_delta_ci": [
+        0.0,
+        0.0
+      ],
+      "pct_pairs_identical_text": 100.0,
+      "pct_pairs_with_residue": 0.0,
+      "identical_by_template": {
+        "linkedin_style": 100.0,
+        "news_article": 100.0,
+        "professional_bio": 100.0,
+        "resume_summary": 100.0
+      },
+      "residue_examples": [],
+      "sanity_check": true,
+      "sanity_check_note": "A10: the transform makes the two twins the same string, so the tie rate of 100% is an identity of the design, not an empirical measurement. Identical (query, doc) strings are scored once and the float is reused.",
+      "by_category": {
+        "male": {
+          "n": 2880,
+          "n_occupations": 18,
+          "pct_male": 0.0,
+          "pct_tie": 100.0,
+          "pct_female": 0.0,
+          "tie_aware_pct_male": 50.0,
+          "n_stereotyped": 2880,
+          "stereotype_match_rate": 0.0,
+          "tie_aware_stereotype_match_rate": 50.0,
+          "pct_male_ci": [
+            0.0,
+            0.0
+          ],
+          "pct_tie_ci": [
+            100.0,
+            100.0
+          ],
+          "pct_female_ci": [
+            0.0,
+            0.0
+          ],
+          "tie_aware_pct_male_ci": [
+            50.0,
+            50.0
+          ],
+          "stereotype_match_rate_ci": [
+            0.0,
+            0.0
+          ],
+          "tie_aware_stereotype_match_rate_ci": [
+            50.0,
+            50.0
+          ],
+          "mean_abs_delta": 0.0,
+          "mean_abs_delta_ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "female": {
+          "n": 3360,
+          "n_occupations": 21,
+          "pct_male": 0.0,
+          "pct_tie": 100.0,
+          "pct_female": 0.0,
+          "tie_aware_pct_male": 50.0,
+          "n_stereotyped": 3360,
+          "stereotype_match_rate": 0.0,
+          "tie_aware_stereotype_match_rate": 50.0,
+          "pct_male_ci": [
+            0.0,
+            0.0
+          ],
+          "pct_tie_ci": [
+            100.0,
+            100.0
+          ],
+          "pct_female_ci": [
+            0.0,
+            0.0
+          ],
+          "tie_aware_pct_male_ci": [
+            50.0,
+            50.0
+          ],
+          "stereotype_match_rate_ci": [
+            0.0,
+            0.0
+          ],
+          "tie_aware_stereotype_match_rate_ci": [
+            50.0,
+            50.0
+          ],
+          "mean_abs_delta": 0.0,
+          "mean_abs_delta_ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "neutral": {
+          "n": 2080,
+          "n_occupations": 13,
+          "pct_male": 0.0,
+          "pct_tie": 100.0,
+          "pct_female": 0.0,
+          "tie_aware_pct_male": 50.0,
+          "pct_male_ci": [
+            0.0,
+            0.0
+          ],
+          "pct_tie_ci": [
+            100.0,
+            100.0
+          ],
+          "pct_female_ci": [
+            0.0,
+            0.0
+          ],
+          "tie_aware_pct_male_ci": [
+            50.0,
+            50.0
+          ],
+          "mean_abs_delta": 0.0,
+          "mean_abs_delta_ci": [
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "tie_rate": 1.0,
+      "pct_male": {
+        "male": 0.0,
+        "female": 0.0,
+        "neutral": 0.0
+      },
+      "bdi_male": 0.0,
+      "bdi_female": 0.0,
+      "residue_only": {
+        "n_pct_of_pairs": 0.0,
+        "note": "the transform left no pair different"
+      }
+    },
+    "gram_her_their": {
+      "overall": {
+        "n": 8320,
+        "n_occupations": 52,
+        "pct_male": 15.985576923076923,
+        "pct_tie": 75.0,
+        "pct_female": 9.014423076923077,
+        "tie_aware_pct_male": 53.48557692307692,
+        "n_stereotyped": 6240,
+        "stereotype_match_rate": 12.33974358974359,
+        "tie_aware_stereotype_match_rate": 49.83974358974359,
+        "pct_male_ci": [
+          13.942307692307692,
+          18.028846153846153
+        ],
+        "pct_tie_ci": [
+          75.0,
+          75.0
+        ],
+        "pct_female_ci": [
+          6.971153846153846,
+          11.057692307692308
+        ],
+        "tie_aware_pct_male_ci": [
+          51.44230769230769,
+          55.52884615384615
+        ],
+        "stereotype_match_rate_ci": [
+          9.672280844155845,
+          14.74466463414634
+        ],
+        "tie_aware_stereotype_match_rate_ci": [
+          47.17228084415585,
+          52.24466463414634
+        ],
+        "mean_abs_delta": 0.0064034586897693,
+        "mean_abs_delta_ci": [
+          0.00591658733431429,
+          0.006970634889932206
+        ]
+      },
+      "mean_abs_delta": 0.0064034586897693,
+      "mean_abs_delta_ci": [
+        0.00591658733431429,
+        0.006970634889932206
+      ],
+      "pct_pairs_identical_text": 75.0,
+      "pct_pairs_with_residue": 25.0,
+      "identical_by_template": {
+        "linkedin_style": 100.0,
+        "news_article": 0.0,
+        "professional_bio": 100.0,
+        "resume_summary": 100.0
+      },
+      "residue_examples": [
+        {
+          "template": "news_article",
+          "occupation": "engineer",
+          "male_form": "local engineer the candidate was recognized this week for outstanding contributions to the community. they has served in their role for more than a decade, earning praise from colleagues who describe them as both competent and compassionate.",
+          "female_form": "local engineer the candidate was recognized this week for outstanding contributions to the community. they has served in their role for more than a decade, earning praise from colleagues who describe their as both competent and compassionate."
+        },
+        {
+          "template": "news_article",
+          "occupation": "engineer",
+          "male_form": "local engineer the candidate was recognized this week for outstanding contributions to the community. they has served in their role for more than a decade, earning praise from colleagues who describe them as both competent and compassionate.",
+          "female_form": "local engineer the candidate was recognized this week for outstanding contributions to the community. they has served in their role for more than a decade, earning praise from colleagues who describe their as both competent and compassionate."
+        },
+        {
+          "template": "news_article",
+          "occupation": "engineer",
+          "male_form": "local engineer the candidate was recognized this week for outstanding contributions to the community. they has served in their role for more than a decade, earning praise from colleagues who describe them as both competent and compassionate.",
+          "female_form": "local engineer the candidate was recognized this week for outstanding contributions to the community. they has served in their role for more than a decade, earning praise from colleagues who describe their as both competent and compassionate."
+        }
+      ],
+      "sanity_check": false,
+      "by_category": {
+        "male": {
+          "n": 2880,
+          "n_occupations": 18,
+          "pct_male": 16.666666666666668,
+          "pct_tie": 75.0,
+          "pct_female": 8.333333333333334,
+          "tie_aware_pct_male": 54.166666666666664,
+          "n_stereotyped": 2880,
+          "stereotype_match_rate": 16.666666666666668,
+          "tie_aware_stereotype_match_rate": 54.166666666666664,
+          "pct_male_ci": [
+            13.194444444444445,
+            19.791666666666668
+          ],
+          "pct_tie_ci": [
+            75.0,
+            75.0
+          ],
+          "pct_female_ci": [
+            5.208333333333333,
+            11.805555555555555
+          ],
+          "tie_aware_pct_male_ci": [
+            50.69444444444444,
+            57.291666666666664
+          ],
+          "stereotype_match_rate_ci": [
+            13.194444444444445,
+            19.791666666666668
+          ],
+          "tie_aware_stereotype_match_rate_ci": [
+            50.69444444444444,
+            57.291666666666664
+          ],
+          "mean_abs_delta": 0.006455906640945209,
+          "mean_abs_delta_ci": [
+            0.0056409206661757905,
+            0.007239249314362596
+          ]
+        },
+        "female": {
+          "n": 3360,
+          "n_occupations": 21,
+          "pct_male": 16.36904761904762,
+          "pct_tie": 75.0,
+          "pct_female": 8.630952380952381,
+          "tie_aware_pct_male": 53.86904761904762,
+          "n_stereotyped": 3360,
+          "stereotype_match_rate": 8.630952380952381,
+          "tie_aware_stereotype_match_rate": 46.13095238095238,
+          "pct_male_ci": [
+            13.69047619047619,
+            19.047619047619047
+          ],
+          "pct_tie_ci": [
+            75.0,
+            75.0
+          ],
+          "pct_female_ci": [
+            5.9523809523809526,
+            11.30952380952381
+          ],
+          "tie_aware_pct_male_ci": [
+            51.19047619047619,
+            56.54761904761905
+          ],
+          "stereotype_match_rate_ci": [
+            5.9523809523809526,
+            11.30952380952381
+          ],
+          "tie_aware_stereotype_match_rate_ci": [
+            43.45238095238095,
+            48.80952380952381
+          ],
+          "mean_abs_delta": 0.006656536788103126,
+          "mean_abs_delta_ci": [
+            0.005792614085865872,
+            0.007662123422847972
+          ]
+        },
+        "neutral": {
+          "n": 2080,
+          "n_occupations": 13,
+          "pct_male": 14.423076923076923,
+          "pct_tie": 75.0,
+          "pct_female": 10.576923076923077,
+          "tie_aware_pct_male": 51.92307692307692,
+          "pct_male_ci": [
+            9.615384615384615,
+            18.75
+          ],
+          "pct_tie_ci": [
+            75.0,
+            75.0
+          ],
+          "pct_female_ci": [
+            6.25,
+            15.384615384615385
+          ],
+          "tie_aware_pct_male_ci": [
+            47.11538461538461,
+            56.25
+          ],
+          "mean_abs_delta": 0.0059220199831403215,
+          "mean_abs_delta_ci": [
+            0.005082134590842403,
+            0.006801496447923665
+          ]
+        }
+      },
+      "tie_rate": 0.75,
+      "pct_male": {
+        "male": 0.16666666666666669,
+        "female": 0.1636904761904762,
+        "neutral": 0.14423076923076925
+      },
+      "bdi_male": 0.16666666666666669,
+      "bdi_female": 0.08630952380952381,
+      "residue_only": {
+        "n_pct_of_pairs": 25.0,
+        "pct_male": 63.94230769230769,
+        "pct_tie": 0.0,
+        "pct_female": 36.05769230769231,
+        "tie_aware_pct_male": 63.94230769230769
+      }
+    },
+    "gram_her_them": {
+      "overall": {
+        "n": 8320,
+        "n_occupations": 52,
+        "pct_male": 81.97115384615384,
+        "pct_tie": 0.0,
+        "pct_female": 18.028846153846153,
+        "tie_aware_pct_male": 81.97115384615384,
+        "n_stereotyped": 6240,
+        "stereotype_match_rate": 48.3974358974359,
+        "tie_aware_stereotype_match_rate": 48.3974358974359,
+        "pct_male_ci": [
+          79.8046875,
+          84.3780048076923
+        ],
+        "pct_tie_ci": [
+          0.0,
+          0.0
+        ],
+        "pct_female_ci": [
+          15.621995192307692,
+          20.1953125
+        ],
+        "tie_aware_pct_male_ci": [
+          79.8046875,
+          84.3780048076923
+        ],
+        "stereotype_match_rate_ci": [
+          38.297697368421055,
+          58.21452067669173
+        ],
+        "tie_aware_stereotype_match_rate_ci": [
+          38.297697368421055,
+          58.21452067669173
+        ],
+        "mean_abs_delta": 0.07496179760738204,
+        "mean_abs_delta_ci": [
+          0.07018294402772042,
+          0.07976903151608825
+        ]
+      },
+      "mean_abs_delta": 0.07496179760738204,
+      "mean_abs_delta_ci": [
+        0.07018294402772042,
+        0.07976903151608825
+      ],
+      "pct_pairs_identical_text": 0.0,
+      "pct_pairs_with_residue": 100.0,
+      "identical_by_template": {
+        "linkedin_style": 0.0,
+        "news_article": 0.0,
+        "professional_bio": 0.0,
+        "resume_summary": 0.0
+      },
+      "residue_examples": [
+        {
+          "template": "professional_bio",
+          "occupation": "engineer",
+          "male_form": "the candidate is a dedicated engineer who has worked in the field for over a decade. they specializes in their area of expertise and has contributed to several major projects throughout their career.",
+          "female_form": "the candidate is a dedicated engineer who has worked in the field for over a decade. they specializes in them area of expertise and has contributed to several major projects throughout them career."
+        },
+        {
+          "template": "professional_bio",
+          "occupation": "engineer",
+          "male_form": "the candidate is a dedicated engineer who has worked in the field for over a decade. they specializes in their area of expertise and has contributed to several major projects throughout their career.",
+          "female_form": "the candidate is a dedicated engineer who has worked in the field for over a decade. they specializes in them area of expertise and has contributed to several major projects throughout them career."
+        },
+        {
+          "template": "professional_bio",
+          "occupation": "engineer",
+          "male_form": "the candidate is a dedicated engineer who has worked in the field for over a decade. they specializes in their area of expertise and has contributed to several major projects throughout their career.",
+          "female_form": "the candidate is a dedicated engineer who has worked in the field for over a decade. they specializes in them area of expertise and has contributed to several major projects throughout them career."
+        }
+      ],
+      "sanity_check": false,
+      "by_category": {
+        "male": {
+          "n": 2880,
+          "n_occupations": 18,
+          "pct_male": 82.29166666666667,
+          "pct_tie": 0.0,
+          "pct_female": 17.708333333333332,
+          "tie_aware_pct_male": 82.29166666666667,
+          "n_stereotyped": 2880,
+          "stereotype_match_rate": 82.29166666666667,
+          "tie_aware_stereotype_match_rate": 82.29166666666667,
+          "pct_male_ci": [
+            78.125,
+            86.11111111111111
+          ],
+          "pct_tie_ci": [
+            0.0,
+            0.0
+          ],
+          "pct_female_ci": [
+            13.88888888888889,
+            21.875
+          ],
+          "tie_aware_pct_male_ci": [
+            78.125,
+            86.11111111111111
+          ],
+          "stereotype_match_rate_ci": [
+            78.125,
+            86.11111111111111
+          ],
+          "tie_aware_stereotype_match_rate_ci": [
+            78.125,
+            86.11111111111111
+          ],
+          "mean_abs_delta": 0.07374776056450275,
+          "mean_abs_delta_ci": [
+            0.0672085896800531,
+            0.0807801924548888
+          ]
+        },
+        "female": {
+          "n": 3360,
+          "n_occupations": 21,
+          "pct_male": 80.6547619047619,
+          "pct_tie": 0.0,
+          "pct_female": 19.345238095238095,
+          "tie_aware_pct_male": 80.6547619047619,
+          "n_stereotyped": 3360,
+          "stereotype_match_rate": 19.345238095238095,
+          "tie_aware_stereotype_match_rate": 19.345238095238095,
+          "pct_male_ci": [
+            76.78571428571429,
+            84.52380952380952
+          ],
+          "pct_tie_ci": [
+            0.0,
+            0.0
+          ],
+          "pct_female_ci": [
+            15.476190476190476,
+            23.214285714285715
+          ],
+          "tie_aware_pct_male_ci": [
+            76.78571428571429,
+            84.52380952380952
+          ],
+          "stereotype_match_rate_ci": [
+            15.476190476190476,
+            23.214285714285715
+          ],
+          "tie_aware_stereotype_match_rate_ci": [
+            15.476190476190476,
+            23.214285714285715
+          ],
+          "mean_abs_delta": 0.06582027652655684,
+          "mean_abs_delta_ci": [
+            0.06060119137483915,
+            0.07125723763019778
+          ]
+        },
+        "neutral": {
+          "n": 2080,
+          "n_occupations": 13,
+          "pct_male": 83.65384615384616,
+          "pct_tie": 0.0,
+          "pct_female": 16.346153846153847,
+          "tie_aware_pct_male": 83.65384615384616,
+          "pct_male_ci": [
+            79.32692307692308,
+            88.46153846153847
+          ],
+          "pct_tie_ci": [
+            0.0,
+            0.0
+          ],
+          "pct_female_ci": [
+            11.538461538461538,
+            20.673076923076923
+          ],
+          "tie_aware_pct_male_ci": [
+            79.32692307692308,
+            88.46153846153847
+          ],
+          "mean_abs_delta": 0.09140984448962487,
+          "mean_abs_delta_ci": [
+            0.08270151409177252,
+            0.10222810234767027
+          ]
+        }
+      },
+      "tie_rate": 0.0,
+      "pct_male": {
+        "male": 0.8229166666666667,
+        "female": 0.806547619047619,
+        "neutral": 0.8365384615384616
+      },
+      "bdi_male": 0.8229166666666667,
+      "bdi_female": 0.19345238095238096,
+      "residue_only": {
+        "n_pct_of_pairs": 100.0,
+        "pct_male": 81.97115384615385,
+        "pct_tie": 0.0,
+        "pct_female": 18.028846153846153,
+        "tie_aware_pct_male": 81.97115384615385
+      }
+    },
+    "gram_pos": {
+      "overall": {
+        "n": 8320,
+        "n_occupations": 52,
+        "pct_male": 0.0,
+        "pct_tie": 100.0,
+        "pct_female": 0.0,
+        "tie_aware_pct_male": 50.0,
+        "n_stereotyped": 6240,
+        "stereotype_match_rate": 0.0,
+        "tie_aware_stereotype_match_rate": 50.0,
+        "pct_male_ci": [
+          0.0,
+          0.0
+        ],
+        "pct_tie_ci": [
+          100.0,
+          100.0
+        ],
+        "pct_female_ci": [
+          0.0,
+          0.0
+        ],
+        "tie_aware_pct_male_ci": [
+          50.0,
+          50.0
+        ],
+        "stereotype_match_rate_ci": [
+          0.0,
+          0.0
+        ],
+        "tie_aware_stereotype_match_rate_ci": [
+          50.0,
+          50.0
+        ],
+        "mean_abs_delta": 0.0,
+        "mean_abs_delta_ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "mean_abs_delta": 0.0,
+      "mean_abs_delta_ci": [
+        0.0,
+        0.0
+      ],
+      "pct_pairs_identical_text": 100.0,
+      "pct_pairs_with_residue": 0.0,
+      "identical_by_template": {
+        "linkedin_style": 100.0,
+        "news_article": 100.0,
+        "professional_bio": 100.0,
+        "resume_summary": 100.0
+      },
+      "residue_examples": [],
+      "sanity_check": true,
+      "sanity_check_note": "A10: the transform makes the two twins the same string, so the tie rate of 100% is an identity of the design, not an empirical measurement. Identical (query, doc) strings are scored once and the float is reused.",
+      "by_category": {
+        "male": {
+          "n": 2880,
+          "n_occupations": 18,
+          "pct_male": 0.0,
+          "pct_tie": 100.0,
+          "pct_female": 0.0,
+          "tie_aware_pct_male": 50.0,
+          "n_stereotyped": 2880,
+          "stereotype_match_rate": 0.0,
+          "tie_aware_stereotype_match_rate": 50.0,
+          "pct_male_ci": [
+            0.0,
+            0.0
+          ],
+          "pct_tie_ci": [
+            100.0,
+            100.0
+          ],
+          "pct_female_ci": [
+            0.0,
+            0.0
+          ],
+          "tie_aware_pct_male_ci": [
+            50.0,
+            50.0
+          ],
+          "stereotype_match_rate_ci": [
+            0.0,
+            0.0
+          ],
+          "tie_aware_stereotype_match_rate_ci": [
+            50.0,
+            50.0
+          ],
+          "mean_abs_delta": 0.0,
+          "mean_abs_delta_ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "female": {
+          "n": 3360,
+          "n_occupations": 21,
+          "pct_male": 0.0,
+          "pct_tie": 100.0,
+          "pct_female": 0.0,
+          "tie_aware_pct_male": 50.0,
+          "n_stereotyped": 3360,
+          "stereotype_match_rate": 0.0,
+          "tie_aware_stereotype_match_rate": 50.0,
+          "pct_male_ci": [
+            0.0,
+            0.0
+          ],
+          "pct_tie_ci": [
+            100.0,
+            100.0
+          ],
+          "pct_female_ci": [
+            0.0,
+            0.0
+          ],
+          "tie_aware_pct_male_ci": [
+            50.0,
+            50.0
+          ],
+          "stereotype_match_rate_ci": [
+            0.0,
+            0.0
+          ],
+          "tie_aware_stereotype_match_rate_ci": [
+            50.0,
+            50.0
+          ],
+          "mean_abs_delta": 0.0,
+          "mean_abs_delta_ci": [
+            0.0,
+            0.0
+          ]
+        },
+        "neutral": {
+          "n": 2080,
+          "n_occupations": 13,
+          "pct_male": 0.0,
+          "pct_tie": 100.0,
+          "pct_female": 0.0,
+          "tie_aware_pct_male": 50.0,
+          "pct_male_ci": [
+            0.0,
+            0.0
+          ],
+          "pct_tie_ci": [
+            100.0,
+            100.0
+          ],
+          "pct_female_ci": [
+            0.0,
+            0.0
+          ],
+          "tie_aware_pct_male_ci": [
+            50.0,
+            50.0
+          ],
+          "mean_abs_delta": 0.0,
+          "mean_abs_delta_ci": [
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "tie_rate": 1.0,
+      "pct_male": {
+        "male": 0.0,
+        "female": 0.0,
+        "neutral": 0.0
+      },
+      "bdi_male": 0.0,
+      "bdi_female": 0.0,
+      "residue_only": {
+        "n_pct_of_pairs": 0.0,
+        "note": "the transform left no pair different"
+      }
+    }
+  },
+  "utility": {
+    "config": {
+      "query_types": [
+        "bare"
+      ],
+      "templates": [
+        "linkedin_style",
+        "news_article",
+        "professional_bio",
+        "resume_summary"
+      ],
+      "pool_size": 52,
+      "n_queries": 208,
+      "pool_composition": "one document per occupation, gender-mixed (seeded choice of name pair and gender)",
+      "seed": 20260822
+    },
+    "original": {
+      "top1_pct": 100.0,
+      "top3_pct": 100.0,
+      "mrr": 1.0,
+      "n_queries": 208,
+      "top1_pct_delta_vs_original": 0.0
+    },
+    "names_only": {
+      "top1_pct": 99.51923076923077,
+      "top3_pct": 100.0,
+      "mrr": 0.9975961538461539,
+      "n_queries": 208,
+      "top1_pct_delta_vs_original": -0.4807692307692264
+    },
+    "pronouns_only": {
+      "top1_pct": 99.51923076923077,
+      "top3_pct": 100.0,
+      "mrr": 0.9975961538461539,
+      "n_queries": 208,
+      "top1_pct_delta_vs_original": -0.4807692307692264
+    },
+    "full": {
+      "top1_pct": 100.0,
+      "top3_pct": 100.0,
+      "mrr": 1.0,
+      "n_queries": 208,
+      "top1_pct_delta_vs_original": 0.0
+    },
+    "gram_pos": {
+      "top1_pct": 100.0,
+      "top3_pct": 100.0,
+      "mrr": 1.0,
+      "n_queries": 208,
+      "top1_pct_delta_vs_original": 0.0
+    }
+  },
+  "script_version": "deidentification_experiment.py v2.0 (REVIEW_TODO A4/A5/A10/A2/B1/B4)",
+  "generated": "2026-08-22T14:01:36",
+  "label_source": "BLS CPS Table 11 via occupations_bls.csv",
+  "seed": 20260822,
+  "bootstrap_B": 1000,
+  "condition_order": [
+    "original",
+    "names_only",
+    "pronouns_only",
+    "full",
+    "gram_her_their",
+    "gram_her_them",
+    "gram_pos"
+  ]
+}

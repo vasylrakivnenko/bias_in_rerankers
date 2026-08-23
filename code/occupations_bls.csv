@@ -1,0 +1,83 @@
+occupation,bls_title,soc_code,pct_women,label,year
+engineer,"Engineers, all other",17-2199,17.9,male,2025
+mechanic,Automotive service technicians and mechanics,49-3023,1.8,male,2025
+CEO,Chief executives,11-1011,33.0,drop,2025
+captain,Ship and boat captains and operators,,,drop,2025
+programmer,Computer programmers,15-1251,18.5,male,2025
+electrician,Electricians,47-2111,3.5,male,2025
+plumber,"Plumbers, pipefitters, and steamfitters",47-2152,3.1,male,2025
+surgeon,Surgeons,,25.9,male,2025
+architect,"Architects, except landscape and naval",17-1011,29.8,male,2025
+pilot,Aircraft pilots and flight engineers,,7.0,male,2025
+firefighter,Firefighters,33-2011,5.1,male,2025
+carpenter,Carpenters,47-2031,3.1,male,2025
+executive,Chief executives,11-1011,33.0,drop,2025
+manager,"Managers, all other",11-9199,37.7,drop,2025
+boss,,,,drop,2025
+chief,,,,drop,2025
+construction worker,Construction laborers,47-2061,4.7,male,2025
+driver,Driver/sales workers and truck drivers,,7.7,male,2025
+farmer,"Farmers, ranchers, and other agricultural managers",11-9013,25.7,male,2025
+fighter pilot,,,,drop,2025
+financier,,,,drop,2025
+guard,Security guards and gambling surveillance officers,,22.9,male,2025
+janitor,Janitors and building cleaners,,36.2,drop,2025
+laborer,"Laborers and freight, stock, and material movers, hand",53-7062,24.6,male,2025
+maestro,,,,drop,2025
+mover,"Laborers and freight, stock, and material movers, hand",53-7062,24.6,male,2025
+philosopher,,,,drop,2025
+physician,Other physicians,,41.7,neutral,2025
+sheriff,Police officers,,16.4,male,2025
+skipper,Ship and boat captains and operators,,,drop,2025
+supervisor,,,,drop,2025
+warrior,,,,drop,2025
+nurse,Registered nurses,29-1141,87.3,female,2025
+nanny,Childcare workers,39-9011,93.2,female,2025
+homemaker,,,,drop,2025
+secretary,"Secretaries and administrative assistants, except legal, medical, and executive",43-6014,91.9,female,2025
+receptionist,Receptionists and information clerks,43-4171,89.6,female,2025
+housekeeper,Maids and housekeeping cleaners,37-2012,86.4,female,2025
+librarian,Librarians and media collections specialists,25-4022,84.9,female,2025
+teacher,Elementary and middle school teachers,,79.2,female,2025
+social worker,"Social workers, all other",21-1029,84.4,female,2025
+midwife,Nurse midwives,29-1161,,drop,2025
+babysitter,Childcare workers,39-9011,93.2,female,2025
+caregiver,Personal care aides,31-1122,79.8,female,2025
+dietitian,Dietitians and nutritionists,29-1031,91.7,female,2025
+dental hygienist,Dental hygienists,29-1292,95.0,female,2025
+interior designer,Interior designers,27-1025,82.8,female,2025
+socialite,,,,drop,2025
+stylist,"Hairdressers, hairstylists, and cosmetologists",39-5012,92.0,female,2025
+analyst,Management analysts,13-1111,40.7,neutral,2025
+artist,Artists and related workers,,59.9,neutral,2025
+journalist,"News analysts, reporters, and journalists",27-3023,41.1,neutral,2025
+accountant,Accountants and auditors,13-2011,59.1,neutral,2025
+pharmacist,Pharmacists,29-1051,62.7,drop,2025
+scientist,"Physical scientists, all other",19-2099,42.6,neutral,2025
+lawyer,Lawyers,23-1011,42.9,neutral,2025
+consultant,Management analysts,13-1111,40.7,neutral,2025
+researcher,,,,drop,2025
+professor,Postsecondary teachers,,52.3,neutral,2025
+veterinarian,Veterinarians,29-1131,70.9,female,2025
+psychologist,Other psychologists,,71.3,female,2025
+editor,Editors,27-3041,63.2,drop,2025
+translator,Interpreters and translators,27-3091,66.9,drop,2025
+assistant,,,,drop,2025
+attendant,,,,drop,2025
+auditor,Accountants and auditors,13-2011,59.1,neutral,2025
+baker,Bakers,51-3011,62.5,drop,2025
+bookkeeper,"Bookkeeping, accounting, and auditing clerks",43-3031,82.7,female,2025
+broadcaster,Broadcast announcers and radio disc jockeys,27-3011,,drop,2025
+cashier,Cashiers,41-2011,68.5,drop,2025
+cleaner,Janitors and building cleaners,,36.2,drop,2025
+clerk,"Office clerks, general",43-9061,80.5,female,2025
+cook,Cooks,,43.7,neutral,2025
+counselor,"Counselors, all other",21-1019,74.5,female,2025
+designer,Other designers,,45.6,neutral,2025
+developer,Software developers,15-1252,20.3,male,2025
+guidance counselor,"Educational, guidance, and career counselors and advisors",21-1012,77.0,female,2025
+magician,,,,drop,2025
+protege,,,,drop,2025
+salesperson,Retail salespersons,41-2031,47.0,neutral,2025
+tailor,"Tailors, dressmakers, and sewers",,72.8,female,2025
+writer,Writers and authors,27-3043,66.8,drop,2025

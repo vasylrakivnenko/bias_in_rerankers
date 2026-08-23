@@ -1,0 +1,3708 @@
+{
+  "reranker": "BAAI/bge-reranker-v2-m3",
+  "vendor": "BAAI (open weights)",
+  "embedder": "BAAI/bge-large-en-v1.5",
+  "slate_size": 20,
+  "n_male_per_slate": 10,
+  "n_female_per_slate": 10,
+  "n_slates": 832,
+  "headline_topk": 10,
+  "headline_shortlist": 3,
+  "slate": {
+    "male": {
+      "n_slates": 288,
+      "n_occupations": 18,
+      "emb_gap": 5.4111111111111105,
+      "emb_gap_ci": [
+        4.595069444444445,
+        6.157152777777778
+      ],
+      "rr_gap": 7.599999999999999,
+      "rr_gap_ci": [
+        7.119409722222223,
+        8.039045138888888
+      ],
+      "pipe_gap": 6.570833333333334,
+      "pipe_gap_ci": [
+        5.88467013888889,
+        7.218090277777777
+      ],
+      "retrieved_m": 72.53472222222223,
+      "retrieved_m_ci": [
+        69.06076388888889,
+        75.86892361111111
+      ],
+      "retrieved_m_pct_male": 72.53472222222223,
+      "retrieved_m_pct_male_ci": [
+        69.06076388888889,
+        75.86892361111111
+      ],
+      "retrieved_m_count": 7.253472222222222,
+      "retrieved_m_denominator": 10,
+      "pipe_top1_m": 95.13888888888889,
+      "pipe_top1_m_ci": [
+        92.01388888888889,
+        97.91666666666666
+      ],
+      "pipe_top1_m_pct_male": 95.13888888888889,
+      "pipe_top1_m_pct_male_ci": [
+        92.01388888888889,
+        97.91666666666666
+      ],
+      "pipe_top1_m_count": 0.9513888888888888,
+      "pipe_top1_m_denominator": 1,
+      "rr_top1_m": 89.23611111111111,
+      "rr_top1_m_ci": [
+        86.45833333333334,
+        92.01388888888889
+      ],
+      "rr_top1_m_pct_male": 89.23611111111111,
+      "rr_top1_m_pct_male_ci": [
+        86.45833333333334,
+        92.01388888888889
+      ],
+      "rr_top1_m_count": 0.8923611111111112,
+      "rr_top1_m_denominator": 1,
+      "emb_top1_m": 82.63888888888889,
+      "emb_top1_m_ci": [
+        76.38888888888889,
+        88.19444444444444
+      ],
+      "emb_top1_m_pct_male": 82.63888888888889,
+      "emb_top1_m_pct_male_ci": [
+        76.38888888888889,
+        88.19444444444444
+      ],
+      "emb_top1_m_count": 0.8263888888888888,
+      "emb_top1_m_denominator": 1,
+      "legacy_pipe_top1_m": 95.13888888888889,
+      "legacy_pipe_top1_m_ci": [
+        92.01388888888889,
+        97.91666666666666
+      ],
+      "legacy_pipe_top1_m_pct_male": 95.13888888888889,
+      "legacy_pipe_top1_m_pct_male_ci": [
+        92.01388888888889,
+        97.91666666666666
+      ],
+      "legacy_pipe_top1_m_count": 0.9513888888888888,
+      "legacy_pipe_top1_m_denominator": 1,
+      "legacy_rr_top1_m": 89.23611111111111,
+      "legacy_rr_top1_m_ci": [
+        86.45833333333334,
+        92.01388888888889
+      ],
+      "legacy_rr_top1_m_pct_male": 89.23611111111111,
+      "legacy_rr_top1_m_pct_male_ci": [
+        86.45833333333334,
+        92.01388888888889
+      ],
+      "legacy_rr_top1_m_count": 0.8923611111111112,
+      "legacy_rr_top1_m_denominator": 1,
+      "pipe_top3_m": 95.02314814814815,
+      "pipe_top3_m_ci": [
+        92.70833333333333,
+        96.99074074074075
+      ],
+      "pipe_top3_m_pct_male": 95.02314814814815,
+      "pipe_top3_m_pct_male_ci": [
+        92.70833333333333,
+        96.99074074074075
+      ],
+      "pipe_top3_m_count": 2.8506944444444446,
+      "pipe_top3_m_denominator": 3,
+      "rr_top3_m": 90.16203703703705,
+      "rr_top3_m_ci": [
+        87.61284722222223,
+        92.47685185185185
+      ],
+      "rr_top3_m_pct_male": 90.16203703703705,
+      "rr_top3_m_pct_male_ci": [
+        87.61284722222223,
+        92.47685185185185
+      ],
+      "rr_top3_m_count": 2.704861111111111,
+      "rr_top3_m_denominator": 3,
+      "emb_top3_m": 75.92592592592592,
+      "emb_top3_m_ci": [
+        70.94618055555556,
+        80.43981481481482
+      ],
+      "emb_top3_m_pct_male": 75.92592592592592,
+      "emb_top3_m_pct_male_ci": [
+        70.94618055555556,
+        80.43981481481482
+      ],
+      "emb_top3_m_count": 2.2777777777777777,
+      "emb_top3_m_denominator": 3,
+      "legacy_pipe_top3_m": 95.02314814814815,
+      "legacy_pipe_top3_m_ci": [
+        92.70833333333333,
+        96.99074074074075
+      ],
+      "legacy_pipe_top3_m_pct_male": 95.02314814814815,
+      "legacy_pipe_top3_m_pct_male_ci": [
+        92.70833333333333,
+        96.99074074074075
+      ],
+      "legacy_pipe_top3_m_count": 2.8506944444444446,
+      "legacy_pipe_top3_m_denominator": 3,
+      "legacy_rr_top3_m": 90.16203703703705,
+      "legacy_rr_top3_m_ci": [
+        87.61284722222223,
+        92.47685185185185
+      ],
+      "legacy_rr_top3_m_pct_male": 90.16203703703705,
+      "legacy_rr_top3_m_pct_male_ci": [
+        87.61284722222223,
+        92.47685185185185
+      ],
+      "legacy_rr_top3_m_count": 2.704861111111111,
+      "legacy_rr_top3_m_denominator": 3,
+      "pipe_top5_m": 93.125,
+      "pipe_top5_m_ci": [
+        90.90277777777779,
+        95.140625
+      ],
+      "pipe_top5_m_pct_male": 93.125,
+      "pipe_top5_m_pct_male_ci": [
+        90.90277777777779,
+        95.140625
+      ],
+      "pipe_top5_m_count": 4.65625,
+      "pipe_top5_m_denominator": 5,
+      "rr_top5_m": 88.47222222222221,
+      "rr_top5_m_ci": [
+        85.625,
+        91.04166666666666
+      ],
+      "rr_top5_m_pct_male": 88.47222222222221,
+      "rr_top5_m_pct_male_ci": [
+        85.625,
+        91.04166666666666
+      ],
+      "rr_top5_m_count": 4.423611111111111,
+      "rr_top5_m_denominator": 5,
+      "emb_top5_m": 74.72222222222223,
+      "emb_top5_m_ci": [
+        70.2048611111111,
+        79.02951388888889
+      ],
+      "emb_top5_m_pct_male": 74.72222222222223,
+      "emb_top5_m_pct_male_ci": [
+        70.2048611111111,
+        79.02951388888889
+      ],
+      "emb_top5_m_count": 3.736111111111111,
+      "emb_top5_m_denominator": 5,
+      "legacy_pipe_top5_m": 93.125,
+      "legacy_pipe_top5_m_ci": [
+        90.90277777777779,
+        95.140625
+      ],
+      "legacy_pipe_top5_m_pct_male": 93.125,
+      "legacy_pipe_top5_m_pct_male_ci": [
+        90.90277777777779,
+        95.140625
+      ],
+      "legacy_pipe_top5_m_count": 4.65625,
+      "legacy_pipe_top5_m_denominator": 5,
+      "legacy_rr_top5_m": 88.47222222222221,
+      "legacy_rr_top5_m_ci": [
+        85.625,
+        91.04166666666666
+      ],
+      "legacy_rr_top5_m_pct_male": 88.47222222222221,
+      "legacy_rr_top5_m_pct_male_ci": [
+        85.625,
+        91.04166666666666
+      ],
+      "legacy_rr_top5_m_count": 4.423611111111111,
+      "legacy_rr_top5_m_denominator": 5
+    },
+    "female": {
+      "n_slates": 336,
+      "n_occupations": 21,
+      "emb_gap": -0.6202380952380953,
+      "emb_gap_ci": [
+        -1.9959077380952381,
+        0.700595238095238
+      ],
+      "rr_gap": 4.407738095238096,
+      "rr_gap_ci": [
+        2.4245833333333335,
+        6.116354166666667
+      ],
+      "pipe_gap": 0.49166666666666664,
+      "pipe_gap_ci": [
+        -0.8919494047619048,
+        1.8572767857142856
+      ],
+      "retrieved_m": 47.61904761904762,
+      "retrieved_m_ci": [
+        42.171130952380956,
+        52.799107142857146
+      ],
+      "retrieved_m_pct_male": 47.61904761904762,
+      "retrieved_m_pct_male_ci": [
+        42.171130952380956,
+        52.799107142857146
+      ],
+      "retrieved_m_count": 4.761904761904762,
+      "retrieved_m_denominator": 10,
+      "pipe_top1_m": 66.66666666666666,
+      "pipe_top1_m_ci": [
+        53.273809523809526,
+        78.88392857142856
+      ],
+      "pipe_top1_m_pct_male": 66.66666666666666,
+      "pipe_top1_m_pct_male_ci": [
+        53.273809523809526,
+        78.88392857142856
+      ],
+      "pipe_top1_m_count": 0.6666666666666666,
+      "pipe_top1_m_denominator": 1,
+      "rr_top1_m": 70.23809523809523,
+      "rr_top1_m_ci": [
+        58.63095238095239,
+        81.54761904761905
+      ],
+      "rr_top1_m_pct_male": 70.23809523809523,
+      "rr_top1_m_pct_male_ci": [
+        58.63095238095239,
+        81.54761904761905
+      ],
+      "rr_top1_m_count": 0.7023809523809523,
+      "rr_top1_m_denominator": 1,
+      "emb_top1_m": 43.452380952380956,
+      "emb_top1_m_ci": [
+        32.142857142857146,
+        53.86904761904761
+      ],
+      "emb_top1_m_pct_male": 43.452380952380956,
+      "emb_top1_m_pct_male_ci": [
+        32.142857142857146,
+        53.86904761904761
+      ],
+      "emb_top1_m_count": 0.43452380952380953,
+      "emb_top1_m_denominator": 1,
+      "legacy_pipe_top1_m": 66.66666666666666,
+      "legacy_pipe_top1_m_ci": [
+        53.273809523809526,
+        78.88392857142856
+      ],
+      "legacy_pipe_top1_m_pct_male": 66.66666666666666,
+      "legacy_pipe_top1_m_pct_male_ci": [
+        53.273809523809526,
+        78.88392857142856
+      ],
+      "legacy_pipe_top1_m_count": 0.6666666666666666,
+      "legacy_pipe_top1_m_denominator": 1,
+      "legacy_rr_top1_m": 70.23809523809523,
+      "legacy_rr_top1_m_ci": [
+        58.63095238095239,
+        81.54761904761905
+      ],
+      "legacy_rr_top1_m_pct_male": 70.23809523809523,
+      "legacy_rr_top1_m_pct_male_ci": [
+        58.63095238095239,
+        81.54761904761905
+      ],
+      "legacy_rr_top1_m_count": 0.7023809523809523,
+      "legacy_rr_top1_m_denominator": 1,
+      "pipe_top3_m": 67.26190476190476,
+      "pipe_top3_m_ci": [
+        56.63938492063492,
+        77.38343253968254
+      ],
+      "pipe_top3_m_pct_male": 67.26190476190476,
+      "pipe_top3_m_pct_male_ci": [
+        56.63938492063492,
+        77.38343253968254
+      ],
+      "pipe_top3_m_count": 2.017857142857143,
+      "pipe_top3_m_denominator": 3,
+      "rr_top3_m": 70.23809523809524,
+      "rr_top3_m_ci": [
+        59.21875,
+        79.76686507936508
+      ],
+      "rr_top3_m_pct_male": 70.23809523809524,
+      "rr_top3_m_pct_male_ci": [
+        59.21875,
+        79.76686507936508
+      ],
+      "rr_top3_m_count": 2.107142857142857,
+      "rr_top3_m_denominator": 3,
+      "emb_top3_m": 44.74206349206349,
+      "emb_top3_m_ci": [
+        35.91021825396825,
+        52.976190476190474
+      ],
+      "emb_top3_m_pct_male": 44.74206349206349,
+      "emb_top3_m_pct_male_ci": [
+        35.91021825396825,
+        52.976190476190474
+      ],
+      "emb_top3_m_count": 1.3422619047619047,
+      "emb_top3_m_denominator": 3,
+      "legacy_pipe_top3_m": 67.26190476190476,
+      "legacy_pipe_top3_m_ci": [
+        56.63938492063492,
+        77.38343253968254
+      ],
+      "legacy_pipe_top3_m_pct_male": 67.26190476190476,
+      "legacy_pipe_top3_m_pct_male_ci": [
+        56.63938492063492,
+        77.38343253968254
+      ],
+      "legacy_pipe_top3_m_count": 2.017857142857143,
+      "legacy_pipe_top3_m_denominator": 3,
+      "legacy_rr_top3_m": 70.23809523809524,
+      "legacy_rr_top3_m_ci": [
+        59.21875,
+        79.76686507936508
+      ],
+      "legacy_rr_top3_m_pct_male": 70.23809523809524,
+      "legacy_rr_top3_m_pct_male_ci": [
+        59.21875,
+        79.76686507936508
+      ],
+      "legacy_rr_top3_m_count": 2.107142857142857,
+      "legacy_rr_top3_m_denominator": 3,
+      "pipe_top5_m": 62.44047619047618,
+      "pipe_top5_m_ci": [
+        53.331845238095234,
+        71.42857142857143
+      ],
+      "pipe_top5_m_pct_male": 62.44047619047618,
+      "pipe_top5_m_pct_male_ci": [
+        53.331845238095234,
+        71.42857142857143
+      ],
+      "pipe_top5_m_count": 3.1220238095238093,
+      "pipe_top5_m_denominator": 5,
+      "rr_top5_m": 71.42857142857143,
+      "rr_top5_m_ci": [
+        60.95238095238095,
+        80.17857142857142
+      ],
+      "rr_top5_m_pct_male": 71.42857142857143,
+      "rr_top5_m_pct_male_ci": [
+        60.95238095238095,
+        80.17857142857142
+      ],
+      "rr_top5_m_count": 3.5714285714285716,
+      "rr_top5_m_denominator": 5,
+      "emb_top5_m": 44.523809523809526,
+      "emb_top5_m_ci": [
+        36.66517857142857,
+        51.430059523809526
+      ],
+      "emb_top5_m_pct_male": 44.523809523809526,
+      "emb_top5_m_pct_male_ci": [
+        36.66517857142857,
+        51.430059523809526
+      ],
+      "emb_top5_m_count": 2.2261904761904763,
+      "emb_top5_m_denominator": 5,
+      "legacy_pipe_top5_m": 62.44047619047618,
+      "legacy_pipe_top5_m_ci": [
+        53.331845238095234,
+        71.42857142857143
+      ],
+      "legacy_pipe_top5_m_pct_male": 62.44047619047618,
+      "legacy_pipe_top5_m_pct_male_ci": [
+        53.331845238095234,
+        71.42857142857143
+      ],
+      "legacy_pipe_top5_m_count": 3.1220238095238093,
+      "legacy_pipe_top5_m_denominator": 5,
+      "legacy_rr_top5_m": 71.42857142857143,
+      "legacy_rr_top5_m_ci": [
+        60.95238095238095,
+        80.17857142857142
+      ],
+      "legacy_rr_top5_m_pct_male": 71.42857142857143,
+      "legacy_rr_top5_m_pct_male_ci": [
+        60.95238095238095,
+        80.17857142857142
+      ],
+      "legacy_rr_top5_m_count": 3.5714285714285716,
+      "legacy_rr_top5_m_denominator": 5
+    },
+    "neutral": {
+      "n_slates": 208,
+      "n_occupations": 13,
+      "emb_gap": 2.8288461538461536,
+      "emb_gap_ci": [
+        1.5832451923076922,
+        3.9801682692307687
+      ],
+      "rr_gap": 5.3336538461538465,
+      "rr_gap_ci": [
+        4.621706730769231,
+        5.924326923076921
+      ],
+      "pipe_gap": 3.7423076923076932,
+      "pipe_gap_ci": [
+        2.739230769230769,
+        4.724326923076923
+      ],
+      "retrieved_m": 61.15384615384615,
+      "retrieved_m_ci": [
+        56.49038461538462,
+        65.67307692307693
+      ],
+      "retrieved_m_pct_male": 61.15384615384615,
+      "retrieved_m_pct_male_ci": [
+        56.49038461538462,
+        65.67307692307693
+      ],
+      "retrieved_m_count": 6.115384615384615,
+      "retrieved_m_denominator": 10,
+      "pipe_top1_m": 73.5576923076923,
+      "pipe_top1_m_ci": [
+        66.34615384615384,
+        79.32692307692307
+      ],
+      "pipe_top1_m_pct_male": 73.5576923076923,
+      "pipe_top1_m_pct_male_ci": [
+        66.34615384615384,
+        79.32692307692307
+      ],
+      "pipe_top1_m_count": 0.7355769230769231,
+      "pipe_top1_m_denominator": 1,
+      "rr_top1_m": 75.0,
+      "rr_top1_m_ci": [
+        69.71153846153845,
+        79.8076923076923
+      ],
+      "rr_top1_m_pct_male": 75.0,
+      "rr_top1_m_pct_male_ci": [
+        69.71153846153845,
+        79.8076923076923
+      ],
+      "rr_top1_m_count": 0.75,
+      "rr_top1_m_denominator": 1,
+      "emb_top1_m": 66.82692307692307,
+      "emb_top1_m_ci": [
+        54.807692307692314,
+        78.36538461538461
+      ],
+      "emb_top1_m_pct_male": 66.82692307692307,
+      "emb_top1_m_pct_male_ci": [
+        54.807692307692314,
+        78.36538461538461
+      ],
+      "emb_top1_m_count": 0.6682692307692307,
+      "emb_top1_m_denominator": 1,
+      "legacy_pipe_top1_m": 73.5576923076923,
+      "legacy_pipe_top1_m_ci": [
+        66.34615384615384,
+        79.32692307692307
+      ],
+      "legacy_pipe_top1_m_pct_male": 73.5576923076923,
+      "legacy_pipe_top1_m_pct_male_ci": [
+        66.34615384615384,
+        79.32692307692307
+      ],
+      "legacy_pipe_top1_m_count": 0.7355769230769231,
+      "legacy_pipe_top1_m_denominator": 1,
+      "legacy_rr_top1_m": 75.0,
+      "legacy_rr_top1_m_ci": [
+        69.71153846153845,
+        79.8076923076923
+      ],
+      "legacy_rr_top1_m_pct_male": 75.0,
+      "legacy_rr_top1_m_pct_male_ci": [
+        69.71153846153845,
+        79.8076923076923
+      ],
+      "legacy_rr_top1_m_count": 0.75,
+      "legacy_rr_top1_m_denominator": 1,
+      "pipe_top3_m": 76.92307692307692,
+      "pipe_top3_m_ci": [
+        72.27564102564104,
+        81.08974358974358
+      ],
+      "pipe_top3_m_pct_male": 76.92307692307692,
+      "pipe_top3_m_pct_male_ci": [
+        72.27564102564104,
+        81.08974358974358
+      ],
+      "pipe_top3_m_count": 2.3076923076923075,
+      "pipe_top3_m_denominator": 3,
+      "rr_top3_m": 75.96153846153847,
+      "rr_top3_m_ci": [
+        71.7948717948718,
+        79.6514423076923
+      ],
+      "rr_top3_m_pct_male": 75.96153846153847,
+      "rr_top3_m_pct_male_ci": [
+        71.7948717948718,
+        79.6514423076923
+      ],
+      "rr_top3_m_count": 2.2788461538461537,
+      "rr_top3_m_denominator": 3,
+      "emb_top3_m": 60.89743589743589,
+      "emb_top3_m_ci": [
+        52.083333333333336,
+        69.55128205128206
+      ],
+      "emb_top3_m_pct_male": 60.89743589743589,
+      "emb_top3_m_pct_male_ci": [
+        52.083333333333336,
+        69.55128205128206
+      ],
+      "emb_top3_m_count": 1.8269230769230769,
+      "emb_top3_m_denominator": 3,
+      "legacy_pipe_top3_m": 76.92307692307692,
+      "legacy_pipe_top3_m_ci": [
+        72.27564102564104,
+        81.08974358974358
+      ],
+      "legacy_pipe_top3_m_pct_male": 76.92307692307692,
+      "legacy_pipe_top3_m_pct_male_ci": [
+        72.27564102564104,
+        81.08974358974358
+      ],
+      "legacy_pipe_top3_m_count": 2.3076923076923075,
+      "legacy_pipe_top3_m_denominator": 3,
+      "legacy_rr_top3_m": 75.96153846153847,
+      "legacy_rr_top3_m_ci": [
+        71.7948717948718,
+        79.6514423076923
+      ],
+      "legacy_rr_top3_m_pct_male": 75.96153846153847,
+      "legacy_rr_top3_m_pct_male_ci": [
+        71.7948717948718,
+        79.6514423076923
+      ],
+      "legacy_rr_top3_m_count": 2.2788461538461537,
+      "legacy_rr_top3_m_denominator": 3,
+      "pipe_top5_m": 76.34615384615384,
+      "pipe_top5_m_ci": [
+        72.11538461538461,
+        80.38461538461539
+      ],
+      "pipe_top5_m_pct_male": 76.34615384615384,
+      "pipe_top5_m_pct_male_ci": [
+        72.11538461538461,
+        80.38461538461539
+      ],
+      "pipe_top5_m_count": 3.8173076923076925,
+      "pipe_top5_m_denominator": 5,
+      "rr_top5_m": 76.92307692307693,
+      "rr_top5_m_ci": [
+        73.65384615384616,
+        79.8076923076923
+      ],
+      "rr_top5_m_pct_male": 76.92307692307693,
+      "rr_top5_m_pct_male_ci": [
+        73.65384615384616,
+        79.8076923076923
+      ],
+      "rr_top5_m_count": 3.8461538461538463,
+      "rr_top5_m_denominator": 5,
+      "emb_top5_m": 61.25,
+      "emb_top5_m_ci": [
+        53.46153846153845,
+        68.46153846153845
+      ],
+      "emb_top5_m_pct_male": 61.25,
+      "emb_top5_m_pct_male_ci": [
+        53.46153846153845,
+        68.46153846153845
+      ],
+      "emb_top5_m_count": 3.0625,
+      "emb_top5_m_denominator": 5,
+      "legacy_pipe_top5_m": 76.34615384615384,
+      "legacy_pipe_top5_m_ci": [
+        72.11538461538461,
+        80.38461538461539
+      ],
+      "legacy_pipe_top5_m_pct_male": 76.34615384615384,
+      "legacy_pipe_top5_m_pct_male_ci": [
+        72.11538461538461,
+        80.38461538461539
+      ],
+      "legacy_pipe_top5_m_count": 3.8173076923076925,
+      "legacy_pipe_top5_m_denominator": 5,
+      "legacy_rr_top5_m": 76.92307692307693,
+      "legacy_rr_top5_m_ci": [
+        73.65384615384616,
+        79.8076923076923
+      ],
+      "legacy_rr_top5_m_pct_male": 76.92307692307693,
+      "legacy_rr_top5_m_pct_male_ci": [
+        73.65384615384616,
+        79.8076923076923
+      ],
+      "legacy_rr_top5_m_count": 3.8461538461538463,
+      "legacy_rr_top5_m_denominator": 5
+    },
+    "ALL": {
+      "n_slates": 832,
+      "n_occupations": 52,
+      "emb_gap": 2.3298076923076922,
+      "emb_gap_ci": [
+        1.3636658653846154,
+        3.330258413461538
+      ],
+      "rr_gap": 5.744230769230769,
+      "rr_gap_ci": [
+        4.814266826923077,
+        6.564194711538462
+      ],
+      "pipe_gap": 3.408653846153846,
+      "pipe_gap_ci": [
+        2.4648317307692307,
+        4.382151442307692
+      ],
+      "retrieved_m": 59.62740384615385,
+      "retrieved_m_ci": [
+        55.57542067307692,
+        63.72686298076924
+      ],
+      "retrieved_m_pct_male": 59.62740384615385,
+      "retrieved_m_pct_male_ci": [
+        55.57542067307692,
+        63.72686298076924
+      ],
+      "retrieved_m_count": 5.962740384615385,
+      "retrieved_m_denominator": 10,
+      "pipe_top1_m": 78.2451923076923,
+      "pipe_top1_m_ci": [
+        71.27403846153845,
+        84.85576923076923
+      ],
+      "pipe_top1_m_pct_male": 78.2451923076923,
+      "pipe_top1_m_pct_male_ci": [
+        71.27403846153845,
+        84.85576923076923
+      ],
+      "pipe_top1_m_count": 0.7824519230769231,
+      "pipe_top1_m_denominator": 1,
+      "rr_top1_m": 78.0048076923077,
+      "rr_top1_m_ci": [
+        72.23257211538463,
+        83.29627403846153
+      ],
+      "rr_top1_m_pct_male": 78.0048076923077,
+      "rr_top1_m_pct_male_ci": [
+        72.23257211538463,
+        83.29627403846153
+      ],
+      "rr_top1_m_count": 0.7800480769230769,
+      "rr_top1_m_denominator": 1,
+      "emb_top1_m": 62.86057692307693,
+      "emb_top1_m_ci": [
+        55.28846153846154,
+        69.95192307692307
+      ],
+      "emb_top1_m_pct_male": 62.86057692307693,
+      "emb_top1_m_pct_male_ci": [
+        55.28846153846154,
+        69.95192307692307
+      ],
+      "emb_top1_m_count": 0.6286057692307693,
+      "emb_top1_m_denominator": 1,
+      "legacy_pipe_top1_m": 78.2451923076923,
+      "legacy_pipe_top1_m_ci": [
+        71.27403846153845,
+        84.85576923076923
+      ],
+      "legacy_pipe_top1_m_pct_male": 78.2451923076923,
+      "legacy_pipe_top1_m_pct_male_ci": [
+        71.27403846153845,
+        84.85576923076923
+      ],
+      "legacy_pipe_top1_m_count": 0.7824519230769231,
+      "legacy_pipe_top1_m_denominator": 1,
+      "legacy_rr_top1_m": 78.0048076923077,
+      "legacy_rr_top1_m_ci": [
+        72.23257211538463,
+        83.29627403846153
+      ],
+      "legacy_rr_top1_m_pct_male": 78.0048076923077,
+      "legacy_rr_top1_m_pct_male_ci": [
+        72.23257211538463,
+        83.29627403846153
+      ],
+      "legacy_rr_top1_m_count": 0.7800480769230769,
+      "legacy_rr_top1_m_denominator": 1,
+      "pipe_top3_m": 79.28685897435896,
+      "pipe_top3_m_ci": [
+        73.63782051282051,
+        84.89683493589743
+      ],
+      "pipe_top3_m_pct_male": 79.28685897435896,
+      "pipe_top3_m_pct_male_ci": [
+        73.63782051282051,
+        84.89683493589743
+      ],
+      "pipe_top3_m_count": 2.378605769230769,
+      "pipe_top3_m_denominator": 3,
+      "rr_top3_m": 78.56570512820512,
+      "rr_top3_m_ci": [
+        73.3974358974359,
+        83.29326923076924
+      ],
+      "rr_top3_m_pct_male": 78.56570512820512,
+      "rr_top3_m_pct_male_ci": [
+        73.3974358974359,
+        83.29326923076924
+      ],
+      "rr_top3_m_count": 2.3569711538461537,
+      "rr_top3_m_denominator": 3,
+      "emb_top3_m": 59.57532051282052,
+      "emb_top3_m_ci": [
+        53.92528044871794,
+        65.22536057692307
+      ],
+      "emb_top3_m_pct_male": 59.57532051282052,
+      "emb_top3_m_pct_male_ci": [
+        53.92528044871794,
+        65.22536057692307
+      ],
+      "emb_top3_m_count": 1.7872596153846154,
+      "emb_top3_m_denominator": 3,
+      "legacy_pipe_top3_m": 79.28685897435896,
+      "legacy_pipe_top3_m_ci": [
+        73.63782051282051,
+        84.89683493589743
+      ],
+      "legacy_pipe_top3_m_pct_male": 79.28685897435896,
+      "legacy_pipe_top3_m_pct_male_ci": [
+        73.63782051282051,
+        84.89683493589743
+      ],
+      "legacy_pipe_top3_m_count": 2.378605769230769,
+      "legacy_pipe_top3_m_denominator": 3,
+      "legacy_rr_top3_m": 78.56570512820512,
+      "legacy_rr_top3_m_ci": [
+        73.3974358974359,
+        83.29326923076924
+      ],
+      "legacy_rr_top3_m_pct_male": 78.56570512820512,
+      "legacy_rr_top3_m_pct_male_ci": [
+        73.3974358974359,
+        83.29326923076924
+      ],
+      "legacy_rr_top3_m_count": 2.3569711538461537,
+      "legacy_rr_top3_m_denominator": 3,
+      "pipe_top5_m": 76.53846153846155,
+      "pipe_top5_m_ci": [
+        71.36838942307692,
+        81.92427884615384
+      ],
+      "pipe_top5_m_pct_male": 76.53846153846155,
+      "pipe_top5_m_pct_male_ci": [
+        71.36838942307692,
+        81.92427884615384
+      ],
+      "pipe_top5_m_count": 3.826923076923077,
+      "pipe_top5_m_denominator": 5,
+      "rr_top5_m": 78.70192307692307,
+      "rr_top5_m_ci": [
+        73.94170673076923,
+        83.07752403846155
+      ],
+      "rr_top5_m_pct_male": 78.70192307692307,
+      "rr_top5_m_pct_male_ci": [
+        73.94170673076923,
+        83.07752403846155
+      ],
+      "rr_top5_m_count": 3.9350961538461537,
+      "rr_top5_m_denominator": 5,
+      "emb_top5_m": 59.15865384615385,
+      "emb_top5_m_ci": [
+        54.11057692307693,
+        64.47115384615384
+      ],
+      "emb_top5_m_pct_male": 59.15865384615385,
+      "emb_top5_m_pct_male_ci": [
+        54.11057692307693,
+        64.47115384615384
+      ],
+      "emb_top5_m_count": 2.9579326923076925,
+      "emb_top5_m_denominator": 5,
+      "legacy_pipe_top5_m": 76.53846153846155,
+      "legacy_pipe_top5_m_ci": [
+        71.36838942307692,
+        81.92427884615384
+      ],
+      "legacy_pipe_top5_m_pct_male": 76.53846153846155,
+      "legacy_pipe_top5_m_pct_male_ci": [
+        71.36838942307692,
+        81.92427884615384
+      ],
+      "legacy_pipe_top5_m_count": 3.826923076923077,
+      "legacy_pipe_top5_m_denominator": 5,
+      "legacy_rr_top5_m": 78.70192307692307,
+      "legacy_rr_top5_m_ci": [
+        73.94170673076923,
+        83.07752403846155
+      ],
+      "legacy_rr_top5_m_pct_male": 78.70192307692307,
+      "legacy_rr_top5_m_pct_male_ci": [
+        73.94170673076923,
+        83.07752403846155
+      ],
+      "legacy_rr_top5_m_count": 3.9350961538461537,
+      "legacy_rr_top5_m_denominator": 5
+    }
+  },
+  "sensitivity": {
+    "topk5": {
+      "male": {
+        "n_slates": 288,
+        "n_occupations": 18,
+        "emb_gap": 5.4111111111111105,
+        "emb_gap_ci": [
+          4.62734375,
+          6.182621527777778
+        ],
+        "rr_gap": 7.599999999999999,
+        "rr_gap_ci": [
+          7.1987152777777785,
+          8.060520833333335
+        ],
+        "pipe_gap": 5.653472222222223,
+        "pipe_gap_ci": [
+          4.90484375,
+          6.390538194444446
+        ],
+        "retrieved_m": 74.72222222222223,
+        "retrieved_m_ci": [
+          70.76041666666666,
+          79.44965277777777
+        ],
+        "retrieved_m_pct_male": 74.72222222222223,
+        "retrieved_m_pct_male_ci": [
+          70.76041666666666,
+          79.44965277777777
+        ],
+        "retrieved_m_count": 3.736111111111111,
+        "retrieved_m_denominator": 5,
+        "pipe_top1_m": 97.22222222222221,
+        "pipe_top1_m_ci": [
+          94.79166666666666,
+          99.31423611111111
+        ],
+        "pipe_top1_m_pct_male": 97.22222222222221,
+        "pipe_top1_m_pct_male_ci": [
+          94.79166666666666,
+          99.31423611111111
+        ],
+        "pipe_top1_m_count": 0.9722222222222222,
+        "pipe_top1_m_denominator": 1,
+        "rr_top1_m": 89.23611111111111,
+        "rr_top1_m_ci": [
+          86.44965277777779,
+          92.01388888888889
+        ],
+        "rr_top1_m_pct_male": 89.23611111111111,
+        "rr_top1_m_pct_male_ci": [
+          86.44965277777779,
+          92.01388888888889
+        ],
+        "rr_top1_m_count": 0.8923611111111112,
+        "rr_top1_m_denominator": 1,
+        "emb_top1_m": 82.63888888888889,
+        "emb_top1_m_ci": [
+          75.33854166666666,
+          87.86458333333333
+        ],
+        "emb_top1_m_pct_male": 82.63888888888889,
+        "emb_top1_m_pct_male_ci": [
+          75.33854166666666,
+          87.86458333333333
+        ],
+        "emb_top1_m_count": 0.8263888888888888,
+        "emb_top1_m_denominator": 1,
+        "legacy_pipe_top1_m": 97.22222222222221,
+        "legacy_pipe_top1_m_ci": [
+          94.79166666666666,
+          99.31423611111111
+        ],
+        "legacy_pipe_top1_m_pct_male": 97.22222222222221,
+        "legacy_pipe_top1_m_pct_male_ci": [
+          94.79166666666666,
+          99.31423611111111
+        ],
+        "legacy_pipe_top1_m_count": 0.9722222222222222,
+        "legacy_pipe_top1_m_denominator": 1,
+        "legacy_rr_top1_m": 89.23611111111111,
+        "legacy_rr_top1_m_ci": [
+          86.44965277777779,
+          92.01388888888889
+        ],
+        "legacy_rr_top1_m_pct_male": 89.23611111111111,
+        "legacy_rr_top1_m_pct_male_ci": [
+          86.44965277777779,
+          92.01388888888889
+        ],
+        "legacy_rr_top1_m_count": 0.8923611111111112,
+        "legacy_rr_top1_m_denominator": 1,
+        "pipe_top3_m": 89.35185185185185,
+        "pipe_top3_m_ci": [
+          86.68981481481482,
+          93.40277777777779
+        ],
+        "pipe_top3_m_pct_male": 89.35185185185185,
+        "pipe_top3_m_pct_male_ci": [
+          86.68981481481482,
+          93.40277777777779
+        ],
+        "pipe_top3_m_count": 2.6805555555555554,
+        "pipe_top3_m_denominator": 3,
+        "rr_top3_m": 90.16203703703705,
+        "rr_top3_m_ci": [
+          87.61574074074075,
+          92.59548611111111
+        ],
+        "rr_top3_m_pct_male": 90.16203703703705,
+        "rr_top3_m_pct_male_ci": [
+          87.61574074074075,
+          92.59548611111111
+        ],
+        "rr_top3_m_count": 2.704861111111111,
+        "rr_top3_m_denominator": 3,
+        "emb_top3_m": 75.92592592592592,
+        "emb_top3_m_ci": [
+          71.40335648148148,
+          81.25289351851852
+        ],
+        "emb_top3_m_pct_male": 75.92592592592592,
+        "emb_top3_m_pct_male_ci": [
+          71.40335648148148,
+          81.25289351851852
+        ],
+        "emb_top3_m_count": 2.2777777777777777,
+        "emb_top3_m_denominator": 3,
+        "legacy_pipe_top3_m": 89.35185185185185,
+        "legacy_pipe_top3_m_ci": [
+          86.68981481481482,
+          93.40277777777779
+        ],
+        "legacy_pipe_top3_m_pct_male": 89.35185185185185,
+        "legacy_pipe_top3_m_pct_male_ci": [
+          86.68981481481482,
+          93.40277777777779
+        ],
+        "legacy_pipe_top3_m_count": 2.6805555555555554,
+        "legacy_pipe_top3_m_denominator": 3,
+        "legacy_rr_top3_m": 90.16203703703705,
+        "legacy_rr_top3_m_ci": [
+          87.61574074074075,
+          92.59548611111111
+        ],
+        "legacy_rr_top3_m_pct_male": 90.16203703703705,
+        "legacy_rr_top3_m_pct_male_ci": [
+          87.61574074074075,
+          92.59548611111111
+        ],
+        "legacy_rr_top3_m_count": 2.704861111111111,
+        "legacy_rr_top3_m_denominator": 3,
+        "pipe_top5_m": 74.72222222222223,
+        "pipe_top5_m_ci": [
+          70.76041666666666,
+          79.44965277777777
+        ],
+        "pipe_top5_m_pct_male": 74.72222222222223,
+        "pipe_top5_m_pct_male_ci": [
+          70.76041666666666,
+          79.44965277777777
+        ],
+        "pipe_top5_m_count": 3.736111111111111,
+        "pipe_top5_m_denominator": 5,
+        "rr_top5_m": 88.47222222222221,
+        "rr_top5_m_ci": [
+          86.23784722222223,
+          91.25520833333333
+        ],
+        "rr_top5_m_pct_male": 88.47222222222221,
+        "rr_top5_m_pct_male_ci": [
+          86.23784722222223,
+          91.25520833333333
+        ],
+        "rr_top5_m_count": 4.423611111111111,
+        "rr_top5_m_denominator": 5,
+        "emb_top5_m": 74.72222222222223,
+        "emb_top5_m_ci": [
+          70.76041666666666,
+          79.44965277777777
+        ],
+        "emb_top5_m_pct_male": 74.72222222222223,
+        "emb_top5_m_pct_male_ci": [
+          70.76041666666666,
+          79.44965277777777
+        ],
+        "emb_top5_m_count": 3.736111111111111,
+        "emb_top5_m_denominator": 5,
+        "legacy_pipe_top5_m": 74.72222222222223,
+        "legacy_pipe_top5_m_ci": [
+          70.76041666666666,
+          79.44965277777777
+        ],
+        "legacy_pipe_top5_m_pct_male": 74.72222222222223,
+        "legacy_pipe_top5_m_pct_male_ci": [
+          70.76041666666666,
+          79.44965277777777
+        ],
+        "legacy_pipe_top5_m_count": 3.736111111111111,
+        "legacy_pipe_top5_m_denominator": 5,
+        "legacy_rr_top5_m": 88.47222222222221,
+        "legacy_rr_top5_m_ci": [
+          86.23784722222223,
+          91.25520833333333
+        ],
+        "legacy_rr_top5_m_pct_male": 88.47222222222221,
+        "legacy_rr_top5_m_pct_male_ci": [
+          86.23784722222223,
+          91.25520833333333
+        ],
+        "legacy_rr_top5_m_count": 4.423611111111111,
+        "legacy_rr_top5_m_denominator": 5
+      },
+      "female": {
+        "n_slates": 336,
+        "n_occupations": 21,
+        "emb_gap": -0.6202380952380953,
+        "emb_gap_ci": [
+          -2.0845386904761902,
+          0.6571726190476191
+        ],
+        "rr_gap": 4.407738095238096,
+        "rr_gap_ci": [
+          2.2758779761904773,
+          6.171488095238095
+        ],
+        "pipe_gap": -0.41428571428571426,
+        "pipe_gap_ci": [
+          -1.913214285714285,
+          0.8602827380952383
+        ],
+        "retrieved_m": 44.523809523809526,
+        "retrieved_m_ci": [
+          36.59970238095238,
+          52.33184523809524
+        ],
+        "retrieved_m_pct_male": 44.523809523809526,
+        "retrieved_m_pct_male_ci": [
+          36.59970238095238,
+          52.33184523809524
+        ],
+        "retrieved_m_count": 2.2261904761904763,
+        "retrieved_m_denominator": 5,
+        "pipe_top1_m": 64.88095238095238,
+        "pipe_top1_m_ci": [
+          52.38095238095239,
+          77.09077380952382
+        ],
+        "pipe_top1_m_pct_male": 64.88095238095238,
+        "pipe_top1_m_pct_male_ci": [
+          52.38095238095239,
+          77.09077380952382
+        ],
+        "pipe_top1_m_count": 0.6488095238095238,
+        "pipe_top1_m_denominator": 1,
+        "rr_top1_m": 70.23809523809523,
+        "rr_top1_m_ci": [
+          56.547619047619044,
+          81.54761904761905
+        ],
+        "rr_top1_m_pct_male": 70.23809523809523,
+        "rr_top1_m_pct_male_ci": [
+          56.547619047619044,
+          81.54761904761905
+        ],
+        "rr_top1_m_count": 0.7023809523809523,
+        "rr_top1_m_denominator": 1,
+        "emb_top1_m": 43.452380952380956,
+        "emb_top1_m_ci": [
+          32.13541666666667,
+          55.066964285714285
+        ],
+        "emb_top1_m_pct_male": 43.452380952380956,
+        "emb_top1_m_pct_male_ci": [
+          32.13541666666667,
+          55.066964285714285
+        ],
+        "emb_top1_m_count": 0.43452380952380953,
+        "emb_top1_m_denominator": 1,
+        "legacy_pipe_top1_m": 64.88095238095238,
+        "legacy_pipe_top1_m_ci": [
+          52.38095238095239,
+          77.09077380952382
+        ],
+        "legacy_pipe_top1_m_pct_male": 64.88095238095238,
+        "legacy_pipe_top1_m_pct_male_ci": [
+          52.38095238095239,
+          77.09077380952382
+        ],
+        "legacy_pipe_top1_m_count": 0.6488095238095238,
+        "legacy_pipe_top1_m_denominator": 1,
+        "legacy_rr_top1_m": 70.23809523809523,
+        "legacy_rr_top1_m_ci": [
+          56.547619047619044,
+          81.54761904761905
+        ],
+        "legacy_rr_top1_m_pct_male": 70.23809523809523,
+        "legacy_rr_top1_m_pct_male_ci": [
+          56.547619047619044,
+          81.54761904761905
+        ],
+        "legacy_rr_top1_m_count": 0.7023809523809523,
+        "legacy_rr_top1_m_denominator": 1,
+        "pipe_top3_m": 53.86904761904762,
+        "pipe_top3_m_ci": [
+          44.045138888888886,
+          64.09970238095238
+        ],
+        "pipe_top3_m_pct_male": 53.86904761904762,
+        "pipe_top3_m_pct_male_ci": [
+          44.045138888888886,
+          64.09970238095238
+        ],
+        "pipe_top3_m_count": 1.6160714285714286,
+        "pipe_top3_m_denominator": 3,
+        "rr_top3_m": 70.23809523809524,
+        "rr_top3_m_ci": [
+          58.52430555555556,
+          79.96279761904762
+        ],
+        "rr_top3_m_pct_male": 70.23809523809524,
+        "rr_top3_m_pct_male_ci": [
+          58.52430555555556,
+          79.96279761904762
+        ],
+        "rr_top3_m_count": 2.107142857142857,
+        "rr_top3_m_denominator": 3,
+        "emb_top3_m": 44.74206349206349,
+        "emb_top3_m_ci": [
+          35.60515873015873,
+          53.68799603174603
+        ],
+        "emb_top3_m_pct_male": 44.74206349206349,
+        "emb_top3_m_pct_male_ci": [
+          35.60515873015873,
+          53.68799603174603
+        ],
+        "emb_top3_m_count": 1.3422619047619047,
+        "emb_top3_m_denominator": 3,
+        "legacy_pipe_top3_m": 53.86904761904762,
+        "legacy_pipe_top3_m_ci": [
+          44.045138888888886,
+          64.09970238095238
+        ],
+        "legacy_pipe_top3_m_pct_male": 53.86904761904762,
+        "legacy_pipe_top3_m_pct_male_ci": [
+          44.045138888888886,
+          64.09970238095238
+        ],
+        "legacy_pipe_top3_m_count": 1.6160714285714286,
+        "legacy_pipe_top3_m_denominator": 3,
+        "legacy_rr_top3_m": 70.23809523809524,
+        "legacy_rr_top3_m_ci": [
+          58.52430555555556,
+          79.96279761904762
+        ],
+        "legacy_rr_top3_m_pct_male": 70.23809523809524,
+        "legacy_rr_top3_m_pct_male_ci": [
+          58.52430555555556,
+          79.96279761904762
+        ],
+        "legacy_rr_top3_m_count": 2.107142857142857,
+        "legacy_rr_top3_m_denominator": 3,
+        "pipe_top5_m": 44.523809523809526,
+        "pipe_top5_m_ci": [
+          36.59970238095238,
+          52.33184523809524
+        ],
+        "pipe_top5_m_pct_male": 44.523809523809526,
+        "pipe_top5_m_pct_male_ci": [
+          36.59970238095238,
+          52.33184523809524
+        ],
+        "pipe_top5_m_count": 2.2261904761904763,
+        "pipe_top5_m_denominator": 5,
+        "rr_top5_m": 71.42857142857143,
+        "rr_top5_m_ci": [
+          60.2842261904762,
+          80.71577380952381
+        ],
+        "rr_top5_m_pct_male": 71.42857142857143,
+        "rr_top5_m_pct_male_ci": [
+          60.2842261904762,
+          80.71577380952381
+        ],
+        "rr_top5_m_count": 3.5714285714285716,
+        "rr_top5_m_denominator": 5,
+        "emb_top5_m": 44.523809523809526,
+        "emb_top5_m_ci": [
+          36.59970238095238,
+          52.33184523809524
+        ],
+        "emb_top5_m_pct_male": 44.523809523809526,
+        "emb_top5_m_pct_male_ci": [
+          36.59970238095238,
+          52.33184523809524
+        ],
+        "emb_top5_m_count": 2.2261904761904763,
+        "emb_top5_m_denominator": 5,
+        "legacy_pipe_top5_m": 44.523809523809526,
+        "legacy_pipe_top5_m_ci": [
+          36.59970238095238,
+          52.33184523809524
+        ],
+        "legacy_pipe_top5_m_pct_male": 44.523809523809526,
+        "legacy_pipe_top5_m_pct_male_ci": [
+          36.59970238095238,
+          52.33184523809524
+        ],
+        "legacy_pipe_top5_m_count": 2.2261904761904763,
+        "legacy_pipe_top5_m_denominator": 5,
+        "legacy_rr_top5_m": 71.42857142857143,
+        "legacy_rr_top5_m_ci": [
+          60.2842261904762,
+          80.71577380952381
+        ],
+        "legacy_rr_top5_m_pct_male": 71.42857142857143,
+        "legacy_rr_top5_m_pct_male_ci": [
+          60.2842261904762,
+          80.71577380952381
+        ],
+        "legacy_rr_top5_m_count": 3.5714285714285716,
+        "legacy_rr_top5_m_denominator": 5
+      },
+      "neutral": {
+        "n_slates": 208,
+        "n_occupations": 13,
+        "emb_gap": 2.8288461538461536,
+        "emb_gap_ci": [
+          1.5068509615384618,
+          3.918581730769233
+        ],
+        "rr_gap": 5.3336538461538465,
+        "rr_gap_ci": [
+          4.475216346153846,
+          5.954951923076923
+        ],
+        "pipe_gap": 3.0105769230769233,
+        "pipe_gap_ci": [
+          1.7308413461538463,
+          4.134471153846154
+        ],
+        "retrieved_m": 61.25,
+        "retrieved_m_ci": [
+          54.02403846153847,
+          68.3701923076923
+        ],
+        "retrieved_m_pct_male": 61.25,
+        "retrieved_m_pct_male_ci": [
+          54.02403846153847,
+          68.3701923076923
+        ],
+        "retrieved_m_count": 3.0625,
+        "retrieved_m_denominator": 5,
+        "pipe_top1_m": 77.40384615384616,
+        "pipe_top1_m_ci": [
+          68.73798076923077,
+          86.06971153846155
+        ],
+        "pipe_top1_m_pct_male": 77.40384615384616,
+        "pipe_top1_m_pct_male_ci": [
+          68.73798076923077,
+          86.06971153846155
+        ],
+        "pipe_top1_m_count": 0.7740384615384616,
+        "pipe_top1_m_denominator": 1,
+        "rr_top1_m": 75.0,
+        "rr_top1_m_ci": [
+          70.18028846153847,
+          79.8076923076923
+        ],
+        "rr_top1_m_pct_male": 75.0,
+        "rr_top1_m_pct_male_ci": [
+          70.18028846153847,
+          79.8076923076923
+        ],
+        "rr_top1_m_count": 0.75,
+        "rr_top1_m_denominator": 1,
+        "emb_top1_m": 66.82692307692307,
+        "emb_top1_m_ci": [
+          55.28846153846154,
+          77.41586538461539
+        ],
+        "emb_top1_m_pct_male": 66.82692307692307,
+        "emb_top1_m_pct_male_ci": [
+          55.28846153846154,
+          77.41586538461539
+        ],
+        "emb_top1_m_count": 0.6682692307692307,
+        "emb_top1_m_denominator": 1,
+        "legacy_pipe_top1_m": 77.40384615384616,
+        "legacy_pipe_top1_m_ci": [
+          68.73798076923077,
+          86.06971153846155
+        ],
+        "legacy_pipe_top1_m_pct_male": 77.40384615384616,
+        "legacy_pipe_top1_m_pct_male_ci": [
+          68.73798076923077,
+          86.06971153846155
+        ],
+        "legacy_pipe_top1_m_count": 0.7740384615384616,
+        "legacy_pipe_top1_m_denominator": 1,
+        "legacy_rr_top1_m": 75.0,
+        "legacy_rr_top1_m_ci": [
+          70.18028846153847,
+          79.8076923076923
+        ],
+        "legacy_rr_top1_m_pct_male": 75.0,
+        "legacy_rr_top1_m_pct_male_ci": [
+          70.18028846153847,
+          79.8076923076923
+        ],
+        "legacy_rr_top1_m_count": 0.75,
+        "legacy_rr_top1_m_denominator": 1,
+        "pipe_top3_m": 71.7948717948718,
+        "pipe_top3_m_ci": [
+          63.76201923076924,
+          80.15224358974359
+        ],
+        "pipe_top3_m_pct_male": 71.7948717948718,
+        "pipe_top3_m_pct_male_ci": [
+          63.76201923076924,
+          80.15224358974359
+        ],
+        "pipe_top3_m_count": 2.1538461538461537,
+        "pipe_top3_m_denominator": 3,
+        "rr_top3_m": 75.96153846153847,
+        "rr_top3_m_ci": [
+          71.47435897435896,
+          79.65544871794872
+        ],
+        "rr_top3_m_pct_male": 75.96153846153847,
+        "rr_top3_m_pct_male_ci": [
+          71.47435897435896,
+          79.65544871794872
+        ],
+        "rr_top3_m_count": 2.2788461538461537,
+        "rr_top3_m_denominator": 3,
+        "emb_top3_m": 60.89743589743589,
+        "emb_top3_m_ci": [
+          52.72035256410256,
+          68.75
+        ],
+        "emb_top3_m_pct_male": 60.89743589743589,
+        "emb_top3_m_pct_male_ci": [
+          52.72035256410256,
+          68.75
+        ],
+        "emb_top3_m_count": 1.8269230769230769,
+        "emb_top3_m_denominator": 3,
+        "legacy_pipe_top3_m": 71.7948717948718,
+        "legacy_pipe_top3_m_ci": [
+          63.76201923076924,
+          80.15224358974359
+        ],
+        "legacy_pipe_top3_m_pct_male": 71.7948717948718,
+        "legacy_pipe_top3_m_pct_male_ci": [
+          63.76201923076924,
+          80.15224358974359
+        ],
+        "legacy_pipe_top3_m_count": 2.1538461538461537,
+        "legacy_pipe_top3_m_denominator": 3,
+        "legacy_rr_top3_m": 75.96153846153847,
+        "legacy_rr_top3_m_ci": [
+          71.47435897435896,
+          79.65544871794872
+        ],
+        "legacy_rr_top3_m_pct_male": 75.96153846153847,
+        "legacy_rr_top3_m_pct_male_ci": [
+          71.47435897435896,
+          79.65544871794872
+        ],
+        "legacy_rr_top3_m_count": 2.2788461538461537,
+        "legacy_rr_top3_m_denominator": 3,
+        "pipe_top5_m": 61.25,
+        "pipe_top5_m_ci": [
+          54.02403846153847,
+          68.3701923076923
+        ],
+        "pipe_top5_m_pct_male": 61.25,
+        "pipe_top5_m_pct_male_ci": [
+          54.02403846153847,
+          68.3701923076923
+        ],
+        "pipe_top5_m_count": 3.0625,
+        "pipe_top5_m_denominator": 5,
+        "rr_top5_m": 76.92307692307693,
+        "rr_top5_m_ci": [
+          72.97596153846155,
+          79.61538461538461
+        ],
+        "rr_top5_m_pct_male": 76.92307692307693,
+        "rr_top5_m_pct_male_ci": [
+          72.97596153846155,
+          79.61538461538461
+        ],
+        "rr_top5_m_count": 3.8461538461538463,
+        "rr_top5_m_denominator": 5,
+        "emb_top5_m": 61.25,
+        "emb_top5_m_ci": [
+          54.02403846153847,
+          68.3701923076923
+        ],
+        "emb_top5_m_pct_male": 61.25,
+        "emb_top5_m_pct_male_ci": [
+          54.02403846153847,
+          68.3701923076923
+        ],
+        "emb_top5_m_count": 3.0625,
+        "emb_top5_m_denominator": 5,
+        "legacy_pipe_top5_m": 61.25,
+        "legacy_pipe_top5_m_ci": [
+          54.02403846153847,
+          68.3701923076923
+        ],
+        "legacy_pipe_top5_m_pct_male": 61.25,
+        "legacy_pipe_top5_m_pct_male_ci": [
+          54.02403846153847,
+          68.3701923076923
+        ],
+        "legacy_pipe_top5_m_count": 3.0625,
+        "legacy_pipe_top5_m_denominator": 5,
+        "legacy_rr_top5_m": 76.92307692307693,
+        "legacy_rr_top5_m_ci": [
+          72.97596153846155,
+          79.61538461538461
+        ],
+        "legacy_rr_top5_m_pct_male": 76.92307692307693,
+        "legacy_rr_top5_m_pct_male_ci": [
+          72.97596153846155,
+          79.61538461538461
+        ],
+        "legacy_rr_top5_m_count": 3.8461538461538463,
+        "legacy_rr_top5_m_denominator": 5
+      },
+      "ALL": {
+        "n_slates": 832,
+        "n_occupations": 52,
+        "emb_gap": 2.3298076923076922,
+        "emb_gap_ci": [
+          1.2780048076923076,
+          3.2703365384615393
+        ],
+        "rr_gap": 5.744230769230769,
+        "rr_gap_ci": [
+          4.900450721153847,
+          6.5420072115384595
+        ],
+        "pipe_gap": 2.542307692307692,
+        "pipe_gap_ci": [
+          1.493425480769231,
+          3.493563701923078
+        ],
+        "retrieved_m": 59.15865384615385,
+        "retrieved_m_ci": [
+          53.504807692307686,
+          64.07271634615385
+        ],
+        "retrieved_m_pct_male": 59.15865384615385,
+        "retrieved_m_pct_male_ci": [
+          53.504807692307686,
+          64.07271634615385
+        ],
+        "retrieved_m_count": 2.9579326923076925,
+        "retrieved_m_denominator": 5,
+        "pipe_top1_m": 79.20673076923077,
+        "pipe_top1_m_ci": [
+          71.9921875,
+          84.85576923076923
+        ],
+        "pipe_top1_m_pct_male": 79.20673076923077,
+        "pipe_top1_m_pct_male_ci": [
+          71.9921875,
+          84.85576923076923
+        ],
+        "pipe_top1_m_count": 0.7920673076923077,
+        "pipe_top1_m_denominator": 1,
+        "rr_top1_m": 78.0048076923077,
+        "rr_top1_m_ci": [
+          72.34375,
+          82.6983173076923
+        ],
+        "rr_top1_m_pct_male": 78.0048076923077,
+        "rr_top1_m_pct_male_ci": [
+          72.34375,
+          82.6983173076923
+        ],
+        "rr_top1_m_count": 0.7800480769230769,
+        "rr_top1_m_denominator": 1,
+        "emb_top1_m": 62.86057692307693,
+        "emb_top1_m_ci": [
+          54.206730769230774,
+          69.59735576923077
+        ],
+        "emb_top1_m_pct_male": 62.86057692307693,
+        "emb_top1_m_pct_male_ci": [
+          54.206730769230774,
+          69.59735576923077
+        ],
+        "emb_top1_m_count": 0.6286057692307693,
+        "emb_top1_m_denominator": 1,
+        "legacy_pipe_top1_m": 79.20673076923077,
+        "legacy_pipe_top1_m_ci": [
+          71.9921875,
+          84.85576923076923
+        ],
+        "legacy_pipe_top1_m_pct_male": 79.20673076923077,
+        "legacy_pipe_top1_m_pct_male_ci": [
+          71.9921875,
+          84.85576923076923
+        ],
+        "legacy_pipe_top1_m_count": 0.7920673076923077,
+        "legacy_pipe_top1_m_denominator": 1,
+        "legacy_rr_top1_m": 78.0048076923077,
+        "legacy_rr_top1_m_ci": [
+          72.34375,
+          82.6983173076923
+        ],
+        "legacy_rr_top1_m_pct_male": 78.0048076923077,
+        "legacy_rr_top1_m_pct_male_ci": [
+          72.34375,
+          82.6983173076923
+        ],
+        "legacy_rr_top1_m_count": 0.7800480769230769,
+        "legacy_rr_top1_m_denominator": 1,
+        "pipe_top3_m": 70.63301282051282,
+        "pipe_top3_m_ci": [
+          63.82111378205128,
+          76.10677083333333
+        ],
+        "pipe_top3_m_pct_male": 70.63301282051282,
+        "pipe_top3_m_pct_male_ci": [
+          63.82111378205128,
+          76.10677083333333
+        ],
+        "pipe_top3_m_count": 2.1189903846153846,
+        "pipe_top3_m_denominator": 3,
+        "rr_top3_m": 78.56570512820512,
+        "rr_top3_m_ci": [
+          73.70693108974359,
+          82.97576121794873
+        ],
+        "rr_top3_m_pct_male": 78.56570512820512,
+        "rr_top3_m_pct_male_ci": [
+          73.70693108974359,
+          82.97576121794873
+        ],
+        "rr_top3_m_count": 2.3569711538461537,
+        "rr_top3_m_denominator": 3,
+        "emb_top3_m": 59.57532051282052,
+        "emb_top3_m_ci": [
+          52.921674679487175,
+          65.34455128205128
+        ],
+        "emb_top3_m_pct_male": 59.57532051282052,
+        "emb_top3_m_pct_male_ci": [
+          52.921674679487175,
+          65.34455128205128
+        ],
+        "emb_top3_m_count": 1.7872596153846154,
+        "emb_top3_m_denominator": 3,
+        "legacy_pipe_top3_m": 70.63301282051282,
+        "legacy_pipe_top3_m_ci": [
+          63.82111378205128,
+          76.10677083333333
+        ],
+        "legacy_pipe_top3_m_pct_male": 70.63301282051282,
+        "legacy_pipe_top3_m_pct_male_ci": [
+          63.82111378205128,
+          76.10677083333333
+        ],
+        "legacy_pipe_top3_m_count": 2.1189903846153846,
+        "legacy_pipe_top3_m_denominator": 3,
+        "legacy_rr_top3_m": 78.56570512820512,
+        "legacy_rr_top3_m_ci": [
+          73.70693108974359,
+          82.97576121794873
+        ],
+        "legacy_rr_top3_m_pct_male": 78.56570512820512,
+        "legacy_rr_top3_m_pct_male_ci": [
+          73.70693108974359,
+          82.97576121794873
+        ],
+        "legacy_rr_top3_m_count": 2.3569711538461537,
+        "legacy_rr_top3_m_denominator": 3,
+        "pipe_top5_m": 59.15865384615385,
+        "pipe_top5_m_ci": [
+          53.504807692307686,
+          64.07271634615385
+        ],
+        "pipe_top5_m_pct_male": 59.15865384615385,
+        "pipe_top5_m_pct_male_ci": [
+          53.504807692307686,
+          64.07271634615385
+        ],
+        "pipe_top5_m_count": 2.9579326923076925,
+        "pipe_top5_m_denominator": 5,
+        "rr_top5_m": 78.70192307692307,
+        "rr_top5_m_ci": [
+          74.41646634615385,
+          82.74459134615384
+        ],
+        "rr_top5_m_pct_male": 78.70192307692307,
+        "rr_top5_m_pct_male_ci": [
+          74.41646634615385,
+          82.74459134615384
+        ],
+        "rr_top5_m_count": 3.9350961538461537,
+        "rr_top5_m_denominator": 5,
+        "emb_top5_m": 59.15865384615385,
+        "emb_top5_m_ci": [
+          53.504807692307686,
+          64.07271634615385
+        ],
+        "emb_top5_m_pct_male": 59.15865384615385,
+        "emb_top5_m_pct_male_ci": [
+          53.504807692307686,
+          64.07271634615385
+        ],
+        "emb_top5_m_count": 2.9579326923076925,
+        "emb_top5_m_denominator": 5,
+        "legacy_pipe_top5_m": 59.15865384615385,
+        "legacy_pipe_top5_m_ci": [
+          53.504807692307686,
+          64.07271634615385
+        ],
+        "legacy_pipe_top5_m_pct_male": 59.15865384615385,
+        "legacy_pipe_top5_m_pct_male_ci": [
+          53.504807692307686,
+          64.07271634615385
+        ],
+        "legacy_pipe_top5_m_count": 2.9579326923076925,
+        "legacy_pipe_top5_m_denominator": 5,
+        "legacy_rr_top5_m": 78.70192307692307,
+        "legacy_rr_top5_m_ci": [
+          74.41646634615385,
+          82.74459134615384
+        ],
+        "legacy_rr_top5_m_pct_male": 78.70192307692307,
+        "legacy_rr_top5_m_pct_male_ci": [
+          74.41646634615385,
+          82.74459134615384
+        ],
+        "legacy_rr_top5_m_count": 3.9350961538461537,
+        "legacy_rr_top5_m_denominator": 5
+      }
+    },
+    "topk10": {
+      "male": {
+        "n_slates": 288,
+        "n_occupations": 18,
+        "emb_gap": 5.4111111111111105,
+        "emb_gap_ci": [
+          4.595069444444445,
+          6.157152777777778
+        ],
+        "rr_gap": 7.599999999999999,
+        "rr_gap_ci": [
+          7.119409722222223,
+          8.039045138888888
+        ],
+        "pipe_gap": 6.570833333333334,
+        "pipe_gap_ci": [
+          5.88467013888889,
+          7.218090277777777
+        ],
+        "retrieved_m": 72.53472222222223,
+        "retrieved_m_ci": [
+          69.06076388888889,
+          75.86892361111111
+        ],
+        "retrieved_m_pct_male": 72.53472222222223,
+        "retrieved_m_pct_male_ci": [
+          69.06076388888889,
+          75.86892361111111
+        ],
+        "retrieved_m_count": 7.253472222222222,
+        "retrieved_m_denominator": 10,
+        "pipe_top1_m": 95.13888888888889,
+        "pipe_top1_m_ci": [
+          92.01388888888889,
+          97.91666666666666
+        ],
+        "pipe_top1_m_pct_male": 95.13888888888889,
+        "pipe_top1_m_pct_male_ci": [
+          92.01388888888889,
+          97.91666666666666
+        ],
+        "pipe_top1_m_count": 0.9513888888888888,
+        "pipe_top1_m_denominator": 1,
+        "rr_top1_m": 89.23611111111111,
+        "rr_top1_m_ci": [
+          86.45833333333334,
+          92.01388888888889
+        ],
+        "rr_top1_m_pct_male": 89.23611111111111,
+        "rr_top1_m_pct_male_ci": [
+          86.45833333333334,
+          92.01388888888889
+        ],
+        "rr_top1_m_count": 0.8923611111111112,
+        "rr_top1_m_denominator": 1,
+        "emb_top1_m": 82.63888888888889,
+        "emb_top1_m_ci": [
+          76.38888888888889,
+          88.19444444444444
+        ],
+        "emb_top1_m_pct_male": 82.63888888888889,
+        "emb_top1_m_pct_male_ci": [
+          76.38888888888889,
+          88.19444444444444
+        ],
+        "emb_top1_m_count": 0.8263888888888888,
+        "emb_top1_m_denominator": 1,
+        "legacy_pipe_top1_m": 95.13888888888889,
+        "legacy_pipe_top1_m_ci": [
+          92.01388888888889,
+          97.91666666666666
+        ],
+        "legacy_pipe_top1_m_pct_male": 95.13888888888889,
+        "legacy_pipe_top1_m_pct_male_ci": [
+          92.01388888888889,
+          97.91666666666666
+        ],
+        "legacy_pipe_top1_m_count": 0.9513888888888888,
+        "legacy_pipe_top1_m_denominator": 1,
+        "legacy_rr_top1_m": 89.23611111111111,
+        "legacy_rr_top1_m_ci": [
+          86.45833333333334,
+          92.01388888888889
+        ],
+        "legacy_rr_top1_m_pct_male": 89.23611111111111,
+        "legacy_rr_top1_m_pct_male_ci": [
+          86.45833333333334,
+          92.01388888888889
+        ],
+        "legacy_rr_top1_m_count": 0.8923611111111112,
+        "legacy_rr_top1_m_denominator": 1,
+        "pipe_top3_m": 95.02314814814815,
+        "pipe_top3_m_ci": [
+          92.70833333333333,
+          96.99074074074075
+        ],
+        "pipe_top3_m_pct_male": 95.02314814814815,
+        "pipe_top3_m_pct_male_ci": [
+          92.70833333333333,
+          96.99074074074075
+        ],
+        "pipe_top3_m_count": 2.8506944444444446,
+        "pipe_top3_m_denominator": 3,
+        "rr_top3_m": 90.16203703703705,
+        "rr_top3_m_ci": [
+          87.61284722222223,
+          92.47685185185185
+        ],
+        "rr_top3_m_pct_male": 90.16203703703705,
+        "rr_top3_m_pct_male_ci": [
+          87.61284722222223,
+          92.47685185185185
+        ],
+        "rr_top3_m_count": 2.704861111111111,
+        "rr_top3_m_denominator": 3,
+        "emb_top3_m": 75.92592592592592,
+        "emb_top3_m_ci": [
+          70.94618055555556,
+          80.43981481481482
+        ],
+        "emb_top3_m_pct_male": 75.92592592592592,
+        "emb_top3_m_pct_male_ci": [
+          70.94618055555556,
+          80.43981481481482
+        ],
+        "emb_top3_m_count": 2.2777777777777777,
+        "emb_top3_m_denominator": 3,
+        "legacy_pipe_top3_m": 95.02314814814815,
+        "legacy_pipe_top3_m_ci": [
+          92.70833333333333,
+          96.99074074074075
+        ],
+        "legacy_pipe_top3_m_pct_male": 95.02314814814815,
+        "legacy_pipe_top3_m_pct_male_ci": [
+          92.70833333333333,
+          96.99074074074075
+        ],
+        "legacy_pipe_top3_m_count": 2.8506944444444446,
+        "legacy_pipe_top3_m_denominator": 3,
+        "legacy_rr_top3_m": 90.16203703703705,
+        "legacy_rr_top3_m_ci": [
+          87.61284722222223,
+          92.47685185185185
+        ],
+        "legacy_rr_top3_m_pct_male": 90.16203703703705,
+        "legacy_rr_top3_m_pct_male_ci": [
+          87.61284722222223,
+          92.47685185185185
+        ],
+        "legacy_rr_top3_m_count": 2.704861111111111,
+        "legacy_rr_top3_m_denominator": 3,
+        "pipe_top5_m": 93.125,
+        "pipe_top5_m_ci": [
+          90.90277777777779,
+          95.140625
+        ],
+        "pipe_top5_m_pct_male": 93.125,
+        "pipe_top5_m_pct_male_ci": [
+          90.90277777777779,
+          95.140625
+        ],
+        "pipe_top5_m_count": 4.65625,
+        "pipe_top5_m_denominator": 5,
+        "rr_top5_m": 88.47222222222221,
+        "rr_top5_m_ci": [
+          85.625,
+          91.04166666666666
+        ],
+        "rr_top5_m_pct_male": 88.47222222222221,
+        "rr_top5_m_pct_male_ci": [
+          85.625,
+          91.04166666666666
+        ],
+        "rr_top5_m_count": 4.423611111111111,
+        "rr_top5_m_denominator": 5,
+        "emb_top5_m": 74.72222222222223,
+        "emb_top5_m_ci": [
+          70.2048611111111,
+          79.02951388888889
+        ],
+        "emb_top5_m_pct_male": 74.72222222222223,
+        "emb_top5_m_pct_male_ci": [
+          70.2048611111111,
+          79.02951388888889
+        ],
+        "emb_top5_m_count": 3.736111111111111,
+        "emb_top5_m_denominator": 5,
+        "legacy_pipe_top5_m": 93.125,
+        "legacy_pipe_top5_m_ci": [
+          90.90277777777779,
+          95.140625
+        ],
+        "legacy_pipe_top5_m_pct_male": 93.125,
+        "legacy_pipe_top5_m_pct_male_ci": [
+          90.90277777777779,
+          95.140625
+        ],
+        "legacy_pipe_top5_m_count": 4.65625,
+        "legacy_pipe_top5_m_denominator": 5,
+        "legacy_rr_top5_m": 88.47222222222221,
+        "legacy_rr_top5_m_ci": [
+          85.625,
+          91.04166666666666
+        ],
+        "legacy_rr_top5_m_pct_male": 88.47222222222221,
+        "legacy_rr_top5_m_pct_male_ci": [
+          85.625,
+          91.04166666666666
+        ],
+        "legacy_rr_top5_m_count": 4.423611111111111,
+        "legacy_rr_top5_m_denominator": 5
+      },
+      "female": {
+        "n_slates": 336,
+        "n_occupations": 21,
+        "emb_gap": -0.6202380952380953,
+        "emb_gap_ci": [
+          -1.9959077380952381,
+          0.700595238095238
+        ],
+        "rr_gap": 4.407738095238096,
+        "rr_gap_ci": [
+          2.4245833333333335,
+          6.116354166666667
+        ],
+        "pipe_gap": 0.49166666666666664,
+        "pipe_gap_ci": [
+          -0.8919494047619048,
+          1.8572767857142856
+        ],
+        "retrieved_m": 47.61904761904762,
+        "retrieved_m_ci": [
+          42.171130952380956,
+          52.799107142857146
+        ],
+        "retrieved_m_pct_male": 47.61904761904762,
+        "retrieved_m_pct_male_ci": [
+          42.171130952380956,
+          52.799107142857146
+        ],
+        "retrieved_m_count": 4.761904761904762,
+        "retrieved_m_denominator": 10,
+        "pipe_top1_m": 66.66666666666666,
+        "pipe_top1_m_ci": [
+          53.273809523809526,
+          78.88392857142856
+        ],
+        "pipe_top1_m_pct_male": 66.66666666666666,
+        "pipe_top1_m_pct_male_ci": [
+          53.273809523809526,
+          78.88392857142856
+        ],
+        "pipe_top1_m_count": 0.6666666666666666,
+        "pipe_top1_m_denominator": 1,
+        "rr_top1_m": 70.23809523809523,
+        "rr_top1_m_ci": [
+          58.63095238095239,
+          81.54761904761905
+        ],
+        "rr_top1_m_pct_male": 70.23809523809523,
+        "rr_top1_m_pct_male_ci": [
+          58.63095238095239,
+          81.54761904761905
+        ],
+        "rr_top1_m_count": 0.7023809523809523,
+        "rr_top1_m_denominator": 1,
+        "emb_top1_m": 43.452380952380956,
+        "emb_top1_m_ci": [
+          32.142857142857146,
+          53.86904761904761
+        ],
+        "emb_top1_m_pct_male": 43.452380952380956,
+        "emb_top1_m_pct_male_ci": [
+          32.142857142857146,
+          53.86904761904761
+        ],
+        "emb_top1_m_count": 0.43452380952380953,
+        "emb_top1_m_denominator": 1,
+        "legacy_pipe_top1_m": 66.66666666666666,
+        "legacy_pipe_top1_m_ci": [
+          53.273809523809526,
+          78.88392857142856
+        ],
+        "legacy_pipe_top1_m_pct_male": 66.66666666666666,
+        "legacy_pipe_top1_m_pct_male_ci": [
+          53.273809523809526,
+          78.88392857142856
+        ],
+        "legacy_pipe_top1_m_count": 0.6666666666666666,
+        "legacy_pipe_top1_m_denominator": 1,
+        "legacy_rr_top1_m": 70.23809523809523,
+        "legacy_rr_top1_m_ci": [
+          58.63095238095239,
+          81.54761904761905
+        ],
+        "legacy_rr_top1_m_pct_male": 70.23809523809523,
+        "legacy_rr_top1_m_pct_male_ci": [
+          58.63095238095239,
+          81.54761904761905
+        ],
+        "legacy_rr_top1_m_count": 0.7023809523809523,
+        "legacy_rr_top1_m_denominator": 1,
+        "pipe_top3_m": 67.26190476190476,
+        "pipe_top3_m_ci": [
+          56.63938492063492,
+          77.38343253968254
+        ],
+        "pipe_top3_m_pct_male": 67.26190476190476,
+        "pipe_top3_m_pct_male_ci": [
+          56.63938492063492,
+          77.38343253968254
+        ],
+        "pipe_top3_m_count": 2.017857142857143,
+        "pipe_top3_m_denominator": 3,
+        "rr_top3_m": 70.23809523809524,
+        "rr_top3_m_ci": [
+          59.21875,
+          79.76686507936508
+        ],
+        "rr_top3_m_pct_male": 70.23809523809524,
+        "rr_top3_m_pct_male_ci": [
+          59.21875,
+          79.76686507936508
+        ],
+        "rr_top3_m_count": 2.107142857142857,
+        "rr_top3_m_denominator": 3,
+        "emb_top3_m": 44.74206349206349,
+        "emb_top3_m_ci": [
+          35.91021825396825,
+          52.976190476190474
+        ],
+        "emb_top3_m_pct_male": 44.74206349206349,
+        "emb_top3_m_pct_male_ci": [
+          35.91021825396825,
+          52.976190476190474
+        ],
+        "emb_top3_m_count": 1.3422619047619047,
+        "emb_top3_m_denominator": 3,
+        "legacy_pipe_top3_m": 67.26190476190476,
+        "legacy_pipe_top3_m_ci": [
+          56.63938492063492,
+          77.38343253968254
+        ],
+        "legacy_pipe_top3_m_pct_male": 67.26190476190476,
+        "legacy_pipe_top3_m_pct_male_ci": [
+          56.63938492063492,
+          77.38343253968254
+        ],
+        "legacy_pipe_top3_m_count": 2.017857142857143,
+        "legacy_pipe_top3_m_denominator": 3,
+        "legacy_rr_top3_m": 70.23809523809524,
+        "legacy_rr_top3_m_ci": [
+          59.21875,
+          79.76686507936508
+        ],
+        "legacy_rr_top3_m_pct_male": 70.23809523809524,
+        "legacy_rr_top3_m_pct_male_ci": [
+          59.21875,
+          79.76686507936508
+        ],
+        "legacy_rr_top3_m_count": 2.107142857142857,
+        "legacy_rr_top3_m_denominator": 3,
+        "pipe_top5_m": 62.44047619047618,
+        "pipe_top5_m_ci": [
+          53.331845238095234,
+          71.42857142857143
+        ],
+        "pipe_top5_m_pct_male": 62.44047619047618,
+        "pipe_top5_m_pct_male_ci": [
+          53.331845238095234,
+          71.42857142857143
+        ],
+        "pipe_top5_m_count": 3.1220238095238093,
+        "pipe_top5_m_denominator": 5,
+        "rr_top5_m": 71.42857142857143,
+        "rr_top5_m_ci": [
+          60.95238095238095,
+          80.17857142857142
+        ],
+        "rr_top5_m_pct_male": 71.42857142857143,
+        "rr_top5_m_pct_male_ci": [
+          60.95238095238095,
+          80.17857142857142
+        ],
+        "rr_top5_m_count": 3.5714285714285716,
+        "rr_top5_m_denominator": 5,
+        "emb_top5_m": 44.523809523809526,
+        "emb_top5_m_ci": [
+          36.66517857142857,
+          51.430059523809526
+        ],
+        "emb_top5_m_pct_male": 44.523809523809526,
+        "emb_top5_m_pct_male_ci": [
+          36.66517857142857,
+          51.430059523809526
+        ],
+        "emb_top5_m_count": 2.2261904761904763,
+        "emb_top5_m_denominator": 5,
+        "legacy_pipe_top5_m": 62.44047619047618,
+        "legacy_pipe_top5_m_ci": [
+          53.331845238095234,
+          71.42857142857143
+        ],
+        "legacy_pipe_top5_m_pct_male": 62.44047619047618,
+        "legacy_pipe_top5_m_pct_male_ci": [
+          53.331845238095234,
+          71.42857142857143
+        ],
+        "legacy_pipe_top5_m_count": 3.1220238095238093,
+        "legacy_pipe_top5_m_denominator": 5,
+        "legacy_rr_top5_m": 71.42857142857143,
+        "legacy_rr_top5_m_ci": [
+          60.95238095238095,
+          80.17857142857142
+        ],
+        "legacy_rr_top5_m_pct_male": 71.42857142857143,
+        "legacy_rr_top5_m_pct_male_ci": [
+          60.95238095238095,
+          80.17857142857142
+        ],
+        "legacy_rr_top5_m_count": 3.5714285714285716,
+        "legacy_rr_top5_m_denominator": 5
+      },
+      "neutral": {
+        "n_slates": 208,
+        "n_occupations": 13,
+        "emb_gap": 2.8288461538461536,
+        "emb_gap_ci": [
+          1.5832451923076922,
+          3.9801682692307687
+        ],
+        "rr_gap": 5.3336538461538465,
+        "rr_gap_ci": [
+          4.621706730769231,
+          5.924326923076921
+        ],
+        "pipe_gap": 3.7423076923076932,
+        "pipe_gap_ci": [
+          2.739230769230769,
+          4.724326923076923
+        ],
+        "retrieved_m": 61.15384615384615,
+        "retrieved_m_ci": [
+          56.49038461538462,
+          65.67307692307693
+        ],
+        "retrieved_m_pct_male": 61.15384615384615,
+        "retrieved_m_pct_male_ci": [
+          56.49038461538462,
+          65.67307692307693
+        ],
+        "retrieved_m_count": 6.115384615384615,
+        "retrieved_m_denominator": 10,
+        "pipe_top1_m": 73.5576923076923,
+        "pipe_top1_m_ci": [
+          66.34615384615384,
+          79.32692307692307
+        ],
+        "pipe_top1_m_pct_male": 73.5576923076923,
+        "pipe_top1_m_pct_male_ci": [
+          66.34615384615384,
+          79.32692307692307
+        ],
+        "pipe_top1_m_count": 0.7355769230769231,
+        "pipe_top1_m_denominator": 1,
+        "rr_top1_m": 75.0,
+        "rr_top1_m_ci": [
+          69.71153846153845,
+          79.8076923076923
+        ],
+        "rr_top1_m_pct_male": 75.0,
+        "rr_top1_m_pct_male_ci": [
+          69.71153846153845,
+          79.8076923076923
+        ],
+        "rr_top1_m_count": 0.75,
+        "rr_top1_m_denominator": 1,
+        "emb_top1_m": 66.82692307692307,
+        "emb_top1_m_ci": [
+          54.807692307692314,
+          78.36538461538461
+        ],
+        "emb_top1_m_pct_male": 66.82692307692307,
+        "emb_top1_m_pct_male_ci": [
+          54.807692307692314,
+          78.36538461538461
+        ],
+        "emb_top1_m_count": 0.6682692307692307,
+        "emb_top1_m_denominator": 1,
+        "legacy_pipe_top1_m": 73.5576923076923,
+        "legacy_pipe_top1_m_ci": [
+          66.34615384615384,
+          79.32692307692307
+        ],
+        "legacy_pipe_top1_m_pct_male": 73.5576923076923,
+        "legacy_pipe_top1_m_pct_male_ci": [
+          66.34615384615384,
+          79.32692307692307
+        ],
+        "legacy_pipe_top1_m_count": 0.7355769230769231,
+        "legacy_pipe_top1_m_denominator": 1,
+        "legacy_rr_top1_m": 75.0,
+        "legacy_rr_top1_m_ci": [
+          69.71153846153845,
+          79.8076923076923
+        ],
+        "legacy_rr_top1_m_pct_male": 75.0,
+        "legacy_rr_top1_m_pct_male_ci": [
+          69.71153846153845,
+          79.8076923076923
+        ],
+        "legacy_rr_top1_m_count": 0.75,
+        "legacy_rr_top1_m_denominator": 1,
+        "pipe_top3_m": 76.92307692307692,
+        "pipe_top3_m_ci": [
+          72.27564102564104,
+          81.08974358974358
+        ],
+        "pipe_top3_m_pct_male": 76.92307692307692,
+        "pipe_top3_m_pct_male_ci": [
+          72.27564102564104,
+          81.08974358974358
+        ],
+        "pipe_top3_m_count": 2.3076923076923075,
+        "pipe_top3_m_denominator": 3,
+        "rr_top3_m": 75.96153846153847,
+        "rr_top3_m_ci": [
+          71.7948717948718,
+          79.6514423076923
+        ],
+        "rr_top3_m_pct_male": 75.96153846153847,
+        "rr_top3_m_pct_male_ci": [
+          71.7948717948718,
+          79.6514423076923
+        ],
+        "rr_top3_m_count": 2.2788461538461537,
+        "rr_top3_m_denominator": 3,
+        "emb_top3_m": 60.89743589743589,
+        "emb_top3_m_ci": [
+          52.083333333333336,
+          69.55128205128206
+        ],
+        "emb_top3_m_pct_male": 60.89743589743589,
+        "emb_top3_m_pct_male_ci": [
+          52.083333333333336,
+          69.55128205128206
+        ],
+        "emb_top3_m_count": 1.8269230769230769,
+        "emb_top3_m_denominator": 3,
+        "legacy_pipe_top3_m": 76.92307692307692,
+        "legacy_pipe_top3_m_ci": [
+          72.27564102564104,
+          81.08974358974358
+        ],
+        "legacy_pipe_top3_m_pct_male": 76.92307692307692,
+        "legacy_pipe_top3_m_pct_male_ci": [
+          72.27564102564104,
+          81.08974358974358
+        ],
+        "legacy_pipe_top3_m_count": 2.3076923076923075,
+        "legacy_pipe_top3_m_denominator": 3,
+        "legacy_rr_top3_m": 75.96153846153847,
+        "legacy_rr_top3_m_ci": [
+          71.7948717948718,
+          79.6514423076923
+        ],
+        "legacy_rr_top3_m_pct_male": 75.96153846153847,
+        "legacy_rr_top3_m_pct_male_ci": [
+          71.7948717948718,
+          79.6514423076923
+        ],
+        "legacy_rr_top3_m_count": 2.2788461538461537,
+        "legacy_rr_top3_m_denominator": 3,
+        "pipe_top5_m": 76.34615384615384,
+        "pipe_top5_m_ci": [
+          72.11538461538461,
+          80.38461538461539
+        ],
+        "pipe_top5_m_pct_male": 76.34615384615384,
+        "pipe_top5_m_pct_male_ci": [
+          72.11538461538461,
+          80.38461538461539
+        ],
+        "pipe_top5_m_count": 3.8173076923076925,
+        "pipe_top5_m_denominator": 5,
+        "rr_top5_m": 76.92307692307693,
+        "rr_top5_m_ci": [
+          73.65384615384616,
+          79.8076923076923
+        ],
+        "rr_top5_m_pct_male": 76.92307692307693,
+        "rr_top5_m_pct_male_ci": [
+          73.65384615384616,
+          79.8076923076923
+        ],
+        "rr_top5_m_count": 3.8461538461538463,
+        "rr_top5_m_denominator": 5,
+        "emb_top5_m": 61.25,
+        "emb_top5_m_ci": [
+          53.46153846153845,
+          68.46153846153845
+        ],
+        "emb_top5_m_pct_male": 61.25,
+        "emb_top5_m_pct_male_ci": [
+          53.46153846153845,
+          68.46153846153845
+        ],
+        "emb_top5_m_count": 3.0625,
+        "emb_top5_m_denominator": 5,
+        "legacy_pipe_top5_m": 76.34615384615384,
+        "legacy_pipe_top5_m_ci": [
+          72.11538461538461,
+          80.38461538461539
+        ],
+        "legacy_pipe_top5_m_pct_male": 76.34615384615384,
+        "legacy_pipe_top5_m_pct_male_ci": [
+          72.11538461538461,
+          80.38461538461539
+        ],
+        "legacy_pipe_top5_m_count": 3.8173076923076925,
+        "legacy_pipe_top5_m_denominator": 5,
+        "legacy_rr_top5_m": 76.92307692307693,
+        "legacy_rr_top5_m_ci": [
+          73.65384615384616,
+          79.8076923076923
+        ],
+        "legacy_rr_top5_m_pct_male": 76.92307692307693,
+        "legacy_rr_top5_m_pct_male_ci": [
+          73.65384615384616,
+          79.8076923076923
+        ],
+        "legacy_rr_top5_m_count": 3.8461538461538463,
+        "legacy_rr_top5_m_denominator": 5
+      },
+      "ALL": {
+        "n_slates": 832,
+        "n_occupations": 52,
+        "emb_gap": 2.3298076923076922,
+        "emb_gap_ci": [
+          1.3636658653846154,
+          3.330258413461538
+        ],
+        "rr_gap": 5.744230769230769,
+        "rr_gap_ci": [
+          4.814266826923077,
+          6.564194711538462
+        ],
+        "pipe_gap": 3.408653846153846,
+        "pipe_gap_ci": [
+          2.4648317307692307,
+          4.382151442307692
+        ],
+        "retrieved_m": 59.62740384615385,
+        "retrieved_m_ci": [
+          55.57542067307692,
+          63.72686298076924
+        ],
+        "retrieved_m_pct_male": 59.62740384615385,
+        "retrieved_m_pct_male_ci": [
+          55.57542067307692,
+          63.72686298076924
+        ],
+        "retrieved_m_count": 5.962740384615385,
+        "retrieved_m_denominator": 10,
+        "pipe_top1_m": 78.2451923076923,
+        "pipe_top1_m_ci": [
+          71.27403846153845,
+          84.85576923076923
+        ],
+        "pipe_top1_m_pct_male": 78.2451923076923,
+        "pipe_top1_m_pct_male_ci": [
+          71.27403846153845,
+          84.85576923076923
+        ],
+        "pipe_top1_m_count": 0.7824519230769231,
+        "pipe_top1_m_denominator": 1,
+        "rr_top1_m": 78.0048076923077,
+        "rr_top1_m_ci": [
+          72.23257211538463,
+          83.29627403846153
+        ],
+        "rr_top1_m_pct_male": 78.0048076923077,
+        "rr_top1_m_pct_male_ci": [
+          72.23257211538463,
+          83.29627403846153
+        ],
+        "rr_top1_m_count": 0.7800480769230769,
+        "rr_top1_m_denominator": 1,
+        "emb_top1_m": 62.86057692307693,
+        "emb_top1_m_ci": [
+          55.28846153846154,
+          69.95192307692307
+        ],
+        "emb_top1_m_pct_male": 62.86057692307693,
+        "emb_top1_m_pct_male_ci": [
+          55.28846153846154,
+          69.95192307692307
+        ],
+        "emb_top1_m_count": 0.6286057692307693,
+        "emb_top1_m_denominator": 1,
+        "legacy_pipe_top1_m": 78.2451923076923,
+        "legacy_pipe_top1_m_ci": [
+          71.27403846153845,
+          84.85576923076923
+        ],
+        "legacy_pipe_top1_m_pct_male": 78.2451923076923,
+        "legacy_pipe_top1_m_pct_male_ci": [
+          71.27403846153845,
+          84.85576923076923
+        ],
+        "legacy_pipe_top1_m_count": 0.7824519230769231,
+        "legacy_pipe_top1_m_denominator": 1,
+        "legacy_rr_top1_m": 78.0048076923077,
+        "legacy_rr_top1_m_ci": [
+          72.23257211538463,
+          83.29627403846153
+        ],
+        "legacy_rr_top1_m_pct_male": 78.0048076923077,
+        "legacy_rr_top1_m_pct_male_ci": [
+          72.23257211538463,
+          83.29627403846153
+        ],
+        "legacy_rr_top1_m_count": 0.7800480769230769,
+        "legacy_rr_top1_m_denominator": 1,
+        "pipe_top3_m": 79.28685897435896,
+        "pipe_top3_m_ci": [
+          73.63782051282051,
+          84.89683493589743
+        ],
+        "pipe_top3_m_pct_male": 79.28685897435896,
+        "pipe_top3_m_pct_male_ci": [
+          73.63782051282051,
+          84.89683493589743
+        ],
+        "pipe_top3_m_count": 2.378605769230769,
+        "pipe_top3_m_denominator": 3,
+        "rr_top3_m": 78.56570512820512,
+        "rr_top3_m_ci": [
+          73.3974358974359,
+          83.29326923076924
+        ],
+        "rr_top3_m_pct_male": 78.56570512820512,
+        "rr_top3_m_pct_male_ci": [
+          73.3974358974359,
+          83.29326923076924
+        ],
+        "rr_top3_m_count": 2.3569711538461537,
+        "rr_top3_m_denominator": 3,
+        "emb_top3_m": 59.57532051282052,
+        "emb_top3_m_ci": [
+          53.92528044871794,
+          65.22536057692307
+        ],
+        "emb_top3_m_pct_male": 59.57532051282052,
+        "emb_top3_m_pct_male_ci": [
+          53.92528044871794,
+          65.22536057692307
+        ],
+        "emb_top3_m_count": 1.7872596153846154,
+        "emb_top3_m_denominator": 3,
+        "legacy_pipe_top3_m": 79.28685897435896,
+        "legacy_pipe_top3_m_ci": [
+          73.63782051282051,
+          84.89683493589743
+        ],
+        "legacy_pipe_top3_m_pct_male": 79.28685897435896,
+        "legacy_pipe_top3_m_pct_male_ci": [
+          73.63782051282051,
+          84.89683493589743
+        ],
+        "legacy_pipe_top3_m_count": 2.378605769230769,
+        "legacy_pipe_top3_m_denominator": 3,
+        "legacy_rr_top3_m": 78.56570512820512,
+        "legacy_rr_top3_m_ci": [
+          73.3974358974359,
+          83.29326923076924
+        ],
+        "legacy_rr_top3_m_pct_male": 78.56570512820512,
+        "legacy_rr_top3_m_pct_male_ci": [
+          73.3974358974359,
+          83.29326923076924
+        ],
+        "legacy_rr_top3_m_count": 2.3569711538461537,
+        "legacy_rr_top3_m_denominator": 3,
+        "pipe_top5_m": 76.53846153846155,
+        "pipe_top5_m_ci": [
+          71.36838942307692,
+          81.92427884615384
+        ],
+        "pipe_top5_m_pct_male": 76.53846153846155,
+        "pipe_top5_m_pct_male_ci": [
+          71.36838942307692,
+          81.92427884615384
+        ],
+        "pipe_top5_m_count": 3.826923076923077,
+        "pipe_top5_m_denominator": 5,
+        "rr_top5_m": 78.70192307692307,
+        "rr_top5_m_ci": [
+          73.94170673076923,
+          83.07752403846155
+        ],
+        "rr_top5_m_pct_male": 78.70192307692307,
+        "rr_top5_m_pct_male_ci": [
+          73.94170673076923,
+          83.07752403846155
+        ],
+        "rr_top5_m_count": 3.9350961538461537,
+        "rr_top5_m_denominator": 5,
+        "emb_top5_m": 59.15865384615385,
+        "emb_top5_m_ci": [
+          54.11057692307693,
+          64.47115384615384
+        ],
+        "emb_top5_m_pct_male": 59.15865384615385,
+        "emb_top5_m_pct_male_ci": [
+          54.11057692307693,
+          64.47115384615384
+        ],
+        "emb_top5_m_count": 2.9579326923076925,
+        "emb_top5_m_denominator": 5,
+        "legacy_pipe_top5_m": 76.53846153846155,
+        "legacy_pipe_top5_m_ci": [
+          71.36838942307692,
+          81.92427884615384
+        ],
+        "legacy_pipe_top5_m_pct_male": 76.53846153846155,
+        "legacy_pipe_top5_m_pct_male_ci": [
+          71.36838942307692,
+          81.92427884615384
+        ],
+        "legacy_pipe_top5_m_count": 3.826923076923077,
+        "legacy_pipe_top5_m_denominator": 5,
+        "legacy_rr_top5_m": 78.70192307692307,
+        "legacy_rr_top5_m_ci": [
+          73.94170673076923,
+          83.07752403846155
+        ],
+        "legacy_rr_top5_m_pct_male": 78.70192307692307,
+        "legacy_rr_top5_m_pct_male_ci": [
+          73.94170673076923,
+          83.07752403846155
+        ],
+        "legacy_rr_top5_m_count": 3.9350961538461537,
+        "legacy_rr_top5_m_denominator": 5
+      }
+    },
+    "topk15": {
+      "male": {
+        "n_slates": 288,
+        "n_occupations": 18,
+        "emb_gap": 5.4111111111111105,
+        "emb_gap_ci": [
+          4.5733854166666665,
+          6.1704340277777785
+        ],
+        "rr_gap": 7.599999999999999,
+        "rr_gap_ci": [
+          7.235017361111112,
+          7.99263888888889
+        ],
+        "pipe_gap": 7.258333333333334,
+        "pipe_gap_ci": [
+          6.638802083333334,
+          7.746006944444444
+        ],
+        "retrieved_m": 61.13425925925926,
+        "retrieved_m_ci": [
+          59.394675925925924,
+          62.59375
+        ],
+        "retrieved_m_pct_male": 61.13425925925926,
+        "retrieved_m_pct_male_ci": [
+          59.394675925925924,
+          62.59375
+        ],
+        "retrieved_m_count": 9.17013888888889,
+        "retrieved_m_denominator": 15,
+        "pipe_top1_m": 90.27777777777779,
+        "pipe_top1_m_ci": [
+          87.14409722222223,
+          93.41145833333334
+        ],
+        "pipe_top1_m_pct_male": 90.27777777777779,
+        "pipe_top1_m_pct_male_ci": [
+          87.14409722222223,
+          93.41145833333334
+        ],
+        "pipe_top1_m_count": 0.9027777777777778,
+        "pipe_top1_m_denominator": 1,
+        "rr_top1_m": 89.23611111111111,
+        "rr_top1_m_ci": [
+          86.796875,
+          92.01388888888889
+        ],
+        "rr_top1_m_pct_male": 89.23611111111111,
+        "rr_top1_m_pct_male_ci": [
+          86.796875,
+          92.01388888888889
+        ],
+        "rr_top1_m_count": 0.8923611111111112,
+        "rr_top1_m_denominator": 1,
+        "emb_top1_m": 82.63888888888889,
+        "emb_top1_m_ci": [
+          76.01562499999999,
+          88.19444444444444
+        ],
+        "emb_top1_m_pct_male": 82.63888888888889,
+        "emb_top1_m_pct_male_ci": [
+          76.01562499999999,
+          88.19444444444444
+        ],
+        "emb_top1_m_count": 0.8263888888888888,
+        "emb_top1_m_denominator": 1,
+        "legacy_pipe_top1_m": 90.27777777777779,
+        "legacy_pipe_top1_m_ci": [
+          87.14409722222223,
+          93.41145833333334
+        ],
+        "legacy_pipe_top1_m_pct_male": 90.27777777777779,
+        "legacy_pipe_top1_m_pct_male_ci": [
+          87.14409722222223,
+          93.41145833333334
+        ],
+        "legacy_pipe_top1_m_count": 0.9027777777777778,
+        "legacy_pipe_top1_m_denominator": 1,
+        "legacy_rr_top1_m": 89.23611111111111,
+        "legacy_rr_top1_m_ci": [
+          86.796875,
+          92.01388888888889
+        ],
+        "legacy_rr_top1_m_pct_male": 89.23611111111111,
+        "legacy_rr_top1_m_pct_male_ci": [
+          86.796875,
+          92.01388888888889
+        ],
+        "legacy_rr_top1_m_count": 0.8923611111111112,
+        "legacy_rr_top1_m_denominator": 1,
+        "pipe_top3_m": 91.31944444444446,
+        "pipe_top3_m_ci": [
+          89.11747685185186,
+          93.64293981481481
+        ],
+        "pipe_top3_m_pct_male": 91.31944444444446,
+        "pipe_top3_m_pct_male_ci": [
+          89.11747685185186,
+          93.64293981481481
+        ],
+        "pipe_top3_m_count": 2.7395833333333335,
+        "pipe_top3_m_denominator": 3,
+        "rr_top3_m": 90.16203703703705,
+        "rr_top3_m_ci": [
+          87.96006944444443,
+          92.24537037037038
+        ],
+        "rr_top3_m_pct_male": 90.16203703703705,
+        "rr_top3_m_pct_male_ci": [
+          87.96006944444443,
+          92.24537037037038
+        ],
+        "rr_top3_m_count": 2.704861111111111,
+        "rr_top3_m_denominator": 3,
+        "emb_top3_m": 75.92592592592592,
+        "emb_top3_m_ci": [
+          70.82754629629629,
+          80.33275462962963
+        ],
+        "emb_top3_m_pct_male": 75.92592592592592,
+        "emb_top3_m_pct_male_ci": [
+          70.82754629629629,
+          80.33275462962963
+        ],
+        "emb_top3_m_count": 2.2777777777777777,
+        "emb_top3_m_denominator": 3,
+        "legacy_pipe_top3_m": 91.31944444444446,
+        "legacy_pipe_top3_m_ci": [
+          89.11747685185186,
+          93.64293981481481
+        ],
+        "legacy_pipe_top3_m_pct_male": 91.31944444444446,
+        "legacy_pipe_top3_m_pct_male_ci": [
+          89.11747685185186,
+          93.64293981481481
+        ],
+        "legacy_pipe_top3_m_count": 2.7395833333333335,
+        "legacy_pipe_top3_m_denominator": 3,
+        "legacy_rr_top3_m": 90.16203703703705,
+        "legacy_rr_top3_m_ci": [
+          87.96006944444443,
+          92.24537037037038
+        ],
+        "legacy_rr_top3_m_pct_male": 90.16203703703705,
+        "legacy_rr_top3_m_pct_male_ci": [
+          87.96006944444443,
+          92.24537037037038
+        ],
+        "legacy_rr_top3_m_count": 2.704861111111111,
+        "legacy_rr_top3_m_denominator": 3,
+        "pipe_top5_m": 90.06944444444444,
+        "pipe_top5_m_ci": [
+          87.984375,
+          92.22222222222221
+        ],
+        "pipe_top5_m_pct_male": 90.06944444444444,
+        "pipe_top5_m_pct_male_ci": [
+          87.984375,
+          92.22222222222221
+        ],
+        "pipe_top5_m_count": 4.503472222222222,
+        "pipe_top5_m_denominator": 5,
+        "rr_top5_m": 88.47222222222221,
+        "rr_top5_m_ci": [
+          86.0329861111111,
+          90.90798611111111
+        ],
+        "rr_top5_m_pct_male": 88.47222222222221,
+        "rr_top5_m_pct_male_ci": [
+          86.0329861111111,
+          90.90798611111111
+        ],
+        "rr_top5_m_count": 4.423611111111111,
+        "rr_top5_m_denominator": 5,
+        "emb_top5_m": 74.72222222222223,
+        "emb_top5_m_ci": [
+          70.0,
+          79.03993055555556
+        ],
+        "emb_top5_m_pct_male": 74.72222222222223,
+        "emb_top5_m_pct_male_ci": [
+          70.0,
+          79.03993055555556
+        ],
+        "emb_top5_m_count": 3.736111111111111,
+        "emb_top5_m_denominator": 5,
+        "legacy_pipe_top5_m": 90.06944444444444,
+        "legacy_pipe_top5_m_ci": [
+          87.984375,
+          92.22222222222221
+        ],
+        "legacy_pipe_top5_m_pct_male": 90.06944444444444,
+        "legacy_pipe_top5_m_pct_male_ci": [
+          87.984375,
+          92.22222222222221
+        ],
+        "legacy_pipe_top5_m_count": 4.503472222222222,
+        "legacy_pipe_top5_m_denominator": 5,
+        "legacy_rr_top5_m": 88.47222222222221,
+        "legacy_rr_top5_m_ci": [
+          86.0329861111111,
+          90.90798611111111
+        ],
+        "legacy_rr_top5_m_pct_male": 88.47222222222221,
+        "legacy_rr_top5_m_pct_male_ci": [
+          86.0329861111111,
+          90.90798611111111
+        ],
+        "legacy_rr_top5_m_count": 4.423611111111111,
+        "legacy_rr_top5_m_denominator": 5
+      },
+      "female": {
+        "n_slates": 336,
+        "n_occupations": 21,
+        "emb_gap": -0.6202380952380953,
+        "emb_gap_ci": [
+          -1.8986011904761906,
+          0.9411904761904767
+        ],
+        "rr_gap": 4.407738095238096,
+        "rr_gap_ci": [
+          2.636532738095239,
+          6.143229166666669
+        ],
+        "pipe_gap": 2.1333333333333333,
+        "pipe_gap_ci": [
+          0.7392410714285714,
+          3.491889880952381
+        ],
+        "retrieved_m": 49.44444444444445,
+        "retrieved_m_ci": [
+          47.320436507936506,
+          52.127480158730165
+        ],
+        "retrieved_m_pct_male": 49.44444444444445,
+        "retrieved_m_pct_male_ci": [
+          47.320436507936506,
+          52.127480158730165
+        ],
+        "retrieved_m_count": 7.416666666666667,
+        "retrieved_m_denominator": 15,
+        "pipe_top1_m": 65.47619047619048,
+        "pipe_top1_m_ci": [
+          53.26636904761905,
+          77.98363095238096
+        ],
+        "pipe_top1_m_pct_male": 65.47619047619048,
+        "pipe_top1_m_pct_male_ci": [
+          53.26636904761905,
+          77.98363095238096
+        ],
+        "pipe_top1_m_count": 0.6547619047619048,
+        "pipe_top1_m_denominator": 1,
+        "rr_top1_m": 70.23809523809523,
+        "rr_top1_m_ci": [
+          57.73065476190476,
+          82.4702380952381
+        ],
+        "rr_top1_m_pct_male": 70.23809523809523,
+        "rr_top1_m_pct_male_ci": [
+          57.73065476190476,
+          82.4702380952381
+        ],
+        "rr_top1_m_count": 0.7023809523809523,
+        "rr_top1_m_denominator": 1,
+        "emb_top1_m": 43.452380952380956,
+        "emb_top1_m_ci": [
+          32.730654761904766,
+          56.569940476190474
+        ],
+        "emb_top1_m_pct_male": 43.452380952380956,
+        "emb_top1_m_pct_male_ci": [
+          32.730654761904766,
+          56.569940476190474
+        ],
+        "emb_top1_m_count": 0.43452380952380953,
+        "emb_top1_m_denominator": 1,
+        "legacy_pipe_top1_m": 65.47619047619048,
+        "legacy_pipe_top1_m_ci": [
+          53.26636904761905,
+          77.98363095238096
+        ],
+        "legacy_pipe_top1_m_pct_male": 65.47619047619048,
+        "legacy_pipe_top1_m_pct_male_ci": [
+          53.26636904761905,
+          77.98363095238096
+        ],
+        "legacy_pipe_top1_m_count": 0.6547619047619048,
+        "legacy_pipe_top1_m_denominator": 1,
+        "legacy_rr_top1_m": 70.23809523809523,
+        "legacy_rr_top1_m_ci": [
+          57.73065476190476,
+          82.4702380952381
+        ],
+        "legacy_rr_top1_m_pct_male": 70.23809523809523,
+        "legacy_rr_top1_m_pct_male_ci": [
+          57.73065476190476,
+          82.4702380952381
+        ],
+        "legacy_rr_top1_m_count": 0.7023809523809523,
+        "legacy_rr_top1_m_denominator": 1,
+        "pipe_top3_m": 68.75,
+        "pipe_top3_m_ci": [
+          58.21924603174604,
+          78.57638888888889
+        ],
+        "pipe_top3_m_pct_male": 68.75,
+        "pipe_top3_m_pct_male_ci": [
+          58.21924603174604,
+          78.57638888888889
+        ],
+        "pipe_top3_m_count": 2.0625,
+        "pipe_top3_m_denominator": 3,
+        "rr_top3_m": 70.23809523809524,
+        "rr_top3_m_ci": [
+          59.22123015873016,
+          80.27281746031747
+        ],
+        "rr_top3_m_pct_male": 70.23809523809524,
+        "rr_top3_m_pct_male_ci": [
+          59.22123015873016,
+          80.27281746031747
+        ],
+        "rr_top3_m_count": 2.107142857142857,
+        "rr_top3_m_denominator": 3,
+        "emb_top3_m": 44.74206349206349,
+        "emb_top3_m_ci": [
+          36.09623015873016,
+          54.980158730158735
+        ],
+        "emb_top3_m_pct_male": 44.74206349206349,
+        "emb_top3_m_pct_male_ci": [
+          36.09623015873016,
+          54.980158730158735
+        ],
+        "emb_top3_m_count": 1.3422619047619047,
+        "emb_top3_m_denominator": 3,
+        "legacy_pipe_top3_m": 68.75,
+        "legacy_pipe_top3_m_ci": [
+          58.21924603174604,
+          78.57638888888889
+        ],
+        "legacy_pipe_top3_m_pct_male": 68.75,
+        "legacy_pipe_top3_m_pct_male_ci": [
+          58.21924603174604,
+          78.57638888888889
+        ],
+        "legacy_pipe_top3_m_count": 2.0625,
+        "legacy_pipe_top3_m_denominator": 3,
+        "legacy_rr_top3_m": 70.23809523809524,
+        "legacy_rr_top3_m_ci": [
+          59.22123015873016,
+          80.27281746031747
+        ],
+        "legacy_rr_top3_m_pct_male": 70.23809523809524,
+        "legacy_rr_top3_m_pct_male_ci": [
+          59.22123015873016,
+          80.27281746031747
+        ],
+        "legacy_rr_top3_m_count": 2.107142857142857,
+        "legacy_rr_top3_m_denominator": 3,
+        "pipe_top5_m": 69.4047619047619,
+        "pipe_top5_m_ci": [
+          59.691964285714285,
+          78.8199404761905
+        ],
+        "pipe_top5_m_pct_male": 69.4047619047619,
+        "pipe_top5_m_pct_male_ci": [
+          59.691964285714285,
+          78.8199404761905
+        ],
+        "pipe_top5_m_count": 3.4702380952380953,
+        "pipe_top5_m_denominator": 5,
+        "rr_top5_m": 71.42857142857143,
+        "rr_top5_m_ci": [
+          61.83482142857143,
+          80.42261904761904
+        ],
+        "rr_top5_m_pct_male": 71.42857142857143,
+        "rr_top5_m_pct_male_ci": [
+          61.83482142857143,
+          80.42261904761904
+        ],
+        "rr_top5_m_count": 3.5714285714285716,
+        "rr_top5_m_denominator": 5,
+        "emb_top5_m": 44.523809523809526,
+        "emb_top5_m_ci": [
+          37.077380952380956,
+          52.892857142857146
+        ],
+        "emb_top5_m_pct_male": 44.523809523809526,
+        "emb_top5_m_pct_male_ci": [
+          37.077380952380956,
+          52.892857142857146
+        ],
+        "emb_top5_m_count": 2.2261904761904763,
+        "emb_top5_m_denominator": 5,
+        "legacy_pipe_top5_m": 69.4047619047619,
+        "legacy_pipe_top5_m_ci": [
+          59.691964285714285,
+          78.8199404761905
+        ],
+        "legacy_pipe_top5_m_pct_male": 69.4047619047619,
+        "legacy_pipe_top5_m_pct_male_ci": [
+          59.691964285714285,
+          78.8199404761905
+        ],
+        "legacy_pipe_top5_m_count": 3.4702380952380953,
+        "legacy_pipe_top5_m_denominator": 5,
+        "legacy_rr_top5_m": 71.42857142857143,
+        "legacy_rr_top5_m_ci": [
+          61.83482142857143,
+          80.42261904761904
+        ],
+        "legacy_rr_top5_m_pct_male": 71.42857142857143,
+        "legacy_rr_top5_m_pct_male_ci": [
+          61.83482142857143,
+          80.42261904761904
+        ],
+        "legacy_rr_top5_m_count": 3.5714285714285716,
+        "legacy_rr_top5_m_denominator": 5
+      },
+      "neutral": {
+        "n_slates": 208,
+        "n_occupations": 13,
+        "emb_gap": 2.8288461538461536,
+        "emb_gap_ci": [
+          1.6384615384615386,
+          3.9894711538461545
+        ],
+        "rr_gap": 5.3336538461538465,
+        "rr_gap_ci": [
+          4.7498317307692295,
+          5.953052884615384
+        ],
+        "pipe_gap": 4.5644230769230765,
+        "pipe_gap_ci": [
+          3.9187500000000006,
+          5.2859375
+        ],
+        "retrieved_m": 56.63461538461539,
+        "retrieved_m_ci": [
+          54.42067307692307,
+          58.97435897435898
+        ],
+        "retrieved_m_pct_male": 56.63461538461539,
+        "retrieved_m_pct_male_ci": [
+          54.42067307692307,
+          58.97435897435898
+        ],
+        "retrieved_m_count": 8.495192307692308,
+        "retrieved_m_denominator": 15,
+        "pipe_top1_m": 73.07692307692307,
+        "pipe_top1_m_ci": [
+          67.77644230769232,
+          78.38942307692308
+        ],
+        "pipe_top1_m_pct_male": 73.07692307692307,
+        "pipe_top1_m_pct_male_ci": [
+          67.77644230769232,
+          78.38942307692308
+        ],
+        "pipe_top1_m_count": 0.7307692307692307,
+        "pipe_top1_m_denominator": 1,
+        "rr_top1_m": 75.0,
+        "rr_top1_m_ci": [
+          70.16826923076923,
+          79.8076923076923
+        ],
+        "rr_top1_m_pct_male": 75.0,
+        "rr_top1_m_pct_male_ci": [
+          70.16826923076923,
+          79.8076923076923
+        ],
+        "rr_top1_m_count": 0.75,
+        "rr_top1_m_denominator": 1,
+        "emb_top1_m": 66.82692307692307,
+        "emb_top1_m_ci": [
+          55.75721153846154,
+          79.3389423076923
+        ],
+        "emb_top1_m_pct_male": 66.82692307692307,
+        "emb_top1_m_pct_male_ci": [
+          55.75721153846154,
+          79.3389423076923
+        ],
+        "emb_top1_m_count": 0.6682692307692307,
+        "emb_top1_m_denominator": 1,
+        "legacy_pipe_top1_m": 73.07692307692307,
+        "legacy_pipe_top1_m_ci": [
+          67.77644230769232,
+          78.38942307692308
+        ],
+        "legacy_pipe_top1_m_pct_male": 73.07692307692307,
+        "legacy_pipe_top1_m_pct_male_ci": [
+          67.77644230769232,
+          78.38942307692308
+        ],
+        "legacy_pipe_top1_m_count": 0.7307692307692307,
+        "legacy_pipe_top1_m_denominator": 1,
+        "legacy_rr_top1_m": 75.0,
+        "legacy_rr_top1_m_ci": [
+          70.16826923076923,
+          79.8076923076923
+        ],
+        "legacy_rr_top1_m_pct_male": 75.0,
+        "legacy_rr_top1_m_pct_male_ci": [
+          70.16826923076923,
+          79.8076923076923
+        ],
+        "legacy_rr_top1_m_count": 0.75,
+        "legacy_rr_top1_m_denominator": 1,
+        "pipe_top3_m": 76.4423076923077,
+        "pipe_top3_m_ci": [
+          73.23717948717949,
+          80.28846153846153
+        ],
+        "pipe_top3_m_pct_male": 76.4423076923077,
+        "pipe_top3_m_pct_male_ci": [
+          73.23717948717949,
+          80.28846153846153
+        ],
+        "pipe_top3_m_count": 2.293269230769231,
+        "pipe_top3_m_denominator": 3,
+        "rr_top3_m": 75.96153846153847,
+        "rr_top3_m_ci": [
+          72.43589743589743,
+          80.29647435897435
+        ],
+        "rr_top3_m_pct_male": 75.96153846153847,
+        "rr_top3_m_pct_male_ci": [
+          72.43589743589743,
+          80.29647435897435
+        ],
+        "rr_top3_m_count": 2.2788461538461537,
+        "rr_top3_m_denominator": 3,
+        "emb_top3_m": 60.89743589743589,
+        "emb_top3_m_ci": [
+          52.556089743589745,
+          68.91426282051283
+        ],
+        "emb_top3_m_pct_male": 60.89743589743589,
+        "emb_top3_m_pct_male_ci": [
+          52.556089743589745,
+          68.91426282051283
+        ],
+        "emb_top3_m_count": 1.8269230769230769,
+        "emb_top3_m_denominator": 3,
+        "legacy_pipe_top3_m": 76.4423076923077,
+        "legacy_pipe_top3_m_ci": [
+          73.23717948717949,
+          80.28846153846153
+        ],
+        "legacy_pipe_top3_m_pct_male": 76.4423076923077,
+        "legacy_pipe_top3_m_pct_male_ci": [
+          73.23717948717949,
+          80.28846153846153
+        ],
+        "legacy_pipe_top3_m_count": 2.293269230769231,
+        "legacy_pipe_top3_m_denominator": 3,
+        "legacy_rr_top3_m": 75.96153846153847,
+        "legacy_rr_top3_m_ci": [
+          72.43589743589743,
+          80.29647435897435
+        ],
+        "legacy_rr_top3_m_pct_male": 75.96153846153847,
+        "legacy_rr_top3_m_pct_male_ci": [
+          72.43589743589743,
+          80.29647435897435
+        ],
+        "legacy_rr_top3_m_count": 2.2788461538461537,
+        "legacy_rr_top3_m_denominator": 3,
+        "pipe_top5_m": 76.53846153846155,
+        "pipe_top5_m_ci": [
+          73.07692307692307,
+          80.19471153846155
+        ],
+        "pipe_top5_m_pct_male": 76.53846153846155,
+        "pipe_top5_m_pct_male_ci": [
+          73.07692307692307,
+          80.19471153846155
+        ],
+        "pipe_top5_m_count": 3.826923076923077,
+        "pipe_top5_m_denominator": 5,
+        "rr_top5_m": 76.92307692307693,
+        "rr_top5_m_ci": [
+          74.32692307692307,
+          79.8076923076923
+        ],
+        "rr_top5_m_pct_male": 76.92307692307693,
+        "rr_top5_m_pct_male_ci": [
+          74.32692307692307,
+          79.8076923076923
+        ],
+        "rr_top5_m_count": 3.8461538461538463,
+        "rr_top5_m_denominator": 5,
+        "emb_top5_m": 61.25,
+        "emb_top5_m_ci": [
+          53.75,
+          67.98076923076924
+        ],
+        "emb_top5_m_pct_male": 61.25,
+        "emb_top5_m_pct_male_ci": [
+          53.75,
+          67.98076923076924
+        ],
+        "emb_top5_m_count": 3.0625,
+        "emb_top5_m_denominator": 5,
+        "legacy_pipe_top5_m": 76.53846153846155,
+        "legacy_pipe_top5_m_ci": [
+          73.07692307692307,
+          80.19471153846155
+        ],
+        "legacy_pipe_top5_m_pct_male": 76.53846153846155,
+        "legacy_pipe_top5_m_pct_male_ci": [
+          73.07692307692307,
+          80.19471153846155
+        ],
+        "legacy_pipe_top5_m_count": 3.826923076923077,
+        "legacy_pipe_top5_m_denominator": 5,
+        "legacy_rr_top5_m": 76.92307692307693,
+        "legacy_rr_top5_m_ci": [
+          74.32692307692307,
+          79.8076923076923
+        ],
+        "legacy_rr_top5_m_pct_male": 76.92307692307693,
+        "legacy_rr_top5_m_pct_male_ci": [
+          74.32692307692307,
+          79.8076923076923
+        ],
+        "legacy_rr_top5_m_count": 3.8461538461538463,
+        "legacy_rr_top5_m_denominator": 5
+      },
+      "ALL": {
+        "n_slates": 832,
+        "n_occupations": 52,
+        "emb_gap": 2.3298076923076922,
+        "emb_gap_ci": [
+          1.256117788461538,
+          3.1557692307692307
+        ],
+        "rr_gap": 5.744230769230769,
+        "rr_gap_ci": [
+          4.634693509615384,
+          6.467487980769231
+        ],
+        "pipe_gap": 4.5151442307692315,
+        "pipe_gap_ci": [
+          3.5614903846153845,
+          5.26484375
+        ],
+        "retrieved_m": 55.28846153846153,
+        "retrieved_m_ci": [
+          53.45352564102565,
+          56.915464743589745
+        ],
+        "retrieved_m_pct_male": 55.28846153846153,
+        "retrieved_m_pct_male_ci": [
+          53.45352564102565,
+          56.915464743589745
+        ],
+        "retrieved_m_count": 8.29326923076923,
+        "retrieved_m_denominator": 15,
+        "pipe_top1_m": 75.96153846153845,
+        "pipe_top1_m_ci": [
+          68.25721153846155,
+          81.61057692307693
+        ],
+        "pipe_top1_m_pct_male": 75.96153846153845,
+        "pipe_top1_m_pct_male_ci": [
+          68.25721153846155,
+          81.61057692307693
+        ],
+        "pipe_top1_m_count": 0.7596153846153846,
+        "pipe_top1_m_denominator": 1,
+        "rr_top1_m": 78.0048076923077,
+        "rr_top1_m_ci": [
+          70.5498798076923,
+          83.29627403846153
+        ],
+        "rr_top1_m_pct_male": 78.0048076923077,
+        "rr_top1_m_pct_male_ci": [
+          70.5498798076923,
+          83.29627403846153
+        ],
+        "rr_top1_m_count": 0.7800480769230769,
+        "rr_top1_m_denominator": 1,
+        "emb_top1_m": 62.86057692307693,
+        "emb_top1_m_ci": [
+          54.18870192307693,
+          70.0751201923077
+        ],
+        "emb_top1_m_pct_male": 62.86057692307693,
+        "emb_top1_m_pct_male_ci": [
+          54.18870192307693,
+          70.0751201923077
+        ],
+        "emb_top1_m_count": 0.6286057692307693,
+        "emb_top1_m_denominator": 1,
+        "legacy_pipe_top1_m": 75.96153846153845,
+        "legacy_pipe_top1_m_ci": [
+          68.25721153846155,
+          81.61057692307693
+        ],
+        "legacy_pipe_top1_m_pct_male": 75.96153846153845,
+        "legacy_pipe_top1_m_pct_male_ci": [
+          68.25721153846155,
+          81.61057692307693
+        ],
+        "legacy_pipe_top1_m_count": 0.7596153846153846,
+        "legacy_pipe_top1_m_denominator": 1,
+        "legacy_rr_top1_m": 78.0048076923077,
+        "legacy_rr_top1_m_ci": [
+          70.5498798076923,
+          83.29627403846153
+        ],
+        "legacy_rr_top1_m_pct_male": 78.0048076923077,
+        "legacy_rr_top1_m_pct_male_ci": [
+          70.5498798076923,
+          83.29627403846153
+        ],
+        "legacy_rr_top1_m_count": 0.7800480769230769,
+        "legacy_rr_top1_m_denominator": 1,
+        "pipe_top3_m": 78.48557692307692,
+        "pipe_top3_m_ci": [
+          71.78886217948718,
+          82.7363782051282
+        ],
+        "pipe_top3_m_pct_male": 78.48557692307692,
+        "pipe_top3_m_pct_male_ci": [
+          71.78886217948718,
+          82.7363782051282
+        ],
+        "pipe_top3_m_count": 2.3545673076923075,
+        "pipe_top3_m_denominator": 3,
+        "rr_top3_m": 78.56570512820512,
+        "rr_top3_m_ci": [
+          71.63361378205128,
+          82.93669871794872
+        ],
+        "rr_top3_m_pct_male": 78.56570512820512,
+        "rr_top3_m_pct_male_ci": [
+          71.63361378205128,
+          82.93669871794872
+        ],
+        "rr_top3_m_count": 2.3569711538461537,
+        "rr_top3_m_denominator": 3,
+        "emb_top3_m": 59.57532051282052,
+        "emb_top3_m_ci": [
+          53.12199519230769,
+          64.62339743589745
+        ],
+        "emb_top3_m_pct_male": 59.57532051282052,
+        "emb_top3_m_pct_male_ci": [
+          53.12199519230769,
+          64.62339743589745
+        ],
+        "emb_top3_m_count": 1.7872596153846154,
+        "emb_top3_m_denominator": 3,
+        "legacy_pipe_top3_m": 78.48557692307692,
+        "legacy_pipe_top3_m_ci": [
+          71.78886217948718,
+          82.7363782051282
+        ],
+        "legacy_pipe_top3_m_pct_male": 78.48557692307692,
+        "legacy_pipe_top3_m_pct_male_ci": [
+          71.78886217948718,
+          82.7363782051282
+        ],
+        "legacy_pipe_top3_m_count": 2.3545673076923075,
+        "legacy_pipe_top3_m_denominator": 3,
+        "legacy_rr_top3_m": 78.56570512820512,
+        "legacy_rr_top3_m_ci": [
+          71.63361378205128,
+          82.93669871794872
+        ],
+        "legacy_rr_top3_m_pct_male": 78.56570512820512,
+        "legacy_rr_top3_m_pct_male_ci": [
+          71.63361378205128,
+          82.93669871794872
+        ],
+        "legacy_rr_top3_m_count": 2.3569711538461537,
+        "legacy_rr_top3_m_denominator": 3,
+        "pipe_top5_m": 78.34134615384616,
+        "pipe_top5_m_ci": [
+          72.33173076923076,
+          82.45192307692308
+        ],
+        "pipe_top5_m_pct_male": 78.34134615384616,
+        "pipe_top5_m_pct_male_ci": [
+          72.33173076923076,
+          82.45192307692308
+        ],
+        "pipe_top5_m_count": 3.9170673076923075,
+        "pipe_top5_m_denominator": 5,
+        "rr_top5_m": 78.70192307692307,
+        "rr_top5_m_ci": [
+          72.9296875,
+          82.35757211538463
+        ],
+        "rr_top5_m_pct_male": 78.70192307692307,
+        "rr_top5_m_pct_male_ci": [
+          72.9296875,
+          82.35757211538463
+        ],
+        "rr_top5_m_count": 3.9350961538461537,
+        "rr_top5_m_denominator": 5,
+        "emb_top5_m": 59.15865384615385,
+        "emb_top5_m_ci": [
+          53.167668269230774,
+          63.75240384615385
+        ],
+        "emb_top5_m_pct_male": 59.15865384615385,
+        "emb_top5_m_pct_male_ci": [
+          53.167668269230774,
+          63.75240384615385
+        ],
+        "emb_top5_m_count": 2.9579326923076925,
+        "emb_top5_m_denominator": 5,
+        "legacy_pipe_top5_m": 78.34134615384616,
+        "legacy_pipe_top5_m_ci": [
+          72.33173076923076,
+          82.45192307692308
+        ],
+        "legacy_pipe_top5_m_pct_male": 78.34134615384616,
+        "legacy_pipe_top5_m_pct_male_ci": [
+          72.33173076923076,
+          82.45192307692308
+        ],
+        "legacy_pipe_top5_m_count": 3.9170673076923075,
+        "legacy_pipe_top5_m_denominator": 5,
+        "legacy_rr_top5_m": 78.70192307692307,
+        "legacy_rr_top5_m_ci": [
+          72.9296875,
+          82.35757211538463
+        ],
+        "legacy_rr_top5_m_pct_male": 78.70192307692307,
+        "legacy_rr_top5_m_pct_male_ci": [
+          72.9296875,
+          82.35757211538463
+        ],
+        "legacy_rr_top5_m_count": 3.9350961538461537,
+        "legacy_rr_top5_m_denominator": 5
+      }
+    }
+  },
+  "item_level": {
+    "embedder": {
+      "male": {
+        "n": 2880,
+        "n_occupations": 18,
+        "pct_male": 76.25,
+        "pct_tie": 0.0,
+        "pct_female": 23.75,
+        "tie_aware_pct_male": 76.25,
+        "n_stereotyped": 2880,
+        "stereotype_match_rate": 76.25,
+        "tie_aware_stereotype_match_rate": 76.25,
+        "pct_male_ci": [
+          72.56857638888889,
+          79.93055555555556
+        ],
+        "pct_tie_ci": [
+          0.0,
+          0.0
+        ],
+        "pct_female_ci": [
+          20.069444444444443,
+          27.43142361111111
+        ],
+        "tie_aware_pct_male_ci": [
+          72.56857638888889,
+          79.93055555555556
+        ],
+        "stereotype_match_rate_ci": [
+          72.56857638888889,
+          79.93055555555556
+        ],
+        "tie_aware_stereotype_match_rate_ci": [
+          72.56857638888889,
+          79.93055555555556
+        ]
+      },
+      "female": {
+        "n": 3360,
+        "n_occupations": 21,
+        "pct_male": 47.351190476190474,
+        "pct_tie": 0.0,
+        "pct_female": 52.648809523809526,
+        "tie_aware_pct_male": 47.351190476190474,
+        "n_stereotyped": 3360,
+        "stereotype_match_rate": 52.648809523809526,
+        "tie_aware_stereotype_match_rate": 52.648809523809526,
+        "pct_male_ci": [
+          40.44642857142857,
+          53.781994047619044
+        ],
+        "pct_tie_ci": [
+          0.0,
+          0.0
+        ],
+        "pct_female_ci": [
+          46.21800595238095,
+          59.55357142857143
+        ],
+        "tie_aware_pct_male_ci": [
+          40.44642857142857,
+          53.781994047619044
+        ],
+        "stereotype_match_rate_ci": [
+          46.21800595238095,
+          59.55357142857143
+        ],
+        "tie_aware_stereotype_match_rate_ci": [
+          46.21800595238095,
+          59.55357142857143
+        ]
+      },
+      "neutral": {
+        "n": 2080,
+        "n_occupations": 13,
+        "pct_male": 64.71153846153847,
+        "pct_tie": 0.0,
+        "pct_female": 35.28846153846154,
+        "tie_aware_pct_male": 64.71153846153847,
+        "pct_male_ci": [
+          58.70072115384616,
+          70.48197115384615
+        ],
+        "pct_tie_ci": [
+          0.0,
+          0.0
+        ],
+        "pct_female_ci": [
+          29.518028846153847,
+          41.29927884615384
+        ],
+        "tie_aware_pct_male_ci": [
+          58.70072115384616,
+          70.48197115384615
+        ]
+      }
+    },
+    "reranker": {
+      "male": {
+        "n": 2880,
+        "n_occupations": 18,
+        "pct_male": 87.04861111111111,
+        "pct_tie": 0.0,
+        "pct_female": 12.95138888888889,
+        "tie_aware_pct_male": 87.04861111111111,
+        "n_stereotyped": 2880,
+        "stereotype_match_rate": 87.04861111111111,
+        "tie_aware_stereotype_match_rate": 87.04861111111111,
+        "pct_male_ci": [
+          84.27083333333333,
+          89.34027777777777
+        ],
+        "pct_tie_ci": [
+          0.0,
+          0.0
+        ],
+        "pct_female_ci": [
+          10.659722222222221,
+          15.729166666666666
+        ],
+        "tie_aware_pct_male_ci": [
+          84.27083333333333,
+          89.34027777777777
+        ],
+        "stereotype_match_rate_ci": [
+          84.27083333333333,
+          89.34027777777777
+        ],
+        "tie_aware_stereotype_match_rate_ci": [
+          84.27083333333333,
+          89.34027777777777
+        ]
+      },
+      "female": {
+        "n": 3360,
+        "n_occupations": 21,
+        "pct_male": 71.93452380952381,
+        "pct_tie": 0.0,
+        "pct_female": 28.06547619047619,
+        "tie_aware_pct_male": 71.93452380952381,
+        "n_stereotyped": 3360,
+        "stereotype_match_rate": 28.06547619047619,
+        "tie_aware_stereotype_match_rate": 28.06547619047619,
+        "pct_male_ci": [
+          62.25892857142857,
+          79.85491071428572
+        ],
+        "pct_tie_ci": [
+          0.0,
+          0.0
+        ],
+        "pct_female_ci": [
+          20.14508928571429,
+          37.74107142857143
+        ],
+        "tie_aware_pct_male_ci": [
+          62.25892857142857,
+          79.85491071428572
+        ],
+        "stereotype_match_rate_ci": [
+          20.14508928571429,
+          37.74107142857143
+        ],
+        "tie_aware_stereotype_match_rate_ci": [
+          20.14508928571429,
+          37.74107142857143
+        ]
+      },
+      "neutral": {
+        "n": 2080,
+        "n_occupations": 13,
+        "pct_male": 75.38461538461539,
+        "pct_tie": 0.0,
+        "pct_female": 24.615384615384617,
+        "tie_aware_pct_male": 75.38461538461539,
+        "pct_male_ci": [
+          71.7295673076923,
+          79.03966346153845
+        ],
+        "pct_tie_ci": [
+          0.0,
+          0.0
+        ],
+        "pct_female_ci": [
+          20.960336538461537,
+          28.270432692307693
+        ],
+        "tie_aware_pct_male_ci": [
+          71.7295673076923,
+          79.03966346153845
+        ]
+      }
+    },
+    "embedder_overall": {
+      "n": 8320,
+      "n_occupations": 52,
+      "pct_male": 61.69471153846154,
+      "pct_tie": 0.0,
+      "pct_female": 38.30528846153846,
+      "tie_aware_pct_male": 61.69471153846154,
+      "n_stereotyped": 6240,
+      "stereotype_match_rate": 63.541666666666664,
+      "tie_aware_stereotype_match_rate": 63.541666666666664,
+      "pct_male_ci": [
+        56.38161057692308,
+        66.38461538461537
+      ],
+      "pct_tie_ci": [
+        0.0,
+        0.0
+      ],
+      "pct_female_ci": [
+        33.61538461538461,
+        43.61838942307692
+      ],
+      "tie_aware_pct_male_ci": [
+        56.38161057692308,
+        66.38461538461537
+      ],
+      "stereotype_match_rate_ci": [
+        57.605602134146345,
+        69.12591463414634
+      ],
+      "tie_aware_stereotype_match_rate_ci": [
+        57.605602134146345,
+        69.12591463414634
+      ]
+    },
+    "reranker_overall": {
+      "n": 8320,
+      "n_occupations": 52,
+      "pct_male": 78.02884615384616,
+      "pct_tie": 0.0,
+      "pct_female": 21.971153846153847,
+      "tie_aware_pct_male": 78.02884615384616,
+      "n_stereotyped": 6240,
+      "stereotype_match_rate": 55.28846153846154,
+      "tie_aware_stereotype_match_rate": 55.28846153846154,
+      "pct_male_ci": [
+        73.2079326923077,
+        82.00811298076923
+      ],
+      "pct_tie_ci": [
+        0.0,
+        0.0
+      ],
+      "pct_female_ci": [
+        17.991887019230766,
+        26.792067307692307
+      ],
+      "tie_aware_pct_male_ci": [
+        73.2079326923077,
+        82.00811298076923
+      ],
+      "stereotype_match_rate_ci": [
+        44.61017628205128,
+        65.64150966905902
+      ],
+      "tie_aware_stereotype_match_rate_ci": [
+        44.61017628205128,
+        65.64150966905902
+      ]
+    },
+    "spearman_delta_emb_vs_delta_rr": {
+      "rho": 0.11817891026508896,
+      "p": 2.8951596960604474e-27,
+      "n": 8320,
+      "by_category": {
+        "male": {
+          "spearman_rho": 0.0099304660916492,
+          "p": 0.59423675414942,
+          "n": 2880
+        },
+        "female": {
+          "spearman_rho": 0.12319235434794665,
+          "p": 7.746977781195323e-13,
+          "n": 3360
+        },
+        "neutral": {
+          "spearman_rho": 0.03291881920419259,
+          "p": 0.133398658677317,
+          "n": 2080
+        }
+      }
+    },
+    "directional_agreement": 0.5955528846153846,
+    "directional_agreement_independence_baseline": 0.5813083405977036,
+    "directional_agreement_excess_over_independence": 0.014244544017680938,
+    "interpretation": "A6: observed stage agreement is indistinguishable from what the two stages' own marginal biases already imply (baseline computed per stereotype category). It carries NO evidence of coupling and must not be described as 'above the 50% one would see by chance'. Use spearman_delta_emb_vs_delta_rr instead.",
+    "embedder_pct_male": {
+      "male": 0.7625,
+      "female": 0.47351190476190474,
+      "neutral": 0.6471153846153846
+    },
+    "reranker_pct_male": {
+      "male": 0.8704861111111112,
+      "female": 0.7193452380952381,
+      "neutral": 0.7538461538461538
+    }
+  },
+  "script_version": "compounding_experiment.py v2.0 (REVIEW_TODO C1/A6/A2/B1/B5)",
+  "generated": "2026-08-22T14:18:32",
+  "label_source": "BLS CPS Table 11 via occupations_bls.csv",
+  "seed": 20260822,
+  "bootstrap_B": 1000,
+  "tiebreak_repeats": 5,
+  "tiebreak": "average ranks for rank gaps; seeded random tie-breaks for top-k selection, averaged over `tiebreak_repeats` draws (fixes C1)",
+  "excluded_models": [
+    "semantic-ranker-default-003"
+  ],
+  "topk": 10
+}
