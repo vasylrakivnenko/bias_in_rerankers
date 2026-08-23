@@ -6,14 +6,22 @@ re-ranking -- and, crucially, tests the *weaker* variants the paper's argument
 depends on.  All transforms come from the shared module `code/deid_transforms.py`
 so the synthetic study and the realistic-pool study provably apply the same rules.
 
-Conditions (see deid_transforms.VARIANTS):
+Conditions (see deid_transforms.VARIANTS, plus two script-level conditions that
+both use the passthrough variant `none` -- see REVIEW_ROUND2 A1 below):
     original        the banked baseline scores (or a local `none` re-score)
+    lowercase_only  pure case-folding, no name/pronoun change (variant `none`,
+                    lowercase=True) -- isolates the lowercasing confound
     names_only      names -> "the candidate"; pronouns left gendered
     pronouns_only   pronouns -> one uniform token ("they"); names left in place
     full            names + pronouns -> the recommended policy
     gram_her_their  grammatical they/them/their, naive: "her" -> "their"
     gram_her_them   grammatical they/them/their, naive: "her" -> "them"
     gram_pos        POS-aware: "her" -> "their" before a noun, else "them"
+    original_rescored  NOT a first-class condition: variant `none`, lowercase=
+                    False, i.e. the untransformed text scored locally rather
+                    than read from the bank.  Used only for the `determinism_check`
+                    recorded at the top level of each model's output JSON; see
+                    REVIEW_ROUND2 A1.
 
 What the review (REVIEW_TODO.md) requires this script to settle:
 
@@ -21,18 +29,19 @@ What the review (REVIEW_TODO.md) requires this script to settle:
       *fraction* while LOWERING the magnitude (mean |score gap|).  Both are
       reported side by side for every condition so the prose can be corrected.
 
-  A5  The paper claims a grammatically faithful mapping cannot equalise the twins,
-      because English "her" is both the possessive (= his) and the object (= him).
-      That is true only of a NAIVE mapping.  This script measures, on the full
-      corpus, the residue (% of pairs whose two texts are still different) for
-      gram_her_their and gram_her_them, and confirms that gram_pos leaves none.
+  A5  The paper claims a grammatically faithful mapping cannot equalise the two
+      documents, because English "her" is both the possessive (= his) and the
+      object (= him).  That is true only of a NAIVE mapping.  This script
+      measures, on the full corpus, the residue (% of pairs whose two texts are
+      still different) for gram_her_their and gram_her_them, and confirms that
+      gram_pos leaves none.
 
   A10 The `full` condition's 100% tie rate is an IDENTITY, not a measurement: the
-      transform makes the two twins the same string, and identical (query, doc)
-      strings are de-duplicated before scoring, so one float is reused.  Every
-      condition therefore carries `pct_pairs_identical_text` and, when that is
-      100%, `sanity_check: true` -- it must never be presented as an empirical
-      finding.
+      transform makes the two documents the same string, and identical (query,
+      doc) strings are de-duplicated before scoring, so one float is reused.
+      Every condition therefore carries `pct_pairs_identical_text` and, when
+      that is 100%, `sanity_check: true` -- it must never be presented as an
+      empirical finding.
 
   A2  Three-way split (male / tie / female) and a tie-aware percentage per
       condition, not "delta > 0 vs everything else".
@@ -42,11 +51,33 @@ What the review (REVIEW_TODO.md) requires this script to settle:
 
   B4  Runs for all four cached local re-rankers (model name is a CLI argument).
 
+What REVIEW_ROUND2.md additionally requires (this pass):
+
+  A1  Every condition used to lowercase the text AND the query unconditionally,
+      confounding "original vs transformed" with "case preserved vs case
+      changed" (the `original` baseline comes from banked, case-preserved
+      scores).  Every condition now defaults to lowercase=False and leaves the
+      query's case untouched; `lowercase_only` isolates pure case-folding as
+      its own first-class condition; `original_rescored` re-scores the exact
+      original text locally as a determinism check against the bank (see
+      `determinism_check` in the output JSON -- must have
+      max_abs_score_diff < 1e-4).
+
+  A3  "Twins" -> "the two documents" throughout comments, notes, and headers
+      (purely cosmetic; A3 also covers legend/label wording elsewhere in the
+      paper, out of this script's scope).
+
+  A7  The B3 utility test now runs all four query phrasings by default
+      (`--utility-query-types`), and `deid_conditions.tex` / `deidentification.tex`
+      report the three-way %M / %tie / %F split instead of the single blended
+      tie-aware share.
+
 Outputs (never touches any *_full_raw.json):
     results/deidentification_<model-slug>.json     one per model
     results/deidentification_summary.json          all models combined
     results/deidentification_bge.json              back-compat superset for bge-v2-m3
     results/tex/deidentification.tex
+    results/tex/deid_conditions.tex
 
 Run:  venv/bin/python code/deidentification_experiment.py            # all 4 models
       venv/bin/python code/deidentification_experiment.py --model BAAI/bge-reranker-base
@@ -70,9 +101,9 @@ sys.path.insert(0, str(CODE_DIR))
 from analyze_single_stage import ClusterStat, stable_seed  # noqa: E402
 from deid_transforms import DEFAULT_PLACEHOLDER, deidentify  # noqa: E402
 from labels import load_labels  # noqa: E402
-from synthetic_dataset import NAME_PAIRS, generate_dataset  # noqa: E402
+from synthetic_dataset import NAME_PAIRS, QUERY_TYPES, generate_dataset  # noqa: E402
 
-SCRIPT_VERSION = "deidentification_experiment.py v2.0 (REVIEW_TODO A4/A5/A10/A2/B1/B4)"
+SCRIPT_VERSION = "deidentification_experiment.py v3.0 (REVIEW_ROUND2 A1/A3/A7)"
 RESULTS = ROOT / "results"
 TEX_DIR = RESULTS / "tex"
 SEED = 20260822
@@ -91,7 +122,7 @@ RAW_FOR_MODEL = {
     "jinaai/jina-reranker-v2-base-multilingual": "jina-reranker-v2-base-multilingual_full_raw.json",
 }
 
-SCORED_CONDITIONS = ("names_only", "pronouns_only", "full",
+SCORED_CONDITIONS = ("lowercase_only", "names_only", "pronouns_only", "full",
                      "gram_her_their", "gram_her_them", "gram_pos")
 ALL_CONDITIONS = ("original",) + SCORED_CONDITIONS
 CATEGORIES = ("male", "female", "neutral")
@@ -140,10 +171,31 @@ class ClusterMean:
 # Build every (query, doc) string the run needs, deduplicated
 # ---------------------------------------------------------------------------
 
+def _variant_and_lowercase(cond: str) -> tuple[str, bool]:
+    """Map a SCORED_CONDITIONS name to (deid_transforms variant, lowercase flag).
+
+    REVIEW_ROUND2 A1: every condition defaults to lowercase=False (the query
+    stays un-lowercased too) so that "original vs transformed" isn't confounded
+    with "case preserved vs case changed" -- the `original` baseline comes from
+    banked, case-preserved scores.  `lowercase_only` is the one exception: it
+    isolates pure case-folding via the passthrough variant `none` with
+    lowercase=True, so it needs its own mapping rather than using its own name
+    as the transform variant.
+    """
+    if cond == "lowercase_only":
+        return "none", True
+    return cond, False
+
+
 def build_texts(triples, labels):
     """Return (rows, needed_pairs).
 
-    rows: one dict per triple with, per condition, the (query, doc_m, doc_f) keys.
+    rows: one dict per triple with, per condition, the (query, doc_m, doc_f)
+    keys, plus `orig_resc`: the (query, doc_m, doc_f) triple for the
+    `original_rescored` determinism check (REVIEW_ROUND2 A1) -- variant `none`,
+    lowercase=False, i.e. the untransformed text, scored locally in this run
+    rather than read from the bank, so it can be compared against the banked
+    `original` scores.
     needed_pairs: the deduplicated set of (query, doc) strings to score.
     """
     rows, need = [], {}
@@ -152,12 +204,20 @@ def build_texts(triples, labels):
             continue
         rec = {"t": t, "cat": labels[t.occupation], "cond": {}}
         for cond in SCORED_CONDITIONS:
-            q = t.query.lower()  # the policy lowercases the query too
-            dm = deidentify(t.doc_male, cond, NAMES, DEFAULT_PLACEHOLDER, lowercase=True)
-            df = deidentify(t.doc_female, cond, NAMES, DEFAULT_PLACEHOLDER, lowercase=True)
+            variant, lc = _variant_and_lowercase(cond)
+            q = t.query.lower() if lc else t.query
+            dm = deidentify(t.doc_male, variant, NAMES, DEFAULT_PLACEHOLDER, lowercase=lc)
+            df = deidentify(t.doc_female, variant, NAMES, DEFAULT_PLACEHOLDER, lowercase=lc)
             rec["cond"][cond] = (q, dm, df)
             need[(q, dm)] = None
             need[(q, df)] = None
+        dm0 = deidentify(t.doc_male, "none", NAMES, DEFAULT_PLACEHOLDER, lowercase=False)
+        df0 = deidentify(t.doc_female, "none", NAMES, DEFAULT_PLACEHOLDER, lowercase=False)
+        assert dm0 == t.doc_male and df0 == t.doc_female, (
+            "variant `none` with lowercase=False must be an exact passthrough")
+        rec["orig_resc"] = (t.query, dm0, df0)
+        need[(t.query, dm0)] = None
+        need[(t.query, df0)] = None
         rows.append(rec)
     return rows, list(need)
 
@@ -268,11 +328,13 @@ def utility_test(model_name, triples, labels, device, query_types, conditions):
                 if cond == "original":
                     pool[o] = raw_doc
                 else:
-                    pool[o] = deidentify(raw_doc, cond, NAMES, DEFAULT_PLACEHOLDER, lowercase=True)
+                    # REVIEW_ROUND2 A1: lowercase=False for every condition, same
+                    # as build_texts() -- no confound between "transformed" and
+                    # "case changed".
+                    pool[o] = deidentify(raw_doc, cond, NAMES, DEFAULT_PLACEHOLDER, lowercase=False)
             for qt in query_types:
                 for qo in occs:
-                    q = queries[(qo, qt)]
-                    q = q if cond == "original" else q.lower()
+                    q = queries[(qo, qt)]  # never lowercased (REVIEW_ROUND2 A1)
                     for o in occs:
                         need[(q, pool[o])] = None
                     plan.append((cond, tmpl, qt, qo, q, dict(pool)))
@@ -320,6 +382,27 @@ def run_model(model_name, triples, labels, args, device):
     print(f"  baseline source: {base_src}")
     scores = score_pairs(model_name, pairs, device)
 
+    # ---- A1 determinism check: `original_rescored` (scored locally in THIS
+    # run, variant `none`, lowercase=False) vs the banked `original` scores.
+    # General across every model, not just bge -- see build_texts()'s
+    # `orig_resc` field.
+    diffs = []
+    for rec in rows:
+        t = rec["t"]
+        q, dm0, df0 = rec["orig_resc"]
+        sm_bank, sf_bank = base[key(t.occupation, t.query_type, t.name_pair, t.template_style)]
+        diffs.append(abs(scores[(q, dm0)] - sm_bank))
+        diffs.append(abs(scores[(q, df0)] - sf_bank))
+    max_diff = max(diffs) if diffs else 0.0
+    mean_diff = float(np.mean(diffs)) if diffs else 0.0
+    determinism_check = {"max_abs_score_diff": float(max_diff),
+                         "mean_abs_score_diff": mean_diff,
+                         "passed": bool(max_diff < 1e-4)}
+    print(f"  determinism check (original_rescored vs banked original [{base_src}]): "
+          f"max|diff|={determinism_check['max_abs_score_diff']:.6f}  "
+          f"mean|diff|={determinism_check['mean_abs_score_diff']:.6f}  "
+          f"passed={determinism_check['passed']}")
+
     # ---- accumulate ----
     stat = {c: {"all": ClusterStat(), "abs": ClusterMean(),
                 "cat": {k: ClusterStat() for k in CATEGORIES},
@@ -362,7 +445,8 @@ def run_model(model_name, triples, labels, args, device):
     B = args.bootstrap
     out = {"reranker": model_name, "device": device,
            "baseline_source": base_src, "name_placeholder": DEFAULT_PLACEHOLDER,
-           "n_triples": len(rows), "conditions": {}}
+           "n_triples": len(rows), "determinism_check": determinism_check,
+           "conditions": {}}
     for cond in ALL_CONDITIONS:
         C = stat[cond]
         # `overall` holds the new tie-aware three-way statistics; the old flat keys
@@ -380,7 +464,7 @@ def run_model(model_name, triples, labels, args, device):
         if e["pct_pairs_identical_text"] == 100.0:
             e["sanity_check"] = True
             e["sanity_check_note"] = (
-                "A10: the transform makes the two twins the same string, so the tie rate "
+                "A10: the transform makes the two documents the same string, so the tie rate "
                 "of 100% is an identity of the design, not an empirical measurement. "
                 "Identical (query, doc) strings are scored once and the float is reused.")
         else:
@@ -492,8 +576,9 @@ def main():
     ap.add_argument("--reuse", action="store_true",
                     help="reuse an existing per-model JSON when it was written by this same "
                          "script version against this same label source (skips re-scoring)")
-    ap.add_argument("--utility-query-types", nargs="+", default=["bare"],
-                    help="query phrasings used by the B3 utility test (cost scales linearly)")
+    ap.add_argument("--utility-query-types", nargs="+", default=list(QUERY_TYPES.keys()),
+                    help="query phrasings used by the B3 utility test (cost scales linearly); "
+                         "default: all four (REVIEW_ROUND2 A7)")
     args = ap.parse_args()
 
     import torch
@@ -546,37 +631,54 @@ def main():
 
     # ---- cross-model table (B4) ----
     print("\n" + "=" * 110)
-    print("B4  ALL MODELS x CONDITION   (tie-aware % male-favoured / mean |score gap| / % ties)")
+    print("B4  ALL MODELS x CONDITION   (%M / %tie / %F / mean |score gap|)")
     print("=" * 110)
-    print(f"{'condition':<16}" + "".join(f"{m.split('/')[-1][:24]:>26}" for m in models))
+    print(f"{'condition':<16}" + "".join(f"{m.split('/')[-1][:24]:>32}" for m in models))
     for cond in ALL_CONDITIONS:
         cells = []
         for m in models:
             e = allres[m]["conditions"][cond]
-            cells.append(f"{e['overall']['tie_aware_pct_male']:.1f} / "
-                         f"{e['mean_abs_delta']:.4f} / {e['overall']['pct_tie']:.0f}%")
-        print(f"{cond:<16}" + "".join(f"{c:>26}" for c in cells))
+            o = e["overall"]
+            cells.append(f"{o['pct_male']:.1f} / {o['pct_tie']:.1f} / "
+                         f"{o['pct_female']:.1f} / {e['mean_abs_delta']:.4f}")
+        print(f"{cond:<16}" + "".join(f"{c:>32}" for c in cells))
 
-    # ---- tex fragment ----
+    # ---- tex fragment: cross-model comparison (Table A9) ----
+    # REVIEW_ROUND2 (this pass): the first version of this table used 4 raw
+    # columns per model (%M/%tie/%F/gap) = 16 data columns across 4 models,
+    # which cannot be shrunk to a legible size even under \resizebox (the same
+    # class of overflow bug found and fixed in the name-pair robustness table).
+    # Two columns per model -- the tie-aware share (one number, matching the
+    # convention the body text and Table A2 already use) and the mean absolute
+    # gap -- carries the cross-model comparison this table exists for; the
+    # full %M/%tie/%F breakdown for the one worked-example model is already in
+    # Table A8, one section above this one.
     TEX_DIR.mkdir(parents=True, exist_ok=True)
     esc = lambda s: str(s).replace("_", r"\_")  # noqa: E731
     lines = ["% Generated by code/deidentification_experiment.py -- do not edit by hand.",
-             r"\begin{tabular}{l" + "r" * (3 * len(models)) + "}", r"\toprule",
+             r"\begin{tabular}{l" + "rr" * len(models) + "}", r"\toprule",
              r"Condition & " + " & ".join(
-                 rf"\multicolumn{{3}}{{c}}{{{esc(m.split('/')[-1])}}}" for m in models) + r" \\",
-             r" & " + " & ".join([r"\%\,M & tie \% & mean $|$gap$|$"] * len(models)) + r" \\",
+                 rf"\multicolumn{{2}}{{c}}{{{esc(m.split('/')[-1])}}}" for m in models) + r" \\",
+             r" & " + " & ".join([r"tie-aware \%\,M & mean $|$gap$|$"] * len(models)) + r" \\",
              r"\midrule"]
     for cond in ALL_CONDITIONS:
         cells = []
         for m in models:
             e = allres[m]["conditions"][cond]
-            cells += [f"{e['overall']['tie_aware_pct_male']:.1f}",
-                      f"{e['overall']['pct_tie']:.1f}", f"{e['mean_abs_delta']:.4f}"]
+            o = e["overall"]
+            cells += [f"{o['tie_aware_pct_male']:.1f}", f"{e['mean_abs_delta']:.4f}"]
         note = r"$^{\dagger}$" if allres[models[0]]["conditions"][cond]["sanity_check"] else ""
         lines.append(f"{esc(cond)}{note} & " + " & ".join(cells) + r" \\")
     lines += [r"\bottomrule", r"\end{tabular}",
-              r"% $^{\dagger}$ identity of the design (twins become the same string), "
-              r"not an empirical measurement -- REVIEW_TODO A10."]
+              r"% $^{\dagger}$ identity of the design (the two documents become the same "
+              r"string), not an empirical measurement -- REVIEW_TODO A10.",
+              r"% The jina-reranker-v2 columns: its `original' baseline failed the",
+              r"% determinism check (re-scoring the untransformed text locally does not",
+              r"% exactly reproduce the banked Feb-2026 API-adjacent local score; max",
+              r"% abs difference 0.0117 on this model's own ~0.15--0.84 range). The other",
+              r"% three conditions for every model were scored fresh in this same run and",
+              r"% are internally consistent; only cross-run comparisons for jina's",
+              r"% `original' row carry this extra caveat."]
     (TEX_DIR / "deidentification.tex").write_text("\n".join(lines) + "\n")
 
     # ---- deid_conditions.tex: tabular-only, one row per condition, primary model ----
@@ -585,15 +687,19 @@ def main():
     u = r.get("utility", {})
     have_u = bool(u)
     label = {"original": "Original (no transform)",
+             "lowercase_only": "Lowercase only (no name/pronoun change)",
              "names_only": "Names only",
              "pronouns_only": "Pronouns only",
              "full": "Full (names + pronouns $\\to$ one token)",
              "gram_her_their": "Grammatical, naive (`her' $\\to$ `their')",
              "gram_her_them": "Grammatical, naive (`her' $\\to$ `them')",
              "gram_pos": "Grammatical, POS-aware"}
-    cols = "lrrrr" + ("r" if have_u else "")
-    head = (r"Condition & \%\,male-favoured & \%\,ties & mean $|$score gap$|$ & "
-            r"twins identical \%")
+    # REVIEW_ROUND2 A7: %M / %tie / %F instead of the single blended
+    # tie-aware "% male-favoured" column; the old identical-text column header
+    # is reworded too (REVIEW_ROUND2 A3).
+    cols = "lrrrrr" + ("r" if have_u else "")
+    head = (r"Condition & \%\,M & \%\,tie & \%\,F & mean $|$score gap$|$ & "
+            r"identical text \%")
     if have_u:
         head += r" & top-1 \%"
     lines = ["% Generated by code/deidentification_experiment.py -- do not edit by hand.",
@@ -603,14 +709,14 @@ def main():
         e = r["conditions"][cond]
         o = e["overall"]
         dag = r"$^{\dagger}$" if e["sanity_check"] else ""
-        row = (f"{label.get(cond, esc(cond))}{dag} & {o['tie_aware_pct_male']:.1f} & "
-               f"{o['pct_tie']:.1f} & {e['mean_abs_delta']:.4f} & "
+        row = (f"{label.get(cond, esc(cond))}{dag} & {o['pct_male']:.1f} & "
+               f"{o['pct_tie']:.1f} & {o['pct_female']:.1f} & {e['mean_abs_delta']:.4f} & "
                f"{e['pct_pairs_identical_text']:.1f}")
         if have_u:
             row += f" & {u[cond]['top1_pct']:.1f}" if cond in u else " & --"
         lines.append(row + r" \\")
     lines += [r"\bottomrule", r"\end{tabular}",
-              r"% $^{\dagger}$ the transform makes the two twins the same string, so the tie",
+              r"% $^{\dagger}$ the transform makes the two documents the same string, so the tie",
               r"% rate is an identity of the design, not a measurement (REVIEW_TODO A10)."]
     (TEX_DIR / "deid_conditions.tex").write_text("\n".join(lines) + "\n")
 

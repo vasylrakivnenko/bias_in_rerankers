@@ -28,15 +28,15 @@ date: Draft
 
 # Abstract
 
-Hiring tools increasingly sort applicants automatically. A retriever pulls plausible resumes from a large pool. A re-ranker then puts them in final order. We audited {{N_MODELS}} widely used re-rankers with counterfactual pairs: texts identical except for the candidate's name and pronouns. All {{N_MODELS_STEREOTYPE_ORDER}} favored men more often for male-typed jobs than for female-typed ones. Which way a model leans by default is a property of that product, and cannot be known without testing it. In a simulated pool of {{SLATE_SIZE}} equally qualified candidates, one common pipeline gave men {{SHORTLIST_PCT_MALE_PIPELINE}} of shortlist places, {{SHORTLIST_PCT_MALE_PIPELINE_GLOSS}}. Removing names and pronouns before scoring removes the difference, because it removes the only thing that differs. Half-measures do not: deleting names alone leaves the direction almost perfectly consistent. We argue that de-identification is a cheap, auditable, less discriminatory alternative that deployers should be expected to adopt.
+Hiring tools increasingly sort applicants automatically. A retriever pulls plausible resumes from a large pool. A re-ranker then puts them in final order. We audited {{N_MODELS}} commercial and open-source re-rankers with counterfactual pairs: texts identical except for the candidate's name and pronouns. All {{N_MODELS_STEREOTYPE_ORDER}} favored men more often for male-typed jobs than for female-typed ones. Which way a model leans by default is a property of that product, and cannot be known without testing it. In a simulated pool of {{SLATE_SIZE}} equally qualified candidates, one common pipeline gave men {{SHORTLIST_PCT_MALE_PIPELINE}} of shortlist places, {{SHORTLIST_PCT_MALE_PIPELINE_GLOSS}}. Removing names and pronouns before scoring removes the difference, because it removes the only thing that differs. Half-measures do not: deleting names alone leaves the direction almost perfectly consistent. We argue that de-identification is a cheap, auditable, less discriminatory alternative that deployers should be expected to adopt.
 
 # Why this matters
 
 Software that sorts job applicants usually works in two steps [@nogueira2019]. A *retriever* scans a large pool and pulls out a few dozen plausible candidates. A *re-ranker* then reads each one against the job description and fixes the final order. The retriever is the clerk who pulls a stack of files; the re-ranker is the decision-maker who reads them and arranges them best-first. The people at the top of that order get looked at. The rest, in practice, do not.
 
-This is not hypothetical. LinkedIn Recruiter returns a ranked list of candidates [@linkedin]. Indeed builds ranking systems to match job seekers to roles [@indeed]. Google sells a job-search ranking service to employers [@google]. Published resume-matching systems score a job description and a candidate document together, using exactly the kind of re-ranker we audit [@shpjf; @confit].
+This is not hypothetical. LinkedIn Recruiter returns a ranked list of candidates [@linkedin]; the same ranking technology runs the job-seeker side of the market at Indeed and Google [@indeed; @google]. Published resume-matching systems score a job description and a candidate document together, using the same family of neural rankers we audit [@shpjf; @confit].
 
-Researchers have shown that the retriever carries gender bias [@caliskan2017; @rakivnenko2024; @wilson2024]. The re-ranker has drawn far less attention, and no prior audit scores identical candidates across commercial ranking products. That is the wrong way round. The re-ranker has the last word, and it decides who appears at the top of the recruiter's screen.
+Researchers have shown that the embedding models behind the retriever carry gender bias [@caliskan2017; @rakivnenko2024; @wilson2024]. The re-ranker has been studied far less, and in a different way: no prior audit scores identical candidates across commercial ranking products. That is the wrong way round. The re-ranker has the last word, and it decides who appears at the top of the recruiter's screen.
 
 Gender bias in neural rankers is not new. Rekabsaz and Schedl showed that BERT rankers surface more male-oriented passages than keyword search for neutral queries [@rekabsaz2020], and later added an adversarial fix [@rekabsaz2021]. Both papers ask what the retrieved text is about, not how two candidates who differ only by sex are scored. Audits of language models do ask that, and they disagree on direction. One study of large language models scoring resumes finds an advantage for women [@an2025]; an embedding-based resume screener favors male-associated names [@wilson2024]. We run the counterfactual test on the re-rankers that commercial hiring stacks actually use, and follow it through to who makes the shortlist.
 
@@ -44,24 +44,24 @@ Two legal regimes already cover this ground. In the United States, a neutral-loo
 
 # What we did
 
-Our test is a counterfactual pair: two versions of the same professional document. They are identical word for word, except for the candidate's name and pronouns. Any difference in score must therefore come from gender, because nothing else differs. We built these documents from {{N_TEMPLATES}} templates across {{N_OCCUPATIONS}} occupations. We varied {{N_NAME_PAIRS}} common American given names of each sex, taken from national birth-name records [@ssa2026]. We used {{N_QUERIES}} ways of phrasing the search. That yields {{N_PAIRS}} counterfactual pairs per model.
+Our test is a counterfactual pair: two versions of the same professional document. They are identical word for word, except for the candidate's name and pronouns. Any difference in score must therefore come from gender, because nothing else differs. We built these documents from {{N_TEMPLATES}} templates across {{N_OCCUPATIONS}} occupations. We varied {{N_NAME_PAIRS}} common American given names of each sex, taken from national birth-name records [@ssa2026]. We used {{N_QUERIES}} ways of phrasing the search. That yields {{N_PAIRS}} counterfactual pairs per model. The appendix shows the templates, the query forms, and the name pairs in full.
 
-We label each occupation by the share of women employed in it, from the federal labor-force survey [@bls2025]. {{N_OCC_MALE}} occupations are male-typed, {{N_OCC_FEMALE}} are female-typed, and {{N_OCC_NEUTRAL}} are close to evenly split. The evenly split group carries most of the legal weight, because nobody can claim those jobs require a particular sex.
+We scored {{N_OCC_SCORED}} occupations, then labeled each by the share of women employed in it, from the federal labor-force survey [@bls2025]. {{N_OCC_DROPPED}} occupations had no usable labor-force figure -- no matching category, a suppressed estimate, or a share too close to the 30% and 70% cutoffs to call -- and are excluded from every number in this paper; the appendix lists all of them, with the reason for each. Of the remaining {{N_OCCUPATIONS}}, {{N_OCC_MALE}} are male-typed, {{N_OCC_FEMALE}} are female-typed, and {{N_OCC_NEUTRAL}} are close to evenly split. The evenly split group carries most of the legal weight, because nobody can claim those jobs require a particular sex.
 
-We scored every counterfactual pair with {{N_MODELS}} re-rankers, both commercial and open-source. Some models return coarse scores that give the two documents exactly the same number. We count those ties as ties, and never credit them to either side. The appendix lists every model, its vendor, and its tie rate.
+We scored every counterfactual pair with {{N_MODELS}} re-rankers, both commercial and open-source. Some models return coarse scores that give the two documents exactly the same number. We count those ties as ties. The tables report them in their own column; where we need a single share, a tie counts as half a win for each document. The appendix lists every model, its vendor, and its tie rate.
 
-To see what this does in practice, we simulated a pool of candidates for one job. It holds {{SLATE_SIZE}} documents, half with men's names and half with women's, identical in every other respect. Because the candidates are by construction equally qualified, a fair system should treat them interchangeably. We ran the pool through a common open-source pipeline and recorded who made the top three. Finally, we re-scored everything after stripping gender markers, at several strengths, to see which strengths actually work.
+To see what this does in practice, we simulated a pool of candidates for one job. It holds {{SLATE_SIZE}} documents, half with men's names and half with women's, identical in every other respect. Because the candidates are by construction equally qualified, a fair system should treat them interchangeably. We ran the pool through a common open-source pipeline -- the retriever {{RETRIEVER_MODEL}} feeding its top {{TOPK}} candidates to the re-ranker {{RERANKER_MODEL}} -- and recorded who made the top three. Finally, we re-scored everything after stripping gender markers, at several strengths, to see which strengths actually work.
 
 # What we found
 
 ## Identical candidates are not scored equally
 
-All {{N_MODELS_STEREOTYPE_ORDER}} models favored the man more often for male-typed jobs than for female-typed ones. The size of that gap varies; its direction never does. For male-typed jobs the middle model favored the man in {{MEDIAN_PCT_MALE_MALEJOBS}} of comparisons, {{MEDIAN_PCT_MALE_MALEJOBS_GLOSS}}. For female-typed jobs the middle model favored the man in only {{MEDIAN_PCT_MALE_FEMALEJOBS}}. Nothing changed between the two documents but the name and the pronouns. The tilt is not random. It follows the same stereotype that would be unlawful in a human screener.
+All {{N_MODELS_STEREOTYPE_ORDER}} models favored the man more often for male-typed jobs than for female-typed ones. The size of that gap varies; its direction never does. For male-typed jobs the median model favored the man in {{MEDIAN_PCT_MALE_MALEJOBS}} of comparisons, {{MEDIAN_PCT_MALE_MALEJOBS_GLOSS}}. For female-typed jobs the median model favored the man in only {{MEDIAN_PCT_MALE_FEMALEJOBS}}. Nothing changed between the two documents but the name and the pronouns. The tilt is not random. It follows the same stereotype that would be unlawful in a human screener.
 
-Where a model sits by default is a different matter. On jobs the labor market splits evenly, the middle model favored the man in {{MEDIAN_PCT_MALE_NEUTRAL}} of comparisons, {{MEDIAN_PCT_MALE_NEUTRAL_GLOSS}}. But the models themselves disagree: {{N_MODELS_NEUTRAL_LEAN_MALE}} of the {{N_MODELS}} lean toward men on those jobs, and {{N_MODELS_NEUTRAL_LEAN_FEMALE}} lean the other way. A buyer therefore cannot guess which sex a given product disadvantages. The direction is invisible from the outside, and knowable only by testing.
+Where a model sits by default is a different matter. On jobs the labor market splits evenly, the median model favored the man in {{MEDIAN_PCT_MALE_NEUTRAL}} of comparisons, {{MEDIAN_PCT_MALE_NEUTRAL_GLOSS}}. But the models themselves disagree: {{N_MODELS_NEUTRAL_LEAN_MALE}} of the {{N_MODELS}} lean toward men on those jobs, and {{N_MODELS_NEUTRAL_LEAN_FEMALE}} lean the other way. A buyer therefore cannot guess which sex a given product disadvantages. The direction is invisible from the outside, and knowable only by testing.
 
 ```latex
-\begin{figure}[t]
+\begin{figure}[tbp]
 \centering
 \includegraphics[width=0.78\linewidth]{figures/fig_single_stage.pdf}
 \caption{Each point is one re-ranker: how often it favored the man's document
@@ -84,7 +84,7 @@ Where the two stages disagree, the effect reverses. On female-typed jobs the ret
 Favoring either sex among interchangeable candidates is a disparity, so none of these figures is the right answer. Two lessons follow. The pipeline cannot be read off either stage alone; what matters is whether the two happen to agree. And fixing the retriever achieves little on its own, because the re-ranker has the last word.
 
 ```latex
-\begin{figure}[t]
+\begin{figure}[tbp]
 \centering
 \includegraphics[width=0.82\linewidth]{figures/fig_pipeline.pdf}
 \caption{Share of top-three shortlist places going to men's names, in a pool of
@@ -96,12 +96,14 @@ alone, and the two combined.}
 
 ## Removing the markers removes the gap, if you remove all of them
 
-If both documents become the same text, any model must score them the same. Our full transform replaces the name and neutralises the pronouns, and every pair then ties. That is a check on the argument rather than a discovery, because identical texts cannot be scored differently. Half-measures are the interesting case: deleting names but leaving pronouns makes the average score difference *smaller*, from {{DEID_ORIGINAL_MEAN_GAP}} to {{DEID_NAMESONLY_MEAN_GAP}} on this model's own scale. But it makes the direction almost perfectly consistent: the man's document wins {{DEID_NAMESONLY_PCT_MALE_MALEJOBS}} of male-typed comparisons, up from {{DEID_ORIGINAL_PCT_MALE_MALEJOBS}}. Names carry a large effect that varies from pair to pair, while pronouns carry a small one that always points the same way.
+If both documents become the same text, any model must score them the same. Our full transform replaces the name and neutralises the pronouns, and every pair then ties. That is a check on the argument rather than a discovery, because identical texts cannot be scored differently. Half-measures are the interesting case, and they cut the other way from what you might guess.
 
-So a half-transform is not half a fix. The obvious repair, rewriting pronouns as *they*, *them*, and *their*, works only if the rewriter understands grammar. English *her* is both possessive and object, so mapping it to one word leaves the pair differing by a word. That happens on {{DEID_GRAM_NAIVE_PCT_RESIDUE}} of pairs, and the model scores every one of them differently. A rewriter that checks each word's part of speech makes the two documents identical and keeps the text readable. Neither route costs accuracy: the right candidate came out on top {{UTILITY_TOP1_AFTER}} of the time, exactly as before.
+Deleting names but leaving pronouns does not shrink the score gap -- if anything it is slightly larger: {{DEID_NAMESONLY_MEAN_GAP}} against {{DEID_ORIGINAL_MEAN_GAP}}. What changes is consistency: the man's document wins {{DEID_NAMESONLY_PCT_MALE_MALEJOBS}} of male-typed comparisons, up from {{DEID_ORIGINAL_PCT_MALE_MALEJOBS}}. Removing the name does not take away a large signal and leave a small one behind. It takes away the noisier signal and leaves the more consistent one. Neutralising pronouns but keeping the name shows the same thing from the other side: the gap falls to {{DEID_PRONOUNSONLY_MEAN_GAP}}. This pattern is not identical on every re-ranker we tested; the appendix repeats it on three more.
+
+So a half-transform is not half a fix. The obvious repair, rewriting pronouns as *they*, *them*, and *their*, works only if the rewriter understands grammar. English *her* is both possessive and object, so mapping it to one word leaves the pair differing by a word. That happens on {{DEID_GRAM_NAIVE_PCT_RESIDUE}} of pairs, and where it happens {{DEID_GRAM_NAIVE_RESIDUE_PCT_FEMALE}} of the leftovers favor the woman's document, not the man's. A rewriter that checks each word's part of speech avoids the mistake and keeps the text readable. Neither route costs accuracy: the right candidate came out on top {{UTILITY_TOP1_AFTER}} of the time, slightly more often than the {{UTILITY_TOP1_BEFORE}} before any transform.
 
 ```latex
-\begin{figure}[t]
+\begin{figure}[tbp]
 \centering
 \includegraphics[width=0.82\linewidth]{figures/fig_deid.pdf}
 \caption{Who scores higher under each de-identification rule, across all counterfactual
@@ -128,7 +130,7 @@ The direction of a model's default lean is a property of the individual product.
 
 ### The evenly split jobs are the sharpest case
 
-For a job the labor market divides evenly between men and women, no business-necessity story is available. An employer cannot argue that the work requires men. Yet the shortlist for those jobs was {{SHORTLIST_PCT_MALE_PIPELINE_NEUTRAL}} male. The skew is not a feature of the work. It is a property of the software.
+For a job the labor market divides evenly between men and women, no business-necessity story is available. An employer cannot argue that the work requires men. Yet the shortlist for those jobs was {{SHORTLIST_PCT_MALE_PIPELINE_NEUTRAL}} male. The skew is not a feature of the work. It is a property of the software, and a different re-ranker skews the other way (the appendix repeats the pipeline behind every audited re-ranker).
 
 ### De-identification is a textbook less discriminatory alternative
 
@@ -153,13 +155,13 @@ The guarantee is simple, and it does not require trusting the model. Once the on
 
 Our transform removes gender only from the channels it covers. Real resumes signal gender in other ways: single-sex schools, gendered awards, sports, writing style. Removing names and pronouns is therefore necessary but not sufficient in the field. Our documents are short synthetic templates rather than real applications.
 
-The pipeline and de-identification results come from one model pair, while the {{N_MODELS}}-model audit covers only the single-document test. Our names are among the most common American given names and are mostly associated with White Americans, so we cannot separate gender from race. We treat gender as binary, which real applicants are not. The commercial models are black boxes, so we report the version strings and query dates in the appendix.
+The pipeline and de-identification results use one open-source pair as the worked example. The appendix repeats the pipeline behind every audited re-ranker and the de-identification test on four open-weight re-rankers, and the pattern is not identical across them. Our names are among the most common American given names and are mostly associated with White Americans, so we cannot separate gender from race. We treat gender as binary, which real applicants are not. The commercial models are black boxes, so we report the version strings and query dates in the appendix. One of the four open-weight re-rankers did not exactly reproduce its own earlier scores on a plain re-run, a caveat noted where that table appears.
 
 One structural point deserves care in any extension to real documents. The two stages need not read the same text. Our retriever accepts 512 tokens; our re-ranker accepts 8,192. On a long resume the two stages would therefore score different amounts of the same candidate, and some of the divergence we attribute to the re-ranker would instead be an artifact of what each stage could see. Our documents are short enough that neither model truncates anything, so the comparison here is clean. It would not be on real resumes.
 
 # Conclusion
 
-Ranking models score identical men and women differently, and the difference tracks job stereotypes. Which sex a given model favors by default cannot be known without testing it. In a pool of interchangeable candidates, one common pipeline gave men {{SHORTLIST_PCT_MALE_PIPELINE}} of shortlist places, and the re-ranker overrode the retriever. Removing names and pronouns before scoring removes the difference, because it removes the only thing that differs. The fix is cheap, checkable, and available today, and deployers should be expected to use it.
+Re-rankers score identical men and women differently, and the difference tracks job stereotypes. Which sex a given model favors by default cannot be known without testing it. In a pool of interchangeable candidates, one common pipeline gave men {{SHORTLIST_PCT_MALE_PIPELINE}} of shortlist places, and the re-ranker overrode the retriever. Removing names and pronouns before scoring removes the difference, because it removes the only thing that differs. The fix is cheap, checkable, and available today, and deployers should be expected to use it.
 
 ### Data and code availability
 
@@ -179,11 +181,27 @@ The dataset generator, the model scores, the pipeline simulation, and the de-ide
 
 **Favoring the man.** The share of counterfactual pairs in which the man's score is strictly higher. Equal scores are counted as ties and reported in their own column, never credited to either side.
 
+**Tie-aware share.** The share favoring the man's document with each tie counted as half a win for each side. Figure 1, the last column of Table A2, and every single share reported in the main text use this convention; the tables that break results down further also show the plain three-way split.
+
 **Shortlist.** The top {{SHORTLIST_SIZE}} of a pool of {{SLATE_SIZE}} equally qualified candidates for one job.
 
 **Occupation labels.** Male-typed, female-typed, or evenly split, assigned from federal labor-force statistics on the share of women employed in each occupation.
 
-**Confidence intervals.** The counterfactual pairs are not independent, because they are built from the same occupations, names, and templates. All intervals resample whole occupations rather than individual comparisons.
+**Confidence intervals.** The counterfactual pairs are not independent, because they are built from the same occupations, names, and templates. All intervals resample whole occupations rather than individual comparisons. They do not additionally resample name pairs or templates, whose effects are large (see Robustness); the true uncertainty is therefore somewhat wider than the reported ranges.
+
+# The documents and the occupations
+
+The four templates below are shown with their name and pronoun slots left as brackets, filled in for each of the ten name pairs and each of the eighty-two occupations we scored. The query forms and the name pairs, with each name's share female in national birth records, are the complete lists actually used.
+
+```latex
+{{TABLE_DOCUMENTS}}
+```
+
+The table below lists the fifty-two occupations kept for analysis, with the federal labor-force share of women behind each label, and the thirty scored but dropped, with the reason for each.
+
+```latex
+{{TABLE_OCCUPATIONS}}
+```
 
 # Models audited
 
@@ -226,7 +244,7 @@ occupations in that category.}
 
 # Robustness
 
-The lean varies with the wording of the document and of the search, and with which pair of names is used. Tables~\ref{tab:robtemplate}--\ref{tab:robname} break the tie-aware share favoring the man's document down three ways. The spread across name pairs is the largest of the three, which is why deleting names alone changes the size of the disparity so much (see the third finding).
+The lean varies with the wording of the document and of the search, and with which pair of names is used. Tables~\ref{tab:robtemplate}--\ref{tab:robname} break the tie-aware share favoring the man's document down three ways. The spread across name pairs is the largest of the three: that variation is exactly what removing names takes out, which is why deleting names changes how *consistent* the disparity is rather than how *large* it is (see the third finding).
 
 ```latex
 \begin{table}[H]
@@ -249,17 +267,18 @@ The lean varies with the wording of the document and of the search, and with whi
 
 \begin{table}[H]
 \centering
-\caption{Tie-aware share favoring the man's document, by name pair.}
+\caption{Tie-aware share favoring the man's document, by name pair, split into
+two tables of five pairs each for legibility.}
 \label{tab:robname}
-\resizebox{\textwidth}{!}{%
-{{TABLE_ROBUST_NAMEPAIR}}%
-}
+{{TABLE_ROBUST_NAMEPAIR}}
 \end{table}
 ```
 
 # The same pipeline with every re-ranker
 
 The pipeline result in the body uses one open-source pair. Table~\ref{tab:sweep} repeats the simulation with each of the audited re-rankers behind the same retriever. The shortlist skew follows the re-ranker, in both size and direction, which is the point of the second finding.
+
+The headline pipeline also uses a retrieval cutoff of {{TOPK}} -- how many candidates the retriever passes on before the re-ranker sees them. That choice is not neutral: at a cutoff of 5 the same pipeline's shortlist is {{PIPE_PCT_MALE_K5}} male; at a cutoff of 15 it is {{PIPE_PCT_MALE_K15}}. A deployer who narrows or widens that first cut changes the disparity without touching either model.
 
 ```latex
 \begin{table}[H]
@@ -280,12 +299,34 @@ Table~\ref{tab:deid} reports every de-identification rule tested on the same re-
 ```latex
 \begin{table}[H]
 \centering
-\caption{De-identification conditions: the share of counterfactual pairs favoring the
-man's document, the share tied, and the average size of the score gap on this
-model's own scale.}
+\caption{Every de-identification rule tested on {{RERANKER_MODEL}}: the share of
+counterfactual pairs favoring the man's document (M), tied, and favoring the
+woman's document (F); the average size of the score gap on this model's own
+scale; the share of pairs the rule leaves textually identical; and top-1
+accuracy where measured. A dagger marks a rule that makes the two documents
+identical by construction, so its row is a check on that fact rather than an
+independent measurement.}
 \label{tab:deid}
 \resizebox{\textwidth}{!}{%
 {{TABLE_DEID}}%
+}
+\end{table}
+```
+
+Table~\ref{tab:deidall} repeats the same eight rules on three more re-rankers. The direction of the half-measures is not the same on every model: on {{RERANKER_MODEL}} and one other, removing names leaves the stronger and more one-directional signal; on a third, removing pronouns does; on the fourth, the two half-measures push toward opposite net directions entirely. What holds on all four is the part that matters for the policy: the full transform and the part-of-speech-aware rewrite tie every pair, on every model.
+
+```latex
+\begin{table}[H]
+\centering
+\caption{The same eight de-identification conditions on all four locally run
+re-rankers: the tie-aware share favoring the man's document and the average
+size of the score gap, on each model's own scale. One model's untransformed
+scores did not exactly reproduce themselves on a plain re-run six months
+later (Limits); its other seven rows were scored fresh in this same run and
+are internally consistent.}
+\label{tab:deidall}
+\resizebox{\textwidth}{!}{%
+{{TABLE_DEID_ALLMODELS}}%
 }
 \end{table}
 ```

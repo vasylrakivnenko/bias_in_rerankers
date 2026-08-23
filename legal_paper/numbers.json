@@ -16,14 +16,19 @@
     "gloss modes: \"x_in_n\" turns a percentage into plain English (\"about four in",
     "every five\"); \"fraction_word\" turns a 0-1 ratio into \"about a quarter\".",
     "",
-    "`needs` on every entry says what the producing script must write. Four keys",
-    "do not exist yet and are flagged NOT YET PRODUCED."
+    "Convention (REVIEW_ROUND2 A2): every single-number share in the body uses the",
+    "TIE-AWARE statistic (a tie counts as half a win for each side), matching",
+    "Figure 1, the last column of Table A2, and Table A3. The plain (non-tie-aware)",
+    "`pct_male` fields still exist in the JSON and are used only inside the",
+    "three-way-split tables, never for a single prose number.",
+    "",
+    "`needs` on every entry says what the producing script writes there."
   ],
   "N_MODELS": {
     "file": "results/single_stage_summary.json",
     "path": "n_models",
     "format": "d",
-    "needs": "number of distinct ranking models in the audit, after dropping the byte-identical semantic-ranker-default-003 (REVIEW_TODO A1)"
+    "needs": "number of distinct re-rankers in the audit, after dropping the byte-identical semantic-ranker-default-003 (REVIEW_TODO A1)"
   },
   "N_MODELS_STEREOTYPE_ORDER": {
     "file": "results/single_stage_summary.json",
@@ -35,7 +40,28 @@
     "file": "results/single_stage_summary.json",
     "path": "n_labelled_occupations",
     "format": "d",
-    "needs": "occupations surviving the BLS labelling (REVIEW_TODO A8)"
+    "needs": "occupations surviving the BLS labelling and analysed (52 of 82 scored; see N_OCC_SCORED / N_OCC_DROPPED, REVIEW_ROUND2 A4)"
+  },
+  "N_OCC_SCORED": {
+    "file": "results/single_stage_summary.json",
+    "path": "label_set_comparison.n_occupations.legacy_all82",
+    "format": "d",
+    "needs": "REVIEW_ROUND2 A4: total occupations scored before the BLS-usable-label filter (82). Discloses that 30 of these are excluded from every number in the paper."
+  },
+  "N_OCC_DROPPED": {
+    "expr": "scored - kept",
+    "refs": {
+      "scored": {
+        "file": "results/single_stage_summary.json",
+        "path": "label_set_comparison.n_occupations.legacy_all82"
+      },
+      "kept": {
+        "file": "results/single_stage_summary.json",
+        "path": "n_labelled_occupations"
+      }
+    },
+    "format": "d",
+    "needs": "REVIEW_ROUND2 A4: derived, scored minus kept (should be 30). Occupations with no usable BLS labor-force figure -- no matching BLS row, a suppressed estimate, or a 30-40%/60-70% ambiguous share. Full list in Appendix (occupations table)."
   },
   "N_OCC_MALE": {
     "file": "results/single_stage_summary.json",
@@ -63,7 +89,7 @@
       "n_pairs"
     ],
     "format": ",d",
-    "needs": "twin comparisons scored per model, after label filtering"
+    "needs": "counterfactual pairs scored per model, after label filtering"
   },
   "N_TEMPLATES": {
     "file": "results/single_stage_summary.json",
@@ -98,56 +124,72 @@
     "format": "d",
     "needs": "number of male/female name pairs (counted from the by_name_pair breakdown)"
   },
+  "TOPK": {
+    "file": "results/compounding_bge_pipeline.json",
+    "path": "headline_topk",
+    "format": "d",
+    "needs": "REVIEW_ROUND2 A4: the retriever's cutoff -- how many of the SLATE_SIZE candidates it passes to the re-ranker. Previously never stated in the body."
+  },
+  "RETRIEVER_MODEL": {
+    "file": "results/compounding_bge_pipeline.json",
+    "path": "embedder",
+    "needs": "REVIEW_ROUND2 A4: the retriever behind the worked pipeline example, named literally (was only 'a common open-source pipeline'/'our retriever')."
+  },
+  "RERANKER_MODEL": {
+    "file": "results/compounding_bge_pipeline.json",
+    "path": "reranker",
+    "needs": "REVIEW_ROUND2 A4: the re-ranker behind the worked pipeline example, named literally."
+  },
   "MEDIAN_PCT_MALE_MALEJOBS": {
     "file": "results/single_stage_summary.json",
-    "path": "across_models.male.pct_male.median",
+    "path": "across_models.male.tie_aware_pct_male.median",
     "format": ".0f",
     "unit": "%",
-    "needs": "NOT YET PRODUCED. Median across models of the share of twin comparisons favoring the man on MALE-typed jobs. Add an `across_models` block to analyze_single_stage.py shaped exactly like the existing `neutral_across_models`, but for all three categories."
+    "needs": "REVIEW_ROUND2 A2: tie-aware (not plain pct_male) median across models of the share favoring the man on MALE-typed jobs, so this matches Figure 1 / Table A2's convention rather than a different, stricter one."
   },
   "MEDIAN_PCT_MALE_MALEJOBS_GLOSS": {
     "file": "results/single_stage_summary.json",
-    "path": "across_models.male.pct_male.median",
+    "path": "across_models.male.tie_aware_pct_male.median",
     "gloss": "x_in_n",
     "needs": "plain-English gloss of MEDIAN_PCT_MALE_MALEJOBS; generated automatically, same source value"
   },
   "MEDIAN_PCT_MALE_FEMALEJOBS": {
     "file": "results/single_stage_summary.json",
-    "path": "across_models.female.pct_male.median",
+    "path": "across_models.female.tie_aware_pct_male.median",
     "format": ".0f",
     "unit": "%",
-    "needs": "NOT YET PRODUCED. Median across models of the share favoring the man on FEMALE-typed jobs. Same `across_models` block as above."
+    "needs": "REVIEW_ROUND2 A2: tie-aware median across models of the share favoring the man on FEMALE-typed jobs."
   },
   "MEDIAN_PCT_MALE_NEUTRAL": {
     "file": "results/single_stage_summary.json",
-    "path": "neutral_across_models.pct_male.median",
+    "path": "neutral_across_models.tie_aware_pct_male.median",
     "format": ".0f",
     "unit": "%",
-    "needs": "median across models of the share favoring the man on evenly split jobs (REVIEW_TODO A3: report the median, not the outlier-driven mean)"
+    "needs": "REVIEW_ROUND2 A2: tie-aware median across models of the share favoring the man on evenly split jobs (REVIEW_TODO A3: report the median, not the outlier-driven mean)."
   },
   "MEDIAN_PCT_MALE_NEUTRAL_GLOSS": {
     "file": "results/single_stage_summary.json",
-    "path": "neutral_across_models.pct_male.median",
+    "path": "neutral_across_models.tie_aware_pct_male.median",
     "gloss": "x_in_n",
     "needs": "plain-English gloss of MEDIAN_PCT_MALE_NEUTRAL; generated automatically"
   },
   "N_MODELS_NEUTRAL_LEAN_MALE": {
     "file": "results/single_stage_summary.json",
-    "path": "neutral_across_models.pct_male.n_models_above_50",
+    "path": "neutral_across_models.tie_aware_pct_male.n_models_above_50",
     "format": "d",
-    "needs": "models leaning toward men on evenly split jobs"
+    "needs": "REVIEW_ROUND2 A2: models leaning toward men on evenly split jobs, counted on the TIE-AWARE share (was the plain share, which gave a different, inconsistent split from Table A3)."
   },
   "N_MODELS_NEUTRAL_LEAN_FEMALE": {
     "file": "results/single_stage_summary.json",
-    "path": "neutral_across_models.pct_male.n_models_below_50",
+    "path": "neutral_across_models.tie_aware_pct_male.n_models_below_50",
     "format": "d",
-    "needs": "models leaning toward women on evenly split jobs"
+    "needs": "REVIEW_ROUND2 A2: models leaning toward women on evenly split jobs, tie-aware."
   },
   "SLATE_SIZE": {
     "file": "results/compounding_bge_pipeline.json",
     "path": "slate_size",
     "format": "d",
-    "needs": "NOT YET PRODUCED. Number of candidate documents in one simulated pool (half male-named, half female-named). Write the constant into the results JSON rather than leaving it only in the script."
+    "needs": "number of candidate documents in one simulated pool (half male-named, half female-named)"
   },
   "SHORTLIST_SIZE": {
     "file": "results/compounding_bge_pipeline.json",
@@ -155,19 +197,12 @@
     "format": "d",
     "needs": "shortlist size used for the headline numbers"
   },
-  "SHORTLIST_PCT_MALE_SEARCH": {
-    "file": "results/compounding_bge_pipeline.json",
-    "path": "slate.ALL.emb_top3_m",
-    "format": ".0f",
-    "unit": "%",
-    "needs": "share of shortlist places going to male-named candidates under the search step alone, all categories"
-  },
   "SHORTLIST_PCT_MALE_RANKER": {
     "file": "results/compounding_bge_pipeline.json",
     "path": "slate.ALL.rr_top3_m",
     "format": ".0f",
     "unit": "%",
-    "needs": "same, under the ranking model alone"
+    "needs": "top-3 shortlist share male under the re-ranker alone, all categories"
   },
   "SHORTLIST_PCT_MALE_PIPELINE": {
     "file": "results/compounding_bge_pipeline.json",
@@ -206,7 +241,7 @@
     "path": "slate.female.emb_top3_m",
     "format": ".0f",
     "unit": "%",
-    "needs": "search step alone, female-typed occupations (REVIEW_TODO A6: describe as leaning in the opposite direction, never as `fairer`)"
+    "needs": "retriever alone, female-typed occupations (REVIEW_TODO A6: describe as leaning in the opposite direction, never as `fairer`)"
   },
   "SHORTLIST_PCT_MALE_PIPELINE_FEMJOBS": {
     "file": "results/compounding_bge_pipeline.json",
@@ -214,6 +249,20 @@
     "format": ".0f",
     "unit": "%",
     "needs": "combined pipeline, female-typed occupations"
+  },
+  "PIPE_PCT_MALE_K5": {
+    "file": "results/compounding_bge_pipeline.json",
+    "path": "sensitivity.topk5.ALL.pipe_top3_m",
+    "format": ".0f",
+    "unit": "%",
+    "needs": "REVIEW_ROUND2 A12: the same pipeline's top-3 shortlist share male if the retriever's cutoff is 5 instead of 10 (the headline TOPK). Shows the number depends on a choice the deployer makes."
+  },
+  "PIPE_PCT_MALE_K15": {
+    "file": "results/compounding_bge_pipeline.json",
+    "path": "sensitivity.topk15.ALL.pipe_top3_m",
+    "format": ".0f",
+    "unit": "%",
+    "needs": "REVIEW_ROUND2 A12: same, cutoff 15."
   },
   "FF_MALE_RATE": {
     "expr": "2 * p * k / n",
@@ -282,33 +331,53 @@
     "path": "conditions.original.by_category.male.pct_male",
     "format": ".0f",
     "unit": "%",
-    "needs": "SCHEMA CHANGE PENDING. Share favoring the man on male-typed jobs, untransformed documents, as a PERCENTAGE 0-100 under `conditions.<name>.by_category.<category>.pct_male` (matching the convention already used by analyze_single_stage.py and compounding_experiment.py)."
+    "needs": "share favoring the man on male-typed jobs, untransformed documents, as a percentage 0-100"
   },
   "DEID_NAMESONLY_PCT_MALE_MALEJOBS": {
     "file": "results/deidentification_bge.json",
     "path": "conditions.names_only.by_category.male.pct_male",
     "format": ".1f",
     "unit": "%",
-    "needs": "SCHEMA CHANGE PENDING. Same, names-only condition (REVIEW_TODO A4: direction becomes near-deterministic while magnitude falls)."
+    "needs": "REVIEW_ROUND2 A1: same, names-only condition, now CASE-PRESERVED (lowercase=False). Direction is near-deterministic; do not claim the magnitude shrinks (it does not, case-preserved)."
   },
   "DEID_ORIGINAL_MEAN_GAP": {
     "file": "results/deidentification_bge.json",
     "path": "conditions.original.mean_abs_delta",
     "format": ".3f",
-    "needs": "average absolute score gap between the twins, untransformed, on this model's own scale"
+    "needs": "average absolute score gap between the two documents, untransformed, on this model's own scale"
   },
   "DEID_NAMESONLY_MEAN_GAP": {
     "file": "results/deidentification_bge.json",
     "path": "conditions.names_only.mean_abs_delta",
     "format": ".3f",
-    "needs": "average absolute score gap, names-only condition; must be SMALLER than DEID_ORIGINAL_MEAN_GAP (REVIEW_TODO A4)"
+    "needs": "REVIEW_ROUND2 A1: average absolute score gap, names-only condition, case-preserved. This is now LARGER than DEID_ORIGINAL_MEAN_GAP, not smaller -- the old (buggy, lowercased) run showed the opposite."
+  },
+  "DEID_PRONOUNSONLY_MEAN_GAP": {
+    "file": "results/deidentification_bge.json",
+    "path": "conditions.pronouns_only.mean_abs_delta",
+    "format": ".3f",
+    "needs": "REVIEW_ROUND2 A1 (new). Average absolute score gap, pronouns-only condition, case-preserved."
+  },
+  "UTILITY_TOP1_BEFORE": {
+    "file": "results/deidentification_bge.json",
+    "path": "utility.original.top1_pct",
+    "format": ".1f",
+    "unit": "%",
+    "needs": "REVIEW_ROUND2 A7 (new). Top-1 accuracy on the untransformed documents, all four query phrasings. The full transform now measures SLIGHTLY ABOVE this (99.76% vs 99.40%), so the prose must not say the after-figure is merely 'the same as before'."
   },
   "UTILITY_TOP1_AFTER": {
     "file": "results/deidentification_bge.json",
     "path": "utility.full.top1_pct",
     "format": ".1f",
     "unit": "%",
-    "needs": "NOT YET PRODUCED. Same after the full de-identification transform. Legally load-bearing: a less discriminatory alternative must be equally effective."
+    "needs": "top-1 accuracy after the full de-identification transform, now measured across all four query phrasings (REVIEW_TODO A7/B3). Legally load-bearing: a less discriminatory alternative must be equally effective."
+  },
+  "DEID_GRAM_NAIVE_RESIDUE_PCT_FEMALE": {
+    "file": "results/deidentification_bge.json",
+    "path": "conditions.gram_her_their.residue_only.pct_female",
+    "format": ".0f",
+    "unit": "%",
+    "needs": "REVIEW_ROUND2 A1 (new). Of the pairs the naive her->their mapping leaves different (residue_only), the share favoring the WOMAN's document. This is a real, striking finding: the naive mapping's failure mode is not simply more of the paper's usual male-leaning bias -- it flips almost entirely the other way."
   },
   "REPO_URL": {
     "literal": "https://github.com/vasylrakivnenko/bias_in_rerankers"
@@ -335,22 +404,26 @@
   },
   "TABLE_ROBUST_NAMEPAIR": {
     "tex_file": "results/tex/robustness_namepair.tex",
-    "needs": "tabular-only fragment: tie-aware % male-favoured by name pair (REVIEW_TODO B2, A4)"
+    "needs": "tabular-only fragment: tie-aware % male-favoured by name pair (REVIEW_TODO B2, A4). REVIEW_ROUND2 A11: split into two five-column tables so it survives resizebox legibly."
   },
   "TABLE_SWEEP": {
     "tex_file": "results/tex/compounding_sweep.tex",
-    "needs": "tabular-only fragment: pipeline shortlist share male for every ranking model behind the same search step (REVIEW_TODO B5)"
+    "needs": "tabular-only fragment: pipeline shortlist share male for every re-ranker behind the same retriever (REVIEW_TODO B5)"
   },
   "TABLE_DEID": {
     "tex_file": "results/tex/deid_conditions.tex",
-    "needs": "NOT YET PRODUCED. Tabular-only fragment from deidentification_experiment.py: one row per condition (original, names_only, pronouns_only, full, gram_her_their, gram_her_them, gram_pos) with % favouring the man, % tied, and mean absolute score gap (REVIEW_TODO A4, A5, A10)."
+    "needs": "tabular-only fragment: one row per condition (original, lowercase_only, names_only, pronouns_only, full, gram_her_their, gram_her_them, gram_pos) with %M / %tie / %F, mean absolute score gap, identical-text % (REVIEW_TODO A4, A5, A10; REVIEW_ROUND2 A1, A7)."
+  },
+  "TABLE_DEID_ALLMODELS": {
+    "tex_file": "results/tex/deidentification.tex",
+    "needs": "REVIEW_ROUND2 A6 (new). Tabular-only fragment: the same de-identification conditions repeated across all four local re-rankers, not just bge-reranker-v2-m3. Answers the Limits section's old (now stale) caveat that de-identification was tested on only one model."
   },
   "DEID_GRAM_NAIVE_PCT_RESIDUE": {
     "file": "results/deidentification_bge.json",
     "path": "conditions.gram_her_their.pct_pairs_with_residue",
     "format": ".0f",
     "unit": "%",
-    "needs": "Share of twin pairs the NAIVE grammatical mapping (her->their regardless of part of speech) leaves textually different (REVIEW_TODO A5). The POS-aware variant gram_pos leaves 0%."
+    "needs": "Share of pairs the NAIVE grammatical mapping (her->their regardless of part of speech) leaves textually different (REVIEW_TODO A5). The POS-aware variant gram_pos leaves 0%."
   },
   "SHORTLIST_PCT_MALE_SEARCH_MALEJOBS": {
     "file": "results/compounding_bge_pipeline.json",
@@ -379,5 +452,13 @@
     "format": ".0f",
     "unit": "%",
     "needs": "re-ranker-only top-3 %male, female-typed jobs"
+  },
+  "TABLE_DOCUMENTS": {
+    "tex_file": "results/tex/documents_appendix.tex",
+    "needs": "REVIEW_ROUND2 A4 (new). The four document templates verbatim (slots shown as [name]/[occupation]/[he-she] etc.), the four query forms, and the ten name pairs with their SSA female-share, generated from synthetic_dataset.py and data/name_gender.csv so it cannot drift."
+  },
+  "TABLE_OCCUPATIONS": {
+    "tex_file": "results/tex/occupations_table.tex",
+    "needs": "REVIEW_ROUND2 A4 (new). Every one of the 82 scored occupations: the 52 kept, with their BLS row/percentage/label, and the 30 dropped, with a mechanically-derived reason. Generated from code/occupations_bls.csv."
   }
 }

@@ -4,15 +4,14 @@ Research code for an empirical-legal paper on gender bias in the *re-ranking*
 stage of two-stage retrieval pipelines used for candidate search, and on cheap
 de-identification as a mitigation.
 
-The study has two parts:
-
-1. **A broad audit** of commercial and open re-rankers scored on synthetic
-   counterfactual pairs — two documents identical except the candidate's name
-   and pronouns. These were scored once against paid APIs; the raw scores are
-   banked in `results/*_full_raw.json` and **are never re-run**. Every table and
-   figure in the paper is computed from those files, locally and for free.
-2. **A deep dive on one representative pipeline** using real résumés, run
-   entirely on locally cached model weights. No API credentials anywhere.
+This is a **broad audit** of commercial and open re-rankers, scored on synthetic
+counterfactual pairs — two documents identical except the candidate's name
+and pronouns. These were scored once against paid APIs; the raw scores are
+banked in `results/*_full_raw.json` and **are never re-run**. Every table and
+figure in the paper is computed from those files, locally and for free. On top
+of that audit, one representative retriever-plus-re-ranker pipeline and a
+de-identification mitigation are each tested more deeply — also entirely on
+locally cached model weights, no API credentials involved.
 
 The paper itself lives in `legal_paper/` and has its own README.
 
@@ -76,7 +75,11 @@ venv/bin/python data/build_category_to_soc.py   # -> data/category_to_soc.csv
 `code/labels.py` is the single source of truth for the occupation →
 male/female/neutral labels. It reads `code/occupations_bls.csv`, which is
 derived from **BLS CPS Table 11, 2025 annual averages** (% women): male if
-< 30 % women, female if > 70 %, neutral if 40–60 %, dropped otherwise.
+< 30 % women, female if > 70 %, neutral if 40–60 %, dropped otherwise. Of the
+82 occupations scored, 52 have a usable share and are kept; the other 30 (no
+matching BLS occupation, a suppressed estimate, or a share in the 30–40 % /
+60–70 % ambiguous bands) are dropped, with the reason for each recorded in
+`code/occupations_bls.csv` and rendered in the paper's appendix.
 
 ```bash
 venv/bin/python code/labels.py
@@ -94,46 +97,37 @@ than silently fall back to the superseded hand-made labels.
 ## Reproducing every table and figure
 
 All of these read banked results and need no credentials. Run them from the
-repository root.
+repository root, in this order (each reads the previous step's output).
 
 | # | Command | Produces |
 |---|---|---|
 | 1 | `venv/bin/python code/analyze_single_stage.py` | `results/single_stage_summary.json`; `results/tex/single_stage_main.tex`, `occupation_consistency.tex`, `provenance.tex`, `robustness_template.tex`, `robustness_query.tex`, `robustness_namepair.tex` |
 | 2 | `venv/bin/python code/compounding_experiment.py` | `results/compounding_bge_pipeline.json`, `results/compounding_all_rerankers.json`, `results/tex/compounding_sweep.tex` |
-| 3 | `venv/bin/python code/deidentification_experiment.py` | `results/deidentification_<model>.json`, `results/deidentification_summary.json`, `results/tex/deidentification.tex` |
-| 4 | `venv/bin/python legal_paper/generate_figures.py` | `legal_paper/figures/fig_single_stage.pdf`, `fig_pipeline.pdf`, `fig_deid.pdf` |
-| 5 | `cd legal_paper && python3 build.py` | `legal_paper/main.tex`, `main.pdf`, `../legal_paper_overleaf.zip` |
+| 3 | `venv/bin/python code/deidentification_experiment.py` | `results/deidentification_<model>.json` (one per local re-ranker), `results/deidentification_summary.json`, `results/tex/deid_conditions.tex`, `results/tex/deidentification.tex` |
+| 4 | `venv/bin/python code/generate_appendix_tables.py` | `results/tex/documents_appendix.tex`, `results/tex/occupations_table.tex` |
+| 5 | `venv/bin/python legal_paper/generate_figures.py` | `legal_paper/figures/fig_single_stage.pdf`, `fig_pipeline.pdf`, `fig_deid.pdf` |
+| 6 | `cd legal_paper && python3 build.py` | `legal_paper/main.tex`, `main.pdf`, `../legal_paper_overleaf.zip` |
 
 Useful flags: `--bootstrap N` (cluster-bootstrap replicates, default 1000) on
 1–3; `--main-only` on 2 to skip the 14-model sweep; `--model NAME` (repeatable)
-on 3. `python3 build.py --figures` runs step 4 first.
+on 3, which by default scores all four locally cached re-rankers. Step 3 also
+runs a utility-retention test across all four query phrasings by default
+(`--no-utility` skips it; `--utility-query-types` narrows it).
+`python3 build.py --figures` runs step 5 for you before building.
 
 **Numbers are never typed into the prose.** Every statistic in `paper.md` is a
 `{{PLACEHOLDER}}` resolved through `legal_paper/numbers.json` from a path in a
-`results/*.json`; an unresolved placeholder fails the build. Regenerate the
-JSON before rebuilding the PDF.
-
-### The realistic-pool study (real résumés, local models, slow)
-
-Needs the résumé corpus and the O*NET/SSA tables from the previous section.
-`--demo` runs each script on a small synthetic stand-in corpus for a quick
-smoke test. Budget an overnight run for the full sweep.
-
-| Command | Produces |
-|---|---|
-| `venv/bin/python code/realistic_pool_experiment.py --rerankers bge-m3` | `results/realistic_pool_<reranker>.json` |
-| `venv/bin/python code/leakage_probe.py` | `results/leakage_probe.json` |
-| `venv/bin/python code/ner_coverage.py` | `results/ner_coverage.json` |
-
-`legal_paper/prereg.md` records how the realistic-pool results are to be read;
-it is written before the runs on purpose.
+`results/*.json`; an unresolved placeholder fails the build (`--draft` renders
+the gaps in red instead, so the paper can still be read while data lands).
+Regenerate the JSON before rebuilding the PDF.
 
 ### Re-scoring the commercial APIs (costs money — normally skip)
 
 `code/run_experiment.py` is the only script that calls a paid API. It produced
 `results/*_full_raw.json` in February 2026 and should not need to run again.
-Voyage AI and Google Vertex AI credentials come from the environment; Cohere is
-called over plain HTTPS.
+Voyage AI credentials come from the environment; Google Vertex AI and Cohere
+are both called over plain HTTPS with `requests` (Google via a `gcloud auth
+print-access-token` subprocess call) — neither needs a vendor SDK installed.
 
 ---
 
@@ -147,18 +141,19 @@ code/                     analysis and experiment scripts
   deid_transforms.py      the de-identification variants under test
   run_experiment.py       API scoring (already run; do not re-run)
   analyze_single_stage.py, compounding_experiment.py,
-  deidentification_experiment.py                      main audit
-  realistic_pool_experiment.py, leakage_probe.py,
-  ner_coverage.py                                     realistic-pool study
+  deidentification_experiment.py,
+  generate_appendix_tables.py                         the audit + appendix data
 data/                     tidy third-party data + the build_*.py that make it
   PROVENANCE.md           URLs, licences, dates, manual steps  <- read this
   bls/, onet/, resumes/, name_gender.csv, category_to_soc.csv
   raw/                    downloads (git-ignored, re-downloadable)
 results/                  scored pairs, summary JSON, .tex table fragments
 legal_paper/              the paper (paper.md -> main.pdf via build.py)
-archive/paper/            abandoned earlier draft, kept for reference only
-REVIEW_TODO.md            the review and action list this work follows
 ```
+
+A deeper, unreleased extension of this work — real résumés, a name-detection
+coverage test, a residual-gender-leakage probe — exists privately and is not
+part of this repository; nothing in the paper depends on it.
 
 ### What is and is not tracked
 

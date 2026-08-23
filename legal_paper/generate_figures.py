@@ -26,13 +26,21 @@ Three input schemas changed in Aug 2026 (see REVIEW_TODO.md):
     PERCENTAGES (0-100). This script uses the new percentage fields only.
 
 House style: the paper is written for a reader with no technical background.
-No jargon in any axis label, legend or title -- say "re-ranker", "search
-step", "the man's document", "counterfactual pairs". Figures must stay legible in
+No jargon in any axis label, legend or title -- say "re-ranker", "retriever",
+"the man's document", "counterfactual pairs". Figures must stay legible in
 grayscale, so every categorical fill is separated by lightness as well as hue
 and every segment carries its number.
+
+REVIEW_ROUND2 A3: "search step" / "ranking model" were an earlier, simplified
+vocabulary the author asked to be reverted -- the paper now consistently says
+"retriever" / "re-ranker" (paper.md agrees). A9: paths below are now relative
+to this file rather than hard-coded to one machine's home directory, so this
+script (and the reproduction command in the top-level README) works after a
+fresh `git clone` anywhere.
 """
 import json
 import os
+from pathlib import Path
 
 import matplotlib
 matplotlib.use("Agg")
@@ -42,8 +50,9 @@ import numpy as np
 from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
 
-RESULTS = "/Users/vasyl/biasinrerankers/results"
-FIGDIR = "/Users/vasyl/biasinrerankers/legal_paper/figures"
+REPO_ROOT = Path(__file__).resolve().parent.parent
+RESULTS = str(REPO_ROOT / "results")
+FIGDIR = str(REPO_ROOT / "legal_paper" / "figures")
 os.makedirs(FIGDIR, exist_ok=True)
 
 plt.rcParams.update({"font.size": 9, "font.family": "serif"})
@@ -298,8 +307,8 @@ def fig_pipeline():
     cats = ["male", "female", "neutral", "ALL"]
     catlabel = {"male": "Male-typed\njobs", "female": "Female-typed\njobs",
                 "neutral": "Evenly split\njobs", "ALL": "All jobs"}
-    stages = [(f"emb_top{k}_m", "Search step only", "#9bbcd6"),
-              (f"rr_top{k}_m", "Ranking model only", "#5a8bbd"),
+    stages = [(f"emb_top{k}_m", "Retriever only", "#9bbcd6"),
+              (f"rr_top{k}_m", "Re-ranker only", "#5a8bbd"),
               (f"pipe_top{k}_m", "Full pipeline", "#23456b")]
 
     x = np.arange(len(cats))

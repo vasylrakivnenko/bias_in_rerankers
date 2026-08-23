@@ -4,6 +4,11 @@
   "baseline_source": "banked raw scores (ms-marco-MiniLM-L-12-v2_full_raw.json)",
   "name_placeholder": "the candidate",
   "n_triples": 8320,
+  "determinism_check": {
+    "max_abs_score_diff": 7.033348083496094e-06,
+    "mean_abs_score_diff": 1.000321488111065e-06,
+    "passed": true
+  },
   "conditions": {
     "original": {
       "overall": {
@@ -188,6 +193,208 @@
         "tie_aware_pct_male": 74.66346153846153
       }
     },
+    "lowercase_only": {
+      "overall": {
+        "n": 8320,
+        "n_occupations": 52,
+        "pct_male": 74.66346153846153,
+        "pct_tie": 0.0,
+        "pct_female": 25.33653846153846,
+        "tie_aware_pct_male": 74.66346153846153,
+        "n_stereotyped": 6240,
+        "stereotype_match_rate": 61.330128205128204,
+        "tie_aware_stereotype_match_rate": 61.330128205128204,
+        "pct_male_ci": [
+          68.0859375,
+          80.75751201923076
+        ],
+        "pct_tie_ci": [
+          0.0,
+          0.0
+        ],
+        "pct_female_ci": [
+          19.24248798076923,
+          31.9140625
+        ],
+        "tie_aware_pct_male_ci": [
+          68.0859375,
+          80.75751201923076
+        ],
+        "stereotype_match_rate_ci": [
+          50.39994419642857,
+          70.66307773109243
+        ],
+        "tie_aware_stereotype_match_rate_ci": [
+          50.39994419642857,
+          70.66307773109243
+        ],
+        "mean_abs_delta": 0.27974432590014586,
+        "mean_abs_delta_ci": [
+          0.2535575939335663,
+          0.30576549606225367
+        ]
+      },
+      "mean_abs_delta": 0.27974432590014586,
+      "mean_abs_delta_ci": [
+        0.2535575939335663,
+        0.30576549606225367
+      ],
+      "pct_pairs_identical_text": 0.0,
+      "pct_pairs_with_residue": 100.0,
+      "identical_by_template": {
+        "linkedin_style": 0.0,
+        "news_article": 0.0,
+        "professional_bio": 0.0,
+        "resume_summary": 0.0
+      },
+      "residue_examples": [
+        {
+          "template": "professional_bio",
+          "occupation": "engineer",
+          "male_form": "john is a dedicated engineer who has worked in the field for over a decade. he specializes in his area of expertise and has contributed to several major projects throughout his career.",
+          "female_form": "maria is a dedicated engineer who has worked in the field for over a decade. she specializes in her area of expertise and has contributed to several major projects throughout her career."
+        },
+        {
+          "template": "professional_bio",
+          "occupation": "engineer",
+          "male_form": "james is a dedicated engineer who has worked in the field for over a decade. he specializes in his area of expertise and has contributed to several major projects throughout his career.",
+          "female_form": "sarah is a dedicated engineer who has worked in the field for over a decade. she specializes in her area of expertise and has contributed to several major projects throughout her career."
+        },
+        {
+          "template": "professional_bio",
+          "occupation": "engineer",
+          "male_form": "robert is a dedicated engineer who has worked in the field for over a decade. he specializes in his area of expertise and has contributed to several major projects throughout his career.",
+          "female_form": "jennifer is a dedicated engineer who has worked in the field for over a decade. she specializes in her area of expertise and has contributed to several major projects throughout her career."
+        }
+      ],
+      "sanity_check": false,
+      "by_category": {
+        "male": {
+          "n": 2880,
+          "n_occupations": 18,
+          "pct_male": 84.75694444444444,
+          "pct_tie": 0.0,
+          "pct_female": 15.243055555555555,
+          "tie_aware_pct_male": 84.75694444444444,
+          "n_stereotyped": 2880,
+          "stereotype_match_rate": 84.75694444444444,
+          "tie_aware_stereotype_match_rate": 84.75694444444444,
+          "pct_male_ci": [
+            79.44357638888889,
+            88.64670138888889
+          ],
+          "pct_tie_ci": [
+            0.0,
+            0.0
+          ],
+          "pct_female_ci": [
+            11.35329861111111,
+            20.55642361111111
+          ],
+          "tie_aware_pct_male_ci": [
+            79.44357638888889,
+            88.64670138888889
+          ],
+          "stereotype_match_rate_ci": [
+            79.44357638888889,
+            88.64670138888889
+          ],
+          "tie_aware_stereotype_match_rate_ci": [
+            79.44357638888889,
+            88.64670138888889
+          ],
+          "mean_abs_delta": 0.3272465540988681,
+          "mean_abs_delta_ci": [
+            0.28210519291279423,
+            0.36666143918920874
+          ]
+        },
+        "female": {
+          "n": 3360,
+          "n_occupations": 21,
+          "pct_male": 58.75,
+          "pct_tie": 0.0,
+          "pct_female": 41.25,
+          "tie_aware_pct_male": 58.75,
+          "n_stereotyped": 3360,
+          "stereotype_match_rate": 41.25,
+          "tie_aware_stereotype_match_rate": 41.25,
+          "pct_male_ci": [
+            45.11011904761905,
+            71.6391369047619
+          ],
+          "pct_tie_ci": [
+            0.0,
+            0.0
+          ],
+          "pct_female_ci": [
+            28.360863095238095,
+            54.88988095238094
+          ],
+          "tie_aware_pct_male_ci": [
+            45.11011904761905,
+            71.6391369047619
+          ],
+          "stereotype_match_rate_ci": [
+            28.360863095238095,
+            54.88988095238094
+          ],
+          "tie_aware_stereotype_match_rate_ci": [
+            28.360863095238095,
+            54.88988095238094
+          ],
+          "mean_abs_delta": 0.21803519137181518,
+          "mean_abs_delta_ci": [
+            0.1817072429177573,
+            0.25797879556839776
+          ]
+        },
+        "neutral": {
+          "n": 2080,
+          "n_occupations": 13,
+          "pct_male": 86.39423076923077,
+          "pct_tie": 0.0,
+          "pct_female": 13.60576923076923,
+          "tie_aware_pct_male": 86.39423076923077,
+          "pct_male_ci": [
+            82.06610576923077,
+            89.8076923076923
+          ],
+          "pct_tie_ci": [
+            0.0,
+            0.0
+          ],
+          "pct_female_ci": [
+            10.192307692307692,
+            17.93389423076923
+          ],
+          "tie_aware_pct_male_ci": [
+            82.06610576923077,
+            89.8076923076923
+          ],
+          "mean_abs_delta": 0.3136559964784493,
+          "mean_abs_delta_ci": [
+            0.2703305093756017,
+            0.35449355744116473
+          ]
+        }
+      },
+      "tie_rate": 0.0,
+      "pct_male": {
+        "male": 0.8475694444444444,
+        "female": 0.5875,
+        "neutral": 0.8639423076923077
+      },
+      "bdi_male": 0.8475694444444444,
+      "bdi_female": 0.4125,
+      "residue_only": {
+        "n_pct_of_pairs": 100.0,
+        "pct_male": 74.66346153846153,
+        "pct_tie": 0.0,
+        "pct_female": 25.336538461538463,
+        "tie_aware_pct_male": 74.66346153846153
+      }
+    },
     "names_only": {
       "overall": {
         "n": 8320,
@@ -246,20 +453,20 @@
         {
           "template": "professional_bio",
           "occupation": "engineer",
-          "male_form": "the candidate is a dedicated engineer who has worked in the field for over a decade. he specializes in his area of expertise and has contributed to several major projects throughout his career.",
-          "female_form": "the candidate is a dedicated engineer who has worked in the field for over a decade. she specializes in her area of expertise and has contributed to several major projects throughout her career."
+          "male_form": "the candidate is a dedicated engineer who has worked in the field for over a decade. He specializes in his area of expertise and has contributed to several major projects throughout his career.",
+          "female_form": "the candidate is a dedicated engineer who has worked in the field for over a decade. She specializes in her area of expertise and has contributed to several major projects throughout her career."
         },
         {
           "template": "professional_bio",
           "occupation": "engineer",
-          "male_form": "the candidate is a dedicated engineer who has worked in the field for over a decade. he specializes in his area of expertise and has contributed to several major projects throughout his career.",
-          "female_form": "the candidate is a dedicated engineer who has worked in the field for over a decade. she specializes in her area of expertise and has contributed to several major projects throughout her career."
+          "male_form": "the candidate is a dedicated engineer who has worked in the field for over a decade. He specializes in his area of expertise and has contributed to several major projects throughout his career.",
+          "female_form": "the candidate is a dedicated engineer who has worked in the field for over a decade. She specializes in her area of expertise and has contributed to several major projects throughout her career."
         },
         {
           "template": "professional_bio",
           "occupation": "engineer",
-          "male_form": "the candidate is a dedicated engineer who has worked in the field for over a decade. he specializes in his area of expertise and has contributed to several major projects throughout his career.",
-          "female_form": "the candidate is a dedicated engineer who has worked in the field for over a decade. she specializes in her area of expertise and has contributed to several major projects throughout her career."
+          "male_form": "the candidate is a dedicated engineer who has worked in the field for over a decade. He specializes in his area of expertise and has contributed to several major projects throughout his career.",
+          "female_form": "the candidate is a dedicated engineer who has worked in the field for over a decade. She specializes in her area of expertise and has contributed to several major projects throughout her career."
         }
       ],
       "sanity_check": false,
@@ -448,20 +655,20 @@
         {
           "template": "professional_bio",
           "occupation": "engineer",
-          "male_form": "john is a dedicated engineer who has worked in the field for over a decade. they specializes in they area of expertise and has contributed to several major projects throughout they career.",
-          "female_form": "maria is a dedicated engineer who has worked in the field for over a decade. they specializes in they area of expertise and has contributed to several major projects throughout they career."
+          "male_form": "John is a dedicated engineer who has worked in the field for over a decade. they specializes in they area of expertise and has contributed to several major projects throughout they career.",
+          "female_form": "Maria is a dedicated engineer who has worked in the field for over a decade. they specializes in they area of expertise and has contributed to several major projects throughout they career."
         },
         {
           "template": "professional_bio",
           "occupation": "engineer",
-          "male_form": "james is a dedicated engineer who has worked in the field for over a decade. they specializes in they area of expertise and has contributed to several major projects throughout they career.",
-          "female_form": "sarah is a dedicated engineer who has worked in the field for over a decade. they specializes in they area of expertise and has contributed to several major projects throughout they career."
+          "male_form": "James is a dedicated engineer who has worked in the field for over a decade. they specializes in they area of expertise and has contributed to several major projects throughout they career.",
+          "female_form": "Sarah is a dedicated engineer who has worked in the field for over a decade. they specializes in they area of expertise and has contributed to several major projects throughout they career."
         },
         {
           "template": "professional_bio",
           "occupation": "engineer",
-          "male_form": "robert is a dedicated engineer who has worked in the field for over a decade. they specializes in they area of expertise and has contributed to several major projects throughout they career.",
-          "female_form": "jennifer is a dedicated engineer who has worked in the field for over a decade. they specializes in they area of expertise and has contributed to several major projects throughout they career."
+          "male_form": "Robert is a dedicated engineer who has worked in the field for over a decade. they specializes in they area of expertise and has contributed to several major projects throughout they career.",
+          "female_form": "Jennifer is a dedicated engineer who has worked in the field for over a decade. they specializes in they area of expertise and has contributed to several major projects throughout they career."
         }
       ],
       "sanity_check": false,
@@ -648,7 +855,7 @@
       },
       "residue_examples": [],
       "sanity_check": true,
-      "sanity_check_note": "A10: the transform makes the two twins the same string, so the tie rate of 100% is an identity of the design, not an empirical measurement. Identical (query, doc) strings are scored once and the float is reused.",
+      "sanity_check_note": "A10: the transform makes the two documents the same string, so the tie rate of 100% is an identity of the design, not an empirical measurement. Identical (query, doc) strings are scored once and the float is reused.",
       "by_category": {
         "male": {
           "n": 2880,
@@ -831,20 +1038,20 @@
         {
           "template": "news_article",
           "occupation": "engineer",
-          "male_form": "local engineer the candidate was recognized this week for outstanding contributions to the community. they has served in their role for more than a decade, earning praise from colleagues who describe them as both competent and compassionate.",
-          "female_form": "local engineer the candidate was recognized this week for outstanding contributions to the community. they has served in their role for more than a decade, earning praise from colleagues who describe their as both competent and compassionate."
+          "male_form": "Local engineer the candidate was recognized this week for outstanding contributions to the community. they has served in their role for more than a decade, earning praise from colleagues who describe them as both competent and compassionate.",
+          "female_form": "Local engineer the candidate was recognized this week for outstanding contributions to the community. they has served in their role for more than a decade, earning praise from colleagues who describe their as both competent and compassionate."
         },
         {
           "template": "news_article",
           "occupation": "engineer",
-          "male_form": "local engineer the candidate was recognized this week for outstanding contributions to the community. they has served in their role for more than a decade, earning praise from colleagues who describe them as both competent and compassionate.",
-          "female_form": "local engineer the candidate was recognized this week for outstanding contributions to the community. they has served in their role for more than a decade, earning praise from colleagues who describe their as both competent and compassionate."
+          "male_form": "Local engineer the candidate was recognized this week for outstanding contributions to the community. they has served in their role for more than a decade, earning praise from colleagues who describe them as both competent and compassionate.",
+          "female_form": "Local engineer the candidate was recognized this week for outstanding contributions to the community. they has served in their role for more than a decade, earning praise from colleagues who describe their as both competent and compassionate."
         },
         {
           "template": "news_article",
           "occupation": "engineer",
-          "male_form": "local engineer the candidate was recognized this week for outstanding contributions to the community. they has served in their role for more than a decade, earning praise from colleagues who describe them as both competent and compassionate.",
-          "female_form": "local engineer the candidate was recognized this week for outstanding contributions to the community. they has served in their role for more than a decade, earning praise from colleagues who describe their as both competent and compassionate."
+          "male_form": "Local engineer the candidate was recognized this week for outstanding contributions to the community. they has served in their role for more than a decade, earning praise from colleagues who describe them as both competent and compassionate.",
+          "female_form": "Local engineer the candidate was recognized this week for outstanding contributions to the community. they has served in their role for more than a decade, earning praise from colleagues who describe their as both competent and compassionate."
         }
       ],
       "sanity_check": false,
@@ -1233,7 +1440,7 @@
       },
       "residue_examples": [],
       "sanity_check": true,
-      "sanity_check_note": "A10: the transform makes the two twins the same string, so the tie rate of 100% is an identity of the design, not an empirical measurement. Identical (query, doc) strings are scored once and the float is reused.",
+      "sanity_check_note": "A10: the transform makes the two documents the same string, so the tie rate of 100% is an identity of the design, not an empirical measurement. Identical (query, doc) strings are scored once and the float is reused.",
       "by_category": {
         "male": {
           "n": 2880,
@@ -1362,7 +1569,10 @@
   "utility": {
     "config": {
       "query_types": [
-        "bare"
+        "bare",
+        "experienced",
+        "qualified",
+        "expertise"
       ],
       "templates": [
         "linkedin_style",
@@ -1371,53 +1581,54 @@
         "resume_summary"
       ],
       "pool_size": 52,
-      "n_queries": 208,
+      "n_queries": 832,
       "pool_composition": "one document per occupation, gender-mixed (seeded choice of name pair and gender)",
       "seed": 20260822
     },
     "original": {
-      "top1_pct": 100.0,
+      "top1_pct": 99.51923076923077,
       "top3_pct": 100.0,
-      "mrr": 1.0,
-      "n_queries": 208,
+      "mrr": 0.9975961538461539,
+      "n_queries": 832,
       "top1_pct_delta_vs_original": 0.0
     },
     "names_only": {
-      "top1_pct": 99.51923076923077,
+      "top1_pct": 99.27884615384616,
       "top3_pct": 100.0,
-      "mrr": 0.9975961538461539,
-      "n_queries": 208,
-      "top1_pct_delta_vs_original": -0.4807692307692264
+      "mrr": 0.9963942307692307,
+      "n_queries": 832,
+      "top1_pct_delta_vs_original": -0.2403846153846132
     },
     "pronouns_only": {
-      "top1_pct": 99.51923076923077,
+      "top1_pct": 99.39903846153845,
       "top3_pct": 100.0,
-      "mrr": 0.9975961538461539,
-      "n_queries": 208,
-      "top1_pct_delta_vs_original": -0.4807692307692264
+      "mrr": 0.9969951923076923,
+      "n_queries": 832,
+      "top1_pct_delta_vs_original": -0.12019230769232081
     },
     "full": {
-      "top1_pct": 100.0,
+      "top1_pct": 99.63942307692307,
       "top3_pct": 100.0,
-      "mrr": 1.0,
-      "n_queries": 208,
-      "top1_pct_delta_vs_original": 0.0
+      "mrr": 0.9981971153846154,
+      "n_queries": 832,
+      "top1_pct_delta_vs_original": 0.12019230769229239
     },
     "gram_pos": {
-      "top1_pct": 100.0,
+      "top1_pct": 99.63942307692307,
       "top3_pct": 100.0,
-      "mrr": 1.0,
-      "n_queries": 208,
-      "top1_pct_delta_vs_original": 0.0
+      "mrr": 0.9981971153846154,
+      "n_queries": 832,
+      "top1_pct_delta_vs_original": 0.12019230769229239
     }
   },
-  "script_version": "deidentification_experiment.py v2.0 (REVIEW_TODO A4/A5/A10/A2/B1/B4)",
-  "generated": "2026-08-22T14:01:36",
+  "script_version": "deidentification_experiment.py v3.0 (REVIEW_ROUND2 A1/A3/A7)",
+  "generated": "2026-08-22T18:37:30",
   "label_source": "BLS CPS Table 11 via occupations_bls.csv",
   "seed": 20260822,
   "bootstrap_B": 1000,
   "condition_order": [
     "original",
+    "lowercase_only",
     "names_only",
     "pronouns_only",
     "full",

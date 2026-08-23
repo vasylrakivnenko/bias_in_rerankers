@@ -88,3 +88,6 @@ results/.span_cache_*.json
 # outlier-driven neutral claim, the misattributed vendor citation).
 # Publishing it alongside the corrected paper invites miscitation.
 legal_paper/Bias_in_neural_rerankers_draft_v01.pdf
+
+# Second internal review (not part of the release)
+REVIEW_ROUND2.md

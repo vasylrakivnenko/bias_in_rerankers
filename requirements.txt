@@ -29,6 +29,9 @@ tqdm==4.67.3
 # Only needed to RE-SCORE the API models (run_experiment.py). The banked raw
 # scores in results/*_full_raw.json are enough for every published number, so
 # these are optional for reproduction and cost money to exercise.
-voyageai==0.2.4                       # Voyage AI rerank-1 / rerank-2 / rerank-2.5
-google-cloud-discoveryengine==0.17.0  # Google Vertex AI semantic-ranker-*
-# Cohere rerank-v4.0 was called over plain HTTPS via `requests`; no SDK pinned.
+voyageai==0.2.4   # Voyage AI rerank-1 / rerank-2 / rerank-2.5
+# Google Vertex AI (semantic-ranker-*) and Cohere rerank-v4.0 were both called
+# over plain HTTPS via `requests` (Google via `gcloud auth print-access-token`
+# through a subprocess call, not the google-cloud-discoveryengine SDK); no
+# extra package needed for either. (REVIEW_ROUND2 A10: an unused SDK pin was
+# removed here -- run_experiment.py never imports google.cloud.*.)

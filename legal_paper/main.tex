@@ -57,7 +57,7 @@
 \begin{abstract}
 \noindent
 
-Hiring tools increasingly sort applicants automatically. A retriever pulls plausible resumes from a large pool. A re-ranker then puts them in final order. We audited 14 widely used re-rankers with counterfactual pairs: texts identical except for the candidate's name and pronouns. All 14 favored men more often for male-typed jobs than for female-typed ones. Which way a model leans by default is a property of that product, and cannot be known without testing it. In a simulated pool of 20 equally qualified candidates, one common pipeline gave men 79\% of shortlist places, about four in every five. Removing names and pronouns before scoring removes the difference, because it removes the only thing that differs. Half-measures do not: deleting names alone leaves the direction almost perfectly consistent. We argue that de-identification is a cheap, auditable, less discriminatory alternative that deployers should be expected to adopt.
+Hiring tools increasingly sort applicants automatically. A retriever pulls plausible resumes from a large pool. A re-ranker then puts them in final order. We audited 14 commercial and open-source re-rankers with counterfactual pairs: texts identical except for the candidate's name and pronouns. All 14 favored men more often for male-typed jobs than for female-typed ones. Which way a model leans by default is a property of that product, and cannot be known without testing it. In a simulated pool of 20 equally qualified candidates, one common pipeline gave men 79\% of shortlist places, about four in every five. Removing names and pronouns before scoring removes the difference, because it removes the only thing that differs. Half-measures do not: deleting names alone leaves the direction almost perfectly consistent. We argue that de-identification is a cheap, auditable, less discriminatory alternative that deployers should be expected to adopt.
 
 \end{abstract}
 
@@ -65,9 +65,9 @@ Hiring tools increasingly sort applicants automatically. A retriever pulls plaus
 
 Software that sorts job applicants usually works in two steps \cite{nogueira2019}. A \emph{retriever} scans a large pool and pulls out a few dozen plausible candidates. A \emph{re-ranker} then reads each one against the job description and fixes the final order. The retriever is the clerk who pulls a stack of files; the re-ranker is the decision-maker who reads them and arranges them best-first. The people at the top of that order get looked at. The rest, in practice, do not.
 
-This is not hypothetical. LinkedIn Recruiter returns a ranked list of candidates \cite{linkedin}. Indeed builds ranking systems to match job seekers to roles \cite{indeed}. Google sells a job-search ranking service to employers \cite{google}. Published resume-matching systems score a job description and a candidate document together, using exactly the kind of re-ranker we audit \cite{shpjf,confit}.
+This is not hypothetical. LinkedIn Recruiter returns a ranked list of candidates \cite{linkedin}; the same ranking technology runs the job-seeker side of the market at Indeed and Google \cite{indeed,google}. Published resume-matching systems score a job description and a candidate document together, using the same family of neural rankers we audit \cite{shpjf,confit}.
 
-Researchers have shown that the retriever carries gender bias \cite{caliskan2017,rakivnenko2024,wilson2024}. The re-ranker has drawn far less attention, and no prior audit scores identical candidates across commercial ranking products. That is the wrong way round. The re-ranker has the last word, and it decides who appears at the top of the recruiter's screen.
+Researchers have shown that the embedding models behind the retriever carry gender bias \cite{caliskan2017,rakivnenko2024,wilson2024}. The re-ranker has been studied far less, and in a different way: no prior audit scores identical candidates across commercial ranking products. That is the wrong way round. The re-ranker has the last word, and it decides who appears at the top of the recruiter's screen.
 
 Gender bias in neural rankers is not new. Rekabsaz and Schedl showed that BERT rankers surface more male-oriented passages than keyword search for neutral queries \cite{rekabsaz2020}, and later added an adversarial fix \cite{rekabsaz2021}. Both papers ask what the retrieved text is about, not how two candidates who differ only by sex are scored. Audits of language models do ask that, and they disagree on direction. One study of large language models scoring resumes finds an advantage for women \cite{an2025}; an embedding-based resume screener favors male-associated names \cite{wilson2024}. We run the counterfactual test on the re-rankers that commercial hiring stacks actually use, and follow it through to who makes the shortlist.
 
@@ -75,23 +75,23 @@ Two legal regimes already cover this ground. In the United States, a neutral-loo
 
 \section{What we did}
 
-Our test is a counterfactual pair: two versions of the same professional document. They are identical word for word, except for the candidate's name and pronouns. Any difference in score must therefore come from gender, because nothing else differs. We built these documents from 4 templates across 52 occupations. We varied 10 common American given names of each sex, taken from national birth-name records \cite{ssa2026}. We used 4 ways of phrasing the search. That yields 8,320 counterfactual pairs per model.
+Our test is a counterfactual pair: two versions of the same professional document. They are identical word for word, except for the candidate's name and pronouns. Any difference in score must therefore come from gender, because nothing else differs. We built these documents from 4 templates across 52 occupations. We varied 10 common American given names of each sex, taken from national birth-name records \cite{ssa2026}. We used 4 ways of phrasing the search. That yields 8,320 counterfactual pairs per model. The appendix shows the templates, the query forms, and the name pairs in full.
 
-We label each occupation by the share of women employed in it, from the federal labor-force survey \cite{bls2025}. 18 occupations are male-typed, 21 are female-typed, and 13 are close to evenly split. The evenly split group carries most of the legal weight, because nobody can claim those jobs require a particular sex.
+We scored 82 occupations, then labeled each by the share of women employed in it, from the federal labor-force survey \cite{bls2025}. 30 occupations had no usable labor-force figure -- no matching category, a suppressed estimate, or a share too close to the 30\% and 70\% cutoffs to call -- and are excluded from every number in this paper; the appendix lists all of them, with the reason for each. Of the remaining 52, 18 are male-typed, 21 are female-typed, and 13 are close to evenly split. The evenly split group carries most of the legal weight, because nobody can claim those jobs require a particular sex.
 
-We scored every counterfactual pair with 14 re-rankers, both commercial and open-source. Some models return coarse scores that give the two documents exactly the same number. We count those ties as ties, and never credit them to either side. The appendix lists every model, its vendor, and its tie rate.
+We scored every counterfactual pair with 14 re-rankers, both commercial and open-source. Some models return coarse scores that give the two documents exactly the same number. We count those ties as ties. The tables report them in their own column; where we need a single share, a tie counts as half a win for each document. The appendix lists every model, its vendor, and its tie rate.
 
-To see what this does in practice, we simulated a pool of candidates for one job. It holds 20 documents, half with men's names and half with women's, identical in every other respect. Because the candidates are by construction equally qualified, a fair system should treat them interchangeably. We ran the pool through a common open-source pipeline and recorded who made the top three. Finally, we re-scored everything after stripping gender markers, at several strengths, to see which strengths actually work.
+To see what this does in practice, we simulated a pool of candidates for one job. It holds 20 documents, half with men's names and half with women's, identical in every other respect. Because the candidates are by construction equally qualified, a fair system should treat them interchangeably. We ran the pool through a common open-source pipeline -- the retriever BAAI/bge-large-en-v1.5 feeding its top 10 candidates to the re-ranker BAAI/bge-reranker-v2-m3 -- and recorded who made the top three. Finally, we re-scored everything after stripping gender markers, at several strengths, to see which strengths actually work.
 
 \section{What we found}
 
 \subsection{Identical candidates are not scored equally}
 
-All 14 models favored the man more often for male-typed jobs than for female-typed ones. The size of that gap varies; its direction never does. For male-typed jobs the middle model favored the man in 74\% of comparisons, about three in every four. For female-typed jobs the middle model favored the man in only 33\%. Nothing changed between the two documents but the name and the pronouns. The tilt is not random. It follows the same stereotype that would be unlawful in a human screener.
+All 14 models favored the man more often for male-typed jobs than for female-typed ones. The size of that gap varies; its direction never does. For male-typed jobs the median model favored the man in 79\% of comparisons, about four in every five. For female-typed jobs the median model favored the man in only 37\%. Nothing changed between the two documents but the name and the pronouns. The tilt is not random. It follows the same stereotype that would be unlawful in a human screener.
 
-Where a model sits by default is a different matter. On jobs the labor market splits evenly, the middle model favored the man in 56\% of comparisons, just over half the time. But the models themselves disagree: 8 of the 14 lean toward men on those jobs, and 6 lean the other way. A buyer therefore cannot guess which sex a given product disadvantages. The direction is invisible from the outside, and knowable only by testing.
+Where a model sits by default is a different matter. On jobs the labor market splits evenly, the median model favored the man in 63\% of comparisons, about three in every five. But the models themselves disagree: 10 of the 14 lean toward men on those jobs, and 4 lean the other way. A buyer therefore cannot guess which sex a given product disadvantages. The direction is invisible from the outside, and knowable only by testing.
 
-\begin{figure}[t]
+\begin{figure}[tbp]
 \centering
 \includegraphics[width=0.78\linewidth]{figures/fig_single_stage.pdf}
 \caption{Each point is one re-ranker: how often it favored the man's document
@@ -112,7 +112,7 @@ Where the two stages disagree, the effect reverses. On female-typed jobs the ret
 
 Favoring either sex among interchangeable candidates is a disparity, so none of these figures is the right answer. Two lessons follow. The pipeline cannot be read off either stage alone; what matters is whether the two happen to agree. And fixing the retriever achieves little on its own, because the re-ranker has the last word.
 
-\begin{figure}[t]
+\begin{figure}[tbp]
 \centering
 \includegraphics[width=0.82\linewidth]{figures/fig_pipeline.pdf}
 \caption{Share of top-three shortlist places going to men's names, in a pool of
@@ -123,11 +123,13 @@ alone, and the two combined.}
 
 \subsection{Removing the markers removes the gap, if you remove all of them}
 
-If both documents become the same text, any model must score them the same. Our full transform replaces the name and neutralises the pronouns, and every pair then ties. That is a check on the argument rather than a discovery, because identical texts cannot be scored differently. Half-measures are the interesting case: deleting names but leaving pronouns makes the average score difference \emph{smaller}, from 0.036 to 0.033 on this model's own scale. But it makes the direction almost perfectly consistent: the man's document wins 99.7\% of male-typed comparisons, up from 87\%. Names carry a large effect that varies from pair to pair, while pronouns carry a small one that always points the same way.
+If both documents become the same text, any model must score them the same. Our full transform replaces the name and neutralises the pronouns, and every pair then ties. That is a check on the argument rather than a discovery, because identical texts cannot be scored differently. Half-measures are the interesting case, and they cut the other way from what you might guess.
 
-So a half-transform is not half a fix. The obvious repair, rewriting pronouns as \emph{they}, \emph{them}, and \emph{their}, works only if the rewriter understands grammar. English \emph{her} is both possessive and object, so mapping it to one word leaves the pair differing by a word. That happens on 25\% of pairs, and the model scores every one of them differently. A rewriter that checks each word's part of speech makes the two documents identical and keeps the text readable. Neither route costs accuracy: the right candidate came out on top 99.5\% of the time, exactly as before.
+Deleting names but leaving pronouns does not shrink the score gap -- if anything it is slightly larger: 0.038 against 0.036. What changes is consistency: the man's document wins 98.6\% of male-typed comparisons, up from 87\%. Removing the name does not take away a large signal and leave a small one behind. It takes away the noisier signal and leaves the more consistent one. Neutralising pronouns but keeping the name shows the same thing from the other side: the gap falls to 0.024. This pattern is not identical on every re-ranker we tested; the appendix repeats it on three more.
 
-\begin{figure}[t]
+So a half-transform is not half a fix. The obvious repair, rewriting pronouns as \emph{they}, \emph{them}, and \emph{their}, works only if the rewriter understands grammar. English \emph{her} is both possessive and object, so mapping it to one word leaves the pair differing by a word. That happens on 25\% of pairs, and where it happens 96\% of the leftovers favor the woman's document, not the man's. A rewriter that checks each word's part of speech avoids the mistake and keeps the text readable. Neither route costs accuracy: the right candidate came out on top 99.8\% of the time, slightly more often than the 99.4\% before any transform.
+
+\begin{figure}[tbp]
 \centering
 \includegraphics[width=0.82\linewidth]{figures/fig_deid.pdf}
 \caption{Who scores higher under each de-identification rule, across all counterfactual
@@ -153,7 +155,7 @@ The direction of a model's default lean is a property of the individual product.
 
 \paragraph{The evenly split jobs are the sharpest case.}
 
-For a job the labor market divides evenly between men and women, no business-necessity story is available. An employer cannot argue that the work requires men. Yet the shortlist for those jobs was 77\% male. The skew is not a feature of the work. It is a property of the software.
+For a job the labor market divides evenly between men and women, no business-necessity story is available. An employer cannot argue that the work requires men. Yet the shortlist for those jobs was 77\% male. The skew is not a feature of the work. It is a property of the software, and a different re-ranker skews the other way (the appendix repeats the pipeline behind every audited re-ranker).
 
 \paragraph{De-identification is a textbook less discriminatory alternative.}
 
@@ -180,13 +182,13 @@ The guarantee is simple, and it does not require trusting the model. Once the on
 
 Our transform removes gender only from the channels it covers. Real resumes signal gender in other ways: single-sex schools, gendered awards, sports, writing style. Removing names and pronouns is therefore necessary but not sufficient in the field. Our documents are short synthetic templates rather than real applications.
 
-The pipeline and de-identification results come from one model pair, while the 14-model audit covers only the single-document test. Our names are among the most common American given names and are mostly associated with White Americans, so we cannot separate gender from race. We treat gender as binary, which real applicants are not. The commercial models are black boxes, so we report the version strings and query dates in the appendix.
+The pipeline and de-identification results use one open-source pair as the worked example. The appendix repeats the pipeline behind every audited re-ranker and the de-identification test on four open-weight re-rankers, and the pattern is not identical across them. Our names are among the most common American given names and are mostly associated with White Americans, so we cannot separate gender from race. We treat gender as binary, which real applicants are not. The commercial models are black boxes, so we report the version strings and query dates in the appendix. One of the four open-weight re-rankers did not exactly reproduce its own earlier scores on a plain re-run, a caveat noted where that table appears.
 
 One structural point deserves care in any extension to real documents. The two stages need not read the same text. Our retriever accepts 512 tokens; our re-ranker accepts 8,192. On a long resume the two stages would therefore score different amounts of the same candidate, and some of the divergence we attribute to the re-ranker would instead be an artifact of what each stage could see. Our documents are short enough that neither model truncates anything, so the comparison here is clean. It would not be on real resumes.
 
 \section{Conclusion}
 
-Ranking models score identical men and women differently, and the difference tracks job stereotypes. Which sex a given model favors by default cannot be known without testing it. In a pool of interchangeable candidates, one common pipeline gave men 79\% of shortlist places, and the re-ranker overrode the retriever. Removing names and pronouns before scoring removes the difference, because it removes the only thing that differs. The fix is cheap, checkable, and available today, and deployers should be expected to use it.
+Re-rankers score identical men and women differently, and the difference tracks job stereotypes. Which sex a given model favors by default cannot be known without testing it. In a pool of interchangeable candidates, one common pipeline gave men 79\% of shortlist places, and the re-ranker overrode the retriever. Removing names and pronouns before scoring removes the difference, because it removes the only thing that differs. The fix is cheap, checkable, and available today, and deployers should be expected to use it.
 
 \paragraph{Data and code availability.}
 
@@ -204,11 +206,165 @@ The dataset generator, the model scores, the pipeline simulation, and the de-ide
 
 \textbf{Favoring the man.} The share of counterfactual pairs in which the man's score is strictly higher. Equal scores are counted as ties and reported in their own column, never credited to either side.
 
+\textbf{Tie-aware share.} The share favoring the man's document with each tie counted as half a win for each side. Figure 1, the last column of Table A2, and every single share reported in the main text use this convention; the tables that break results down further also show the plain three-way split.
+
 \textbf{Shortlist.} The top 3 of a pool of 20 equally qualified candidates for one job.
 
 \textbf{Occupation labels.} Male-typed, female-typed, or evenly split, assigned from federal labor-force statistics on the share of women employed in each occupation.
 
-\textbf{Confidence intervals.} The counterfactual pairs are not independent, because they are built from the same occupations, names, and templates. All intervals resample whole occupations rather than individual comparisons.
+\textbf{Confidence intervals.} The counterfactual pairs are not independent, because they are built from the same occupations, names, and templates. All intervals resample whole occupations rather than individual comparisons. They do not additionally resample name pairs or templates, whose effects are large (see Robustness); the true uncertainty is therefore somewhat wider than the reported ranges.
+
+\section{The documents and the occupations}
+
+The four templates below are shown with their name and pronoun slots left as brackets, filled in for each of the ten name pairs and each of the eighty-two occupations we scored. The query forms and the name pairs, with each name's share female in national birth records, are the complete lists actually used.
+
+% Generated by code/generate_appendix_tables.py -- do not edit by hand.
+% Source: code/synthetic_dataset.py (TEMPLATES, QUERY_TYPES, NAME_PAIRS)
+%         and data/name_gender.csv (SSA female-share lookup).
+
+\textbf{Document templates}\\[4pt]
+\begin{description}
+\item[Short bio] ``[name] is a dedicated [occupation] who has worked in the field for over a decade. [he/she] specializes in [his/her] area of expertise and has contributed to several major projects throughout [his/her] career.''
+\item[Resume summary] ``Summary: Experienced [occupation] with over 10 years of professional experience. [name] has demonstrated consistent excellence in [his/her] role, leading initiatives that improved outcomes by 30\%. [he/she] is known for strong analytical skills and collaborative leadership.''
+\item[News mention] ``Local [occupation] [name] was recognized this week for outstanding contributions to the community. [he/she] has served in [his/her] role for more than a decade, earning praise from colleagues who describe [him/her] as both competent and compassionate.''
+\item[LinkedIn-style profile] ``[name] | [Occupation]
+Professional with 10+ years of experience in the field. [he/she] has built a track record of delivering results and mentoring junior colleagues. Passionate about advancing [his/her] craft and driving innovation.''
+\end{description}
+
+\bigskip
+\textbf{Query phrasings}\\[4pt]
+\begin{tabular}{ll}
+\toprule
+Label & Example \\
+\midrule
+Bare & engineer \\
+With ``experienced'' & experienced engineer \\
+With ``qualified ... professional'' & qualified engineer professional \\
+With ``expertise'' & engineer with expertise \\
+\bottomrule
+\end{tabular}
+
+\bigskip
+\textbf{Name pairs}\\[4pt]
+\begin{tabular}{llrr}
+\toprule
+Male name & Female name & \% female (male name) & \% female (female name) \\
+\midrule
+John & Maria & 0.36\% & 99.24\% \\
+James & Sarah & 0.42\% & 99.70\% \\
+Robert & Jennifer & 0.38\% & 99.67\% \\
+Michael & Jessica & 0.51\% & 99.65\% \\
+William & Elizabeth & 0.37\% & 99.67\% \\
+David & Linda & 0.36\% & 99.74\% \\
+Richard & Patricia & 0.35\% & 99.69\% \\
+Thomas & Barbara & 0.34\% & 99.74\% \\
+Daniel & Susan & 0.45\% & 99.77\% \\
+Christopher & Margaret & 0.50\% & 99.72\% \\
+\bottomrule
+\end{tabular}
+
+The table below lists the fifty-two occupations kept for analysis, with the federal labor-force share of women behind each label, and the thirty scored but dropped, with the reason for each.
+
+% Generated by code/generate_appendix_tables.py -- do not edit by hand.
+% Source: code/occupations_bls.csv.
+
+\begin{tabular}{p{1.3in}p{2.9in}rl}
+\toprule
+Occupation & BLS occupation title & \% women (BLS) & Label \\
+\midrule
+architect & Architects, except landscape and naval & 29.8\% & male \\
+carpenter & Carpenters & 3.1\% & male \\
+construction worker & Construction laborers & 4.7\% & male \\
+developer & Software developers & 20.3\% & male \\
+driver & Driver/sales workers and truck drivers & 7.7\% & male \\
+electrician & Electricians & 3.5\% & male \\
+engineer & Engineers, all other & 17.9\% & male \\
+farmer & Farmers, ranchers, and other agricultural managers & 25.7\% & male \\
+firefighter & Firefighters & 5.1\% & male \\
+guard & Security guards and gambling surveillance officers & 22.9\% & male \\
+laborer & Laborers and freight, stock, and material movers, hand & 24.6\% & male \\
+mechanic & Automotive service technicians and mechanics & 1.8\% & male \\
+mover & Laborers and freight, stock, and material movers, hand & 24.6\% & male \\
+pilot & Aircraft pilots and flight engineers & 7.0\% & male \\
+plumber & Plumbers, pipefitters, and steamfitters & 3.1\% & male \\
+programmer & Computer programmers & 18.5\% & male \\
+sheriff & Police officers & 16.4\% & male \\
+surgeon & Surgeons & 25.9\% & male \\
+accountant & Accountants and auditors & 59.1\% & neutral \\
+analyst & Management analysts & 40.7\% & neutral \\
+artist & Artists and related workers & 59.9\% & neutral \\
+auditor & Accountants and auditors & 59.1\% & neutral \\
+consultant & Management analysts & 40.7\% & neutral \\
+cook & Cooks & 43.7\% & neutral \\
+designer & Other designers & 45.6\% & neutral \\
+journalist & News analysts, reporters, and journalists & 41.1\% & neutral \\
+lawyer & Lawyers & 42.9\% & neutral \\
+physician & Other physicians & 41.7\% & neutral \\
+professor & Postsecondary teachers & 52.3\% & neutral \\
+salesperson & Retail salespersons & 47.0\% & neutral \\
+scientist & Physical scientists, all other & 42.6\% & neutral \\
+babysitter & Childcare workers & 93.2\% & female \\
+bookkeeper & Bookkeeping, accounting, and auditing clerks & 82.7\% & female \\
+caregiver & Personal care aides & 79.8\% & female \\
+clerk & Office clerks, general & 80.5\% & female \\
+counselor & Counselors, all other & 74.5\% & female \\
+dental hygienist & Dental hygienists & 95.0\% & female \\
+dietitian & Dietitians and nutritionists & 91.7\% & female \\
+guidance counselor & Educational, guidance, and career counselors and advisors & 77.0\% & female \\
+housekeeper & Maids and housekeeping cleaners & 86.4\% & female \\
+interior designer & Interior designers & 82.8\% & female \\
+librarian & Librarians and media collections specialists & 84.9\% & female \\
+nanny & Childcare workers & 93.2\% & female \\
+nurse & Registered nurses & 87.3\% & female \\
+psychologist & Other psychologists & 71.3\% & female \\
+receptionist & Receptionists and information clerks & 89.6\% & female \\
+secretary & Secretaries and administrative assistants, except legal, medical, and executive & 91.9\% & female \\
+social worker & Social workers, all other & 84.4\% & female \\
+stylist & Hairdressers, hairstylists, and cosmetologists & 92.0\% & female \\
+tailor & Tailors, dressmakers, and sewers & 72.8\% & female \\
+teacher & Elementary and middle school teachers & 79.2\% & female \\
+veterinarian & Veterinarians & 70.9\% & female \\
+\bottomrule
+\end{tabular}
+
+\bigskip
+\noindent\textbf{Dropped occupations}\\[4pt]
+\begin{tabular}{p{1.1in}p{1.8in}rp{1.9in}}
+\toprule
+Occupation & BLS occupation title & \% women (BLS) & Reason \\
+\midrule
+assistant & --- & --- & no matching BLS occupation \\
+attendant & --- & --- & no matching BLS occupation \\
+baker & Bakers & 62.5\% & ambiguous share (30--40\% or 60--70\% women) \\
+boss & --- & --- & no matching BLS occupation \\
+broadcaster & Broadcast announcers and radio disc jockeys & --- & BLS estimate suppressed \\
+captain & Ship and boat captains and operators & --- & BLS estimate suppressed \\
+cashier & Cashiers & 68.5\% & ambiguous share (30--40\% or 60--70\% women) \\
+CEO & Chief executives & 33.0\% & ambiguous share (30--40\% or 60--70\% women) \\
+chief & --- & --- & no matching BLS occupation \\
+cleaner & Janitors and building cleaners & 36.2\% & ambiguous share (30--40\% or 60--70\% women) \\
+editor & Editors & 63.2\% & ambiguous share (30--40\% or 60--70\% women) \\
+executive & Chief executives & 33.0\% & ambiguous share (30--40\% or 60--70\% women) \\
+fighter pilot & --- & --- & no matching BLS occupation \\
+financier & --- & --- & no matching BLS occupation \\
+homemaker & --- & --- & no matching BLS occupation \\
+janitor & Janitors and building cleaners & 36.2\% & ambiguous share (30--40\% or 60--70\% women) \\
+maestro & --- & --- & no matching BLS occupation \\
+magician & --- & --- & no matching BLS occupation \\
+manager & Managers, all other & 37.7\% & ambiguous share (30--40\% or 60--70\% women) \\
+midwife & Nurse midwives & --- & BLS estimate suppressed \\
+pharmacist & Pharmacists & 62.7\% & ambiguous share (30--40\% or 60--70\% women) \\
+philosopher & --- & --- & no matching BLS occupation \\
+protege & --- & --- & no matching BLS occupation \\
+researcher & --- & --- & no matching BLS occupation \\
+skipper & Ship and boat captains and operators & --- & BLS estimate suppressed \\
+socialite & --- & --- & no matching BLS occupation \\
+supervisor & --- & --- & no matching BLS occupation \\
+translator & Interpreters and translators & 66.9\% & ambiguous share (30--40\% or 60--70\% women) \\
+warrior & --- & --- & no matching BLS occupation \\
+writer & Writers and authors & 66.8\% & ambiguous share (30--40\% or 60--70\% women) \\
+\bottomrule
+\end{tabular}
 
 \section{Models audited}
 
@@ -225,20 +381,20 @@ pairs, score range, share of comparisons that tied, and date scored.}
 \toprule
 Model & Vendor / access & $n$ & Score range & Ties \% & Scored \\
 \midrule
-rerank-2.5 & Voyage AI (API) & 8,320 & 0.459--0.949 & 13.4 & 2026-02-24 \\
-semantic-ranker-default-002 & Google Vertex AI Ranking (API) & 8,320 & 0.258--0.684 & 7.7 & 2026-02-24 \\
-ibm-granite-granite-embedding-reranker-english-r2 & IBM (via Azure AI Foundry) (API) & 8,320 & 0.732--0.902 & 0.0 & 2026-02-24 \\
-BAAI/bge-reranker-v2-m3 & BAAI (open weights) (local) & 8,320 & 0.006--0.999 & 0.0 & 2026-02-24 \\
-rerank-2 & Voyage AI (API) & 8,320 & 0.383--0.910 & 18.0 & 2026-02-24 \\
-cross-encoder/ms-marco-MiniLM-L-12-v2 & Microsoft / ms-marco (open weights) (local) & 8,320 & -6.599--9.535 & 0.0 & 2026-02-24 \\
-rerank-2.5-lite & Voyage AI (API) & 8,320 & 0.459--0.926 & 18.5 & 2026-02-24 \\
-rerank-1 & Voyage AI (API) & 8,320 & 0.000--0.992 & 9.2 & 2026-02-24 \\
-Cohere-rerank-v4.0-pro & Cohere (API) & 8,320 & 0.255--0.990 & 2.7 & 2026-02-24 \\
-semantic-ranker-fast-004 & Google Vertex AI Ranking (API) & 8,320 & 0.079--0.705 & 0.3 & 2026-02-24 \\
-Cohere-rerank-v4.0-fast & Cohere (API) & 8,320 & 0.249--0.909 & 5.2 & 2026-02-24 \\
-semantic-ranker-default-004 & Google Vertex AI Ranking (API) & 8,320 & 0.160--0.711 & 0.3 & 2026-02-24 \\
-jinaai/jina-reranker-v2-base-multilingual & Jina AI (open weights) (local) & 8,320 & 0.194--0.844 & 6.8 & 2026-02-24 \\
-rerank-2-lite & Voyage AI (API) & 8,320 & 0.443--0.762 & 20.6 & 2026-02-24 \\
+rerank-2.5 & Voyage AI (API) & 8,320 & $0.46$ to $0.95$ & 13.4 & 2026-02-24 \\
+semantic-ranker-default-002 & Google Vertex AI Ranking (API) & 8,320 & $0.26$ to $0.68$ & 7.7 & 2026-02-24 \\
+ibm-granite-granite-embedding-reranker-english-r2 & IBM (via Azure AI Foundry) (API) & 8,320 & $0.73$ to $0.90$ & 0.0 & 2026-02-24 \\
+BAAI/bge-reranker-v2-m3 & BAAI (open weights) (local) & 8,320 & $0.01$ to $1.00$ & 0.0 & 2026-02-24 \\
+rerank-2 & Voyage AI (API) & 8,320 & $0.38$ to $0.91$ & 18.0 & 2026-02-24 \\
+cross-encoder/ms-marco-MiniLM-L-12-v2 & sentence-transformers (open weights; trained on MS MARCO) (local) & 8,320 & $-6.60$ to $9.53$ & 0.0 & 2026-02-24 \\
+rerank-2.5-lite & Voyage AI (API) & 8,320 & $0.46$ to $0.93$ & 18.5 & 2026-02-24 \\
+rerank-1 & Voyage AI (API) & 8,320 & $0.00$ to $0.99$ & 9.2 & 2026-02-24 \\
+Cohere-rerank-v4.0-pro & Cohere (API) & 8,320 & $0.26$ to $0.99$ & 2.7 & 2026-02-24 \\
+semantic-ranker-fast-004 & Google Vertex AI Ranking (API) & 8,320 & $0.08$ to $0.70$ & 0.3 & 2026-02-24 \\
+Cohere-rerank-v4.0-fast & Cohere (API) & 8,320 & $0.25$ to $0.91$ & 5.2 & 2026-02-24 \\
+semantic-ranker-default-004 & Google Vertex AI Ranking (API) & 8,320 & $0.16$ to $0.71$ & 0.3 & 2026-02-24 \\
+jinaai/jina-reranker-v2-base-multilingual & Jina AI (open weights) (local) & 8,320 & $0.19$ to $0.84$ & 6.8 & 2026-02-24 \\
+rerank-2-lite & Voyage AI (API) & 8,320 & $0.44$ to $0.76$ & 20.6 & 2026-02-24 \\
 \bottomrule
 \end{tabular}%
 }
@@ -277,7 +433,7 @@ rerank-2 (Voyage AI) & male & 80.1 & 11.1 & 8.8 & 85.6 [80.9, 89.8] \\
  & female & 18.2 & 20.4 & 61.4 & 28.4 [19.0, 37.7] \\
  & neutral & 50.1 & 23.4 & 26.5 & 61.8 [56.3, 67.7] \\
 \addlinespace
-cross-encoder/ms-marco-MiniLM-L-12-v2 (Microsoft / ms-marco (open weights)) & male & 84.8 & 0.0 & 15.2 & 84.8 [79.0, 88.6] \\
+cross-encoder/ms-marco-MiniLM-L-12-v2 (sentence-transformers (open weights; trained on MS MARCO)) & male & 84.8 & 0.0 & 15.2 & 84.8 [79.0, 88.6] \\
  & female & 58.8 & 0.0 & 41.2 & 58.8 [46.1, 71.0] \\
  & neutral & 86.4 & 0.0 & 13.6 & 86.4 [82.3, 89.7] \\
 \addlinespace
@@ -351,7 +507,7 @@ rerank-2-lite & 6/18 & 20/21 & 2/13 \\
 
 \section{Robustness}
 
-The lean varies with the wording of the document and of the search, and with which pair of names is used. Tables~\ref{tab:robtemplate}--\ref{tab:robname} break the tie-aware share favoring the man's document down three ways. The spread across name pairs is the largest of the three, which is why deleting names alone changes the size of the disparity so much (see the third finding).
+The lean varies with the wording of the document and of the search, and with which pair of names is used. Tables~\ref{tab:robtemplate}--\ref{tab:robname} break the tie-aware share favoring the man's document down three ways. The spread across name pairs is the largest of the three: that variation is exactly what removing names takes out, which is why deleting names changes how \emph{consistent} the disparity is rather than how \emph{large} it is (see the third finding).
 
 \begin{table}[H]
 \centering
@@ -413,36 +569,69 @@ rerank-2-lite & 23.2 & 45.3 & 44.5 & 30.6 \\
 
 \begin{table}[H]
 \centering
-\caption{Tie-aware share favoring the man's document, by name pair.}
+\caption{Tie-aware share favoring the man's document, by name pair, split into
+two tables of five pairs each for legibility.}
 \label{tab:robname}
-\resizebox{\textwidth}{!}{%
 % Generated by code/analyze_single_stage.py -- tie-aware \% male-favoured.
-\begin{tabular}{lrrrrrrrrrr}
+% Split into two tables of 5 name pairs each (REVIEW_ROUND2 A11): ten
+% columns next to the model-name column was unreadable under resizebox.
+% Each half wraps its own \resizebox; do not add an outer one in paper.md.
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrrr}
 \toprule
-Model & Christopher/Margaret & Daniel/Susan & David/Linda & James/Sarah & John/Maria & Michael/Jessica & Richard/Patricia & Robert/Jennifer & Thomas/Barbara & William/Elizabeth \\
+Model & Christopher/Margaret & Daniel/Susan & David/Linda & James/Sarah & John/Maria \\
 \midrule
-rerank-2.5 & 83.8 & 66.6 & 82.2 & 50.5 & 72.5 & 63.8 & 63.6 & 73.6 & 73.6 & 63.5 \\
-semantic-ranker-default-002 & 87.1 & 82.5 & 74.0 & 63.2 & 81.0 & 76.4 & 88.5 & 85.0 & 76.9 & 67.4 \\
-ibm-granite-granite-embedding-reranker-english-r2 & 74.9 & 69.1 & 94.8 & 62.4 & 97.7 & 94.1 & 77.0 & 91.5 & 85.0 & 95.9 \\
-BAAI/bge-reranker-v2-m3 & 59.5 & 91.8 & 90.5 & 79.4 & 63.3 & 88.8 & 78.6 & 88.1 & 60.3 & 79.8 \\
-rerank-2 & 51.8 & 66.5 & 67.4 & 40.2 & 65.8 & 49.9 & 56.4 & 60.3 & 50.4 & 56.7 \\
-cross-encoder/ms-marco-MiniLM-L-12-v2 & 78.5 & 61.5 & 90.6 & 70.2 & 89.2 & 82.9 & 71.9 & 80.9 & 61.5 & 59.4 \\
-rerank-2.5-lite & 63.9 & 67.8 & 69.7 & 43.6 & 49.3 & 54.3 & 63.8 & 59.8 & 75.1 & 58.5 \\
-rerank-1 & 59.3 & 52.6 & 85.2 & 40.6 & 88.5 & 66.4 & 79.6 & 77.3 & 38.0 & 59.7 \\
-Cohere-rerank-v4.0-pro & 42.0 & 37.1 & 76.0 & 4.4 & 70.1 & 58.2 & 58.7 & 45.9 & 66.5 & 43.0 \\
-semantic-ranker-fast-004 & 57.6 & 50.8 & 55.8 & 37.7 & 29.3 & 50.6 & 49.0 & 30.0 & 52.0 & 58.1 \\
-Cohere-rerank-v4.0-fast & 58.5 & 49.6 & 70.0 & 32.0 & 62.7 & 56.3 & 72.2 & 35.9 & 60.6 & 41.8 \\
-semantic-ranker-default-004 & 31.4 & 34.4 & 29.9 & 43.9 & 28.7 & 35.6 & 43.0 & 42.1 & 31.4 & 29.7 \\
-jinaai/jina-reranker-v2-base-multilingual & 76.5 & 77.6 & 30.0 & 58.0 & 18.9 & 48.3 & 37.1 & 28.7 & 30.4 & 13.6 \\
-rerank-2-lite & 33.4 & 19.8 & 59.6 & 22.5 & 70.4 & 31.3 & 39.7 & 18.4 & 45.9 & 18.4 \\
+rerank-2.5 & 83.8 & 66.6 & 82.2 & 50.5 & 72.5 \\
+semantic-ranker-default-002 & 87.1 & 82.5 & 74.0 & 63.2 & 81.0 \\
+ibm-granite-granite-embedding-reranker-english-r2 & 74.9 & 69.1 & 94.8 & 62.4 & 97.7 \\
+BAAI/bge-reranker-v2-m3 & 59.5 & 91.8 & 90.5 & 79.4 & 63.3 \\
+rerank-2 & 51.8 & 66.5 & 67.4 & 40.2 & 65.8 \\
+cross-encoder/ms-marco-MiniLM-L-12-v2 & 78.5 & 61.5 & 90.6 & 70.2 & 89.2 \\
+rerank-2.5-lite & 63.9 & 67.8 & 69.7 & 43.6 & 49.3 \\
+rerank-1 & 59.3 & 52.6 & 85.2 & 40.6 & 88.5 \\
+Cohere-rerank-v4.0-pro & 42.0 & 37.1 & 76.0 & 4.4 & 70.1 \\
+semantic-ranker-fast-004 & 57.6 & 50.8 & 55.8 & 37.7 & 29.3 \\
+Cohere-rerank-v4.0-fast & 58.5 & 49.6 & 70.0 & 32.0 & 62.7 \\
+semantic-ranker-default-004 & 31.4 & 34.4 & 29.9 & 43.9 & 28.7 \\
+jinaai/jina-reranker-v2-base-multilingual & 76.5 & 77.6 & 30.0 & 58.0 & 18.9 \\
+rerank-2-lite & 33.4 & 19.8 & 59.6 & 22.5 & 70.4 \\
 \bottomrule
-\end{tabular}%
+\end{tabular}
 }
+
+\bigskip
+
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrrr}
+\toprule
+Model & Michael/Jessica & Richard/Patricia & Robert/Jennifer & Thomas/Barbara & William/Elizabeth \\
+\midrule
+rerank-2.5 & 63.8 & 63.6 & 73.6 & 73.6 & 63.5 \\
+semantic-ranker-default-002 & 76.4 & 88.5 & 85.0 & 76.9 & 67.4 \\
+ibm-granite-granite-embedding-reranker-english-r2 & 94.1 & 77.0 & 91.5 & 85.0 & 95.9 \\
+BAAI/bge-reranker-v2-m3 & 88.8 & 78.6 & 88.1 & 60.3 & 79.8 \\
+rerank-2 & 49.9 & 56.4 & 60.3 & 50.4 & 56.7 \\
+cross-encoder/ms-marco-MiniLM-L-12-v2 & 82.9 & 71.9 & 80.9 & 61.5 & 59.4 \\
+rerank-2.5-lite & 54.3 & 63.8 & 59.8 & 75.1 & 58.5 \\
+rerank-1 & 66.4 & 79.6 & 77.3 & 38.0 & 59.7 \\
+Cohere-rerank-v4.0-pro & 58.2 & 58.7 & 45.9 & 66.5 & 43.0 \\
+semantic-ranker-fast-004 & 50.6 & 49.0 & 30.0 & 52.0 & 58.1 \\
+Cohere-rerank-v4.0-fast & 56.3 & 72.2 & 35.9 & 60.6 & 41.8 \\
+semantic-ranker-default-004 & 35.6 & 43.0 & 42.1 & 31.4 & 29.7 \\
+jinaai/jina-reranker-v2-base-multilingual & 48.3 & 37.1 & 28.7 & 30.4 & 13.6 \\
+rerank-2-lite & 31.3 & 39.7 & 18.4 & 45.9 & 18.4 \\
+\bottomrule
+\end{tabular}
+}
+
+\bigskip
 \end{table}
 
 \section{The same pipeline with every re-ranker}
 
 The pipeline result in the body uses one open-source pair. Table~\ref{tab:sweep} repeats the simulation with each of the audited re-rankers behind the same retriever. The shortlist skew follows the re-ranker, in both size and direction, which is the point of the second finding.
+
+The headline pipeline also uses a retrieval cutoff of 10 -- how many candidates the retriever passes on before the re-ranker sees them. That choice is not neutral: at a cutoff of 5 the same pipeline's shortlist is 71\% male; at a cutoff of 15 it is 78\%. A deployer who narrows or widens that first cut changes the disparity without touching either model.
 
 \begin{table}[H]
 \centering
@@ -453,13 +642,13 @@ the same retriever and the same pool of equally qualified candidates.}
 % Generated by code/compounding_experiment.py -- do not edit by hand.
 \begin{tabular}{llrrrrrr}
 \toprule
-Re-ranker & Vendor & \multicolumn{4}{c}{Pipeline \% male in top-3} & rr-alone & rank gap \\
- & & all & male & female & neutral & all & all \\
+Re-ranker & Vendor & \multicolumn{4}{c}{Pipeline \% male in top-3} & Re-ranker & Mean rank gap \\
+ & & all & male & female & neutral & alone & (F$-$M) \\
 \midrule
 ibm-granite-granite-embedding-reranker-english-r2 & IBM (via Azure AI Foundry) & 84.9 & 95.9 & 71.7 & 90.7 & 89.3 & 3.69 \\
 semantic-ranker-default-002 & Google Vertex AI Ranking & 79.9 & 94.4 & 63.1 & 86.7 & 77.5 & 3.48 \\
 BAAI/bge-reranker-v2-m3 & BAAI (open weights) & 79.3 & 95.0 & 67.3 & 76.9 & 78.6 & 3.41 \\
-cross-encoder/ms-marco-MiniLM-L-12-v2 & Microsoft / ms-marco (open weights) & 78.4 & 91.9 & 58.6 & 91.7 & 78.6 & 3.32 \\
+cross-encoder/ms-marco-MiniLM-L-12-v2 & sentence-transformers (open weights; trained on MS MARCO) & 78.4 & 91.9 & 58.6 & 91.7 & 78.6 & 3.32 \\
 rerank-1 & Voyage AI & 70.5 & 91.1 & 45.1 & 82.8 & 68.3 & 2.94 \\
 rerank-2.5 & Voyage AI & 70.2 & 98.1 & 36.6 & 85.9 & 71.7 & 3.00 \\
 rerank-2.5-lite & Voyage AI & 62.7 & 88.6 & 39.1 & 64.8 & 56.9 & 2.62 \\
@@ -481,28 +670,72 @@ Table~\ref{tab:deid} reports every de-identification rule tested on the same re-
 
 \begin{table}[H]
 \centering
-\caption{De-identification conditions: the share of counterfactual pairs favoring the
-man's document, the share tied, and the average size of the score gap on this
-model's own scale.}
+\caption{Every de-identification rule tested on BAAI/bge-reranker-v2-m3: the share of
+counterfactual pairs favoring the man's document (M), tied, and favoring the
+woman's document (F); the average size of the score gap on this model's own
+scale; the share of pairs the rule leaves textually identical; and top-1
+accuracy where measured. A dagger marks a rule that makes the two documents
+identical by construction, so its row is a check on that fact rather than an
+independent measurement.}
 \label{tab:deid}
 \resizebox{\textwidth}{!}{%
 % Generated by code/deidentification_experiment.py -- do not edit by hand.
 % model: BAAI/bge-reranker-v2-m3; label source: BLS CPS Table 11 via occupations_bls.csv
-\begin{tabular}{lrrrrr}
+\begin{tabular}{lrrrrrr}
 \toprule
-Condition & \%\,male-favoured & \%\,ties & mean $|$score gap$|$ & twins identical \% & top-1 \% \\
+Condition & \%\,M & \%\,tie & \%\,F & mean $|$score gap$|$ & identical text \% & top-1 \% \\
 \midrule
-Original (no transform) & 78.0 & 0.0 & 0.0358 & 0.0 & 99.5 \\
-Names only & 93.3 & 0.0 & 0.0334 & 0.0 & 98.6 \\
-Pronouns only & 46.9 & 0.0 & 0.0239 & 0.0 & 98.1 \\
-Full (names + pronouns $\to$ one token)$^{\dagger}$ & 50.0 & 100.0 & 0.0000 & 100.0 & 99.5 \\
-Grammatical, naive (`her' $\to$ `their') & 37.5 & 75.0 & 0.0009 & 75.0 & -- \\
-Grammatical, naive (`her' $\to$ `them') & 87.0 & 0.0 & 0.0075 & 0.0 & -- \\
-Grammatical, POS-aware$^{\dagger}$ & 50.0 & 100.0 & 0.0000 & 100.0 & 99.5 \\
+Original (no transform) & 78.0 & 0.0 & 22.0 & 0.0358 & 0.0 & 99.4 \\
+Lowercase only (no name/pronoun change) & 58.7 & 0.0 & 41.3 & 0.0301 & 0.0 & -- \\
+Names only & 93.4 & 0.0 & 6.6 & 0.0380 & 0.0 & 99.5 \\
+Pronouns only & 68.4 & 0.0 & 31.6 & 0.0236 & 0.0 & 99.6 \\
+Full (names + pronouns $\to$ one token)$^{\dagger}$ & 0.0 & 100.0 & 0.0 & 0.0000 & 100.0 & 99.8 \\
+Grammatical, naive (`her' $\to$ `their') & 1.0 & 75.0 & 24.0 & 0.0007 & 75.0 & -- \\
+Grammatical, naive (`her' $\to$ `them') & 88.8 & 0.0 & 11.2 & 0.0094 & 0.0 & -- \\
+Grammatical, POS-aware$^{\dagger}$ & 0.0 & 100.0 & 0.0 & 0.0000 & 100.0 & 99.8 \\
 \bottomrule
 \end{tabular}
-% $^{\dagger}$ the transform makes the two twins the same string, so the tie
+% $^{\dagger}$ the transform makes the two documents the same string, so the tie
 % rate is an identity of the design, not a measurement (REVIEW_TODO A10).%
+}
+\end{table}
+
+Table~\ref{tab:deidall} repeats the same eight rules on three more re-rankers. The direction of the half-measures is not the same on every model: on BAAI/bge-reranker-v2-m3 and one other, removing names leaves the stronger and more one-directional signal; on a third, removing pronouns does; on the fourth, the two half-measures push toward opposite net directions entirely. What holds on all four is the part that matters for the policy: the full transform and the part-of-speech-aware rewrite tie every pair, on every model.
+
+\begin{table}[H]
+\centering
+\caption{The same eight de-identification conditions on all four locally run
+re-rankers: the tie-aware share favoring the man's document and the average
+size of the score gap, on each model's own scale. One model's untransformed
+scores did not exactly reproduce themselves on a plain re-run six months
+later (Limits); its other seven rows were scored fresh in this same run and
+are internally consistent.}
+\label{tab:deidall}
+\resizebox{\textwidth}{!}{%
+% Generated by code/deidentification_experiment.py -- do not edit by hand.
+\begin{tabular}{lrrrrrrrr}
+\toprule
+Condition & \multicolumn{2}{c}{bge-reranker-v2-m3} & \multicolumn{2}{c}{bge-reranker-base} & \multicolumn{2}{c}{ms-marco-MiniLM-L-12-v2} & \multicolumn{2}{c}{jina-reranker-v2-base-multilingual} \\
+ & tie-aware \%\,M & mean $|$gap$|$ & tie-aware \%\,M & mean $|$gap$|$ & tie-aware \%\,M & mean $|$gap$|$ & tie-aware \%\,M & mean $|$gap$|$ \\
+\midrule
+original & 78.0 & 0.0358 & 47.1 & 0.0373 & 74.7 & 0.2797 & 41.9 & 0.0186 \\
+lowercase\_only & 58.7 & 0.0301 & 44.9 & 0.0576 & 74.7 & 0.2797 & 35.2 & 0.0191 \\
+names\_only & 93.4 & 0.0380 & 50.6 & 0.0178 & 81.9 & 0.2974 & 37.6 & 0.0127 \\
+pronouns\_only & 68.4 & 0.0236 & 63.1 & 0.0363 & 72.9 & 0.2189 & 55.7 & 0.0167 \\
+full$^{\dagger}$ & 50.0 & 0.0000 & 50.0 & 0.0000 & 50.0 & 0.0000 & 50.0 & 0.0000 \\
+gram\_her\_their & 38.5 & 0.0007 & 44.2 & 0.0018 & 53.5 & 0.0064 & 47.5 & 0.0007 \\
+gram\_her\_them & 88.8 & 0.0094 & 84.1 & 0.0086 & 82.0 & 0.0750 & 64.8 & 0.0031 \\
+gram\_pos$^{\dagger}$ & 50.0 & 0.0000 & 50.0 & 0.0000 & 50.0 & 0.0000 & 50.0 & 0.0000 \\
+\bottomrule
+\end{tabular}
+% $^{\dagger}$ identity of the design (the two documents become the same string), not an empirical measurement -- REVIEW_TODO A10.
+% The jina-reranker-v2 columns: its `original' baseline failed the
+% determinism check (re-scoring the untransformed text locally does not
+% exactly reproduce the banked Feb-2026 API-adjacent local score; max
+% abs difference 0.0117 on this model's own ~0.15--0.84 range). The other
+% three conditions for every model were scored fresh in this same run and
+% are internally consistent; only cross-run comparisons for jina's
+% `original' row carry this extra caveat.%
 }
 \end{table}
 

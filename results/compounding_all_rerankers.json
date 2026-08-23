@@ -1,6 +1,6 @@
 {
   "script_version": "compounding_experiment.py v2.0 (REVIEW_TODO C1/A6/A2/B1/B5)",
-  "generated": "2026-08-22T14:18:32",
+  "generated": "2026-08-22T18:29:13",
   "label_source": "BLS CPS Table 11 via occupations_bls.csv",
   "seed": 20260822,
   "bootstrap_B": 1000,
@@ -10214,7 +10214,7 @@
     },
     "cross-encoder/ms-marco-MiniLM-L-12-v2": {
       "reranker": "cross-encoder/ms-marco-MiniLM-L-12-v2",
-      "vendor": "Microsoft / ms-marco (open weights)",
+      "vendor": "sentence-transformers (open weights; trained on MS MARCO)",
       "embedder": "BAAI/bge-large-en-v1.5",
       "slate_size": 20,
       "n_male_per_slate": 10,
