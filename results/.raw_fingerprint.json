@@ -1,0 +1,20 @@
+{
+ "recorded_for_date": "2026-02-24",
+ "fingerprints": {
+  "Cohere-rerank-v4.0-fast": "bec2b8c8caac6dfe31f490153c59429471bdd2bd584eaa0d52ecadd1c9cfda00",
+  "Cohere-rerank-v4.0-pro": "80e54d583c217b01dd87118e0eeec75d43d125d117c32405c88d4ffb9e264f62",
+  "BAAI/bge-reranker-v2-m3": "54f4d5a8d068dae3513fc017da3acb1dc080098210819320e8189fbb1b6c09f9",
+  "ibm-granite-granite-embedding-reranker-english-r2": "651089380865ae00bb03a9922c9d5c61ca780e5612649b5b5ad673c20570ce68",
+  "jinaai/jina-reranker-v2-base-multilingual": "96ea9a0206ed3ad513a213d350d74ff83ce45c598209cf9a8c5b8da22ab38c7d",
+  "cross-encoder/ms-marco-MiniLM-L-12-v2": "7b968302145c6269eb362f6eb5a9343a67b17c9d96e7ba708dfc912f7dbcab8b",
+  "rerank-1": "acde7126616361c94ccd7d57aea743f24092f5f23d2c24af3c64ec4e41aa1d99",
+  "rerank-2-lite": "0b348fb8d732fa4a2f3367b83291d77a29bbf2a56449306db83babc817da8d40",
+  "rerank-2.5-lite": "7d4f1b79c0b181589dd0b395802f20b690a8f7c7d2752124b324b206b05f9bbf",
+  "rerank-2.5": "ecd1b4deb6508e11858b7275066088eda02fc1167414bd6378428f3e78967982",
+  "rerank-2": "7a1011526875aa94d86a1ba91bc1bceae23ac3ea24b5c321d40f1c1283cb4b8b",
+  "semantic-ranker-default-002": "e4d9054f85b7c6ebce856de98e23348ae986128c3c2a022d4beb13a97661d1ea",
+  "semantic-ranker-default-003": "1b7e926a8d3ecb4aab7272665f662b807fa33f797535b9438aa32aee0a02685a",
+  "semantic-ranker-default-004": "1b7e926a8d3ecb4aab7272665f662b807fa33f797535b9438aa32aee0a02685a",
+  "semantic-ranker-fast-004": "82051b0487000d654e68ec9684ecf8f94f73a127be8137c502630c86fa779700"
+ }
+}

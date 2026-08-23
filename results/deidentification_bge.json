@@ -7,7 +7,9 @@
   "determinism_check": {
     "max_abs_score_diff": 2.2858381271362305e-05,
     "mean_abs_score_diff": 2.886081067397474e-07,
-    "passed": true
+    "passed": true,
+    "status": "checked",
+    "baseline_source": "banked raw scores (bge-reranker-v2-m3_full_raw.json)"
   },
   "conditions": {
     "original": {

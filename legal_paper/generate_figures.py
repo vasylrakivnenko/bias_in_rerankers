@@ -371,10 +371,12 @@ def fig_deid():
     d = _load("deidentification_bge.json")
     conds = d["conditions"]
 
-    # Story order: no transform -> each half on its own -> the two naive
-    # grammatical rewrites -> the grammar-aware rewrite -> the full transform.
+    # Story order: no transform -> case-only control -> each half on its own ->
+    # the two naive grammatical rewrites -> the grammar-aware rewrite -> the
+    # full transform.
     order = [
         ("original", "Original documents"),
+        ("lowercase_only", "Lowercased only\n(no markers removed)"),
         ("names_only", "Names removed only"),
         ("pronouns_only", "Pronouns neutralised only"),
         ("gram_her_their", "Simple rewrite: her $\\rightarrow$ their"),
@@ -383,6 +385,16 @@ def fig_deid():
         ("full", "Names removed and\npronouns neutralised"),
     ]
     order = [(k, lab) for k, lab in order if k in conds]
+    # A condition present in the data but absent from `order` would be silently
+    # dropped from the figure while the caption still says "each rule" -- which
+    # is exactly what happened to `lowercase_only` when it was first added.
+    missing = [k for k in conds if k not in {o[0] for o in order}]
+    if missing:
+        raise KeyError(
+            f"conditions present in the results but missing from Figure 3's order "
+            f"list: {missing}. Add a label for each, or the figure will disagree "
+            f"with Table A8 and its own caption."
+        )
 
     fig = plt.figure(figsize=(W_WIDE, 4.00))
     ax = fig.add_axes([0.305, 0.245, 0.675, 0.620])

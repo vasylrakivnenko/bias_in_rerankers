@@ -15,10 +15,5 @@ gram\_pos$^{\dagger}$ & 50.0 & 0.0000 & 50.0 & 0.0000 & 50.0 & 0.0000 & 50.0 & 0
 \bottomrule
 \end{tabular}
 % $^{\dagger}$ identity of the design (the two documents become the same string), not an empirical measurement -- REVIEW_TODO A10.
-% The jina-reranker-v2 columns: its `original' baseline failed the
-% determinism check (re-scoring the untransformed text locally does not
-% exactly reproduce the banked Feb-2026 API-adjacent local score; max
-% abs difference 0.0117 on this model's own ~0.15--0.84 range). The other
-% three conditions for every model were scored fresh in this same run and
-% are internally consistent; only cross-run comparisons for jina's
-% `original' row carry this extra caveat.
+% bge-reranker-base: no banked baseline exists, so `original' was scored locally in this run and no cross-run determinism verdict is available for it.
+% jina-reranker-v2-base-multilingual: its `original' baseline FAILED the determinism check -- re-scoring the untransformed text locally did not reproduce the banked score (max abs difference 0.0117). Its other 7 conditions were scored fresh in this same run and are internally consistent; only cross-run comparisons of that row carry this caveat.

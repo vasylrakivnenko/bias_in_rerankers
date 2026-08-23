@@ -5,9 +5,12 @@
   "name_placeholder": "the candidate",
   "n_triples": 8320,
   "determinism_check": {
-    "max_abs_score_diff": 0.0,
-    "mean_abs_score_diff": 0.0,
-    "passed": true
+    "max_abs_score_diff": null,
+    "mean_abs_score_diff": null,
+    "passed": null,
+    "status": "skipped",
+    "baseline_source": "scored locally in this run (variant `none`, no lowercasing)",
+    "note": "No banked baseline exists for this model, so `original` was scored locally in this run. A self-comparison always yields 0.0 and is not evidence of cross-run reproducibility."
   },
   "conditions": {
     "original": {

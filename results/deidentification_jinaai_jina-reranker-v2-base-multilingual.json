@@ -7,7 +7,9 @@
   "determinism_check": {
     "max_abs_score_diff": 0.01171875,
     "mean_abs_score_diff": 0.0004444415752704327,
-    "passed": false
+    "passed": false,
+    "status": "checked",
+    "baseline_source": "banked raw scores (jina-reranker-v2-base-multilingual_full_raw.json)"
   },
   "conditions": {
     "original": {

@@ -1,6 +1,6 @@
 {
   "script_version": "analyze_single_stage.py v1.0 (REVIEW_TODO A1/A2/A3/B1/B2/B7)",
-  "generated": "2026-08-22T18:40:34",
+  "generated": "2026-08-23T13:35:28",
   "label_source": "BLS CPS Table 11 via occupations_bls.csv",
   "n_labelled_occupations": 52,
   "label_counts": {
@@ -29,6 +29,11 @@
         "n_distinct_score_values": 4673
       }
     }
+  },
+  "raw_scored_date": "2026-02-24",
+  "raw_integrity": {
+    "status": "recorded",
+    "changed": []
   },
   "rows_dropped_no_label": {
     "BAAI/bge-reranker-v2-m3": 4800,

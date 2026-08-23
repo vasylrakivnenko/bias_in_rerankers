@@ -1,6 +1,6 @@
 {
   "script_version": "deidentification_experiment.py v3.0 (REVIEW_ROUND2 A1/A3/A7)",
-  "generated": "2026-08-22T19:39:37",
+  "generated": "2026-08-23T13:35:13",
   "label_source": "BLS CPS Table 11 via occupations_bls.csv",
   "seed": 20260822,
   "bootstrap_B": 1000,
@@ -24,7 +24,9 @@
       "determinism_check": {
         "max_abs_score_diff": 2.2858381271362305e-05,
         "mean_abs_score_diff": 2.886081067397474e-07,
-        "passed": true
+        "passed": true,
+        "status": "checked",
+        "baseline_source": "banked raw scores (bge-reranker-v2-m3_full_raw.json)"
       },
       "conditions": {
         "original": {
@@ -1661,9 +1663,12 @@
       "name_placeholder": "the candidate",
       "n_triples": 8320,
       "determinism_check": {
-        "max_abs_score_diff": 0.0,
-        "mean_abs_score_diff": 0.0,
-        "passed": true
+        "max_abs_score_diff": null,
+        "mean_abs_score_diff": null,
+        "passed": null,
+        "status": "skipped",
+        "baseline_source": "scored locally in this run (variant `none`, no lowercasing)",
+        "note": "No banked baseline exists for this model, so `original` was scored locally in this run. A self-comparison always yields 0.0 and is not evidence of cross-run reproducibility."
       },
       "conditions": {
         "original": {
@@ -3302,7 +3307,9 @@
       "determinism_check": {
         "max_abs_score_diff": 7.033348083496094e-06,
         "mean_abs_score_diff": 1.000321488111065e-06,
-        "passed": true
+        "passed": true,
+        "status": "checked",
+        "baseline_source": "banked raw scores (ms-marco-MiniLM-L-12-v2_full_raw.json)"
       },
       "conditions": {
         "original": {
@@ -4941,7 +4948,9 @@
       "determinism_check": {
         "max_abs_score_diff": 0.01171875,
         "mean_abs_score_diff": 0.0004444415752704327,
-        "passed": false
+        "passed": false,
+        "status": "checked",
+        "baseline_source": "banked raw scores (jina-reranker-v2-base-multilingual_full_raw.json)"
       },
       "conditions": {
         "original": {

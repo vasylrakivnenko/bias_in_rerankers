@@ -227,13 +227,27 @@ def fmt_field(raw: str) -> str:
 
 def drop_reason(row: dict) -> str:
     """Derived mechanically from the CSV columns themselves (never from
-    data/PROVENANCE.md prose), per REVIEW_ROUND2.md A4 bullet 5."""
+    data/PROVENANCE.md prose), per REVIEW_ROUND2.md A4 bullet 5.
+
+    The final branch ASSERTS the ambiguous-band membership rather than assuming
+    it. Falling through to "ambiguous share" for a row dropped for some other
+    reason would publish a fabricated justification, which is worse than
+    crashing: the reader cannot tell the difference.
+    """
     bls_title = (row.get("bls_title") or "").strip()
     pct_women = (row.get("pct_women") or "").strip()
     if not bls_title:
         return "no matching BLS occupation"
     if not pct_women:
         return "BLS estimate suppressed"
+    v = float(pct_women)
+    if not (30 <= v < 40 or 60 < v <= 70):
+        raise ValueError(
+            f"{row['occupation']!r} is labelled drop with pct_women={v}, which is "
+            "outside the 30-40 / 60-70 ambiguous bands and outside the male/female/"
+            "neutral cutoffs. This script cannot state why it was dropped without "
+            "guessing -- add an explicit reason column or fix the label rule."
+        )
     return "ambiguous share (30--40\\% or 60--70\\% women)"
 
 
@@ -329,18 +343,23 @@ def main() -> None:
     print(f"rendered: {rendered!r}")
 
     # --- Deliverable 2 ---
+    # Build and CHECK before writing. These counts are a tripwire for an
+    # unintended edit to occupations_bls.csv, but if they fire after the writes
+    # the tree is left half-updated and looks like a clean regeneration, which is
+    # the worst of both. A legitimate change to the CSV should update the
+    # expected counts here in the same commit.
     occ_tex, n_kept, n_dropped = build_occupations_table()
-    occ_path = TEX_DIR / "occupations_table.tex"
-    occ_path.write_text(occ_tex)
-    print(f"\nWrote {occ_path} ({len(occ_tex.splitlines())} lines)")
 
     print(f"\nTable A (kept) rows: {n_kept}")
     print(f"Table B (dropped) rows: {n_dropped}")
     print(f"Sum: {n_kept + n_dropped}")
-
     assert n_kept == 52, f"expected 52 kept occupations, got {n_kept}"
     assert n_dropped == 30, f"expected 30 dropped occupations, got {n_dropped}"
     assert n_kept + n_dropped == 82, f"expected 82 total, got {n_kept + n_dropped}"
+
+    occ_path = TEX_DIR / "occupations_table.tex"
+    occ_path.write_text(occ_tex)
+    print(f"\nWrote {occ_path} ({len(occ_tex.splitlines())} lines)")
     print("\nRow-count assertions passed (52 / 30 / 82).")
 
 

@@ -395,13 +395,32 @@ def run_model(model_name, triples, labels, args, device):
         diffs.append(abs(scores[(q, df0)] - sf_bank))
     max_diff = max(diffs) if diffs else 0.0
     mean_diff = float(np.mean(diffs)) if diffs else 0.0
-    determinism_check = {"max_abs_score_diff": float(max_diff),
-                         "mean_abs_score_diff": mean_diff,
-                         "passed": bool(max_diff < 1e-4)}
-    print(f"  determinism check (original_rescored vs banked original [{base_src}]): "
-          f"max|diff|={determinism_check['max_abs_score_diff']:.6f}  "
-          f"mean|diff|={determinism_check['mean_abs_score_diff']:.6f}  "
-          f"passed={determinism_check['passed']}")
+    # The check is only meaningful when `base` came from the BANKED scores: it
+    # then compares a fresh local run against a months-old stored one. When
+    # there is no bank, baseline_scores() scored those same strings locally in
+    # this very run, so this would compare a run against itself and return 0.0
+    # -- a vacuous pass indistinguishable from a real one. Mark it skipped.
+    is_banked = base_src.startswith("banked")
+    determinism_check = {
+        "status": "checked" if is_banked else "skipped",
+        "baseline_source": base_src,
+        "max_abs_score_diff": float(max_diff) if is_banked else None,
+        "mean_abs_score_diff": mean_diff if is_banked else None,
+        "passed": bool(max_diff < 1e-4) if is_banked else None,
+        "note": None if is_banked else (
+            "No banked baseline exists for this model, so `original` was scored "
+            "locally in this run. Comparing it against a second local scoring of "
+            "the same strings is self-referential and always yields 0.0; it is NOT "
+            "evidence of cross-run reproducibility, so no verdict is reported."),
+    }
+    if determinism_check["status"] == "checked":
+        print(f"  determinism check (original_rescored vs banked original [{base_src}]): "
+              f"max|diff|={determinism_check['max_abs_score_diff']:.6f}  "
+              f"mean|diff|={determinism_check['mean_abs_score_diff']:.6f}  "
+              f"passed={determinism_check['passed']}")
+    else:
+        print(f"  determinism check: SKIPPED -- no banked baseline for this model "
+              f"({base_src}); a self-comparison would be vacuous")
 
     # ---- accumulate ----
     stat = {c: {"all": ClusterStat(), "abs": ClusterMean(),
@@ -488,6 +507,32 @@ def run_model(model_name, triples, labels, args, device):
         e["bdi_male"] = e["by_category"]["male"]["stereotype_match_rate"] / 100.0
         e["bdi_female"] = e["by_category"]["female"]["stereotype_match_rate"] / 100.0
     return out
+
+
+def normalise_determinism_check(res: dict) -> dict:
+    """Upgrade a pre-v3.1 `determinism_check` block in-place.
+
+    Older runs stored only {max_abs_score_diff, mean_abs_score_diff, passed}
+    with no `status`, so a self-comparison (no banked baseline -> 0.0 -> passed)
+    was indistinguishable from a real cross-run check. `--reuse` loads those
+    verbatim, and the tex writer keys off `status`, so without this the derived
+    caveats would silently vanish from the table. The stored MEASUREMENT is
+    unchanged; only the classification is added, and it is derived from
+    `baseline_source`, which those files already record.
+    """
+    dc = res.get("determinism_check")
+    if not isinstance(dc, dict) or "status" in dc:
+        return res
+    banked = str(res.get("baseline_source", "")).startswith("banked")
+    dc["status"] = "checked" if banked else "skipped"
+    dc["baseline_source"] = res.get("baseline_source")
+    if not banked:
+        for k in ("max_abs_score_diff", "mean_abs_score_diff", "passed"):
+            dc[k] = None
+        dc["note"] = ("No banked baseline exists for this model, so `original` was "
+                      "scored locally in this run. A self-comparison always yields "
+                      "0.0 and is not evidence of cross-run reproducibility.")
+    return res
 
 
 def add_residue_view(res):
@@ -604,17 +649,33 @@ def main():
         res = None
         if args.reuse and cached.exists():
             prev = json.loads(cached.read_text())
+            # The utility config must be part of the staleness key. Without it a
+            # JSON produced by `--utility-query-types bare` is silently reused by a
+            # later default (all-four-phrasing) run at the same script version, and
+            # UTILITY_TOP1_BEFORE/AFTER -- which carry the paper's "equally
+            # effective" claim -- would be reported under a config that run never
+            # used. `want_utility` also lets --reuse work after a --no-utility run.
+            want_utility = not args.no_utility
+            prev_qt = ((prev.get("utility") or {}).get("config") or {}).get("query_types")
+            utility_ok = ((not want_utility and "utility" not in prev)
+                          or (want_utility and prev_qt == list(args.utility_query_types)))
             if (prev.get("script_version") == SCRIPT_VERSION
                     and prev.get("label_source") == label_source
                     and prev.get("n_triples") == n_expected
-                    and "utility" in prev):
-                print(f"\n--- reusing {cached.name} (same script version and label source) ---")
+                    and utility_ok):
+                print(f"\n--- reusing {cached.name} (same script version, labels, utility config) ---")
                 res = prev
             else:
-                print(f"  {cached.name} is stale; recomputing")
+                why = []
+                if prev.get("script_version") != SCRIPT_VERSION: why.append("script version")
+                if prev.get("label_source") != label_source: why.append("label source")
+                if prev.get("n_triples") != n_expected: why.append("triple count")
+                if not utility_ok: why.append(f"utility config (cached={prev_qt})")
+                print(f"  {cached.name} is stale ({', '.join(why)}); recomputing")
         if res is None:
             res = run_model(m, triples, labels, args, device)
             res.update(meta)
+        normalise_determinism_check(res)
         add_residue_view(res)
         allres[m] = res
         print_model(res)
@@ -671,14 +732,26 @@ def main():
         lines.append(f"{esc(cond)}{note} & " + " & ".join(cells) + r" \\")
     lines += [r"\bottomrule", r"\end{tabular}",
               r"% $^{\dagger}$ identity of the design (the two documents become the same "
-              r"string), not an empirical measurement -- REVIEW_TODO A10.",
-              r"% The jina-reranker-v2 columns: its `original' baseline failed the",
-              r"% determinism check (re-scoring the untransformed text locally does not",
-              r"% exactly reproduce the banked Feb-2026 API-adjacent local score; max",
-              r"% abs difference 0.0117 on this model's own ~0.15--0.84 range). The other",
-              r"% three conditions for every model were scored fresh in this same run and",
-              r"% are internally consistent; only cross-run comparisons for jina's",
-              r"% `original' row carry this extra caveat."]
+              r"string), not an empirical measurement -- REVIEW_TODO A10."]
+    # Determinism caveats are DERIVED from what this run actually measured, never
+    # hard-coded: a literal model name / difference / verdict here would silently
+    # go stale the moment anything is re-scored or `--model` selects another set.
+    n_other = len(ALL_CONDITIONS) - 1          # every condition except `original`
+    for m in models:
+        dc = allres[m].get("determinism_check") or {}
+        short = esc(m.split("/")[-1])
+        if dc.get("status") == "checked" and dc.get("passed") is False:
+            lines.append(
+                f"% {short}: its `original' baseline FAILED the determinism check -- "
+                f"re-scoring the untransformed text locally did not reproduce the banked "
+                f"score (max abs difference {dc['max_abs_score_diff']:.4f}). Its other "
+                f"{n_other} conditions were scored fresh in this same run and are "
+                f"internally consistent; only cross-run comparisons of that row carry "
+                f"this caveat.")
+        elif dc.get("status") == "skipped":
+            lines.append(
+                f"% {short}: no banked baseline exists, so `original' was scored locally "
+                f"in this run and no cross-run determinism verdict is available for it.")
     (TEX_DIR / "deidentification.tex").write_text("\n".join(lines) + "\n")
 
     # ---- deid_conditions.tex: tabular-only, one row per condition, primary model ----

@@ -31,7 +31,8 @@ script) and produces the corrected numbers the paper needs:
       large and currently hidden).
 
   B7  Model provenance table: vendor, access type, score range, tie rate, n,
-      date scored (from raw-file mtimes).
+      date scored (see RAW_SCORED_DATE -- a recorded constant, NOT the file
+      mtime, which is only the git-checkout time on any other machine).
 
 Outputs (never overwrites any *_full_raw.json):
     results/single_stage_summary.json
@@ -106,6 +107,14 @@ DEPRECATED_ALIASES = {"semantic-ranker-default-003": "semantic-ranker-default-00
 # `results/*_full_raw.json` files were produced in the same run, confirmed from
 # the scoring session log; hard-code that date instead of trusting the filesystem.
 RAW_SCORED_DATE = "2026-02-24"
+
+# Guard against the constant silently outliving the data it describes. The raw
+# files carry no scoring timestamp of their own (run_experiment.py did not write
+# one), so if any of them is ever re-scored this literal becomes a published lie
+# with nothing to catch it. Until run_experiment.py records a real `scored_utc`
+# per file, warn whenever a raw file's content hash changes from what was present
+# when the date was recorded.
+RAW_FINGERPRINT_AT_DATE = "results/.raw_fingerprint.json"
 
 
 # ---------------------------------------------------------------------------
@@ -295,6 +304,39 @@ def build_stat(rows) -> ClusterStat:
     for r in rows:
         cs.add(r["occupation"], r["delta"], r["stereotype"])
     return cs
+
+
+def check_raw_unchanged(raw: dict[str, dict]) -> dict:
+    """Warn if a raw score file changed since RAW_SCORED_DATE was recorded.
+
+    `date_scored` is a hard-coded constant because the raw JSON carries no
+    timestamp of its own. That is fine only for as long as the raw files are
+    genuinely the ones scored on that date, so their content hashes are recorded
+    on first run and compared on every later run. A mismatch means the constant
+    now mislabels real data, and the run says so loudly rather than publishing it.
+    """
+    fp_path = ROOT / RAW_FINGERPRINT_AT_DATE
+    current = {name: score_fingerprint(d["rows"]) for name, d in raw.items()}
+    if not fp_path.exists():
+        fp_path.write_text(json.dumps(
+            {"recorded_for_date": RAW_SCORED_DATE, "fingerprints": current}, indent=1))
+        print(f"  recorded raw-file fingerprints for {RAW_SCORED_DATE} -> {fp_path.name}")
+        return {"status": "recorded", "changed": []}
+
+    stored = json.loads(fp_path.read_text())
+    changed = sorted(n for n, fp in current.items()
+                     if n in stored["fingerprints"] and stored["fingerprints"][n] != fp)
+    new = sorted(n for n in current if n not in stored["fingerprints"])
+    if changed:
+        print(f"  !! WARNING: {len(changed)} raw file(s) changed since "
+              f"{stored['recorded_for_date']} was recorded as their scoring date: "
+              f"{', '.join(changed)}. Table A1's `date scored` column is now WRONG for "
+              f"them -- re-record RAW_SCORED_DATE and delete {fp_path.name}.",
+              file=sys.stderr)
+    if new:
+        print(f"  note: {len(new)} raw file(s) not in the fingerprint record: {', '.join(new)}")
+    return {"status": "verified", "changed": changed, "unrecorded": new,
+            "recorded_for_date": stored["recorded_for_date"]}
 
 
 def stable_seed(*parts) -> int:
@@ -586,6 +628,7 @@ def main() -> None:
 
     raw = load_raw()
     print(f"Raw files loaded: {len(raw)}")
+    raw_integrity = check_raw_unchanged(raw)
 
     # ---- A1 -------------------------------------------------------------
     groups, dropped, evidence = detect_duplicates(raw)
@@ -690,6 +733,8 @@ def main() -> None:
         "n_models": len(models),
         "excluded_models": dropped,
         "duplicate_detection": {"groups": groups, "evidence": evidence},
+        "raw_scored_date": RAW_SCORED_DATE,
+        "raw_integrity": raw_integrity,
         "rows_dropped_no_label": dropped_occ_counts,
         "neutral_across_models": a3,
         "across_models": across_models,

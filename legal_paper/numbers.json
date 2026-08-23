@@ -328,17 +328,17 @@
   },
   "DEID_ORIGINAL_PCT_MALE_MALEJOBS": {
     "file": "results/deidentification_bge.json",
-    "path": "conditions.original.by_category.male.pct_male",
-    "format": ".0f",
+    "path": "conditions.original.by_category.male.tie_aware_pct_male",
+    "format": ".1f",
     "unit": "%",
-    "needs": "share favoring the man on male-typed jobs, untransformed documents, as a percentage 0-100"
+    "needs": "share favoring the man on male-typed jobs, untransformed documents, as a percentage 0-100 REVIEW: uses the tie-aware field so the glossary's 'every single share in the body is tie-aware' claim holds even if the primary model changes to one with ties."
   },
   "DEID_NAMESONLY_PCT_MALE_MALEJOBS": {
     "file": "results/deidentification_bge.json",
-    "path": "conditions.names_only.by_category.male.pct_male",
+    "path": "conditions.names_only.by_category.male.tie_aware_pct_male",
     "format": ".1f",
     "unit": "%",
-    "needs": "REVIEW_ROUND2 A1: same, names-only condition, now CASE-PRESERVED (lowercase=False). Direction is near-deterministic; do not claim the magnitude shrinks (it does not, case-preserved)."
+    "needs": "REVIEW_ROUND2 A1: same, names-only condition, now CASE-PRESERVED (lowercase=False). Direction is near-deterministic; do not claim the magnitude shrinks (it does not, case-preserved). REVIEW: uses the tie-aware field so the glossary's 'every single share in the body is tie-aware' claim holds even if the primary model changes to one with ties."
   },
   "DEID_ORIGINAL_MEAN_GAP": {
     "file": "results/deidentification_bge.json",

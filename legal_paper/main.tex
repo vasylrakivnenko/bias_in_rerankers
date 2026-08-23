@@ -125,7 +125,7 @@ alone, and the two combined.}
 
 If both documents become the same text, any model must score them the same. Our full transform replaces the name and neutralises the pronouns, and every pair then ties. That is a check on the argument rather than a discovery, because identical texts cannot be scored differently. Half-measures are the interesting case, and they cut the other way from what you might guess.
 
-Deleting names but leaving pronouns does not shrink the score gap -- if anything it is slightly larger: 0.038 against 0.036. What changes is consistency: the man's document wins 98.6\% of male-typed comparisons, up from 87\%. Removing the name does not take away a large signal and leave a small one behind. It takes away the noisier signal and leaves the more consistent one. Neutralising pronouns but keeping the name shows the same thing from the other side: the gap falls to 0.024. This pattern is not identical on every re-ranker we tested; the appendix repeats it on three more.
+Deleting names but leaving pronouns does not shrink the score gap -- if anything it is slightly larger: 0.038 against 0.036. What changes is consistency: the man's document wins 98.6\% of male-typed comparisons, up from 87.0\%. Removing the name does not take away a large signal and leave a small one behind. It takes away the noisier signal and leaves the more consistent one. Neutralising pronouns but keeping the name shows the same thing from the other side: the gap falls to 0.024. This pattern is not identical on every re-ranker we tested; the appendix repeats it on three more.
 
 So a half-transform is not half a fix. The obvious repair, rewriting pronouns as \emph{they}, \emph{them}, and \emph{their}, works only if the rewriter understands grammar. English \emph{her} is both possessive and object, so mapping it to one word leaves the pair differing by a word. That happens on 25\% of pairs, and where it happens 96\% of the leftovers favor the woman's document, not the man's. A rewriter that checks each word's part of speech avoids the mistake and keeps the text readable. Neither route costs accuracy: the right candidate came out on top 99.8\% of the time, slightly more often than the 99.4\% before any transform.
 
@@ -631,7 +631,7 @@ rerank-2-lite & 31.3 & 39.7 & 18.4 & 45.9 & 18.4 \\
 
 The pipeline result in the body uses one open-source pair. Table~\ref{tab:sweep} repeats the simulation with each of the audited re-rankers behind the same retriever. The shortlist skew follows the re-ranker, in both size and direction, which is the point of the second finding.
 
-The headline pipeline also uses a retrieval cutoff of 10 -- how many candidates the retriever passes on before the re-ranker sees them. That choice is not neutral: at a cutoff of 5 the same pipeline's shortlist is 71\% male; at a cutoff of 15 it is 78\%. A deployer who narrows or widens that first cut changes the disparity without touching either model.
+The headline pipeline also uses a retrieval cutoff of 10 -- how many candidates the retriever passes on before the re-ranker sees them. That choice is not neutral, and it is not symmetric. Narrowing the cut to 5 lowers the shortlist to 71\% male, because the re-ranker is handed fewer candidates to reorder. Widening it to 15 changes almost nothing (78\%), since the re-ranker already dominates the ordering by that point. A deployer who tightens that first cut changes the disparity without touching either model.
 
 \begin{table}[H]
 \centering
@@ -729,13 +729,8 @@ gram\_pos$^{\dagger}$ & 50.0 & 0.0000 & 50.0 & 0.0000 & 50.0 & 0.0000 & 50.0 & 0
 \bottomrule
 \end{tabular}
 % $^{\dagger}$ identity of the design (the two documents become the same string), not an empirical measurement -- REVIEW_TODO A10.
-% The jina-reranker-v2 columns: its `original' baseline failed the
-% determinism check (re-scoring the untransformed text locally does not
-% exactly reproduce the banked Feb-2026 API-adjacent local score; max
-% abs difference 0.0117 on this model's own ~0.15--0.84 range). The other
-% three conditions for every model were scored fresh in this same run and
-% are internally consistent; only cross-run comparisons for jina's
-% `original' row carry this extra caveat.%
+% bge-reranker-base: no banked baseline exists, so `original' was scored locally in this run and no cross-run determinism verdict is available for it.
+% jina-reranker-v2-base-multilingual: its `original' baseline FAILED the determinism check -- re-scoring the untransformed text locally did not reproduce the banked score (max abs difference 0.0117). Its other 7 conditions were scored fresh in this same run and are internally consistent; only cross-run comparisons of that row carry this caveat.%
 }
 \end{table}
 

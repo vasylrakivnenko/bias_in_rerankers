@@ -278,7 +278,7 @@ two tables of five pairs each for legibility.}
 
 The pipeline result in the body uses one open-source pair. Table~\ref{tab:sweep} repeats the simulation with each of the audited re-rankers behind the same retriever. The shortlist skew follows the re-ranker, in both size and direction, which is the point of the second finding.
 
-The headline pipeline also uses a retrieval cutoff of {{TOPK}} -- how many candidates the retriever passes on before the re-ranker sees them. That choice is not neutral: at a cutoff of 5 the same pipeline's shortlist is {{PIPE_PCT_MALE_K5}} male; at a cutoff of 15 it is {{PIPE_PCT_MALE_K15}}. A deployer who narrows or widens that first cut changes the disparity without touching either model.
+The headline pipeline also uses a retrieval cutoff of {{TOPK}} -- how many candidates the retriever passes on before the re-ranker sees them. That choice is not neutral, and it is not symmetric. Narrowing the cut to 5 lowers the shortlist to {{PIPE_PCT_MALE_K5}} male, because the re-ranker is handed fewer candidates to reorder. Widening it to 15 changes almost nothing ({{PIPE_PCT_MALE_K15}}), since the re-ranker already dominates the ordering by that point. A deployer who tightens that first cut changes the disparity without touching either model.
 
 ```latex
 \begin{table}[H]
