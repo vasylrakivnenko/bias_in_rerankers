@@ -33,11 +33,11 @@ Each observation is a pair of short professional documents. The two versions des
 
 We combine {{N_TEMPLATES}} document templates, {{N_QUERIES}} query phrasings, and {{N_NAME_PAIRS}} pairs of common American given names. Names come from national birth-name records [@ssa2026]. The complete templates, queries, and names appear in Appendix A.
 
-We initially score {{N_OCC_SCORED}} occupations. We label occupations with the share of women employed in the corresponding federal labor-force category [@bls2025]. We retain {{N_OCCUPATIONS}} occupations with a clear label: {{N_OCC_MALE}} male-typed, {{N_OCC_FEMALE}} female-typed, and {{N_OCC_NEUTRAL}} close to evenly split. The remaining {{N_OCC_DROPPED}} lack a usable match, have a suppressed estimate, or fall in an intentionally ambiguous range. Appendix A reports every inclusion and exclusion.
+We initially score {{N_OCC_SCORED}} occupations. We label occupations with the share of women employed in the corresponding federal labor-force category [@bls2025]. We retain {{N_OCCUPATIONS}} occupations with a clear label: {{N_OCC_MALE}} male-typed, {{N_OCC_FEMALE}} female-typed, and {{N_OCC_NEUTRAL}} close to evenly split. The remaining {{N_OCC_DROPPED}} lack a usable match, have a suppressed estimate, or fall in an intentionally ambiguous range. The released repository records every inclusion and exclusion, its federal category, and the exclusion reason.
 
 ## Rerankers and analysis
 
-We evaluate {{N_MODELS}} rerankers from commercial APIs and open-weight releases. The scores were collected on {{RAW_SCORED_DATE}}. Model identifiers, access routes, score ranges, tie rates, and collection dates appear in Appendix B.
+We evaluate {{N_MODELS}} rerankers from commercial APIs and open-weight releases. The scores were collected on {{RAW_SCORED_DATE}}. Model identifiers and results appear in Appendix B. The released provenance table records each access route, score range, overall tie rate, and collection date.
 
 For each model and occupation group, we report whether the male-associated version scores higher, the versions tie, or the female-associated version scores higher. When a single directional share is needed, a tie contributes one half to each side. Confidence intervals use a seeded cluster bootstrap that resamples occupations, because comparisons within an occupation are not independent. Scores from different models have different scales, so we compare directions and within-model gaps rather than raw magnitudes across models.
 
@@ -150,7 +150,7 @@ The generated documents, banked model scores, analysis scripts, pipeline simulat
 \setcounter{table}{0}
 ```
 
-# Documents and occupations
+# Audit inputs
 
 The following table gives the document templates, query forms, and name pairs used in the counterfactual audit.
 
@@ -158,25 +158,18 @@ The following table gives the document templates, query forms, and name pairs us
 {{TABLE_DOCUMENTS}}
 ```
 
-The next table reports retained occupations with their federal labor-force category and excluded occupations with the reason for exclusion.
-
-```latex
-{{TABLE_OCCUPATIONS}}
-```
+The complete occupation inventory is released as
+`results/tex/occupations_table.tex` rather than reproduced here. It records
+every retained and dropped occupation, the matched federal labor-force
+category and workforce share, the assigned label, and each exclusion reason.
 
 # Models and single-stage results
 
-```latex
-\begin{table}[H]
-\centering
-\caption{Audited rerankers, access routes, counterfactual comparisons, score
-ranges, tie rates, and scoring dates.}
-\label{tab:models}
-\resizebox{\textwidth}{!}{%
-{{TABLE_MODELS}}%
-}
-\end{table}
+The complete provenance table is released as `results/tex/provenance.tex`. It
+records the vendor and access route, number of comparisons, score range,
+overall tie rate, and scoring date for every reranker.
 
+```latex
 \begin{table}[H]
 \centering
 \caption{Counterfactual outcomes by reranker and occupation category. M and F
