@@ -49,6 +49,7 @@ Run:  venv/bin/python code/analyze_single_stage.py
 from __future__ import annotations
 
 import argparse
+import csv
 import datetime as _dt
 import glob
 import hashlib
@@ -65,7 +66,7 @@ CODE_DIR = Path(__file__).resolve().parent
 ROOT = CODE_DIR.parent
 sys.path.insert(0, str(CODE_DIR))
 
-from labels import load_labels  # noqa: E402  (shared contract module)
+from labels import CSV_PATH, VALID_LABELS, load_labels  # noqa: E402  (shared contract module)
 
 SCRIPT_VERSION = "analyze_single_stage.py v1.0 (REVIEW_TODO A1/A2/A3/B1/B2/B7)"
 RESULTS_DIR = ROOT / "results"
@@ -612,6 +613,83 @@ def write_tex(summary: dict) -> list[str]:
 
 
 # ---------------------------------------------------------------------------
+# Derived counts the paper quotes directly
+# ---------------------------------------------------------------------------
+
+def count_neutral_indeterminate(models: dict) -> int:
+    """How many audited models' lean on evenly-split jobs is not distinguishable
+    from even-handed.
+
+    A model counts when the cluster-bootstrap 95% CI for its tie-aware % male on
+    NEUTRAL occupations CONTAINS 50.0 -- the data cannot say which way it leans,
+    in either direction. The interval is treated as closed: a bound landing
+    exactly on 50.0 has not excluded 50, so that model is indeterminate.
+
+    Derived here rather than read off the printed table so it tracks the seed,
+    B, and the label set automatically: change any of them and this count moves
+    with the CIs the paper prints, instead of quietly contradicting them.
+    """
+    n = 0
+    for name, entry in sorted(models.items()):
+        cat = entry.get("by_category", {}).get("neutral")
+        if not cat or "tie_aware_pct_male_ci" not in cat:
+            raise KeyError(
+                f"model {name!r} has no neutral-category tie-aware CI. The paper "
+                "quotes this as a count over ALL audited models, so skipping one "
+                "would silently understate it."
+            )
+        lo, hi = cat["tie_aware_pct_male_ci"]
+        if lo <= 50.0 <= hi:
+            n += 1
+    return n
+
+
+def count_distinct_bls_categories(labels: dict[str, str]) -> int:
+    """How many distinct BLS occupation categories the kept occupations cover.
+
+    Why the paper needs this next to the occupation count: every CI in this file
+    comes from a cluster bootstrap that resamples OCCUPATIONS as independent
+    clusters, but the occupations are not 52 independent draws from the labour
+    force. Several share one BLS row -- laborer/mover, nanny/babysitter,
+    analyst/consultant and accountant/auditor -- so 52 occupations carry only 48
+    distinct labour-market categories, and the effective number of clusters is
+    lower than the number the bootstrap resamples. Reporting both is what lets a
+    reader see how much independent information the intervals rest on.
+
+    Read straight from the CSV that labels.py labels from, because `labels` maps
+    occupation -> label and does not carry the BLS title.
+    """
+    if not CSV_PATH.exists():
+        raise FileNotFoundError(
+            f"{CSV_PATH} is missing, so the BLS categories behind the kept "
+            "occupations cannot be counted. Restore it (or drop the number from "
+            "the paper) -- guessing it would misstate the bootstrap's clustering."
+        )
+    titles: dict[str, str] = {}
+    with CSV_PATH.open(newline="", encoding="utf-8") as fh:
+        for row in csv.DictReader(fh):
+            if (row.get("label") or "").strip().lower() not in VALID_LABELS:
+                continue                                   # dropped occupation
+            occ = (row.get("occupation") or "").strip()
+            title = (row.get("bls_title") or "").strip()
+            if not title:
+                raise ValueError(
+                    f"kept occupation {occ!r} has no bls_title in {CSV_PATH.name}; "
+                    "labels.py's rule cannot have labelled it from a BLS share "
+                    "without one."
+                )
+            titles[occ] = title
+    if set(titles) != set(labels):
+        raise ValueError(
+            f"{CSV_PATH.name} keeps {len(titles)} occupations but the analysis ran "
+            f"on {len(labels)}. The two must be the same set -- this run is most "
+            "likely using the legacy fallback labels, in which case the BLS "
+            "category count does not describe it (see --strict-labels)."
+        )
+    return len(set(titles.values()))
+
+
+# ---------------------------------------------------------------------------
 # main
 # ---------------------------------------------------------------------------
 
@@ -721,11 +799,16 @@ def main() -> None:
     # ---- label-set comparison: BLS relabelling vs the legacy labels ------
     label_cmp = label_set_comparison(raw, labels, label_source)
 
+    # ---- two counts the paper quotes in prose (see the helpers) ----------
+    n_indeterminate = count_neutral_indeterminate(models)
+    n_distinct_bls = count_distinct_bls_categories(labels)
+
     summary = {
         "script_version": SCRIPT_VERSION,
         "generated": _dt.datetime.now().isoformat(timespec="seconds"),
         "label_source": label_source,
         "n_labelled_occupations": len(labels),
+        "n_distinct_bls_categories": n_distinct_bls,
         "label_counts": {c: sum(1 for v in labels.values() if v == c) for c in CATEGORIES},
         "seed": SEED,
         "bootstrap_B": args.bootstrap,
@@ -737,6 +820,7 @@ def main() -> None:
         "raw_integrity": raw_integrity,
         "rows_dropped_no_label": dropped_occ_counts,
         "neutral_across_models": a3,
+        "n_neutral_indeterminate_models": n_indeterminate,
         "across_models": across_models,
         "stereotype_tracking_spread": spread_summary,
         "label_set_comparison": label_cmp,
@@ -791,6 +875,14 @@ def main() -> None:
           f"{spread_summary['n_models_positive']}/{spread_summary['n_models']} models positive, "
           f"median {spread_summary['median']:.1f}, range "
           f"[{spread_summary['min']:.1f}, {spread_summary['max']:.1f}]")
+    print(f"  models whose neutral-job CI contains 50 (lean indistinguishable from "
+          f"even): {n_indeterminate}/{len(models)}  "
+          + ", ".join(m for m in sorted(models)
+                      if models[m]["by_category"]["neutral"]["tie_aware_pct_male_ci"][0]
+                      <= 50.0 <=
+                      models[m]["by_category"]["neutral"]["tie_aware_pct_male_ci"][1]))
+    print(f"  bootstrap clusters: {len(labels)} occupations, but only "
+          f"{n_distinct_bls} distinct BLS categories behind them")
 
     print("\n" + "=" * 108)
     print("A8  LABEL-SET COMPARISON: pre-BLS labels vs BLS CPS Table 11 labels")

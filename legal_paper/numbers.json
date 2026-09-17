@@ -204,6 +204,13 @@
     "unit": "%",
     "needs": "top-3 shortlist share male under the re-ranker alone, all categories"
   },
+  "SHORTLIST_PCT_MALE_SEARCH": {
+    "file": "results/compounding_bge_pipeline.json",
+    "path": "slate.ALL.emb_top3_m",
+    "format": ".0f",
+    "unit": "%",
+    "needs": "retriever-only top-3 %male, all categories. Used to locate the prior literature: Wilson & Caliskan audit the retrieval stage, and this is the figure their stage contributes before the re-ranker overrides it."
+  },
   "SHORTLIST_PCT_MALE_PIPELINE": {
     "file": "results/compounding_bge_pipeline.json",
     "path": "slate.ALL.pipe_top3_m",
@@ -423,7 +430,7 @@
     "path": "conditions.gram_her_their.pct_pairs_with_residue",
     "format": ".0f",
     "unit": "%",
-    "needs": "Share of pairs the NAIVE grammatical mapping (her->their regardless of part of speech) leaves textually different (REVIEW_TODO A5). The POS-aware variant gram_pos leaves 0%."
+    "needs": "Share of pairs the NAIVE grammatical mapping (her->their regardless of part of speech) leaves textually different (REVIEW_TODO A5). The following-word heuristic (legacy key gram_pos) leaves 0% on these templates only."
   },
   "SHORTLIST_PCT_MALE_SEARCH_MALEJOBS": {
     "file": "results/compounding_bge_pipeline.json",
@@ -460,5 +467,103 @@
   "TABLE_OCCUPATIONS": {
     "tex_file": "results/tex/occupations_table.tex",
     "needs": "REVIEW_ROUND2 A4 (new). Every one of the 82 scored occupations: the 52 kept, with their BLS row/percentage/label, and the 30 dropped, with a mechanically-derived reason. Generated from code/occupations_bls.csv."
+  },
+  "N_RERANKER_VENDORS": {
+    "file": "results/vendor_docs_audit_summary.json",
+    "path": "headline.n_vendors",
+    "format": "d",
+    "needs": "vendors behind the audited re-rankers (code/vendor_docs_audit.py)"
+  },
+  "N_VENDOR_SOURCES": {
+    "file": "results/vendor_docs_audit_summary.json",
+    "path": "headline.n_sources_checked",
+    "format": "d",
+    "needs": "first-party vendor documents read in the documentation audit"
+  },
+  "N_MODELS_HIRING_NAMED": {
+    "file": "results/vendor_docs_audit_summary.json",
+    "path": "headline.models_hiring_named",
+    "format": "d",
+    "needs": "models whose vendor names hiring/recruitment as an intended use (expected 0)"
+  },
+  "N_MODELS_FAIRNESS_EVAL": {
+    "file": "results/vendor_docs_audit_summary.json",
+    "path": "headline.models_fairness_eval",
+    "format": "d",
+    "needs": "models with a published fairness evaluation OF THE RANKING MODEL (expected 0). Cohere's BOLD evaluation covers Command R, a different model family, and is coded yes_other_model, not yes."
+  },
+  "N_MODELS_GENDER_DISCLOSURE": {
+    "file": "results/vendor_docs_audit_summary.json",
+    "path": "headline.models_gender_disclosure",
+    "format": "d",
+    "needs": "models disclosing a gender-related limitation (expected 0)"
+  },
+  "N_MODELS_HIGHSTAKES": {
+    "file": "results/vendor_docs_audit_summary.json",
+    "path": "headline.models_highstakes_restricted",
+    "format": "d",
+    "needs": "models whose vendor restricts high-stakes/employment use (expected 5: Cohere x2, Google x3)"
+  },
+  "N_VENDORS_HIGHSTAKES": {
+    "file": "results/vendor_docs_audit_summary.json",
+    "path": "headline.vendors_highstakes_restricted",
+    "format": "d",
+    "needs": "vendors restricting employment use (expected 2: Cohere and Google)"
+  },
+  "N_MODELS_NO_RESTRICTION": {
+    "file": "results/vendor_docs_audit_summary.json",
+    "path": "headline.models_no_restriction",
+    "format": "d",
+    "needs": "models with no restriction reaching employment decisions (expected 9)"
+  },
+  "N_VENDORS_RESTRICTION_IN_PRODUCT_DOC": {
+    "file": "results/vendor_docs_audit_summary.json",
+    "path": "headline.vendors_restricting_in_product_doc",
+    "format": "d",
+    "needs": "of the restricting vendors, how many state the restriction in the ranking model's own documentation (expected 0). Legally load-bearing for the EU AI Act Art. 26(1) point."
+  },
+  "RAW_SCORED_DATE": {
+    "file": "results/single_stage_summary.json",
+    "path": "raw_scored_date",
+    "needs": "Collection date of the banked single-stage model scores, distinct from the documentation audit date."
+  },
+  "VENDOR_AUDIT_DATE": {
+    "file": "results/vendor_docs_audit_summary.json",
+    "path": "accessed",
+    "needs": "Initial audit date and follow-up corrections; sources retain individual access dates."
+  },
+  "TABLE_VENDOR_AUDIT": {
+    "tex_file": "results/tex/vendor_docs_audit.tex",
+    "needs": "tabular-only fragment: per-vendor answers to the four documentation questions (code/vendor_docs_audit.py)"
+  },
+  "N_NEUTRAL_INDETERMINATE": {
+    "file": "results/single_stage_summary.json",
+    "path": "n_neutral_indeterminate_models",
+    "format": "d",
+    "needs": "models whose NEUTRAL tie-aware %male bootstrap CI contains 50, i.e. lean not distinguishable from even (expected 3: Cohere-rerank-v4.0-pro, semantic-ranker-fast-004, jina). Reviewer point: the 'k lean male / j lean female' split is not established for these."
+  },
+  "N_BLS_CATEGORIES": {
+    "file": "results/single_stage_summary.json",
+    "path": "n_distinct_bls_categories",
+    "format": "d",
+    "needs": "distinct BLS bls_title values among the kept occupations (expected 48 from 52). Four occupation pairs share one federal category, so the bootstrap's effective cluster count is lower than the occupation count."
+  },
+  "N_REAL_RESUMES": {
+    "file": "results/realistic_pool_sampling.json",
+    "path": "n_distinct_resumes_scored",
+    "format": ",d",
+    "needs": "Distinct resume IDs in reconstructed pools, from code/reconstruct_realistic_sampling.py."
+  },
+  "N_MODELS_NO_PUBLIC_WEIGHTS": {
+    "file": "results/vendor_docs_audit_summary.json",
+    "path": "headline.models_without_public_weights",
+    "format": "d",
+    "needs": "Models without public weights in checked vendor sources, independently of our access route (10; IBM weights are public)."
+  },
+  "N_REAL_CORPUS": {
+    "file": "results/realistic_pool_four_rerankers.json",
+    "path": "provenance.corpus.n_resumes",
+    "format": ",d",
+    "needs": "Source corpus size, not the number actually scored."
   }
 }

@@ -13,14 +13,12 @@ Variants (REVIEW_TODO.md A4, A5, B8):
     full            names + pronouns (the paper's recommended policy)
     gram_her_their  grammatical they/them/their, "her" -> "their" (possessive)
     gram_her_them   grammatical they/them/their, "her" -> "them" (object)
-    gram_pos        POS-aware: "her" -> "their" before a noun, else "them"
+    gram_pos        following-word heuristic for "her" (not a POS tagger)
 
-`gram_*` exist to test the claim in paper.md:146 that a grammatically faithful
-mapping cannot equalise the twins because English "her" is both the possessive
-(counterpart of "his") and the object (counterpart of "him"). gram_her_their and
-gram_her_them each leave a one-word residue in one direction; gram_pos is the
-strongest version of the counter-argument and should be reported honestly even
-if it undercuts the "one uniform token" recommendation.
+`gram_*` are pronoun-rewrite ablations, not complete grammatical rewriters.
+English "her" is both possessive (counterpart of "his") and object ("him").
+The following-word heuristic equalises these templates, but it can misclassify
+ordinary prose and none of the variants repairs subject-verb agreement.
 
 `lowercase` is a SEPARATE flag, not baked into a variant, so B8 can ablate it:
 it contributes nothing to the symmetry guarantee (both twins get identical
@@ -66,9 +64,8 @@ _GRAM_BASE = {
 }
 
 # Words that, following "her", indicate the possessive reading ("her role").
-# Deliberately a heuristic, not a tagger: it is documented as such in the paper,
-# and gram_pos is a robustness check, not the recommended policy. A deployment
-# would use a real POS tagger (spaCy PRP vs PRP$).
+# Deliberately a heuristic, not a tagger. A grammatical deployment alternative
+# would need pronoun disambiguation, verb agreement and independent validation.
 _POSSESSIVE_STOP = {
     "is", "was", "are", "were", "and", "or", "but", "to", "for", "as", "with",
     "in", "on", "at", "by", "from", "that", "who", "which", "than", "then",
@@ -107,7 +104,12 @@ def _grammatical(text: str, her: str) -> str:
 
 
 def _grammatical_pos(text: str) -> str:
-    """they/them/their, disambiguating 'her' by the following token."""
+    """Experimental following-word heuristic; not a grammatical rewriter.
+
+    The legacy key ``gram_pos`` is retained for cached-result compatibility.
+    It equalises the study templates but fails, for example, on "her yesterday"
+    and does not repair verb agreement ("they specializes").
+    """
     mapping = dict(_GRAM_BASE)
 
     def sub(m: re.Match) -> str:

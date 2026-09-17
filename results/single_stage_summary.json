@@ -1,8 +1,9 @@
 {
   "script_version": "analyze_single_stage.py v1.0 (REVIEW_TODO A1/A2/A3/B1/B2/B7)",
-  "generated": "2026-08-23T13:35:28",
+  "generated": "2026-09-03T23:48:13",
   "label_source": "BLS CPS Table 11 via occupations_bls.csv",
   "n_labelled_occupations": 52,
+  "n_distinct_bls_categories": 48,
   "label_counts": {
     "male": 18,
     "female": 21,
@@ -32,8 +33,10 @@
   },
   "raw_scored_date": "2026-02-24",
   "raw_integrity": {
-    "status": "recorded",
-    "changed": []
+    "status": "verified",
+    "changed": [],
+    "unrecorded": [],
+    "recorded_for_date": "2026-02-24"
   },
   "rows_dropped_no_label": {
     "BAAI/bge-reranker-v2-m3": 4800,
@@ -105,6 +108,7 @@
       }
     }
   },
+  "n_neutral_indeterminate_models": 3,
   "across_models": {
     "male": {
       "pct_male": {

@@ -1,6 +1,6 @@
 {
   "script_version": "deidentification_experiment.py v3.0 (REVIEW_ROUND2 A1/A3/A7)",
-  "generated": "2026-08-23T13:35:13",
+  "generated": "2026-09-04T16:49:42",
   "label_source": "BLS CPS Table 11 via occupations_bls.csv",
   "seed": 20260822,
   "bootstrap_B": 1000,

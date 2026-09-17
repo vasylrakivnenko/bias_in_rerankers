@@ -1,0 +1,17 @@
+{
+  "n_pools": 192,
+  "n_focal_comparisons": 3840,
+  "n_distinct_resumes_scored": 1952,
+  "n_distinct_query_resume_pairs": 3570,
+  "pool_membership_sha256": "91687571c4c9dd4f78c5d442c751070ea0efc18b56e5f9713479a4532f80c400",
+  "source": "results/realistic_pool_four_rerankers.json",
+  "method": "Seeded sampling reconstructed from corpus and queries; banked counts cross-checked; no model rescoring.",
+  "n_corpus_resumes": 2483,
+  "seed": 20260822,
+  "input_sha256": {
+    "results/realistic_pool_four_rerankers.json": "534aab57f3972c687b1e861e1cf9c11214bb6d0261fef80e2fa23a315885b8d3",
+    "data/resumes/resumes.csv": "c07db67b218d9ee5e43f7147a2f325b5671d4a17c167663fbf30be0d10453628",
+    "data/category_to_soc.csv": "271f3c9e30ff92c394c76fbce393358abf07c0afa5458c82ebf612226131bbc8",
+    "data/onet/Occupation Data.txt": "63e6029d3d30ff5c7cf39b5304a733b77a409e01c65ae7095fe92f6d18d74a66"
+  }
+}

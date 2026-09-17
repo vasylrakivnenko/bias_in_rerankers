@@ -2,7 +2,9 @@
 \begin{tabular}{llrrrrrr}
 \toprule
 Re-ranker & Vendor & \multicolumn{4}{c}{Pipeline \% male in top-3} & Re-ranker & Mean rank gap \\
- & & all & male & female & neutral & alone & (F$-$M) \\
+\cmidrule(lr){3-6}
+ & & all & male & female & neutral & alone \% & woman $-$ man (rank positions) \\
+ & & & & & & & $+$: the woman ranks lower \\
 \midrule
 ibm-granite-granite-embedding-reranker-english-r2 & IBM (via Azure AI Foundry) & 84.9 & 95.9 & 71.7 & 90.7 & 89.3 & 3.69 \\
 semantic-ranker-default-002 & Google Vertex AI Ranking & 79.9 & 94.4 & 63.1 & 86.7 & 77.5 & 3.48 \\

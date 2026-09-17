@@ -25,6 +25,7 @@ or anything under legal_paper/.
 from __future__ import annotations
 
 import csv
+import re
 import sys
 from pathlib import Path
 
@@ -64,9 +65,20 @@ def esc(s: str) -> str:
     return "".join(_LATEX_SPECIAL.get(ch, ch) for ch in s)
 
 
-def tabular(colspec: str, header: list[str], rows: list[list[str]]) -> str:
-    """Render a bare booktabs tabular block. Cells are assumed pre-escaped."""
-    lines = [f"\\begin{{tabular}}{{{colspec}}}", "\\toprule"]
+def tabular(colspec: str, header: list[str], rows: list[list[str]],
+            note: str | None = None) -> str:
+    """Render a bare booktabs tabular block. Cells are assumed pre-escaped.
+
+    `note` is an italic line set flush left ABOVE the top rule and INSIDE the
+    tabular box, which is the only place a page break cannot get between it and
+    its table. (As its own paragraph it is stranded at the foot of the previous
+    page, and `\\\\*` does not save it: the 4pt of glue the optional argument
+    adds sits before the no-break penalty and is a legal breakpoint itself.)
+    """
+    lines = [f"\\begin{{tabular}}{{{colspec}}}"]
+    if note is not None:
+        lines.append(f"\\multicolumn{{{len(header)}}}{{@{{}}l}}{{\\emph{{{note}}}}} \\\\[4pt]")
+    lines.append("\\toprule")
     lines.append(" & ".join(header) + " \\\\")
     lines.append("\\midrule")
     for row in rows:
@@ -74,6 +86,141 @@ def tabular(colspec: str, header: list[str], rows: list[list[str]]) -> str:
     lines.append("\\bottomrule")
     lines.append("\\end{tabular}")
     return "\n".join(lines)
+
+
+# ---------------------------------------------------------------------------
+# Page-safe tables
+# ---------------------------------------------------------------------------
+#
+# BUG FOUND IN REVIEW: a `tabular` is ONE unbreakable box. When it is taller
+# than the text block TeX does not paginate it -- it lets it run off the bottom
+# of the page without an error a reader would ever see. The overflowing rows
+# stay in the PDF's content stream (grep and text extraction still find them,
+# which is exactly why this survived several proof-reads) but they are painted
+# below the paper edge and are invisible.
+#
+# Table A did that: 52 kept occupations, six of them wrapping onto a second
+# line, is ~59 text lines against the ~47 that fit in a 9in text block. In the
+# built paper the last seven occupations (receptionist ... veterinarian) were
+# printed off-page, the page folio was overprinted by the `nanny` row, and the
+# row straddling the page edge was sliced through the middle. That slice is
+# what a reviewer reported as receptionist printing "89 6%": the cell holds a
+# perfectly well-formed `89.6\%`, but the decimal point sits on the baseline,
+# in the half of the row the page edge cut away, so only the digits survived.
+# Nothing was wrong with the percent formatting, the escaping, or the column
+# spec -- the table was simply taller than the page.
+#
+# Fix: emit the rows in page-sized chunks, each a complete booktabs tabular
+# with the header repeated. Two tabulars separated by a blank line are two
+# paragraphs, so TeX is free to break the page between them, and each chunk is
+# short enough to fit whatever room is left. `longtable` would do this
+# natively, but it needs \usepackage{longtable}: this script does not own the
+# paper's preamble, and a generated fragment must never require a package the
+# document does not load.
+
+# One 9in text block holds about 47 lines at 11pt on 13.6pt leading, before the
+# booktabs rules and any surrounding prose. 40 is deliberately short of that:
+# over-estimating what a chunk needs costs a little whitespace at a page break,
+# while under-estimating brings back rows nobody can see.
+LINES_PER_CHUNK = 40
+
+# Characters that fit on one line of a p{} column, per inch of column width, in
+# 11pt Computer Modern. Calibrated against the built PDF -- "Automotive service
+# technicians and mechanics" (44 characters) wraps inside the 2.9in column --
+# and rounded DOWN, so a row is more often judged taller than it really is.
+CHARS_PER_INCH = 14
+
+_COLSPEC_RE = re.compile(r"p\{([0-9.]+)in\}|([lrc])")
+
+
+def _column_char_budgets(colspec: str) -> list[int | None]:
+    """Per column: how many characters fit on one line, or None where the
+    column cannot wrap at all (`l`/`r`/`c` grow to fit their widest cell)."""
+    budgets: list[int | None] = []
+    for m in _COLSPEC_RE.finditer(colspec):
+        budgets.append(int(float(m.group(1)) * CHARS_PER_INCH) if m.group(1) else None)
+    return budgets
+
+
+def _row_lines(row: list[str], budgets: list[int | None]) -> int:
+    """Height of one row in text lines: the tallest cell wins. Cell strings are
+    already LaTeX-escaped, so a backslash or two is counted that will not be
+    printed -- another over-estimate, and over-estimating is the safe way to be
+    wrong here."""
+    height = 1
+    for cell, budget in zip(row, budgets):
+        if budget:
+            height = max(height, -(-len(cell) // budget))   # ceil division
+    return height
+
+
+def tabular_paged(colspec: str, header: list[str], rows: list[list[str]],
+                  continued_note: str, lines_per_chunk: int = LINES_PER_CHUNK) -> str:
+    """Render `rows` as one or more booktabs tabulars, none taller than a page.
+
+    Every chunk repeats the header, and every chunk after the first carries
+    `continued_note` inside its own box, so a reader meeting a repeated header
+    mid-appendix does not mistake it for a new table. A table that already fits
+    comes back as a single tabular, byte-identical to `tabular()`, and no note.
+    """
+    budgets = _column_char_budgets(colspec)
+    if len(budgets) != len(header):
+        raise ValueError(
+            f"colspec {colspec!r} parses to {len(budgets)} columns but the header "
+            f"has {len(header)}. The height estimate below lines cells up with "
+            "columns by position, so a mis-parse would silently mis-measure the "
+            "table -- fix the column spec (or _COLSPEC_RE) first."
+        )
+
+    # +1 for the "(continued)" note row every chunk but the first carries. The
+    # first chunk is charged for a line it does not use; one line of slack costs
+    # nothing and keeps the budget arithmetic in one place.
+    head_lines = _row_lines(header, budgets) + 1
+    heights = [_row_lines(r, budgets) for r in rows]
+    tallest = max(heights, default=1)
+    if head_lines + tallest > lines_per_chunk:
+        raise ValueError(
+            f"a single row needs {tallest} lines and the header {head_lines}, which "
+            f"will not fit in {lines_per_chunk}. No split can save this table; "
+            "narrow a column or shorten the cell."
+        )
+
+    def pack(budget: int) -> list[list[list[str]]]:
+        chunks: list[list[list[str]]] = []
+        current: list[list[str]] = []
+        used = head_lines
+        for row, height in zip(rows, heights):
+            if current and used + height > budget:
+                chunks.append(current)
+                current, used = [], head_lines
+            current.append(row)
+            used += height
+        if current or not chunks:      # an empty table is still one (empty) chunk
+            chunks.append(current)
+        return chunks
+
+    # First find how many pages the table needs, then BALANCE across exactly
+    # that many. Greedy packing at the full page budget fills each page to the
+    # brim and leaves whatever is left over alone on the last one (Table B came
+    # out 27 rows + 3), which reads as a mistake. Re-packing at the smallest
+    # budget that still needs the same number of chunks splits the rows evenly.
+    chunks = pack(lines_per_chunk)
+    if len(chunks) > 1:
+        even = head_lines + -(-sum(heights) // len(chunks))
+        for budget in range(even, lines_per_chunk):
+            trial = pack(budget)
+            if len(trial) == len(chunks):
+                chunks = trial
+                break
+
+    parts = [tabular(colspec, header, chunks[0])]
+    for chunk in chunks[1:]:
+        parts.append("")                                  # blank line = \par
+        parts.append(tabular(colspec, header, chunk, note=continued_note))
+    print(f"  {len(rows)} rows ({sum(heights)} est. lines) -> {len(chunks)} "
+          "page-sized chunk(s) of "
+          + ", ".join(str(len(c)) for c in chunks) + " rows")
+    return "\n".join(parts)
 
 
 # ---------------------------------------------------------------------------
@@ -299,7 +446,12 @@ def build_occupations_table() -> tuple[str, int, int]:
     # assistants, except legal, medical, and executive"), spilling text off
     # the page edge. Fixed-width wrapping p{} columns for the two long fields;
     # % women and Label are always short, so they stay natural.
-    parts.append(tabular("p{1.3in}p{2.9in}rl", a_header, a_rows))
+    #
+    # ...and that fixed the width while leaving the height: 52 rows is taller
+    # than a page, so the last seven were printed off the bottom of it. See
+    # `tabular_paged` for the whole story; it splits the rows across pages.
+    parts.append(tabular_paged("p{1.3in}p{2.9in}rl", a_header, a_rows,
+                               "Occupations kept for analysis (continued)"))
     parts.append("")
 
     # --- Table B: dropped occupations ---------------------------------------
@@ -315,8 +467,12 @@ def build_occupations_table() -> tuple[str, int, int]:
             fmt_pct_1dp(r.get("pct_women", "")),
             drop_reason(r),
         ])
-    # Same page-overflow fix as Table A; Reason is also long free text.
-    parts.append(tabular("p{1.1in}p{1.8in}rp{1.9in}", b_header, b_rows))
+    # Same width fix as Table A; Reason is also long free text. Table B fits on
+    # one page today (30 rows, half of them two lines tall) but sits within a
+    # few rows of the same cliff, so it goes through the paged renderer too --
+    # which leaves it as a single tabular until it actually needs splitting.
+    parts.append(tabular_paged("p{1.1in}p{1.8in}rp{1.9in}", b_header, b_rows,
+                               "Dropped occupations (continued)"))
     parts.append("")
 
     return "\n".join(parts) + "\n", len(kept), len(dropped)

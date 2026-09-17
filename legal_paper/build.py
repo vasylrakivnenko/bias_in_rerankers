@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
 """
-build.py --- reusable build pipeline for the legal paper.
+build.py --- reusable build pipeline for the empirical and legal papers.
 
 WORKFLOW
-  1. Edit the prose in  paper.md  (plain Markdown; see paper.md header for the
-     small set of conventions). You never touch LaTeX unless you want to.
+  1. Edit the prose in empirical_paper.md (the default) or paper.md (the longer
+     legal paper). Both are plain Markdown; you never touch LaTeX unless you
+     want to.
   2. Run:   python3 build.py
-     -> regenerates main.tex from paper.md, compiles main.pdf, and writes the
-        Overleaf bundle  ../legal_paper_overleaf.zip .
+     -> regenerates main.tex from empirical_paper.md, compiles main.pdf, and
+        writes Overleaf and minimal arXiv source bundles.
+     Run:   python3 build.py --paper legal
+     -> builds paper.md and writes ../legal_paper_overleaf.zip instead.
 
 OPTIONS
+  --paper NAME    source manuscript: empirical (default) or legal.
   --figures       regenerate the charts from the experiment data first
                   (runs generate_figures.py with the project venv) before building.
   --no-zip        build the PDF but skip the zip.
@@ -19,38 +23,56 @@ OPTIONS
                   (used to test the pipeline against fixture data).
 
 NUMBERS
-  Every statistic in paper.md is a {{PLACEHOLDER}} resolved from results/*.json
+  Every statistic in either manuscript is a {{PLACEHOLDER}} resolved from results/*.json
   through numbers.json. A placeholder that cannot be resolved FAILS the build and
   prints the full list. No number is ever typed into the prose by hand.
 
 WHAT YOU EDIT vs WHAT IS AUTOMATIC
-  - Prose, section headings, lists, emphasis, quotes, citations: edit in paper.md.
-  - Tables / figures / bibliography: kept as ```latex raw blocks in paper.md.
+  - Prose, section headings, lists, emphasis, quotes, citations: edit in the
+    selected Markdown source.
+  - Tables / figures / bibliography: kept as ```latex raw blocks in that source.
     Leave them alone unless you know LaTeX; they pass through verbatim.
   - Statistics and generated tables: {{PLACEHOLDER}} + an entry in numbers.json.
   - The LaTeX preamble (packages, title formatting) lives in this file (PREAMBLE).
 
 No third-party packages required: only python3 (standard library) and pdflatex.
 """
+import argparse
 import ast
+import datetime as dt
 import json
 import re
 import sys
+import shutil
 import subprocess
 import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 REPO_ROOT = ROOT.parent
-PAPER_MD = ROOT / "paper.md"
 NUMBERS_JSON = ROOT / "numbers.json"
 MAIN_TEX = ROOT / "main.tex"
-ZIP_PATH = ROOT.parent / "legal_paper_overleaf.zip"
 VENV_PY = ROOT.parent / "venv" / "bin" / "python"
+
+PAPERS = {
+    "empirical": {
+        "source": ROOT / "empirical_paper.md",
+        "slug": "gender-bias-neural-rerankers_empirical",
+        "zip": REPO_ROOT / "empirical_paper_overleaf.zip",
+        "arxiv_zip": REPO_ROOT / "empirical_paper_arxiv.zip",
+    },
+    "legal": {
+        "source": ROOT / "paper.md",
+        "slug": "gender-bias-automated-hiring_deidentification",
+        "zip": REPO_ROOT / "legal_paper_overleaf.zip",
+        "arxiv_zip": REPO_ROOT / "legal_paper_arxiv.zip",
+    },
+}
+DEFAULT_PAPER = "empirical"
 
 # Files placed into the Overleaf bundle (main.tex is added after it is generated).
 BUNDLE = ["main.tex", "figures", "README.md", "generate_figures.py",
-          "paper.md", "numbers.json", "build.py", "main.pdf"]
+          "numbers.json", "build.py", "main.pdf"]
 
 PREAMBLE = r"""\documentclass[11pt]{article}
 
@@ -93,7 +115,7 @@ POSTAMBLE = "\n\\end{document}\n"
 
 
 # --------------------------------------------------------------------------
-# Front matter:  --- key: value --- block at the top of paper.md
+# Front matter: --- key: value --- block at the top of the selected source
 # --------------------------------------------------------------------------
 def parse_front_matter(text):
     meta = {"title": "Untitled", "author": "", "date": "Draft"}
@@ -110,7 +132,7 @@ def parse_front_matter(text):
 
 
 # --------------------------------------------------------------------------
-# {{PLACEHOLDER}} substitution  (paper.md + numbers.json -> results/*.json)
+# {{PLACEHOLDER}} substitution (selected source + numbers.json -> results/*.json)
 #
 # Rule of the house: no statistic is ever typed into the prose. Each one is a
 # {{PLACEHOLDER}} whose value is fetched from a results JSON at build time, so
@@ -469,21 +491,35 @@ def run(cmd, **kw):
 
 
 def main():
-    args = sys.argv[1:]
-    draft = "--draft" in args
-    data_root = REPO_ROOT
-    if "--data-root" in args:
-        data_root = Path(args[args.index("--data-root") + 1]).resolve()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--paper", choices=sorted(PAPERS), default=DEFAULT_PAPER,
+                        help="manuscript to build (default: empirical)")
+    parser.add_argument("--figures", action="store_true",
+                        help="regenerate figures before building")
+    parser.add_argument("--no-zip", action="store_true",
+                        help="skip the Overleaf bundle")
+    parser.add_argument("--draft", action="store_true",
+                        help="render unresolved placeholders in red")
+    parser.add_argument("--data-root", type=Path, default=REPO_ROOT,
+                        help="root used to resolve paths in numbers.json")
+    args = parser.parse_args()
+    selected = PAPERS[args.paper]
+    paper_md = selected["source"]
+    slug = selected["slug"]
+    zip_path = selected["zip"]
+    arxiv_zip_path = selected["arxiv_zip"]
+    draft = args.draft
+    data_root = args.data_root.resolve()
 
-    if "--figures" in args:
+    if args.figures:
         if VENV_PY.exists():
             print("== regenerating figures ==")
             run([str(VENV_PY), "generate_figures.py"])
         else:
             print("!! venv python not found; skipping --figures", file=sys.stderr)
 
-    print("== converting paper.md -> main.tex ==")
-    raw = HTML_COMMENT_RE.sub("", PAPER_MD.read_text())   # editorial notes
+    print(f"== converting {paper_md.name} -> main.tex ==")
+    raw = HTML_COMMENT_RE.sub("", paper_md.read_text())   # editorial notes
     meta, body = parse_front_matter(raw)
     tex = (PREAMBLE % {"title": meta["title"], "author": meta["author"],
                        "date": meta["date"]}
@@ -495,7 +531,7 @@ def main():
     print(f"   {len(used) - len(problems)}/{len(used)} placeholders resolved")
     unused = sorted(set(store.specs) - used)
     if unused:
-        print("   !! defined in numbers.json but never used in paper.md: "
+        print(f"   !! defined in numbers.json but never used in {paper_md.name}: "
               + ", ".join(unused))
     if problems:
         head = ("!! %d UNRESOLVED PLACEHOLDER%s -- the paper will not be built."
@@ -542,11 +578,23 @@ def main():
         pass
     print(f"== main.pdf built ({pages} pages) ==")
 
-    if "--no-zip" not in args:
+    # A second, self-identifying copy.  `main.pdf` is what LaTeX and Overleaf
+    # need, but it is a terrible name to have on disk or in someone's Downloads
+    # folder: this repo once held two unrelated manuscripts both called
+    # main.pdf, one of them superseded and wrong.  Send THIS file to anyone.
+    # It is rewritten on every build, so it can never drift from main.pdf.
+    stamped = ROOT / f"{slug}_{dt.date.today().isoformat()}.pdf"
+    for old in ROOT.glob(f"{slug}_*.pdf"):
+        if old != stamped:
+            old.unlink()          # keep exactly one stamped copy, today's
+    shutil.copy2(ROOT / "main.pdf", stamped)
+    print(f"   -> {stamped.name}   (send this one, not main.pdf)")
+
+    if not args.no_zip:
         print("== writing Overleaf bundle ==")
-        ZIP_PATH.unlink(missing_ok=True)
-        with zipfile.ZipFile(ZIP_PATH, "w", zipfile.ZIP_DEFLATED) as z:
-            for item in BUNDLE:
+        zip_path.unlink(missing_ok=True)
+        with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
+            for item in BUNDLE + [paper_md.name]:
                 p = ROOT / item
                 if p.is_dir():
                     for f in sorted(p.rglob("*")):
@@ -554,7 +602,18 @@ def main():
                             z.write(f, f.relative_to(ROOT))
                 elif p.exists():
                     z.write(p, p.name)
-        print(f"   -> {ZIP_PATH}")
+        print(f"   -> {zip_path}")
+
+        # arXiv asks TeX submitters to omit generated PDFs, auxiliary files,
+        # build scripts, and other material not needed to compile the paper.
+        print("== writing minimal arXiv source bundle ==")
+        arxiv_zip_path.unlink(missing_ok=True)
+        with zipfile.ZipFile(arxiv_zip_path, "w", zipfile.ZIP_DEFLATED) as z:
+            z.write(MAIN_TEX, MAIN_TEX.name)
+            figures = ROOT / "figures"
+            for f in sorted(figures.glob("*.pdf")):
+                z.write(f, f.relative_to(ROOT))
+        print(f"   -> {arxiv_zip_path}")
 
     print("done.")
 

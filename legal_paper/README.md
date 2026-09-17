@@ -1,32 +1,33 @@
-# Legal paper: Gender Bias in Automated Hiring — the Case for De-Identification
+# Papers and reproducible build
 
-The empirical-with-legal-angle paper arguing for gender de-identification in
-two-stage neural ranking pipelines (retriever + re-ranker), and a build
-pipeline that generates it from data rather than from hand-typed numbers.
+This directory contains a short empirical paper for arXiv and a longer paper
+with a legal angle. One build pipeline generates either manuscript from the
+same machine-readable results.
 
 ## Editing workflow (the reusable pipeline)
-**You edit `paper.md`; everything else is generated.**
+**The default source is `empirical_paper.md`; everything else is generated.**
 
 ```
-# edit prose in paper.md (in VS Code or any editor), then:
-python3 build.py              # paper.md -> main.tex -> main.pdf + the Overleaf zip
+# edit prose in empirical_paper.md, then:
+python3 build.py              # empirical PDF + Overleaf and arXiv source zips
+python3 build.py --paper legal  # paper.md -> main.tex/main.pdf + legal zip
 python3 build.py --figures    # also regenerate the charts from data first
 python3 build.py --no-zip     # build the PDF only, skip the zip
 python3 build.py --draft      # build even with unresolved {{PLACEHOLDER}}s (shown in red)
 python3 build.py --data-root D   # look up numbers.json under D (fixture testing)
 ```
 
-`build.py` converts the Markdown in `paper.md` into `main.tex`, compiles it with
-`pdflatex` (twice), and writes `../legal_paper_overleaf.zip`. No third-party
-LaTeX packages are needed beyond a standard TeX Live install — just `python3`
-and `pdflatex`.
+`build.py` converts the selected Markdown source into `main.tex`, compiles it
+with `pdflatex` twice, and writes an Overleaf bundle plus a minimal arXiv source
+bundle. The arXiv zip contains only `main.tex` and the three PDF figures. No
+third-party Python packages are needed.
 
 **What you edit vs. what is automatic**
-- Prose, headings, lists, emphasis, quotes, citations → edit in `paper.md`.
+- Prose, headings, lists, emphasis, quotes, citations → edit in the selected Markdown source.
   Conventions: `*italic*`, `**bold**`, `"quotes"`, `` `code` ``, `[@citekey]`, `$math$`;
   `#`/`##`/`###` for section / subsection / run-in heading.
 - Tables, figures, and the reference list live in ` ```latex ` raw blocks inside
-  `paper.md` — they pass through untouched. Leave them alone unless you know LaTeX.
+  the selected source — they pass through untouched. Leave them alone unless you know LaTeX.
 - **Every statistic is a `{{PLACEHOLDER}}`**, never a typed number. Each one is
   defined in `numbers.json` with the exact path into a `results/*.json` file (or
   a small arithmetic expression over two such paths, or a `.tex` fragment to
@@ -36,11 +37,13 @@ and `pdflatex`.
 - The LaTeX preamble (packages, title) lives in `build.py` (the `PREAMBLE` string).
 
 ## Files
-- `paper.md` — **the source you edit.**
+- `empirical_paper.md` — **the default short empirical paper.**
+- `paper.md` — the longer empirical and legal paper (`--paper legal`).
 - `numbers.json` — every placeholder's data source; read its own `_README` entry.
-- `build.py` — the build pipeline (paper.md + numbers.json → main.tex → PDF + zip).
+- `build.py` — the shared build pipeline (selected source + numbers → PDF + zip).
 - `main.tex` — generated artifact (do not hand-edit; `build.py` overwrites it).
 - `main.pdf` — compiled draft.
+- `../empirical_paper_arxiv.zip` — minimal source archive ready for arXiv upload.
 - `generate_figures.py` — regenerates the three charts from `../results/*.json`.
 
 ## Empirical backbone (all reproducible from `../code` + `../results`)
@@ -50,6 +53,13 @@ and `pdflatex`.
 | Pipeline shortlist, one pair and swept over all 14 re-rankers (Figure 2, Table A7) | `../code/compounding_experiment.py` | `../results/compounding_bge_pipeline.json`, `../results/compounding_all_rerankers.json` |
 | De-identification mitigation, one model and all four local re-rankers (Figure 3, Tables A8–A9) | `../code/deidentification_experiment.py` | `../results/deidentification_bge.json`, `../results/deidentification_summary.json` |
 | The documents, query forms, name pairs, and full occupation list (Appendix B) | `../code/generate_appendix_tables.py` | `../results/tex/documents_appendix.tex`, `../results/tex/occupations_table.tex` |
+| Vendor documentation and public weight availability | `../code/vendor_docs_audit.py` | `../results/vendor_docs_audit_summary.json` |
+| Real-résumé companion run and sampled population | `../code/realistic_pool_experiment.py`, `../code/reconstruct_realistic_sampling.py` | `../results/realistic_pool_four_rerankers.json`, `../results/realistic_pool_sampling.json` |
+
+All inputs for `python3 build.py` are included in the release; building the PDF
+needs neither downloaded résumés nor model weights. Reconstructing the companion
+sampling requires the corpus described in `../data/PROVENANCE.md`. It reproduces
+membership and counts without rescoring; see the root README for the full run.
 
 Run experiments with the project venv, e.g.:
 ```
@@ -61,7 +71,7 @@ scores were bought once and are banked in `../results/*_full_raw.json`.)
 
 ## Headline numbers
 
-**Do not hand-copy these into the paper.** Every statistic in `paper.md` is a
+**Do not hand-copy these into a paper.** Every statistic in either manuscript is a
 `{{PLACEHOLDER}}` resolved from `../results/*.json` via `numbers.json`, and the build fails
 on any unresolved one. These are a sanity check for a human reader only.
 
@@ -91,13 +101,12 @@ on any unresolved one. These are a sanity check for a human reader only.
   0.0236. Which channel dominates is **not the same on every re-ranker** —
   see Table A9 in the paper.
 - **Full de-id → 100% ties by construction** (a check on the symmetry
-  argument, not a finding). A part-of-speech-aware they/them/their mapping
-  ties every pair too, exactly like the one-token rule, and reads as normal
-  English. Only the *naive* her→their mapping fails, leaving 25% of pairs
-  different — and where it fails, 96% of those residual pairs favor the
-  *woman's* document, not the man's.
-- **De-identification costs nothing measurable.** Top-1 accuracy across all
-  four query phrasings: 99.4% before, 99.8% after the full transform.
+  argument, not a finding). The following-word heuristic also equalises the
+  tested templates. It is not a POS tagger, fails on ordinary sentences and
+  does not repair verb agreement; it is not a validated grammatical alternative.
+- **Synthetic occupation matching showed no loss.** Top-1 accuracy across all
+  four query phrasings: 99.4% before, 99.8% after the full transform. This does
+  not establish equal effectiveness in selecting qualified applicants within a job.
 - Occupation labels come from **BLS CPS Table 11** (% women), not hand
   judgement: 82 occupations scored, 52 kept (18 male / 21 female / 13
   neutral); the other 30 (no matching BLS occupation, a suppressed estimate,
@@ -110,7 +119,7 @@ on any unresolved one. These are a sanity check for a human reader only.
 
 
 ## References
-All 20 entries in `paper.md`'s bibliography were checked individually (title,
+The longer `paper.md` bibliography was checked individually (title,
 venue, DOI/URL) and are current as of August 2026 — including that EU AI Act
 deployer duties (Arts. 26–27) are deferred to 2 December 2027 by Regulation
 (EU) 2026/1744, which the paper's footnotes and bibliography already reflect.

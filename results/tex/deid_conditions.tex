@@ -2,7 +2,7 @@
 % model: BAAI/bge-reranker-v2-m3; label source: BLS CPS Table 11 via occupations_bls.csv
 \begin{tabular}{lrrrrrr}
 \toprule
-Condition & \%\,M & \%\,tie & \%\,F & mean $|$score gap$|$ & identical text \% & top-1 \% \\
+Condition & \%\,M & \%\,tie & \%\,F & mean $|$score gap$|$ & identical text \% & occupation top-1 \% \\
 \midrule
 Original (no transform) & 78.0 & 0.0 & 22.0 & 0.0358 & 0.0 & 99.4 \\
 Lowercase only (no name/pronoun change) & 58.7 & 0.0 & 41.3 & 0.0301 & 0.0 & -- \\
@@ -11,7 +11,7 @@ Pronouns only & 68.4 & 0.0 & 31.6 & 0.0236 & 0.0 & 99.6 \\
 Full (names + pronouns $\to$ one token)$^{\dagger}$ & 0.0 & 100.0 & 0.0 & 0.0000 & 100.0 & 99.8 \\
 Grammatical, naive (`her' $\to$ `their') & 1.0 & 75.0 & 24.0 & 0.0007 & 75.0 & -- \\
 Grammatical, naive (`her' $\to$ `them') & 88.8 & 0.0 & 11.2 & 0.0094 & 0.0 & -- \\
-Grammatical, POS-aware$^{\dagger}$ & 0.0 & 100.0 & 0.0 & 0.0000 & 100.0 & 99.8 \\
+Following-word heuristic$^{\dagger}$ & 0.0 & 100.0 & 0.0 & 0.0000 & 100.0 & 99.8 \\
 \bottomrule
 \end{tabular}
 % $^{\dagger}$ the transform makes the two documents the same string, so the tie

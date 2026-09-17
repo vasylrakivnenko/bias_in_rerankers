@@ -66,18 +66,19 @@ paper/
 nano_test.py
 results/nano_test.json
 legal_paper_overleaf.zip
+empirical_paper_overleaf.zip
+empirical_paper_arxiv.zip
 
 # ---- Work in progress for a FOLLOW-UP paper, not this one -------------
-# The realistic-pool study (real resumes, flip rate, leakage probe) is
-# unfinished and its results are not in this paper. Keep it private until
-# the author decides to publish it.
-code/realistic_pool_experiment.py
+# The companion realistic-pool run cited in Limits and its required helpers
+# are released. Other extension experiments and later runs remain private.
 code/leakage_probe.py
 code/utility_retention.py
-code/ner_coverage.py
 legal_paper/prereg.md
 run_full_realistic_pool.sh
 results/realistic_pool_*.json
+!results/realistic_pool_four_rerankers.json
+!results/realistic_pool_sampling.json
 results/leakage_probe.json
 results/utility_retention.json
 results/ner_coverage.json
@@ -87,7 +88,10 @@ results/.span_cache_*.json
 # Superseded draft: contains the pre-review numbers (15 models, the
 # outlier-driven neutral claim, the misattributed vendor citation).
 # Publishing it alongside the corrected paper invites miscitation.
-legal_paper/Bias_in_neural_rerankers_draft_v01.pdf
+legal_paper/SUPERSEDED_*.pdf
+# self-identifying copy of the current PDF, rewritten by build.py each run
+legal_paper/gender-bias-automated-hiring_deidentification_*.pdf
+legal_paper/gender-bias-neural-rerankers_empirical_*.pdf
 
 # Second internal review (not part of the release)
 REVIEW_ROUND2.md

@@ -96,17 +96,22 @@ than silently fall back to the superseded hand-made labels.
 
 ## Reproducing every table and figure
 
-All of these read banked results and need no credentials. Run them from the
-repository root, in this order (each reads the previous step's output).
+The short empirical PDF builds directly from released results with
+`cd legal_paper && python3 build.py`; add `--paper legal` for the longer legal
+manuscript. Neither build needs a corpus download, model weights, or credentials.
+To regenerate the derived outputs, run the commands below from the repository root. Step 3 uses
+banked local results with `--reuse`; without that flag it loads model weights.
 
 | # | Command | Produces |
 |---|---|---|
 | 1 | `venv/bin/python code/analyze_single_stage.py` | `results/single_stage_summary.json`; `results/tex/single_stage_main.tex`, `occupation_consistency.tex`, `provenance.tex`, `robustness_template.tex`, `robustness_query.tex`, `robustness_namepair.tex` |
 | 2 | `venv/bin/python code/compounding_experiment.py` | `results/compounding_bge_pipeline.json`, `results/compounding_all_rerankers.json`, `results/tex/compounding_sweep.tex` |
-| 3 | `venv/bin/python code/deidentification_experiment.py` | `results/deidentification_<model>.json` (one per local re-ranker), `results/deidentification_summary.json`, `results/tex/deid_conditions.tex`, `results/tex/deidentification.tex` |
+| 3 | `venv/bin/python code/deidentification_experiment.py --reuse` | `results/deidentification_<model>.json` (one per local re-ranker), `results/deidentification_summary.json`, `results/tex/deid_conditions.tex`, `results/tex/deidentification.tex` |
 | 4 | `venv/bin/python code/generate_appendix_tables.py` | `results/tex/documents_appendix.tex`, `results/tex/occupations_table.tex` |
+| 4a | `venv/bin/python code/vendor_docs_audit.py` | `results/vendor_docs_audit_summary.json`, `results/tex/vendor_docs_audit.tex` |
+| 4b | `venv/bin/python code/reconstruct_realistic_sampling.py` | `results/realistic_pool_sampling.json` (requires the downloaded résumé corpus; no scoring) |
 | 5 | `venv/bin/python legal_paper/generate_figures.py` | `legal_paper/figures/fig_single_stage.pdf`, `fig_pipeline.pdf`, `fig_deid.pdf` |
-| 6 | `cd legal_paper && python3 build.py` | `legal_paper/main.tex`, `main.pdf`, `../legal_paper_overleaf.zip` |
+| 6 | `cd legal_paper && python3 build.py` | `legal_paper/main.tex`, `main.pdf`, `../empirical_paper_overleaf.zip`, `../empirical_paper_arxiv.zip` (use `--paper legal` for the legal versions) |
 
 Useful flags: `--bootstrap N` (cluster-bootstrap replicates, default 1000) on
 1–3; `--main-only` on 2 to skip the 14-model sweep; `--model NAME` (repeatable)
@@ -115,7 +120,7 @@ runs a utility-retention test across all four query phrasings by default
 (`--no-utility` skips it; `--utility-query-types` narrows it).
 `python3 build.py --figures` runs step 5 for you before building.
 
-**Numbers are never typed into the prose.** Every statistic in `paper.md` is a
+**Numbers are never typed into the prose.** Every statistic in either manuscript is a
 `{{PLACEHOLDER}}` resolved through `legal_paper/numbers.json` from a path in a
 `results/*.json`; an unresolved placeholder fails the build (`--draft` renders
 the gaps in red instead, so the paper can still be read while data lands).
@@ -148,12 +153,23 @@ data/                     tidy third-party data + the build_*.py that make it
   bls/, onet/, resumes/, name_gender.csv, category_to_soc.csv
   raw/                    downloads (git-ignored, re-downloadable)
 results/                  scored pairs, summary JSON, .tex table fragments
-legal_paper/              the paper (paper.md -> main.pdf via build.py)
+legal_paper/              both papers (.md -> main.pdf via build.py)
 ```
 
-A deeper, unreleased extension of this work — real résumés, a name-detection
-coverage test, a residual-gender-leakage probe — exists privately and is not
-part of this repository; nothing in the paper depends on it.
+The companion real-résumé results cited in Limits are released in
+`results/realistic_pool_four_rerankers.json`, with the experiment and its
+`ner_coverage.py` helper. `code/reconstruct_realistic_sampling.py` reconstructs
+sampling without scoring: 1,952 distinct résumés entered the pools from a corpus
+of 2,483. The source corpus can be rebuilt using `data/PROVENANCE.md`.
+
+To rerun the companion experiment locally after obtaining the data and model
+weights: `venv/bin/python code/realistic_pool_experiment.py --rerankers bge-m3
+bge-base ms-marco jina --pools-per-query 8 --out results/realistic_pool_replication.json`.
+The banked run used cached name detections; a fresh detector/model run may differ.
+Sampling reconstruction reproduces membership and counts, not the model scores.
+The padding and same-sex placebo claims were removed because their supporting
+artifacts could not be recovered. Separate leakage and utility extensions remain
+outside this release.
 
 ### What is and is not tracked
 

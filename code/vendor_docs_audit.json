@@ -1,0 +1,362 @@
+{
+  "_comment": [
+    "Vendor-documentation audit for the re-rankers scored in this paper.",
+    "",
+    "This file is HAND-COLLECTED EVIDENCE, not derived data.  Every entry records a",
+    "first-party source (the vendor's own model card, product documentation, technical",
+    "report, or terms/usage policy), the date it was read, and a VERBATIM quote or an",
+    "explicit finding of absence.  No third-party source, review site, or press article",
+    "is admissible here: a claim about what a named company documents must rest on that",
+    "company's own page.",
+    "",
+    "Coding of the four questions, per vendor:",
+    "  q1_hiring_named       Is hiring / recruitment / HR / resume screening / candidate",
+    "                        ranking named as an intended, example, or supported use?",
+    "  q2_fairness_eval      Is any fairness, bias, or demographic evaluation OF THE",
+    "                        RANKING MODEL published or referenced?",
+    "  q3_gender_disclosure  Is any gender-related limitation or bias caveat disclosed?",
+    "  q4_highstakes_limit   Is there a use restriction covering high-stakes,",
+    "                        consequential, or employment decisions?",
+    "",
+    "Values are 'yes' / 'no' / 'yes_other_model' (published, but for a different model",
+    "family than the re-ranker audited here).  For q4, `q4_scope` records WHERE the",
+    "restriction lives ('product_doc' or 'platform_policy') and `q4_linked_from_model_doc`",
+    "records whether the model's own documentation points to it -- the distinction that",
+    "decides whether a deployer reading the model docs would ever encounter it.",
+    "",
+    "code/vendor_docs_audit.py derives every count in the paper from this file.  Nothing",
+    "here is a summary; the summary is computed."
+  ],
+  "accessed": "2026-09-03 to 2026-09-04",
+  "audit_version": 2,
+  "vendors": {
+    "BAAI (open weights)": {
+      "models_doc_name": "BAAI/bge-reranker-v2-m3",
+      "license": "Apache-2.0",
+      "q1_hiring_named": "no",
+      "q2_fairness_eval": "no",
+      "q3_gender_disclosure": "no",
+      "q4_highstakes_limit": "no",
+      "q4_scope": null,
+      "q4_linked_from_model_doc": false,
+      "has_limitations_section": false,
+      "sources": [
+        {
+          "kind": "model card",
+          "url": "https://huggingface.co/BAAI/bge-reranker-v2-m3",
+          "accessed": "2026-09-03",
+          "finding": "No Limitations, Bias, Risks, Intended-use or Out-of-scope-use section of any kind. The model is described only by capability.",
+          "quote": "Lightweight reranker model, possesses strong multilingual capabilities, easy to deploy, with fast inference."
+        },
+        {
+          "kind": "technical report",
+          "url": "https://arxiv.org/abs/2402.03216",
+          "accessed": "2026-09-03",
+          "finding": "The BGE M3-Embedding paper has no limitations, ethics, risks or broader-impact section, and no fairness or demographic evaluation. It covers the embedding model; the re-ranker is not documented by any paper.",
+          "quote": null
+        }
+      ]
+    },
+    "sentence-transformers (open weights; trained on MS MARCO)": {
+      "models_doc_name": "cross-encoder/ms-marco-MiniLM-L-12-v2",
+      "license": "Apache-2.0",
+      "q1_hiring_named": "no",
+      "q2_fairness_eval": "no",
+      "q3_gender_disclosure": "no",
+      "q4_highstakes_limit": "no",
+      "q4_scope": null,
+      "q4_linked_from_model_doc": false,
+      "has_limitations_section": false,
+      "sources": [
+        {
+          "kind": "model card",
+          "url": "https://huggingface.co/cross-encoder/ms-marco-MiniLM-L-12-v2",
+          "accessed": "2026-09-03",
+          "finding": "No Limitations, Bias, Risks, Intended-use or Out-of-scope-use section. Use is described generically, with no application domain named.",
+          "quote": "Given a query, encode the query will all possible passages (e.g. retrieved with ElasticSearch). Then sort the passages in a decreasing order."
+        }
+      ]
+    },
+    "Jina AI (open weights)": {
+      "models_doc_name": "jinaai/jina-reranker-v2-base-multilingual",
+      "license": "CC-BY-NC-4.0 (weights); commercial use via the Jina AI API",
+      "q1_hiring_named": "no",
+      "q2_fairness_eval": "no",
+      "q3_gender_disclosure": "no",
+      "q4_highstakes_limit": "no",
+      "q4_scope": null,
+      "q4_linked_from_model_doc": false,
+      "has_limitations_section": false,
+      "sources": [
+        {
+          "kind": "model card",
+          "url": "https://huggingface.co/jinaai/jina-reranker-v2-base-multilingual",
+          "accessed": "2026-09-03",
+          "finding": "An 'Intended Usage & Model Info' section exists but names no application domain and no limitation. The only restriction is a LICENCE restriction on commercial use -- not a restriction on the kind of decision the model may be used for.",
+          "quote": "This model repository is licenced for research and evaluation purposes under CC-BY-NC-4.0. For commercial usage, please refer to Jina AI's APIs."
+        },
+        {
+          "kind": "release announcement",
+          "url": "https://jina.ai/news/jina-reranker-v2-for-agentic-rag-ultra-fast-multilingual-function-calling-and-code-search/",
+          "accessed": "2026-09-03",
+          "finding": "Six benchmarks reported (MKQA, BEIR, AirBench, NSText2SQL, ToolBench, CodeSearchNet). None is a fairness or demographic benchmark. No employment use case, no high-stakes warning.",
+          "quote": null
+        },
+        {
+          "kind": "terms and conditions",
+          "url": "https://jina.ai/legal/",
+          "accessed": "2026-09-03",
+          "finding": "The acceptable-use clause (s 4.5) covers reverse engineering, third-party rights, competing services and scraping. It contains no provision on employment, automated decisions about individuals, or high-stakes use.",
+          "quote": "Customers must not (i) reverse engineer, decompile, translate or otherwise attempt to discover the source code or underlying components of the Services or Jina AI's IP; (ii) use the Services in a way that infringes, misappropriates or violates any third party rights; (iii) use any Output from the Services to develop applications or services that compete with the Services offered by Jina AI; or (iv) use automated methods to extract information, data or result from the JINA-AI website or the Services."
+        }
+      ]
+    },
+    "IBM (via Azure AI Foundry)": {
+      "models_doc_name": "ibm-granite/granite-embedding-reranker-english-r2",
+      "license": "Apache-2.0",
+      "q1_hiring_named": "no",
+      "q2_fairness_eval": "no",
+      "q3_gender_disclosure": "no",
+      "q4_highstakes_limit": "no",
+      "q4_scope": null,
+      "q4_linked_from_model_doc": false,
+      "has_limitations_section": true,
+      "sources": [
+        {
+          "kind": "model card",
+          "url": "https://huggingface.co/ibm-granite/granite-embedding-reranker-english-r2",
+          "accessed": "2026-09-03",
+          "finding": "An 'Ethical Considerations and Limitations' section exists -- the only one among the four open-weight models -- but it discloses content filtering of the base model's training data and the context length. It says nothing about demographic bias, gender, employment, or high-stakes use.",
+          "quote": "The data used to train the base language model was filtered to remove text containing hate, abuse, and profanity. granite-embedding-reranker-english-r2 is finetuned on English, and has a context length of 8192 tokens (longer texts will be truncated to this size)."
+        },
+        {
+          "kind": "technical report",
+          "url": "https://arxiv.org/abs/2508.21085",
+          "accessed": "2026-09-03",
+          "finding": "Full text searched for bias / fairness / ethics / gender / demographic / societal / harm / limitation. The only occurrences of the stem 'fair' are 'fair comparison' and 'fair zero-shot comparison' -- methodological, not social. The report has no ethics, limitations, risks or responsible-use section, and reports no demographic evaluation of the re-ranker it introduces.",
+          "quote": "We evaluate all the models with the same pipeline to ensure fair comparison."
+        }
+      ]
+    },
+    "Voyage AI": {
+      "models_doc_name": "rerank-1, rerank-2, rerank-2-lite, rerank-2.5, rerank-2.5-lite",
+      "license": "proprietary API",
+      "q1_hiring_named": "no",
+      "q2_fairness_eval": "no",
+      "q3_gender_disclosure": "no",
+      "q4_highstakes_limit": "no",
+      "q4_scope": null,
+      "q4_linked_from_model_doc": false,
+      "has_limitations_section": false,
+      "sources": [
+        {
+          "kind": "product documentation",
+          "url": "https://docs.voyageai.com/docs/reranker",
+          "accessed": "2026-09-03",
+          "finding": "Named uses are document relevance ranking, refinement of embedding-based retrieval, refinement of lexical search (BM25, TF-IDF) and RAG. No fairness evaluation, no gender disclosure, no high-stakes warning.",
+          "quote": null
+        },
+        {
+          "kind": "product documentation",
+          "url": "https://www.mongodb.com/docs/voyageai/models/rerankers/",
+          "accessed": "2026-09-03",
+          "finding": "The post-acquisition MongoDB documentation for the same models is technical only. No application domain, no fairness evaluation, no use restriction.",
+          "quote": null
+        },
+        {
+          "kind": "vendor blog (evaluation)",
+          "url": "https://blog.voyageai.com/2024/03/15/boosting-your-search-and-rag-with-voyages-rerankers/",
+          "accessed": "2026-09-03",
+          "finding": "Twenty-seven evaluation datasets across eight verticals (technical documentation, code, law, finance, web, long-context, medical, conversation). None is a fairness or demographic benchmark, and no vertical is employment.",
+          "quote": null
+        },
+        {
+          "kind": "terms of service",
+          "url": "https://www.voyageai.com/tos",
+          "accessed": "2026-09-03",
+          "finding": "The only decision-domain restriction is limited to personal injury and illegality, and by its terms reaches 'generative AI features or functions'. Employment, hiring and automated decisions about individuals are not mentioned anywhere in the document.",
+          "quote": "CUSTOMER AGREES IT WILL NOT USE ANY GENERATIVE AI FEATURES OR FUNCTIONS TO POWER, OR MAKE ANY DECISIONS RELATED TO, ANY PRODUCTS OR SERVICES THAT MAY INVOLVE PERSONAL INJURY OR ILLEGALITY (SUCH AS MEDICAL DEVICES, NUCLEAR PLANT OPERATIONS, WEAPONS APPLICATIONS, ETC.).",
+          "doc_date": "effective 27 May 2026"
+        },
+        {
+          "kind": "acceptable use policy",
+          "url": "https://www.mongodb.com/legal/acceptable-use-policy",
+          "accessed": "2026-09-03",
+          "finding": "The acquirer's acceptable use policy addresses illegal activity, security, harassment, malware and spam. It does not mention AI or machine learning at all, and contains no provision on employment or automated decisions about individuals.",
+          "quote": null
+        }
+      ]
+    },
+    "Cohere": {
+      "models_doc_name": "rerank-v4.0-pro, rerank-v4.0-fast",
+      "license": "proprietary API",
+      "q1_hiring_named": "no",
+      "q2_fairness_eval": "yes_other_model",
+      "q3_gender_disclosure": "yes_other_model",
+      "q4_highstakes_limit": "yes",
+      "q4_scope": "platform_policy",
+      "q4_linked_from_model_doc": true,
+      "has_limitations_section": false,
+      "sources": [
+        {
+          "kind": "product documentation",
+          "url": "https://docs.cohere.com/docs/rerank",
+          "accessed": "2026-09-04",
+          "finding": "Product text has no employment warning. Responsible Use navigation links directly to the Usage Policy and Command R model card. This corrects the earlier claim that no policy link exists.",
+          "quote": "often used to sort search results returned from an existing search solution"
+        },
+        {
+          "kind": "product page",
+          "url": "https://cohere.com/rerank",
+          "accessed": "2026-09-03",
+          "finding": "Seven industries are named -- financial services, public sector, telecommunications, technology, energy and utilities, healthcare and life sciences, manufacturing. Employment is not among them.",
+          "quote": null
+        },
+        {
+          "kind": "usage policy",
+          "url": "https://docs.cohere.com/docs/usage-policy",
+          "accessed": "2026-09-03",
+          "finding": "The High Risk Activities section restricts automated determinations about individuals in employment. This platform-wide policy applies to Rerank and is directly linked from its documentation navigation.",
+          "quote": "activities (1) where the use or failure of the Cohere Services could reasonably be expected to result in death, harm to psychological or physical health or safety, or severe environmental or property damage; or (2) that use the Cohere Services for automated determinations about individuals in domains that affect their rights, safety, or access to essential services and benefits (e.g., employment, education, healthcare, migration, housing, law enforcement, legal advice/decisions, or financial or insurance products or services).",
+          "doc_date": "21 November 2024"
+        },
+        {
+          "kind": "model card",
+          "url": "https://docs.cohere.com/docs/responsible-use",
+          "accessed": "2026-09-03",
+          "finding": "The Command R model card reports a BOLD bias evaluation and employment warning for that generative family. It does not report a fairness evaluation of Rerank; the platform usage restriction nevertheless applies to Rerank.",
+          "quote": "We do not recommend using the Command R models on their own for decisions that could have a significant impact on individuals, including those related to access to financial services, employment, and housing."
+        }
+      ],
+      "q4_link_location": "Responsible Use navigation"
+    },
+    "Google Vertex AI Ranking": {
+      "models_doc_name": "semantic-ranker-default-002, semantic-ranker-default-004, semantic-ranker-fast-004",
+      "license": "proprietary API",
+      "q1_hiring_named": "no",
+      "q2_fairness_eval": "no",
+      "q3_gender_disclosure": "no",
+      "q4_highstakes_limit": "yes",
+      "q4_scope": "platform_policy",
+      "q4_linked_from_model_doc": false,
+      "has_limitations_section": false,
+      "sources": [
+        {
+          "kind": "product documentation",
+          "url": "https://docs.cloud.google.com/generative-ai-app-builder/docs/ranking",
+          "accessed": "2026-09-04",
+          "finding": "No employment warning or direct link to the Generative AI Prohibited Use Policy found on the ranking page. General site and Cloud terms links occur in the footer; this does not establish that the policy is unreachable through further links.",
+          "quote": null
+        },
+        {
+          "kind": "responsible AI documentation",
+          "url": "https://docs.cloud.google.com/generative-ai-app-builder/docs/responsible-ai",
+          "accessed": "2026-09-04",
+          "finding": "No direct link to the Generative AI Prohibited Use Policy found on the checked responsible-AI page. It discusses output safety; this is not a finding about every indirect route to a usage policy.",
+          "quote": "Agent Search can generate output that you don't expect, including text that's offensive, insensitive, or factually incorrect."
+        },
+        {
+          "kind": "vendor blog (launch)",
+          "url": "https://cloud.google.com/blog/products/ai-machine-learning/launching-our-new-state-of-the-art-vertex-ai-ranking-api",
+          "accessed": "2026-09-03",
+          "finding": "Retail, news, finance and healthcare are named as verticals; employment is not. The models are evaluated on BEIR and on latency. No fairness evaluation.",
+          "quote": null
+        },
+        {
+          "kind": "prohibited use policy",
+          "url": "https://policies.google.com/terms/generative-ai/use-policy",
+          "accessed": "2026-09-03",
+          "finding": "Section 1.1.8 restricts automated decisions in employment absent human supervision. It is a platform-wide policy incorporated by the Cloud terms rather than a restriction stated in the Ranking API documentation, which never cites it. Note that this restriction is conditional -- it bars unsupervised automated decisions, not the use of the ranker in hiring as such.",
+          "quote": "Makes automated decisions that have a material detrimental impact on individual rights without human supervision in high-risk domains -- for example, in employment, healthcare, finance, legal, housing, insurance, or social welfare."
+        }
+      ]
+    }
+  },
+  "followup_evidence": "data/vendor_audit_followup_2026-09-04.md",
+  "weight_availability": {
+    "BAAI/bge-reranker-v2-m3": {
+      "public_weights": true,
+      "source": "https://huggingface.co/BAAI/bge-reranker-v2-m3",
+      "checked": "2026-09-04",
+      "finding": "Downloadable weights and local inference instructions."
+    },
+    "Cohere-rerank-v4.0-fast": {
+      "public_weights": false,
+      "source": "https://docs.cohere.com/docs/rerank",
+      "checked": "2026-09-04",
+      "finding": "Hosted ranking service; no public weight release found in the checked sources."
+    },
+    "Cohere-rerank-v4.0-pro": {
+      "public_weights": false,
+      "source": "https://docs.cohere.com/docs/rerank",
+      "checked": "2026-09-04",
+      "finding": "Hosted ranking service; no public weight release found in the checked sources."
+    },
+    "cross-encoder/ms-marco-MiniLM-L-12-v2": {
+      "public_weights": true,
+      "source": "https://huggingface.co/cross-encoder/ms-marco-MiniLM-L-12-v2",
+      "checked": "2026-09-04",
+      "finding": "Downloadable weights and local inference instructions."
+    },
+    "ibm-granite-granite-embedding-reranker-english-r2": {
+      "public_weights": true,
+      "source": "https://huggingface.co/ibm-granite/granite-embedding-reranker-english-r2",
+      "checked": "2026-09-04",
+      "finding": "Downloadable weights and local inference instructions."
+    },
+    "jinaai/jina-reranker-v2-base-multilingual": {
+      "public_weights": true,
+      "source": "https://huggingface.co/jinaai/jina-reranker-v2-base-multilingual",
+      "checked": "2026-09-04",
+      "finding": "Downloadable weights and local inference instructions."
+    },
+    "rerank-1": {
+      "public_weights": false,
+      "source": "https://docs.voyageai.com/docs/reranker",
+      "checked": "2026-09-04",
+      "finding": "Hosted ranking service; no public weight release found in the checked sources."
+    },
+    "rerank-2": {
+      "public_weights": false,
+      "source": "https://docs.voyageai.com/docs/reranker",
+      "checked": "2026-09-04",
+      "finding": "Hosted ranking service; no public weight release found in the checked sources."
+    },
+    "rerank-2-lite": {
+      "public_weights": false,
+      "source": "https://docs.voyageai.com/docs/reranker",
+      "checked": "2026-09-04",
+      "finding": "Hosted ranking service; no public weight release found in the checked sources."
+    },
+    "rerank-2.5": {
+      "public_weights": false,
+      "source": "https://docs.voyageai.com/docs/reranker",
+      "checked": "2026-09-04",
+      "finding": "Hosted ranking service; no public weight release found in the checked sources."
+    },
+    "rerank-2.5-lite": {
+      "public_weights": false,
+      "source": "https://docs.voyageai.com/docs/reranker",
+      "checked": "2026-09-04",
+      "finding": "Hosted ranking service; no public weight release found in the checked sources."
+    },
+    "semantic-ranker-default-002": {
+      "public_weights": false,
+      "source": "https://docs.cloud.google.com/generative-ai-app-builder/docs/ranking",
+      "checked": "2026-09-04",
+      "finding": "Hosted ranking service; no public weight release found in the checked sources."
+    },
+    "semantic-ranker-default-004": {
+      "public_weights": false,
+      "source": "https://docs.cloud.google.com/generative-ai-app-builder/docs/ranking",
+      "checked": "2026-09-04",
+      "finding": "Hosted ranking service; no public weight release found in the checked sources."
+    },
+    "semantic-ranker-fast-004": {
+      "public_weights": false,
+      "source": "https://docs.cloud.google.com/generative-ai-app-builder/docs/ranking",
+      "checked": "2026-09-04",
+      "finding": "Hosted ranking service; no public weight release found in the checked sources."
+    }
+  }
+}

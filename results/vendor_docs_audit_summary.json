@@ -1,0 +1,269 @@
+{
+  "script_version": 2,
+  "audit_version": 2,
+  "accessed": "2026-09-03 to 2026-09-04",
+  "population_source": "results/single_stage_summary.json",
+  "headline": {
+    "n_models": 14,
+    "n_vendors": 7,
+    "n_sources_checked": 21,
+    "models_without_public_weights": 10,
+    "models_accessed_via_api": 11,
+    "models_hiring_named": 0,
+    "models_fairness_eval": 0,
+    "models_gender_disclosure": 0,
+    "models_highstakes_restricted": 5,
+    "vendors_highstakes_restricted": 2,
+    "models_no_restriction": 9,
+    "vendors_restricting_in_product_doc": 0,
+    "vendors_restricting_linked_from_model_doc": 1,
+    "vendors_fairness_eval_other_model_only": 1,
+    "vendors_with_limitations_section": 1
+  },
+  "counts_by_question": {
+    "q1_hiring_named": {
+      "label": "Hiring named as an intended use",
+      "vendors": {
+        "no": 7
+      },
+      "models": {
+        "no": 14
+      }
+    },
+    "q2_fairness_eval": {
+      "label": "Fairness evaluation of the ranking model",
+      "vendors": {
+        "no": 6,
+        "yes_other_model": 1
+      },
+      "models": {
+        "no": 12,
+        "yes_other_model": 2
+      }
+    },
+    "q3_gender_disclosure": {
+      "label": "Gender-related limitation disclosed",
+      "vendors": {
+        "no": 6,
+        "yes_other_model": 1
+      },
+      "models": {
+        "no": 12,
+        "yes_other_model": 2
+      }
+    },
+    "q4_highstakes_limit": {
+      "label": "Restriction on high-stakes / employment use",
+      "vendors": {
+        "no": 5,
+        "yes": 2
+      },
+      "models": {
+        "no": 9,
+        "yes": 5
+      }
+    }
+  },
+  "models_by_vendor": {
+    "BAAI (open weights)": [
+      "BAAI/bge-reranker-v2-m3"
+    ],
+    "Cohere": [
+      "Cohere-rerank-v4.0-fast",
+      "Cohere-rerank-v4.0-pro"
+    ],
+    "Google Vertex AI Ranking": [
+      "semantic-ranker-default-002",
+      "semantic-ranker-default-004",
+      "semantic-ranker-fast-004"
+    ],
+    "IBM (via Azure AI Foundry)": [
+      "ibm-granite-granite-embedding-reranker-english-r2"
+    ],
+    "Jina AI (open weights)": [
+      "jinaai/jina-reranker-v2-base-multilingual"
+    ],
+    "Voyage AI": [
+      "rerank-1",
+      "rerank-2",
+      "rerank-2-lite",
+      "rerank-2.5",
+      "rerank-2.5-lite"
+    ],
+    "sentence-transformers (open weights; trained on MS MARCO)": [
+      "cross-encoder/ms-marco-MiniLM-L-12-v2"
+    ]
+  },
+  "weight_availability": {
+    "BAAI/bge-reranker-v2-m3": {
+      "public_weights": true,
+      "source": "https://huggingface.co/BAAI/bge-reranker-v2-m3",
+      "checked": "2026-09-04",
+      "finding": "Downloadable weights and local inference instructions."
+    },
+    "Cohere-rerank-v4.0-fast": {
+      "public_weights": false,
+      "source": "https://docs.cohere.com/docs/rerank",
+      "checked": "2026-09-04",
+      "finding": "Hosted ranking service; no public weight release found in the checked sources."
+    },
+    "Cohere-rerank-v4.0-pro": {
+      "public_weights": false,
+      "source": "https://docs.cohere.com/docs/rerank",
+      "checked": "2026-09-04",
+      "finding": "Hosted ranking service; no public weight release found in the checked sources."
+    },
+    "cross-encoder/ms-marco-MiniLM-L-12-v2": {
+      "public_weights": true,
+      "source": "https://huggingface.co/cross-encoder/ms-marco-MiniLM-L-12-v2",
+      "checked": "2026-09-04",
+      "finding": "Downloadable weights and local inference instructions."
+    },
+    "ibm-granite-granite-embedding-reranker-english-r2": {
+      "public_weights": true,
+      "source": "https://huggingface.co/ibm-granite/granite-embedding-reranker-english-r2",
+      "checked": "2026-09-04",
+      "finding": "Downloadable weights and local inference instructions."
+    },
+    "jinaai/jina-reranker-v2-base-multilingual": {
+      "public_weights": true,
+      "source": "https://huggingface.co/jinaai/jina-reranker-v2-base-multilingual",
+      "checked": "2026-09-04",
+      "finding": "Downloadable weights and local inference instructions."
+    },
+    "rerank-1": {
+      "public_weights": false,
+      "source": "https://docs.voyageai.com/docs/reranker",
+      "checked": "2026-09-04",
+      "finding": "Hosted ranking service; no public weight release found in the checked sources."
+    },
+    "rerank-2": {
+      "public_weights": false,
+      "source": "https://docs.voyageai.com/docs/reranker",
+      "checked": "2026-09-04",
+      "finding": "Hosted ranking service; no public weight release found in the checked sources."
+    },
+    "rerank-2-lite": {
+      "public_weights": false,
+      "source": "https://docs.voyageai.com/docs/reranker",
+      "checked": "2026-09-04",
+      "finding": "Hosted ranking service; no public weight release found in the checked sources."
+    },
+    "rerank-2.5": {
+      "public_weights": false,
+      "source": "https://docs.voyageai.com/docs/reranker",
+      "checked": "2026-09-04",
+      "finding": "Hosted ranking service; no public weight release found in the checked sources."
+    },
+    "rerank-2.5-lite": {
+      "public_weights": false,
+      "source": "https://docs.voyageai.com/docs/reranker",
+      "checked": "2026-09-04",
+      "finding": "Hosted ranking service; no public weight release found in the checked sources."
+    },
+    "semantic-ranker-default-002": {
+      "public_weights": false,
+      "source": "https://docs.cloud.google.com/generative-ai-app-builder/docs/ranking",
+      "checked": "2026-09-04",
+      "finding": "Hosted ranking service; no public weight release found in the checked sources."
+    },
+    "semantic-ranker-default-004": {
+      "public_weights": false,
+      "source": "https://docs.cloud.google.com/generative-ai-app-builder/docs/ranking",
+      "checked": "2026-09-04",
+      "finding": "Hosted ranking service; no public weight release found in the checked sources."
+    },
+    "semantic-ranker-fast-004": {
+      "public_weights": false,
+      "source": "https://docs.cloud.google.com/generative-ai-app-builder/docs/ranking",
+      "checked": "2026-09-04",
+      "finding": "Hosted ranking service; no public weight release found in the checked sources."
+    }
+  },
+  "vendors": {
+    "BAAI (open weights)": {
+      "license": "Apache-2.0",
+      "q1_hiring_named": "no",
+      "q2_fairness_eval": "no",
+      "q3_gender_disclosure": "no",
+      "q4_highstakes_limit": "no",
+      "q4_scope": null,
+      "q4_linked_from_model_doc": false,
+      "has_limitations_section": false,
+      "n_models": 1,
+      "n_sources": 2
+    },
+    "Cohere": {
+      "license": "proprietary API",
+      "q1_hiring_named": "no",
+      "q2_fairness_eval": "yes_other_model",
+      "q3_gender_disclosure": "yes_other_model",
+      "q4_highstakes_limit": "yes",
+      "q4_scope": "platform_policy",
+      "q4_linked_from_model_doc": true,
+      "has_limitations_section": false,
+      "n_models": 2,
+      "n_sources": 4
+    },
+    "Google Vertex AI Ranking": {
+      "license": "proprietary API",
+      "q1_hiring_named": "no",
+      "q2_fairness_eval": "no",
+      "q3_gender_disclosure": "no",
+      "q4_highstakes_limit": "yes",
+      "q4_scope": "platform_policy",
+      "q4_linked_from_model_doc": false,
+      "has_limitations_section": false,
+      "n_models": 3,
+      "n_sources": 4
+    },
+    "IBM (via Azure AI Foundry)": {
+      "license": "Apache-2.0",
+      "q1_hiring_named": "no",
+      "q2_fairness_eval": "no",
+      "q3_gender_disclosure": "no",
+      "q4_highstakes_limit": "no",
+      "q4_scope": null,
+      "q4_linked_from_model_doc": false,
+      "has_limitations_section": true,
+      "n_models": 1,
+      "n_sources": 2
+    },
+    "Jina AI (open weights)": {
+      "license": "CC-BY-NC-4.0 (weights); commercial use via the Jina AI API",
+      "q1_hiring_named": "no",
+      "q2_fairness_eval": "no",
+      "q3_gender_disclosure": "no",
+      "q4_highstakes_limit": "no",
+      "q4_scope": null,
+      "q4_linked_from_model_doc": false,
+      "has_limitations_section": false,
+      "n_models": 1,
+      "n_sources": 3
+    },
+    "Voyage AI": {
+      "license": "proprietary API",
+      "q1_hiring_named": "no",
+      "q2_fairness_eval": "no",
+      "q3_gender_disclosure": "no",
+      "q4_highstakes_limit": "no",
+      "q4_scope": null,
+      "q4_linked_from_model_doc": false,
+      "has_limitations_section": false,
+      "n_models": 5,
+      "n_sources": 5
+    },
+    "sentence-transformers (open weights; trained on MS MARCO)": {
+      "license": "Apache-2.0",
+      "q1_hiring_named": "no",
+      "q2_fairness_eval": "no",
+      "q3_gender_disclosure": "no",
+      "q4_highstakes_limit": "no",
+      "q4_scope": null,
+      "q4_linked_from_model_doc": false,
+      "has_limitations_section": false,
+      "n_models": 1,
+      "n_sources": 1
+    }
+  }
+}
