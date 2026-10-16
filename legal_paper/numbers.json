@@ -18,7 +18,7 @@
     "",
     "Convention (REVIEW_ROUND2 A2): every single-number share in the body uses the",
     "TIE-AWARE statistic (a tie counts as half a win for each side), matching",
-    "Figure 1, the last column of Table A2, and Table A3. The plain (non-tie-aware)",
+    "Figure 1, the last column of Table A1, and Tables A3-A5. The plain (non-tie-aware)",
     "`pct_male` fields still exist in the JSON and are used only inside the",
     "three-way-split tables, never for a single prose number.",
     "",
@@ -565,5 +565,155 @@
     "path": "provenance.corpus.n_resumes",
     "format": ",d",
     "needs": "Source corpus size, not the number actually scored."
+  },
+  "SPREAD_MEDIAN": {
+    "file": "results/single_stage_summary.json",
+    "path": "stereotype_tracking_spread.median",
+    "format": ".0f",
+    "needs": "FACTCHECK_ROUND3 S1: median within-model gap (tie-aware %M on male-typed minus female-typed occupations), in percentage points. Unlike the two category medians, this is a single model's statistic."
+  },
+  "SPREAD_MIN": {
+    "file": "results/single_stage_summary.json",
+    "path": "stereotype_tracking_spread.min",
+    "format": ".0f",
+    "needs": "S1: smallest within-model gap, points."
+  },
+  "SPREAD_MAX": {
+    "file": "results/single_stage_summary.json",
+    "path": "stereotype_tracking_spread.max",
+    "format": ".0f",
+    "needs": "S1: largest within-model gap, points."
+  },
+  "EXCLUDED_DUPLICATE_MODEL": {
+    "file": "results/single_stage_summary.json",
+    "path": "excluded_models.0",
+    "needs": "S17: the endpoint dropped because its scores duplicate another model's."
+  },
+  "EXCLUDED_DUPLICATE_OF": {
+    "file": "results/single_stage_summary.json",
+    "path": "duplicate_detection.groups.0.1",
+    "needs": "S17: the model the dropped endpoint duplicates."
+  },
+  "JINA_N_DISTINCT_SCORES": {
+    "file": "results/single_stage_summary.json",
+    "path": [
+      "models",
+      "jinaai/jina-reranker-v2-base-multilingual",
+      "n_distinct_scores"
+    ],
+    "format": ",d",
+    "needs": "S7: distinct score values the bfloat16 open-weight reranker emitted across its whole audit."
+  },
+  "JINA_N_SCORES": {
+    "expr": "2 * n",
+    "refs": {
+      "n": {
+        "file": "results/single_stage_summary.json",
+        "path": [
+          "models",
+          "jinaai/jina-reranker-v2-base-multilingual",
+          "n_pairs"
+        ]
+      }
+    },
+    "format": ",d",
+    "needs": "S7: documents that reranker scored (two per pair)."
+  },
+  "PIPELINE_SWEEP_MIN": {
+    "file": "results/compounding_all_rerankers.json",
+    "path": "pipeline_spread.min",
+    "format": ".0f",
+    "unit": "%",
+    "needs": "S11: lowest pipeline top-3 male-associated share across the audited rerankers behind the same retriever."
+  },
+  "PIPELINE_SWEEP_MAX": {
+    "file": "results/compounding_all_rerankers.json",
+    "path": "pipeline_spread.max",
+    "format": ".0f",
+    "unit": "%",
+    "needs": "S11: highest such share."
+  },
+  "N_PIPELINE_BELOW_RETRIEVER": {
+    "file": "results/compounding_all_rerankers.json",
+    "path": "pipeline_spread.n_below_retriever_alone",
+    "format": "d",
+    "needs": "S11: rerankers whose pipeline share is below the retriever's own share."
+  },
+  "UTILITY_N_EVENTS": {
+    "file": "results/deid_statistics_bge.json",
+    "path": "utility.n_ranking_events",
+    "format": ",d",
+    "needs": "S2/S3: ranking events in the occupation-matching check."
+  },
+  "UTILITY_POOL_SIZE": {
+    "file": "results/deid_statistics_bge.json",
+    "path": "utility.pool_size",
+    "format": "d",
+    "needs": "S3: documents in each ranked pool (one per retained occupation)."
+  },
+  "UTILITY_CORRECT_BEFORE": {
+    "file": "results/deid_statistics_bge.json",
+    "path": "utility.top1_correct_original",
+    "format": ",d",
+    "needs": "S2: correct top-1 events, untransformed text."
+  },
+  "UTILITY_CORRECT_AFTER": {
+    "file": "results/deid_statistics_bge.json",
+    "path": "utility.top1_correct_full",
+    "format": ",d",
+    "needs": "S2: correct top-1 events, full rule."
+  },
+  "UTILITY_MCNEMAR_P": {
+    "file": "results/deid_statistics_bge.json",
+    "path": "utility.mcnemar_exact_p_two_sided",
+    "format": ".2f",
+    "needs": "S2: exact two-sided McNemar p, original vs full."
+  },
+  "UTILITY_TOP3": {
+    "file": "results/deid_statistics_bge.json",
+    "path": "utility.top3_pct_full",
+    "format": ".0f",
+    "unit": "%",
+    "needs": "S2: top-3 accuracy after the full rule (equal to before; see the JSON)."
+  },
+  "DEID_NAMESONLY_GAPDIFF_LO": {
+    "file": "results/deid_statistics_bge.json",
+    "path": "gap_vs_original.names_only.difference_ci.0",
+    "format": ".4f",
+    "needs": "S3b: lower end of the paired occupation-clustered 95% CI on names-only minus original mean |gap|."
+  },
+  "DEID_NAMESONLY_GAPDIFF_HI": {
+    "file": "results/deid_statistics_bge.json",
+    "path": "gap_vs_original.names_only.difference_ci.1",
+    "format": ".4f",
+    "needs": "S3b: upper end of that interval."
+  },
+  "DEID_PRONOUNSONLY_GAPDIFF_LO": {
+    "file": "results/deid_statistics_bge.json",
+    "path": "gap_vs_original.pronouns_only.difference_ci.0",
+    "format": ".4f",
+    "needs": "Paired CI on pronouns-only minus original mean |gap|, lower end."
+  },
+  "DEID_PRONOUNSONLY_GAPDIFF_HI": {
+    "file": "results/deid_statistics_bge.json",
+    "path": "gap_vs_original.pronouns_only.difference_ci.1",
+    "format": ".4f",
+    "needs": "Same interval, upper end."
+  },
+  "N_DISTINCT_NAME_REPLACED": {
+    "file": "results/deid_statistics_bge.json",
+    "path": "distinct_comparisons.full",
+    "format": ",d",
+    "needs": "S3c: distinct comparisons left once every name becomes one placeholder (the ten name pairs collapse)."
+  },
+  "N_COMPANION_INJECTED": {
+    "file": "results/realistic_pool_four_rerankers.json",
+    "path": "provenance.counterfactual_construction.inject",
+    "format": ",d",
+    "needs": "S18: companion documents with no usable gender marker, into which a name was inserted."
+  },
+  "TABLE_DEID_ALLMODELS_NOTES": {
+    "tex_file": "results/tex/deidentification_notes.tex",
+    "needs": "S9: rendered notes for Table A8 (dagger rule and per-model reproducibility caveats), derived from the run."
   }
 }

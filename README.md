@@ -79,7 +79,7 @@ derived from **BLS CPS Table 11, 2025 annual averages** (% women): male if
 82 occupations scored, 52 have a usable share and are kept; the other 30 (no
 matching BLS occupation, a suppressed estimate, or a share in the 30–40 % /
 60–70 % ambiguous bands) are dropped, with the reason for each recorded in
-`code/occupations_bls.csv` and rendered in the paper's appendix.
+`code/occupations_bls.csv` and released as `results/tex/occupations_table.tex`.
 
 ```bash
 venv/bin/python code/labels.py
@@ -89,8 +89,9 @@ venv/bin/python code/labels.py
 
 Analysis scripts must get labels from `labels.load_labels()` and record the
 returned source string in their output JSON, so a reader can always tell which
-taxonomy produced a number. Pass `--strict-labels` to make a script fail rather
-than silently fall back to the superseded hand-made labels.
+taxonomy produced a number. Scripts fail if `code/occupations_bls.csv` is missing
+or unreadable; pass `--allow-legacy-labels` only to reproduce the superseded
+hand-made labels deliberately.
 
 ---
 

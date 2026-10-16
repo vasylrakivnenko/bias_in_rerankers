@@ -40,6 +40,7 @@ fresh `git clone` anywhere.
 """
 import json
 import os
+import sys
 from pathlib import Path
 
 import matplotlib
@@ -50,6 +51,8 @@ from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(REPO_ROOT / "code"))
+from deid_transforms import CONDITION_LABELS  # noqa: E402  (shared with Tables A7-A8)
 RESULTS = str(REPO_ROOT / "results")
 FIGDIR = str(REPO_ROOT / "legal_paper" / "figures")
 os.makedirs(FIGDIR, exist_ok=True)
@@ -280,17 +283,10 @@ def fig_deid():
     # Story order: no transform -> case-only control -> each half on its own ->
     # the two naive grammatical rewrites -> the grammar-aware rewrite -> the
     # full transform.
-    order = [
-        ("original", "Original documents"),
-        ("lowercase_only", "Lowercased only\n(no markers removed)"),
-        ("names_only", "Names removed only"),
-        ("pronouns_only", "Pronouns neutralised only"),
-        ("gram_her_their", "Simple rewrite: her $\\rightarrow$ their"),
-        ("gram_her_them", "Simple rewrite: her $\\rightarrow$ them"),
-        ("gram_pos", "Next-word rule for 'her'"),
-        ("full", "Names removed and\npronouns neutralised"),
-    ]
-    order = [(k, lab) for k, lab in order if k in conds]
+    order = [(k, CONDITION_LABELS[k]) for k in
+             ("original", "lowercase_only", "names_only", "pronouns_only",
+              "gram_her_their", "gram_her_them", "gram_pos", "full")
+             if k in conds]
     # A condition present in the data but absent from `order` would be silently
     # dropped from the figure while the caption still says "each rule" -- which
     # is exactly what happened to `lowercase_only` when it was first added.
@@ -303,7 +299,7 @@ def fig_deid():
         )
 
     fig = plt.figure(figsize=(W_FIG, 3.50))
-    ax = fig.add_axes([0.30, 0.27, 0.68, 0.65])
+    ax = fig.add_axes([0.32, 0.27, 0.66, 0.65])
 
     ypos = np.arange(len(order))[::-1]
     bar_h = 0.62
@@ -313,22 +309,29 @@ def fig_deid():
         # per-category dict of FRACTIONS (0-1) and is deliberately not used.
         o = conds[key]["overall"]
         # Split each exact tie evenly between the two sides. This is the same
-        # tie-aware convention used in Figures 1 and 2, and makes a row of all
-        # ties read visually as the balanced 50/50 result it represents. The
-        # caption and footer still state that the last two rows are exact ties,
-        # rather than observed wins for either document.
-        segs = [(o["pct_male"] + 0.5 * o["pct_tie"], MALE, "white"),
-                (o["pct_female"] + 0.5 * o["pct_tie"], FEMALE, "white")]
+        # tie-aware convention used in Figures 1 and 2. The tie half of each
+        # side is drawn pale and hatched, so a bar that is mostly ties by
+        # construction (her -> their, the full rule) cannot be read as observed
+        # wins (FACTCHECK_ROUND3 S15).
+        half_tie = 0.5 * o["pct_tie"]
+        sides = [((o["pct_male"], False), (half_tie, True), MALE),
+                 ((half_tie, True), (o["pct_female"], False), FEMALE)]
         left = 0.0
-        for val, col, txtcol in segs:
-            if val <= 0:
-                continue
-            ax.barh(y, val, bar_h, left=left, color=col, zorder=3,
-                    edgecolor="white", linewidth=0.7)
-            if val >= 7:
-                ax.text(left + val / 2, y, f"{val:.0f}", ha="center", va="center",
-                        fontsize=FONT_VALUE, color=txtcol, zorder=5)
-            left += val
+        for first, second, col in sides:
+            side_left = left
+            for val, is_tie in (first, second):
+                if val <= 0:
+                    continue
+                ax.barh(y, val, bar_h, left=left, color=col, zorder=3,
+                        alpha=0.38 if is_tie else 1.0, hatch="////" if is_tie else None,
+                        edgecolor="white", linewidth=0.7)
+                left += val
+            total = left - side_left
+            if total >= 7:
+                solid = first[0] if not first[1] else second[0]
+                ax.text(side_left + total / 2, y, f"{total:.0f}", ha="center", va="center",
+                        fontsize=FONT_VALUE, color="white" if solid >= total / 2 else INK,
+                        zorder=5)
         lo, hi = o["tie_aware_pct_male_ci"]
         if hi - lo > 0.5:
             ax.plot([lo, hi], [y + bar_h / 2 + 0.16] * 2, color=MALE_DARK,
@@ -357,9 +360,11 @@ def fig_deid():
     legend_items = [
         Patch(facecolor=MALE, label="male-associated side"),
         Patch(facecolor=FEMALE, label="female-associated side"),
+        Patch(facecolor=MUTED, alpha=0.38, hatch="////", edgecolor="white",
+              label="exact tie, split evenly"),
     ]
     fig.legend(handles=legend_items, frameon=False, fontsize=FONT_LEGEND,
-               loc="lower center", bbox_to_anchor=(0.5, 0.025), ncol=2,
+               loc="lower center", bbox_to_anchor=(0.5, 0.025), ncol=3,
                handlelength=1.1, handleheight=0.9, columnspacing=1.8,
                handletextpad=0.5)
 

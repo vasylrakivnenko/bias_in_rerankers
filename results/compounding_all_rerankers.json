@@ -1,6 +1,6 @@
 {
   "script_version": "compounding_experiment.py v2.0 (REVIEW_TODO C1/A6/A2/B1/B5)",
-  "generated": "2026-09-03T23:48:47",
+  "generated": "2026-10-16T15:57:17",
   "label_source": "BLS CPS Table 11 via occupations_bls.csv",
   "seed": 20260822,
   "bootstrap_B": 1000,
@@ -20,6 +20,17 @@
     3,
     5
   ],
+  "pipeline_spread": {
+    "definition": "pipeline % male-associated in the top-3, all occupations, one value per reranker behind the same retriever",
+    "min": 44.21474358974359,
+    "min_model": "semantic-ranker-default-004",
+    "max": 84.85576923076924,
+    "max_model": "ibm-granite-granite-embedding-reranker-english-r2",
+    "retriever_alone": 59.575320513,
+    "n_models": 14,
+    "n_below_retriever_alone": 6,
+    "n_below_parity": 2
+  },
   "models": {
     "BAAI/bge-reranker-v2-m3": {
       "reranker": "BAAI/bge-reranker-v2-m3",

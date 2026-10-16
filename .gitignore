@@ -95,3 +95,6 @@ legal_paper/gender-bias-neural-rerankers_empirical_*.pdf
 
 # Second internal review (not part of the release)
 REVIEW_ROUND2.md
+
+# Third internal review: factuality / reproducibility audit (not part of the release)
+FACTCHECK_ROUND3.md

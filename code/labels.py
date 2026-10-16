@@ -8,9 +8,12 @@ Preference order:
   1. `code/occupations_bls.csv` -- labels derived from BLS CPS Table 11 (% women).
   2. The original hand/embedding labels baked into `synthetic_dataset.py`.
 
-The fallback exists so that every script keeps running while the relabelling
-lands; `LABEL_SOURCE` records which one was used and MUST be written into every
-results JSON so a reader can tell which taxonomy produced a number.
+The fallback is opt-in (`strict=False`, or `--allow-legacy-labels` on the
+analysis scripts). By default a missing CSV, or one whose `label` column cannot
+be read, raises instead of silently swapping the 52-occupation BLS taxonomy for
+the legacy 82-occupation one (FACTCHECK_ROUND3 S22b). `LABEL_SOURCE` records
+which one was used and MUST be written into every results JSON so a reader can
+tell which taxonomy produced a number.
 
 CSV schema (`code/occupations_bls.csv`), one row per occupation:
     occupation,bls_title,soc_code,pct_women,label,year
@@ -42,15 +45,15 @@ def _fallback_labels() -> dict[str, str]:
     return {occ: stereo for stereo, occs in OCCUPATIONS.items() for occ in occs}
 
 
-def load_labels(strict: bool = False) -> tuple[dict[str, str], str]:
+def load_labels(strict: bool = True) -> tuple[dict[str, str], str]:
     """Return (occupation -> label, source_description).
 
     Occupations labelled `drop` in the CSV are excluded from the returned map;
     callers should skip any occupation missing from it.
 
-    If `strict` is True, raise when the BLS CSV is absent instead of falling
-    back -- use that in final paper-number scripts so a missing relabelling
-    cannot silently produce old numbers.
+    By default (`strict=True`) raise when the BLS CSV is absent or yields no
+    labels, so a missing or broken relabelling cannot silently produce old
+    numbers. Pass `strict=False` only to reproduce the legacy taxonomy.
     """
     if CSV_PATH.exists():
         labels: dict[str, str] = {}
@@ -65,8 +68,9 @@ def load_labels(strict: bool = False) -> tuple[dict[str, str], str]:
 
     if strict:
         raise FileNotFoundError(
-            f"{CSV_PATH} not found (or empty); refusing to fall back to the "
-            "pre-BLS labels. See REVIEW_TODO.md A8."
+            f"{CSV_PATH} not found, or no row has a usable `label`; refusing to "
+            "fall back to the pre-BLS labels (pass strict=False / "
+            "--allow-legacy-labels to do so deliberately). See REVIEW_TODO.md A8."
         )
     return _fallback_labels(), "legacy hand/embedding labels (synthetic_dataset.py)"
 

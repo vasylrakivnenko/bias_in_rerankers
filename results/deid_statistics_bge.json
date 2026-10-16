@@ -1,0 +1,57 @@
+{
+  "script_version": "deid_statistics.py v1.0 (FACTCHECK_ROUND3 S2/S3b/S3c)",
+  "generated": "2026-10-16T16:05:25",
+  "reranker": "BAAI/bge-reranker-v2-m3",
+  "device": "mps",
+  "baseline_source": "banked raw scores (bge-reranker-v2-m3_full_raw.json)",
+  "label_source": "BLS CPS Table 11 via occupations_bls.csv",
+  "seed": 20260822,
+  "gap_vs_original": {
+    "names_only": {
+      "original_mean_abs_gap": 0.03580423763532263,
+      "condition_mean_abs_gap": 0.03796478834947965,
+      "difference": 0.0021605507141570224,
+      "difference_ci": [
+        -0.000490088858423403,
+        0.0046998537325634955
+      ],
+      "share_of_draws_above_zero": 0.9457,
+      "bootstrap_B": 10000,
+      "n_occupations": 52
+    },
+    "pronouns_only": {
+      "original_mean_abs_gap": 0.03580423763532263,
+      "condition_mean_abs_gap": 0.02359734658009704,
+      "difference": -0.012206891055225589,
+      "difference_ci": [
+        -0.0146560945816614,
+        -0.010073185187517925
+      ],
+      "share_of_draws_above_zero": 0.0,
+      "bootstrap_B": 10000,
+      "n_occupations": 52
+    }
+  },
+  "utility": {
+    "n_ranking_events": 832,
+    "pool_size": 52,
+    "top1_correct_original": 827,
+    "top1_correct_full": 830,
+    "top3_pct_original": 100.0,
+    "top3_pct_full": 100.0,
+    "discordant_right_before_wrong_after": 0,
+    "discordant_wrong_before_right_after": 3,
+    "mcnemar_exact_p_two_sided": 0.25
+  },
+  "distinct_comparisons": {
+    "original": 8320,
+    "lowercase_only": 8320,
+    "names_only": 832,
+    "pronouns_only": 8320,
+    "full": 832,
+    "gram_her_their": 832,
+    "gram_her_them": 832,
+    "gram_pos": 832
+  },
+  "n_rows": 8320
+}

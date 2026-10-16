@@ -4,16 +4,13 @@
 Condition & \multicolumn{2}{c}{bge-reranker-v2-m3} & \multicolumn{2}{c}{bge-reranker-base} & \multicolumn{2}{c}{ms-marco-MiniLM-L-12-v2} & \multicolumn{2}{c}{jina-reranker-v2-base-multilingual} \\
  & tie-aware \%\,M & mean $|$gap$|$ & tie-aware \%\,M & mean $|$gap$|$ & tie-aware \%\,M & mean $|$gap$|$ & tie-aware \%\,M & mean $|$gap$|$ \\
 \midrule
-original & 78.0 & 0.0358 & 47.1 & 0.0373 & 74.7 & 0.2797 & 41.9 & 0.0186 \\
-lowercase\_only & 58.7 & 0.0301 & 44.9 & 0.0576 & 74.7 & 0.2797 & 35.2 & 0.0191 \\
-names\_only & 93.4 & 0.0380 & 50.6 & 0.0178 & 81.9 & 0.2974 & 37.6 & 0.0127 \\
-pronouns\_only & 68.4 & 0.0236 & 63.1 & 0.0363 & 72.9 & 0.2189 & 55.7 & 0.0167 \\
-full$^{\dagger}$ & 50.0 & 0.0000 & 50.0 & 0.0000 & 50.0 & 0.0000 & 50.0 & 0.0000 \\
-gram\_her\_their & 38.5 & 0.0007 & 44.2 & 0.0018 & 53.5 & 0.0064 & 47.5 & 0.0007 \\
-gram\_her\_them & 88.8 & 0.0094 & 84.1 & 0.0086 & 82.0 & 0.0750 & 64.8 & 0.0031 \\
-Following-word heuristic$^{\dagger}$ & 50.0 & 0.0000 & 50.0 & 0.0000 & 50.0 & 0.0000 & 50.0 & 0.0000 \\
+Original (no transform) & 78.0 & 0.0358 & 47.1 & 0.0373 & 74.7 & 0.2797 & 41.9 & 0.0186 \\
+Lowercase only (control) & 58.7 & 0.0301 & 44.9 & 0.0576 & 74.7 & 0.2797 & 35.2 & 0.0191 \\
+Names only & 93.4 & 0.0380 & 50.6 & 0.0178 & 81.9 & 0.2974 & 37.6 & 0.0127 \\
+Pronouns only & 68.4 & 0.0236 & 63.1 & 0.0363 & 72.9 & 0.2189 & 55.7 & 0.0167 \\
+Full rule (names + pronouns)$^{\dagger}$ & 50.0 & 0.0000 & 50.0 & 0.0000 & 50.0 & 0.0000 & 50.0 & 0.0000 \\
+Naive rewrite: her $\to$ their & 38.5 & 0.0007 & 44.2 & 0.0018 & 53.5 & 0.0064 & 47.5 & 0.0007 \\
+Naive rewrite: her $\to$ them & 88.8 & 0.0094 & 84.1 & 0.0086 & 82.0 & 0.0750 & 64.8 & 0.0031 \\
+Following-word rule for her$^{\dagger}$ & 50.0 & 0.0000 & 50.0 & 0.0000 & 50.0 & 0.0000 & 50.0 & 0.0000 \\
 \bottomrule
 \end{tabular}
-% $^{\dagger}$ identity of the design (the two documents become the same string), not an empirical measurement -- REVIEW_TODO A10.
-% bge-reranker-base: no banked baseline exists, so `original' was scored locally in this run and no cross-run determinism verdict is available for it.
-% jina-reranker-v2-base-multilingual: its `original' baseline FAILED the determinism check -- re-scoring the untransformed text locally did not reproduce the banked score (max abs difference 0.0117). Its other 7 conditions were scored fresh in this same run and are internally consistent; only cross-run comparisons of that row carry this caveat.

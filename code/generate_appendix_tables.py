@@ -40,6 +40,9 @@ OCC_BLS_CSV = CODE_DIR / "occupations_bls.csv"
 
 import synthetic_dataset as sd  # noqa: E402  (needs CODE_DIR on sys.path)
 
+sys.path.insert(0, str(ROOT / "data"))
+from build_name_gender import YEAR_MAX, YEAR_MIN  # noqa: E402  (birth window behind name_gender.csv)
+
 
 # ---------------------------------------------------------------------------
 # LaTeX escaping
@@ -320,6 +323,12 @@ def build_documents_appendix() -> str:
             missing.append(female_name)
         np_rows.append([esc(male_name), esc(female_name), male_pct, female_pct])
     parts.append(tabular("llrr", np_header, np_rows))
+    parts.append("")
+    # FACTCHECK_ROUND3 S20: the shares come from a birth-year window, not the
+    # whole SSA archive the bibliography points to, so say which window.
+    parts.append(f"\\par\\smallskip{{\\footnotesize Female shares are computed from SSA "
+                 f"national birth-name records \\cite{{ssa2026}}, restricted to births "
+                 f"{YEAR_MIN}--{YEAR_MAX} (approximately the current working-age cohort).}}")
     parts.append("")
 
     if missing:

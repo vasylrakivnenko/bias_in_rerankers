@@ -5,14 +5,12 @@
 Condition & \%\,M & \%\,tie & \%\,F & mean $|$score gap$|$ & identical text \% & occupation top-1 \% \\
 \midrule
 Original (no transform) & 78.0 & 0.0 & 22.0 & 0.0358 & 0.0 & 99.4 \\
-Lowercase only (no name/pronoun change) & 58.7 & 0.0 & 41.3 & 0.0301 & 0.0 & -- \\
+Lowercase only (control) & 58.7 & 0.0 & 41.3 & 0.0301 & 0.0 & -- \\
 Names only & 93.4 & 0.0 & 6.6 & 0.0380 & 0.0 & 99.5 \\
 Pronouns only & 68.4 & 0.0 & 31.6 & 0.0236 & 0.0 & 99.6 \\
-Full (names + pronouns $\to$ one token)$^{\dagger}$ & 0.0 & 100.0 & 0.0 & 0.0000 & 100.0 & 99.8 \\
-Grammatical, naive (`her' $\to$ `their') & 1.0 & 75.0 & 24.0 & 0.0007 & 75.0 & -- \\
-Grammatical, naive (`her' $\to$ `them') & 88.8 & 0.0 & 11.2 & 0.0094 & 0.0 & -- \\
-Following-word heuristic$^{\dagger}$ & 0.0 & 100.0 & 0.0 & 0.0000 & 100.0 & 99.8 \\
+Full rule (names + pronouns)$^{\dagger}$ & 0.0 & 100.0 & 0.0 & 0.0000 & 100.0 & 99.8 \\
+Naive rewrite: her $\to$ their & 1.0 & 75.0 & 24.0 & 0.0007 & 75.0 & -- \\
+Naive rewrite: her $\to$ them & 88.8 & 0.0 & 11.2 & 0.0094 & 0.0 & -- \\
+Following-word rule for her$^{\dagger}$ & 0.0 & 100.0 & 0.0 & 0.0000 & 100.0 & 99.8 \\
 \bottomrule
 \end{tabular}
-% $^{\dagger}$ the transform makes the two documents the same string, so the tie
-% rate is an identity of the design, not a measurement (REVIEW_TODO A10).

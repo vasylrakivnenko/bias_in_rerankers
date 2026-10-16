@@ -48,6 +48,21 @@ VARIANTS = (
 )
 
 DEFAULT_PLACEHOLDER = "the candidate"
+
+# One display name per experimental condition, shared by Figure 3 and the two
+# de-identification tables so a reader can line the three up by name
+# (FACTCHECK_ROUND3 S6). `$\to$` renders in both LaTeX and matplotlib mathtext.
+CONDITION_LABELS = {
+    "original": "Original (no transform)",
+    "lowercase_only": "Lowercase only (control)",
+    "names_only": "Names only",
+    "pronouns_only": "Pronouns only",
+    "gram_her_their": "Naive rewrite: her $\\to$ their",
+    "gram_her_them": "Naive rewrite: her $\\to$ them",
+    "gram_pos": "Following-word rule for her",
+    "full": "Full rule (names + pronouns)",
+}
+
 UNIFORM_PRONOUN = "they"
 
 # Longest-first so that "himself"/"herself"/"hers" are consumed before "him"/"her"/"he".

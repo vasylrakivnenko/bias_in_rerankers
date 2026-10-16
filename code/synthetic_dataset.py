@@ -13,7 +13,8 @@ import argparse
 import json
 
 # ---------------------------------------------------------------------------
-# Name pairs (Wilson & Caliskan validated lists)
+# Name pairs: common U.S. given names (top-45 by births, 1940-2005) from SSA
+# national birth-name data; gender shares in data/name_gender.csv
 # ---------------------------------------------------------------------------
 
 NAME_PAIRS: list[tuple[str, str]] = [
@@ -96,9 +97,11 @@ LEGACY_OCCUPATIONS: dict[str, list[str]] = OCCUPATIONS
 # Canonical labels: BLS CPS Table 11 via code/labels.py (falls back to the
 # legacy dict above if code/occupations_bls.csv is missing, in which case
 # LABEL_SOURCE says so). Occupations BLS labels `drop` are excluded entirely.
+# Non-strict on purpose: this import also serves the legacy fallback itself.
+# Every paper-number script calls load_labels() strictly on its own.
 from labels import load_labels  # noqa: E402  (import here: labels.py may read OCCUPATIONS)
 
-OCCUPATION_LABELS, LABEL_SOURCE = load_labels()
+OCCUPATION_LABELS, LABEL_SOURCE = load_labels(strict=False)
 
 ALL_OCCUPATIONS: list[tuple[str, str]] = [
     (occ, OCCUPATION_LABELS[occ])

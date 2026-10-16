@@ -684,7 +684,7 @@ def count_distinct_bls_categories(labels: dict[str, str]) -> int:
             f"{CSV_PATH.name} keeps {len(titles)} occupations but the analysis ran "
             f"on {len(labels)}. The two must be the same set -- this run is most "
             "likely using the legacy fallback labels, in which case the BLS "
-            "category count does not describe it (see --strict-labels)."
+            "category count does not describe it (see --allow-legacy-labels)."
         )
     return len(set(titles.values()))
 
@@ -696,11 +696,12 @@ def count_distinct_bls_categories(labels: dict[str, str]) -> int:
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[1])
     ap.add_argument("--bootstrap", type=int, default=B_BOOT)
-    ap.add_argument("--strict-labels", action="store_true",
-                    help="fail instead of falling back to the pre-BLS labels")
+    ap.add_argument("--allow-legacy-labels", action="store_true",
+                    help="fall back to the pre-BLS labels instead of failing when "
+                         "occupations_bls.csv is missing or unreadable")
     args = ap.parse_args()
 
-    labels, label_source = load_labels(strict=args.strict_labels)
+    labels, label_source = load_labels(strict=not args.allow_legacy_labels)
     print(f"Label source: {label_source}  ({len(labels)} occupations, "
           f"{dict((c, sum(1 for v in labels.values() if v == c)) for c in CATEGORIES)})")
 

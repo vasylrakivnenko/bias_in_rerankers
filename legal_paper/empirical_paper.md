@@ -1,6 +1,6 @@
 ---
 title: Gender-Associated Bias in Neural Rerankers\\ --- An Empirical Audit and De-Identification Test
-author: Vasyl Rakivnenko
+author: Vasyl Rakivnenko\\ Stanford University\\ \texttt{vasyl@stanford.edu}
 date:
 ---
 
@@ -13,11 +13,11 @@ date:
 
 # Abstract
 
-Automated hiring pipelines can retrieve candidate documents with an embedding model and then reorder the leading candidates with a neural reranker. Prior audits have studied gender-associated differences in retrieval, while evidence about the reranking stage remains limited. We audit {{N_MODELS}} open and proprietary rerankers with {{N_PAIRS}} counterfactual document pairs per model. Within each pair, qualifications are unchanged and only the selected name and pronouns differ. All {{N_MODELS_STEREOTYPE_ORDER}} models favor the male-associated document more often for male-typed occupations than for female-typed occupations. In a synthetic pool of {{SLATE_SIZE}} equally qualified candidates, one retrieval-and-reranking pipeline assigns {{SHORTLIST_PCT_MALE_PIPELINE}} of top-{{SHORTLIST_SIZE}} positions to male-associated documents. Results vary materially across models, occupations, names, templates, and query wordings. We then test a simple input transform that replaces names with one placeholder and gendered pronouns with one uniform token before ranking. The transform makes each counterfactual pair textually identical and therefore removes score differences attributable to those markers by construction. On a synthetic occupation-matching task, top-rank accuracy changes from {{UTILITY_TOP1_BEFORE}} before transformation to {{UTILITY_TOP1_AFTER}} after transformation. These findings establish sensitivity to the tested names and pronouns, rather than discrimination in deployed hiring or a complete solution to demographic bias.
+Automated hiring pipelines can retrieve candidate documents with an embedding model and then reorder the leading candidates with a neural reranker. Prior audits have studied gender-associated differences in retrieval, while evidence about the reranking stage remains limited. We audit {{N_MODELS}} open and proprietary rerankers with {{N_PAIRS}} counterfactual document pairs per model. Within each pair, qualifications are unchanged and only the selected name and pronouns differ. All {{N_MODELS_STEREOTYPE_ORDER}} models favor the male-associated document more often for male-typed occupations than for female-typed occupations. In synthetic pools of {{SLATE_SIZE}} equally qualified candidates, one retrieval-and-reranking pipeline assigns {{SHORTLIST_PCT_MALE_PIPELINE}} of top-{{SHORTLIST_SIZE}} positions to male-associated documents; behind the same retriever, the audited rerankers range from {{PIPELINE_SWEEP_MIN}} to {{PIPELINE_SWEEP_MAX}}, against {{SHORTLIST_PCT_MALE_SEARCH}} for retrieval alone. Results vary materially across models, occupations, names, templates, and query wordings. We then test a simple input transform that replaces names with one placeholder and gendered pronouns with one uniform token before ranking. The transform makes each counterfactual pair textually identical and therefore removes score differences attributable to those markers by construction. On a near-ceiling synthetic occupation-matching check, top-rank accuracy is {{UTILITY_CORRECT_BEFORE}} of {{UTILITY_N_EVENTS}} before and {{UTILITY_CORRECT_AFTER}} of {{UTILITY_N_EVENTS}} after transformation, a difference not distinguishable from zero. These findings establish sensitivity to the tested names and pronouns, rather than discrimination in deployed hiring or a complete solution to demographic bias.
 
 # Introduction
 
-Modern search systems commonly retrieve a candidate set with an embedding model and then use a more expensive model to rerank that set [@nogueira2019]. The same architecture can be used for job and resume matching. A candidate must therefore pass two learned ordering stages before appearing near the top of a recruiter's list.
+Modern search systems commonly retrieve a candidate set with a fast first-stage method, such as lexical matching or a dense embedding model [@karpukhin2020], and then use a more expensive model to rerank that set [@nogueira2019]. The same architecture can be used for job and resume matching. A candidate must therefore pass two learned ordering stages before appearing near the top of a recruiter's list.
 
 Evidence of social bias in word representations and retrieval is well established [@caliskan2017; @rakivnenko2024; @wilson2024]. Neural rankers can also amplify gendered patterns in retrieved content [@rekabsaz2020; @rekabsaz2021]. Resume-screening studies report effects in different directions across tasks and models [@an2025; @wilson2024]. Yet a broad counterfactual audit of current rerankers is missing, even though a reranker can reverse the order produced by retrieval.
 
@@ -29,7 +29,7 @@ Our contribution is a dated, reproducible audit rather than a claim about any em
 
 ## Counterfactual documents
 
-Each observation is a pair of short professional documents. The two versions describe the same occupation, experience, skills, and accomplishments. One version uses a male-associated given name and masculine pronouns; the other uses a female-associated given name and feminine pronouns. Thus, any within-pair score difference is caused by the changed name and pronoun tokens. Because names can also signal age, ethnicity, nationality, and individual identity, the design cannot attribute the whole difference to gender alone.
+Each observation is a pair of short professional documents. The two versions describe the same occupation, experience, skills, and accomplishments. One version uses a male-associated given name and masculine pronouns; the other uses a female-associated given name and feminine pronouns. For a reranker that scores each document independently, any within-pair score difference is therefore caused by the changed name and pronoun tokens. The API rerankers received both versions of a pair in the same request, always with the male-associated version first; vendors do not guarantee that a document's score is independent of its position in a request. A constant position effect would shift male-typed and female-typed occupations alike, so it cannot produce the contrast between them, but it could move a model's overall level. Because names can also signal age, ethnicity, nationality, and individual identity, the design cannot attribute the whole difference to gender alone.
 
 We combine {{N_TEMPLATES}} document templates, {{N_QUERIES}} query phrasings, and {{N_NAME_PAIRS}} pairs of common American given names. Names come from national birth-name records [@ssa2026]. The complete templates, queries, and names appear in Appendix A.
 
@@ -37,25 +37,25 @@ We initially score {{N_OCC_SCORED}} occupations. We label occupations with the s
 
 ## Rerankers and analysis
 
-We evaluate {{N_MODELS}} rerankers from commercial APIs and open-weight releases. The scores were collected on {{RAW_SCORED_DATE}}. Model identifiers and results appear in Appendix B. The released provenance table records each access route, score range, overall tie rate, and collection date.
+We evaluate {{N_MODELS}} rerankers from commercial APIs and open-weight releases. The scores were collected on {{RAW_SCORED_DATE}}. A further endpoint, {{EXCLUDED_DUPLICATE_MODEL}}, returned scores identical to {{EXCLUDED_DUPLICATE_OF}} on every row; we treat the two as one model and exclude the duplicate from every reported figure. Model identifiers and results appear in Appendix B. The released provenance table records each access route, score range, overall tie rate, and collection date.
 
-For each model and occupation group, we report whether the male-associated version scores higher, the versions tie, or the female-associated version scores higher. When a single directional share is needed, a tie contributes one half to each side. Confidence intervals use a seeded cluster bootstrap that resamples occupations, because comparisons within an occupation are not independent. Scores from different models have different scales, so we compare directions and within-model gaps rather than raw magnitudes across models.
+For each model and occupation group, we report whether the male-associated version scores higher, the versions tie, or the female-associated version scores higher. When a single directional share is needed, a tie contributes one half to each side. Ties largely reflect score resolution rather than indifference: several models return coarsely rounded scores, and one open-weight reranker, run in bfloat16, emits only {{JINA_N_DISTINCT_SCORES}} distinct values across {{JINA_N_SCORES}} scored documents. Confidence intervals use a seeded cluster bootstrap that resamples occupations, because comparisons within an occupation are not independent. Scores from different models have different scales, so we compare directions and within-model gaps rather than raw magnitudes across models.
 
 ## Two-stage shortlist simulation
 
-We form synthetic pools of {{SLATE_SIZE}} equally qualified documents, split evenly between male- and female-associated versions. The retriever {{RETRIEVER_MODEL}} selects the top {{TOPK}} candidates. The reranker {{RERANKER_MODEL}} then produces a top-{{SHORTLIST_SIZE}} shortlist. We also evaluate the retriever and reranker separately and repeat the pipeline with every audited reranker behind the same retriever. Because candidate qualifications are identical by construction, departures from an even shortlist reflect ordering effects from the changed markers and tie handling.
+We form synthetic pools of {{SLATE_SIZE}} equally qualified documents, split evenly between male- and female-associated versions. The retriever {{RETRIEVER_MODEL}} selects the top {{TOPK}} candidates. The reranker {{RERANKER_MODEL}} then produces a top-{{SHORTLIST_SIZE}} shortlist. We also evaluate the retriever and reranker separately and repeat the pipeline with every audited reranker behind the same retriever. The simulation reuses the reranker scores from the single-stage audit rather than rescoring each pool. This is exact for a reranker that scores documents independently; for the API rerankers, which scored each document inside a larger per-query request, it is an assumption. Because candidate qualifications are identical by construction, departures from an even shortlist reflect ordering effects from the changed markers and tie handling.
 
 ## De-identification
 
-We test three core transformations while preserving case: replace names only, neutralize pronouns only, and do both. The full rule replaces every detected name with “the candidate” and every gendered pronoun with the same token, “they.” This deliberately simple normalization is applied before scoring. The two counterfactual versions then become the same string, so any deterministic text-only embedding model or reranker must assign them the same representation or score. This is a symmetry guarantee, not an empirical discovery.
+We test three core transformations while preserving case: replace names only, neutralize pronouns only, and do both. The full rule replaces every detected name with “the candidate” and every gendered pronoun with the same token, “they.” Appendix E adds four comparison conditions: lowercasing alone, a control that removes no marker; two naive grammatical rewrites that also replace names and map “she/he” to “they,” “him” to “them,” “his” to “their,” and “her” to either “their” or “them”; and a following-word rule, otherwise identical, that maps “her” to “their” or “them” depending on the next word. This deliberately simple normalization is applied before scoring. The two counterfactual versions then become the same string, so any deterministic text-only embedding model or reranker must assign them the same representation or score. This is a symmetry guarantee, not an empirical discovery. Because rules that replace names map all ten name pairs to the same placeholder, those conditions contain only {{N_DISTINCT_NAME_REPLACED}} distinct comparisons, each repeated across the {{N_PAIRS}} rows; shares are unaffected, but the name dimension is gone.
 
-We run the transformations on four open-weight rerankers. We also test relevance on a synthetic occupation-matching task. For each query, a model ranks one document from every retained occupation, and success means placing the document that names the queried occupation first. This check tests whether occupation signal survives; it does not test whether a system selects the best-qualified person within an occupation.
+We run the transformations on four open-weight rerankers. On the worked reranker we also test relevance on a synthetic occupation-matching task: in each of {{UTILITY_N_EVENTS}} ranking events, the model ranks a pool of {{UTILITY_POOL_SIZE}} documents, one per retained occupation, and success means placing the document that names the queried occupation first. Every document states its occupation, and the transforms never touch that term, so the task is near ceiling by design. It checks that the transform does not destroy the occupation signal; it cannot measure retained ranking quality, and it does not test whether a system selects the best-qualified person within an occupation.
 
 # Results
 
 ## Reranker scores track occupational gender composition
 
-All {{N_MODELS_STEREOTYPE_ORDER}} audited models favor the male-associated document more often for male-typed occupations than for female-typed occupations. For the median model, the tie-aware male-favored share is {{MEDIAN_PCT_MALE_MALEJOBS}} on male-typed occupations and {{MEDIAN_PCT_MALE_FEMALEJOBS}} on female-typed occupations. The size varies across models, but the direction of this difference is consistent.
+All {{N_MODELS_STEREOTYPE_ORDER}} audited models favor the male-associated document more often for male-typed occupations than for female-typed occupations. Across models, the median tie-aware male-favored share is {{MEDIAN_PCT_MALE_MALEJOBS}} on male-typed occupations and {{MEDIAN_PCT_MALE_FEMALEJOBS}} on female-typed occupations; the two medians are taken separately and need not come from the same model. Within a single model, the median gap between the two categories is {{SPREAD_MEDIAN}} percentage points (range {{SPREAD_MIN}} to {{SPREAD_MAX}}). The size varies across models, but the direction of this difference is consistent.
 
 Evenly split occupations reveal substantial model variation. The median male-favored share is {{MEDIAN_PCT_MALE_NEUTRAL}}, but {{N_MODELS_NEUTRAL_LEAN_MALE}} models lie above an even split and {{N_MODELS_NEUTRAL_LEAN_FEMALE}} lie below it. For {{N_NEUTRAL_INDETERMINATE}} models, the occupation-clustered confidence interval includes an even split. A deployer therefore cannot infer either the size or direction of a model's behavior without testing that model.
 
@@ -95,25 +95,27 @@ bootstrap intervals.}
 \end{figure}
 ```
 
-Appendix D repeats the simulation with every audited reranker behind the same retriever. The resulting shortlist share changes substantially with the reranker. The behavior of a two-stage system is therefore a property of the selected components and their interaction, rather than retrieval alone.
+Appendix D repeats the simulation with every audited reranker behind the same retriever. The resulting shortlist share ranges from {{PIPELINE_SWEEP_MIN}} to {{PIPELINE_SWEEP_MAX}}, and {{N_PIPELINE_BELOW_RETRIEVER}} rerankers produce a shortlist with a lower male-associated share than retrieval alone ({{SHORTLIST_PCT_MALE_SEARCH}}). The worked example sits near the top of that range rather than being typical. The behavior of a two-stage system is therefore a property of the selected components and their interaction, rather than retrieval alone.
 
 ## Full marker removal eliminates the measured pathway
 
-Removing only names does not remove the difference. On the worked reranker, the mean absolute gap changes from {{DEID_ORIGINAL_MEAN_GAP}} to {{DEID_NAMESONLY_MEAN_GAP}}, while the male-associated version wins {{DEID_NAMESONLY_PCT_MALE_MALEJOBS}} of comparisons on male-typed occupations, compared with {{DEID_ORIGINAL_PCT_MALE_MALEJOBS}} before transformation. Neutralizing pronouns while retaining names reduces the mean absolute gap to {{DEID_PRONOUNSONLY_MEAN_GAP}}. These partial effects differ across the four rerankers in Appendix E.
+Removing only names does not remove the difference. On the worked reranker, the male-associated version wins {{DEID_NAMESONLY_PCT_MALE_MALEJOBS}} of comparisons on male-typed occupations after names are removed, compared with {{DEID_ORIGINAL_PCT_MALE_MALEJOBS}} before. The mean absolute gap is essentially unchanged ({{DEID_ORIGINAL_MEAN_GAP}} to {{DEID_NAMESONLY_MEAN_GAP}}; paired occupation-clustered 95% interval on the difference [{{DEID_NAMESONLY_GAPDIFF_LO}}, {{DEID_NAMESONLY_GAPDIFF_HI}}]). Neutralizing pronouns while retaining names reduces the mean absolute gap to {{DEID_PRONOUNSONLY_MEAN_GAP}} (interval on the difference [{{DEID_PRONOUNSONLY_GAPDIFF_LO}}, {{DEID_PRONOUNSONLY_GAPDIFF_HI}}]). Partial removal is not consistent across the four rerankers in Appendix E: removing names alone leaves the mean absolute gap unchanged or higher on two models and reduces it on the other two, and on one model it lowers the male-favored share where the worked reranker's rises. Partial de-identification therefore has unpredictable effects.
 
-The full rule makes every tested counterfactual pair textually identical. All pairs therefore tie under each tested reranker. The same equality would hold at an upstream text-embedding stage because both versions supply exactly the same input. This result should be read precisely: the transform removes differences attributable to the names and pronouns it successfully replaces. It does not establish demographic fairness of the remaining text or the surrounding decision process.
+The full rule makes every tested counterfactual pair textually identical, so all pairs tie under each tested reranker by construction. Identical strings are scored once and the score is reused, so this tie rate is not an observation; it holds for any reranker whose scores are deterministic. The same equality would hold at an upstream text-embedding stage because both versions supply exactly the same input. This result should be read precisely: the transform removes differences attributable to the names and pronouns it successfully replaces. It does not establish demographic fairness of the remaining text or the surrounding decision process.
 
-Synthetic occupation-matching top-rank accuracy is {{UTILITY_TOP1_BEFORE}} before the full transform and {{UTILITY_TOP1_AFTER}} after it. This provides evidence that the occupation signal in our templates survives the transformation. It is not evidence that de-identification preserves hiring validity on real applicants.
+On the worked reranker, synthetic occupation-matching top-rank accuracy is {{UTILITY_CORRECT_BEFORE}} of {{UTILITY_N_EVENTS}} ({{UTILITY_TOP1_BEFORE}}) before the full transform and {{UTILITY_CORRECT_AFTER}} of {{UTILITY_N_EVENTS}} ({{UTILITY_TOP1_AFTER}}) after it, a difference that is not distinguishable from zero (exact McNemar p = {{UTILITY_MCNEMAR_P}}); top-three accuracy is {{UTILITY_TOP3}} in both conditions. Because the task is near ceiling, this shows only that the transform leaves the occupation signal intact. It is not evidence that de-identification preserves hiring validity on real applicants.
 
 ```latex
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.78\linewidth]{figures/fig_deid.pdf}
-\caption{\textbf{Pairwise balance under de-identification rules.} Exact ties are
-divided equally between the two sides for display. Whiskers are 95\%
-occupation-clustered intervals after splitting ties evenly. The final two
-50/50 bars are 100\% exact ties because those rules make the paired texts
-identical; they are not observed wins for either document.}
+\caption{\textbf{Pairwise balance under de-identification rules on the worked
+reranker.} Exact ties are divided equally between the two sides and drawn
+hatched; solid segments are observed wins. Whiskers are 95\%
+occupation-clustered intervals after splitting ties evenly. The final two bars
+are 100\% exact ties, and the naive her$\to$their rewrite is 75\% exact ties,
+because those rules make the paired texts identical; ties are not wins for
+either document. Conditions are defined in Section~2.}
 \label{fig:deid}
 \end{figure}
 ```
@@ -128,21 +130,21 @@ The main audit uses short synthetic documents and simulated shortlists. It measu
 
 Names carry several social signals at once. Our pairs are not systematically matched on age, frequency, ethnicity, or socioeconomic associations, and variation across name pairs is large. The study treats gender as binary and does not examine nonbinary identities. It also does not audit race or intersectional effects.
 
-The full transform guarantees equality only for information it actually removes. Real resumes may signal gender through schools, affiliations, activities, job histories, and writing patterns [@parasurama2022]. Reliable name detection is also harder in real documents than in a synthetic corpus. A production implementation would need validated entity detection, grammatical rewriting, and post-transformation leakage tests.
+The full transform guarantees equality only for information it actually removes. Real resumes may signal gender through schools, affiliations, activities, job histories, and writing patterns [@parasurama2022full]. Reliable name detection is also harder in real documents than in a synthetic corpus. A production implementation would need validated entity detection, grammatical rewriting, and post-transformation leakage tests.
 
 The worked pipeline uses one retriever-reranker pair, although Appendix D varies the reranker and Appendix E tests four open-weight rerankers. Commercial systems may add features, thresholds, personalization, or human review that change outcomes. The results are a dated snapshot of model versions queried on {{RAW_SCORED_DATE}}.
 
-A companion experiment sampled {{N_REAL_RESUMES}} distinct resumes from a corpus of {{N_REAL_CORPUS}}. Its model directions and magnitudes differ from the synthetic results, and its construction combines inserted names with swaps of sparse existing gender markers. Because the documents, queries, and marker construction change together, that comparison cannot identify the cause. We retain it as a warning against generalizing the synthetic effect size to real resumes.
+A companion experiment sampled {{N_REAL_RESUMES}} distinct documents from a public corpus of {{N_REAL_CORPUS}} published résumé examples scraped from a career website (released under CC0). These are not real applicants' documents, and the publisher had already removed most names, so {{N_COMPANION_INJECTED}} of the counterfactual pairs were built by inserting a name rather than swapping an existing marker. Its model directions and magnitudes differ from the synthetic results. Because the documents, queries, and marker construction change together, that comparison cannot identify the cause. We retain it as a warning against generalizing the synthetic effect size to applicant résumés in deployment. Its results predate the released version of its script, and its corpus must be rebuilt from the repository's provenance notes to reproduce it.
 
 # Conclusion
 
 Current neural rerankers respond differently to professional documents that differ only in selected names and pronouns. Across {{N_MODELS}} models, the direction of that response consistently changes with occupational gender composition, while the baseline direction varies by product. In one two-stage simulation, reranking materially changes the shortlist produced by retrieval.
 
-A simple normalization of names and gendered pronouns eliminates this particular pairwise difference because it makes the compared inputs identical. Synthetic occupation matching is retained, but real hiring utility and residual demographic leakage remain untested. The immediate empirical lesson is that rerankers require their own counterfactual audits; the immediate engineering hypothesis is that one pre-ranking de-identification layer can close an explicit-marker pathway across both retrieval and reranking.
+A simple normalization of names and gendered pronouns eliminates this particular pairwise difference because it makes the compared inputs identical. A near-ceiling occupation-matching check is unaffected, but real hiring utility and residual demographic leakage remain untested. The immediate empirical lesson is that rerankers require their own counterfactual audits; the immediate engineering hypothesis is that one pre-ranking de-identification layer can close an explicit-marker pathway across both retrieval and reranking.
 
 ### Data and code availability
 
-The generated documents, banked model scores, analysis scripts, pipeline simulation, and de-identification code are available in the \href{{{REPO_URL}}}{project repository}. Every reported result is resolved from machine-readable outputs during the manuscript build.
+The generated documents, banked model scores, analysis scripts, pipeline simulation, and de-identification code are available in the \href{{{REPO_URL}}}{project repository}. Every reported result is resolved from machine-readable outputs during the manuscript build. Occupation titles and SOC codes are derived from O*NET 30.3 (National Center for O*NET Development for the U.S. Department of Labor, Employment and Training Administration), used under CC BY 4.0 [@onet2026]. The companion corpus is released under CC0 1.0, and the BLS and SSA inputs are U.S. Government works. Full provenance is in `data/PROVENANCE.md`.
 
 ```latex
 \appendix
@@ -183,7 +185,11 @@ tie as half for each version and reports occupation-clustered intervals.}
 
 \begin{table}[H]
 \centering
-\caption{Occupation-level directional consistency by model and category.}
+\caption{Occupation-level directional consistency by model and category. Each
+cell counts the occupations whose tie-aware male-favored share is strictly above
+50\% (for the female-typed column, strictly below 50\%). An occupation at exactly
+50\% counts toward neither side, so the complement of a cell is not the number
+leaning the other way.}
 \label{tab:consistency}
 \resizebox{\textwidth}{!}{%
 {{TABLE_CONSISTENCY}}%
@@ -226,7 +232,10 @@ tie as half for each version and reports occupation-clustered intervals.}
 \begin{table}[H]
 \centering
 \caption{Male-associated share of shortlist positions for each reranker behind
-the same retriever and the same pools of equally qualified documents.}
+the same retriever and the same pools of equally qualified documents. The last
+column is the combined pipeline's mean rank of female-associated documents minus
+that of male-associated documents in the 20-document pool; a positive value
+means female-associated documents rank lower.}
 \label{tab:sweep}
 \resizebox{\textwidth}{!}{%
 {{TABLE_SWEEP}}%
@@ -241,7 +250,8 @@ the same retriever and the same pools of equally qualified documents.}
 \centering
 \caption{De-identification conditions on {{RERANKER_MODEL}}. A dagger marks a
 condition that makes paired documents identical by construction. The utility
-column is synthetic occupation-matching top-rank accuracy.}
+column is synthetic occupation-matching top-rank accuracy; a dash means that
+check was not run for the condition.}
 \label{tab:deid}
 \resizebox{\textwidth}{!}{%
 {{TABLE_DEID}}%
@@ -250,14 +260,12 @@ column is synthetic occupation-matching top-rank accuracy.}
 
 \begin{table}[H]
 \centering
-\caption{De-identification conditions across four locally run rerankers. One
-model did not exactly reproduce its earlier untransformed scores on a later
-local run; its transformed conditions were scored together and remain
-internally comparable.}
+\caption{De-identification conditions across four locally run rerankers.}
 \label{tab:deidall}
 \resizebox{\textwidth}{!}{%
 {{TABLE_DEID_ALLMODELS}}%
 }
+{{TABLE_DEID_ALLMODELS_NOTES}}
 \end{table}
 ```
 
@@ -286,16 +294,27 @@ A.~Caliskan, J.~J.~Bryson, and A.~Narayanan.
 \newblock Semantics derived automatically from language corpora contain human-like biases.
 \newblock \emph{Science}, 356(6334):183--186, 2017. \doi{10.1126/science.aal4230}.
 
+\bibitem{karpukhin2020}
+V.~Karpukhin, B.~O\u{g}uz, S.~Min, P.~Lewis, L.~Wu, S.~Edunov, D.~Chen, and W.~Yih.
+\newblock Dense Passage Retrieval for Open-Domain Question Answering.
+\newblock In \emph{Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP)}, pages 6769--6781, 2020.
+\doi{10.18653/v1/2020.emnlp-main.550}.
+
 \bibitem{nogueira2019}
 R.~Nogueira and K.~Cho.
 \newblock Passage Re-ranking with BERT.
 \newblock arXiv preprint arXiv:1901.04085, 2019.
 
-\bibitem{parasurama2022}
+\bibitem{parasurama2022full}
 P.~Parasurama and J.~Sedoc.
-\newblock Gendered language in resumes and its implications for algorithmic bias in hiring.
-\newblock In \emph{Proceedings of the 4th Workshop on Gender Bias in Natural Language Processing}, page 74, 2022.
-\doi{10.18653/v1/2022.gebnlp-1.7}.
+\newblock Degendering Resumes for Fair Algorithmic Resume Screening.
+\newblock arXiv preprint arXiv:2112.08910, 2022.
+
+\bibitem{onet2026}
+National Center for O*NET Development.
+\newblock O*NET 30.3 Database.
+\newblock O*NET Resource Center, U.S. Department of Labor, Employment and Training Administration. Retrieved 22 August 2026. Used under CC BY 4.0.
+\url{https://www.onetcenter.org/database.html}.
 
 \bibitem{rakivnenko2024}
 V.~Rakivnenko, N.~Maslej, J.~Cervi, and V.~Zhukov.

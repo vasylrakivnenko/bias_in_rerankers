@@ -78,6 +78,7 @@ Outputs (never touches any *_full_raw.json):
     results/deidentification_bge.json              back-compat superset for bge-v2-m3
     results/tex/deidentification.tex
     results/tex/deid_conditions.tex
+    results/tex/deidentification_notes.tex
 
 Run:  venv/bin/python code/deidentification_experiment.py            # all 4 models
       venv/bin/python code/deidentification_experiment.py --model BAAI/bge-reranker-base
@@ -99,7 +100,7 @@ ROOT = CODE_DIR.parent
 sys.path.insert(0, str(CODE_DIR))
 
 from analyze_single_stage import ClusterStat, stable_seed  # noqa: E402
-from deid_transforms import DEFAULT_PLACEHOLDER, deidentify  # noqa: E402
+from deid_transforms import CONDITION_LABELS, DEFAULT_PLACEHOLDER, deidentify  # noqa: E402
 from labels import load_labels  # noqa: E402
 from synthetic_dataset import NAME_PAIRS, QUERY_TYPES, generate_dataset  # noqa: E402
 
@@ -301,7 +302,15 @@ def baseline_scores(model_name, rows, device):
 UTILITY_CONDITIONS = ("original", "names_only", "pronouns_only", "full", "gram_pos")
 
 
-def utility_test(model_name, triples, labels, device, query_types, conditions):
+def utility_test(model_name, triples, labels, device, query_types, conditions,
+                 return_hits=False):
+    """Occupation-matching top-1/top-3/MRR per condition.
+
+    With `return_hits`, each condition also carries `hits`: one
+    (template, query_type, queried_occupation, rank) tuple per ranking event, in
+    the same order for every condition, so callers can pair conditions
+    (code/deid_statistics.py uses it for an exact McNemar test).
+    """
     docs, queries = {}, {}
     for t in triples:
         if labels.get(t.occupation) is None:
@@ -351,6 +360,7 @@ def utility_test(model_name, triples, labels, device, query_types, conditions):
         agg[cond]["top1"].append(1.0 if rank == 1 else 0.0)
         agg[cond]["top3"].append(1.0 if rank <= 3 else 0.0)
         agg[cond]["rr"].append(1.0 / rank)
+        agg[cond]["hits"].append((tmpl, qt, qo, rank))
 
     out = {"config": {"query_types": list(query_types), "templates": tmpls,
                       "pool_size": len(occs), "n_queries": len(plan) // len(conditions),
@@ -363,6 +373,8 @@ def utility_test(model_name, triples, labels, device, query_types, conditions):
                      "top3_pct": 100.0 * float(np.mean(a["top3"])),
                      "mrr": float(np.mean(a["rr"])),
                      "n_queries": len(a["top1"])}
+        if return_hits:
+            out[cond]["hits"] = a["hits"]
     base = out[conditions[0]]["top1_pct"]
     for cond in conditions:
         out[cond]["top1_pct_delta_vs_original"] = out[cond]["top1_pct"] - base
@@ -616,7 +628,8 @@ def main():
     ap.add_argument("--model", action="append", default=None,
                     help="re-ranker to run (repeatable); default: all four cached local models")
     ap.add_argument("--bootstrap", type=int, default=1000)
-    ap.add_argument("--strict-labels", action="store_true")
+    ap.add_argument("--allow-legacy-labels", action="store_true",
+                    help="fall back to the pre-BLS labels instead of failing")
     ap.add_argument("--no-utility", action="store_true", help="skip the B3 utility test")
     ap.add_argument("--reuse", action="store_true",
                     help="reuse an existing per-model JSON when it was written by this same "
@@ -629,7 +642,7 @@ def main():
     import torch
     device = "mps" if torch.backends.mps.is_available() else "cpu"
 
-    labels, label_source = load_labels(strict=args.strict_labels)
+    labels, label_source = load_labels(strict=not args.allow_legacy_labels)
     print(f"Label source: {label_source} ({len(labels)} occupations)")
     triples = generate_dataset(perturbation_levels=["names_and_pronouns"], query_types=None)
     print(f"Triples: {len(triples)}")
@@ -729,45 +742,45 @@ def main():
             o = e["overall"]
             cells += [f"{o['tie_aware_pct_male']:.1f}", f"{e['mean_abs_delta']:.4f}"]
         note = r"$^{\dagger}$" if allres[models[0]]["conditions"][cond]["sanity_check"] else ""
-        display_cond = "Following-word heuristic" if cond == "gram_pos" else esc(cond)
-        lines.append(f"{display_cond}{note} & " + " & ".join(cells) + r" \\")
-    lines += [r"\bottomrule", r"\end{tabular}",
-              r"% $^{\dagger}$ identity of the design (the two documents become the same "
-              r"string), not an empirical measurement -- REVIEW_TODO A10."]
-    # Determinism caveats are DERIVED from what this run actually measured, never
-    # hard-coded: a literal model name / difference / verdict here would silently
-    # go stale the moment anything is re-scored or `--model` selects another set.
-    n_other = len(ALL_CONDITIONS) - 1          # every condition except `original`
+        lines.append(f"{CONDITION_LABELS[cond]}{note} & " + " & ".join(cells) + r" \\")
+    lines += [r"\bottomrule", r"\end{tabular}"]
+    (TEX_DIR / "deidentification.tex").write_text("\n".join(lines) + "\n")
+
+    # Table notes go in their own fragment: the paper wraps the tabular in a
+    # \resizebox, which cannot hold a paragraph, and notes left as LaTeX
+    # comments never render (FACTCHECK_ROUND3 S9). Determinism caveats are
+    # DERIVED from what this run actually measured, never hard-coded: a literal
+    # model name / difference / verdict here would silently go stale the moment
+    # anything is re-scored or `--model` selects another set.
+    notes = [r"$^{\dagger}$ The rule makes the two documents the same string, so the "
+             r"tie rate is an identity of the design, not a measurement."]
     for m in models:
         dc = allres[m].get("determinism_check") or {}
         short = esc(m.split("/")[-1])
         if dc.get("status") == "checked" and dc.get("passed") is False:
-            lines.append(
-                f"% {short}: its `original' baseline FAILED the determinism check -- "
-                f"re-scoring the untransformed text locally did not reproduce the banked "
-                f"score (max abs difference {dc['max_abs_score_diff']:.4f}). Its other "
-                f"{n_other} conditions were scored fresh in this same run and are "
-                f"internally consistent; only cross-run comparisons of that row carry "
-                f"this caveat.")
+            row_gap = allres[m]["conditions"]["original"]["mean_abs_delta"]
+            notes.append(
+                f"For {short}, the original row is the earlier banked run, which a local "
+                f"re-score of the same text did not reproduce (maximum absolute score "
+                f"difference {dc['max_abs_score_diff']:.4f}, mean "
+                f"{dc['mean_abs_score_diff']:.5f}, against a row mean $|$gap$|$ of "
+                f"{row_gap:.4f}). Its transformed rows were scored together in one later "
+                f"run and are comparable with each other, but not safely with its "
+                f"original row.")
         elif dc.get("status") == "skipped":
-            lines.append(
-                f"% {short}: no banked baseline exists, so `original' was scored locally "
-                f"in this run and no cross-run determinism verdict is available for it.")
-    (TEX_DIR / "deidentification.tex").write_text("\n".join(lines) + "\n")
+            notes.append(
+                f"For {short}, no banked run exists, so the original row was scored in the "
+                f"same run as the transformed rows and no cross-run reproducibility "
+                f"verdict is available.")
+    (TEX_DIR / "deidentification_notes.tex").write_text(
+        "% Generated by code/deidentification_experiment.py -- do not edit by hand.\n"
+        + r"\par\smallskip{\footnotesize\raggedright " + " ".join(notes) + "\\par}\n")
 
     # ---- deid_conditions.tex: tabular-only, one row per condition, primary model ----
     primary = "BAAI/bge-reranker-v2-m3" if "BAAI/bge-reranker-v2-m3" in allres else models[0]
     r = allres[primary]
     u = r.get("utility", {})
     have_u = bool(u)
-    label = {"original": "Original (no transform)",
-             "lowercase_only": "Lowercase only (no name/pronoun change)",
-             "names_only": "Names only",
-             "pronouns_only": "Pronouns only",
-             "full": "Full (names + pronouns $\\to$ one token)",
-             "gram_her_their": "Grammatical, naive (`her' $\\to$ `their')",
-             "gram_her_them": "Grammatical, naive (`her' $\\to$ `them')",
-             "gram_pos": "Following-word heuristic"}
     # REVIEW_ROUND2 A7: %M / %tie / %F instead of the single blended
     # tie-aware "% male-favoured" column; the old identical-text column header
     # is reworded too (REVIEW_ROUND2 A3).
@@ -783,15 +796,13 @@ def main():
         e = r["conditions"][cond]
         o = e["overall"]
         dag = r"$^{\dagger}$" if e["sanity_check"] else ""
-        row = (f"{label.get(cond, esc(cond))}{dag} & {o['pct_male']:.1f} & "
+        row = (f"{CONDITION_LABELS[cond]}{dag} & {o['pct_male']:.1f} & "
                f"{o['pct_tie']:.1f} & {o['pct_female']:.1f} & {e['mean_abs_delta']:.4f} & "
                f"{e['pct_pairs_identical_text']:.1f}")
         if have_u:
             row += f" & {u[cond]['top1_pct']:.1f}" if cond in u else " & --"
         lines.append(row + r" \\")
-    lines += [r"\bottomrule", r"\end{tabular}",
-              r"% $^{\dagger}$ the transform makes the two documents the same string, so the tie",
-              r"% rate is an identity of the design, not a measurement (REVIEW_TODO A10)."]
+    lines += [r"\bottomrule", r"\end{tabular}"]
     (TEX_DIR / "deid_conditions.tex").write_text("\n".join(lines) + "\n")
 
     print(f"\nSaved -> {RESULTS / 'deidentification_summary.json'}")

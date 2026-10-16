@@ -49,10 +49,10 @@ third-party Python packages are needed.
 ## Empirical backbone (all reproducible from `../code` + `../results`)
 | Claim | Script | Output |
 |---|---|---|
-| Single-stage re-ranker bias, 14 models (Tables A1–A3) | `../code/analyze_single_stage.py`, over the banked `../code/run_experiment.py` scores | `../results/single_stage_summary.json` |
-| Pipeline shortlist, one pair and swept over all 14 re-rankers (Figure 2, Table A7) | `../code/compounding_experiment.py` | `../results/compounding_bge_pipeline.json`, `../results/compounding_all_rerankers.json` |
-| De-identification mitigation, one model and all four local re-rankers (Figure 3, Tables A8–A9) | `../code/deidentification_experiment.py` | `../results/deidentification_bge.json`, `../results/deidentification_summary.json` |
-| The documents, query forms, name pairs, and full occupation list (Appendix B) | `../code/generate_appendix_tables.py` | `../results/tex/documents_appendix.tex`, `../results/tex/occupations_table.tex` |
+| Single-stage re-ranker bias, 14 models (Tables A1–A2) | `../code/analyze_single_stage.py`, over the banked `../code/run_experiment.py` scores | `../results/single_stage_summary.json` |
+| Pipeline shortlist, one pair and swept over all 14 re-rankers (Figure 2, Table A6) | `../code/compounding_experiment.py` | `../results/compounding_bge_pipeline.json`, `../results/compounding_all_rerankers.json` |
+| De-identification mitigation, one model and all four local re-rankers (Figure 3, Tables A7–A8) | `../code/deidentification_experiment.py` | `../results/deidentification_bge.json`, `../results/deidentification_summary.json` |
+| The documents, query forms, name pairs, and full occupation list (Appendix A; the occupation list is released, not printed) | `../code/generate_appendix_tables.py` | `../results/tex/documents_appendix.tex`, `../results/tex/occupations_table.tex` |
 | Vendor documentation and public weight availability | `../code/vendor_docs_audit.py` | `../results/vendor_docs_audit_summary.json` |
 | Real-résumé companion run and sampled population | `../code/realistic_pool_experiment.py`, `../code/reconstruct_realistic_sampling.py` | `../results/realistic_pool_four_rerankers.json`, `../results/realistic_pool_sampling.json` |
 
@@ -66,8 +66,10 @@ Run experiments with the project venv, e.g.:
 HF_HUB_OFFLINE=1 ../venv/bin/python ../code/deidentification_experiment.py
 ```
 (retriever and re-ranker weights are all cached locally; no API keys needed
-for anything the paper actually reports — the fifteen commercial-API models'
-scores were bought once and are banked in `../results/*_full_raw.json`.)
+for anything the paper actually reports — the twelve commercial-API endpoints
+were scored once and are banked in `../results/*_full_raw.json` (eleven distinct
+models after dropping the duplicate `semantic-ranker-default-003`); the three
+open-weight rerankers run locally for free.)
 
 ## Headline numbers
 
@@ -99,7 +101,7 @@ on any unresolved one. These are a sanity check for a human reader only.
   see `code/deidentification_experiment.py`'s module docstring for the fix.
   Neutralising pronouns but keeping names does the opposite: gap down to
   0.0236. Which channel dominates is **not the same on every re-ranker** —
-  see Table A9 in the paper.
+  see Table A8 in the paper.
 - **Full de-id → 100% ties by construction** (a check on the symmetry
   argument, not a finding). The following-word heuristic also equalises the
   tested templates. It is not a POS tagger, fails on ordinary sentences and
@@ -110,12 +112,12 @@ on any unresolved one. These are a sanity check for a human reader only.
 - Occupation labels come from **BLS CPS Table 11** (% women), not hand
   judgement: 82 occupations scored, 52 kept (18 male / 21 female / 13
   neutral); the other 30 (no matching BLS occupation, a suppressed estimate,
-  or an ambiguous 30–40%/60–70% share) are listed with their reason in the
-  paper's appendix and in `../code/occupations_bls.csv`.
+  or an ambiguous 30–40%/60–70% share) are recorded with their reason in
+  `../code/occupations_bls.csv` and released as `../results/tex/occupations_table.tex`.
 - One of the four locally-run re-rankers (jina-reranker-v2) did not exactly
   reproduce its own banked scores on a plain local re-run six months later
   (max score difference 0.012 on its own ~0.15–0.84 range) — flagged in the
-  paper's Limits section and in Table A9's caption, not hidden.
+  rendered note under Table A8, not hidden.
 
 
 ## References
