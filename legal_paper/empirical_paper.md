@@ -47,9 +47,9 @@ We form synthetic pools of {{SLATE_SIZE}} equally qualified documents, split eve
 
 ## De-identification
 
-We test three core transformations while preserving case: replace names only, neutralize pronouns only, and do both. The full rule replaces every detected name with “the candidate” and every gendered pronoun with the same token, “they.” Appendix D adds four comparison conditions: lowercasing alone, a control that removes no marker; two naive grammatical rewrites that also replace names and map “she/he” to “they,” “him” to “them,” “his” to “their,” and “her” to either “their” or “them”; and a following-word rule, otherwise identical, that maps “her” to “their” or “them” depending on the next word. This deliberately simple normalization is applied before scoring. The two counterfactual versions then become the same string, so any deterministic pointwise model, whose only inputs are the query and the normalized document, must assign them the same representation or score. This is a symmetry guarantee, not an empirical discovery. It does not extend automatically to listwise rerankers, which also read the other candidates and their positions: for them, identical text guarantees an identical score only for a candidate held at the same position in an otherwise unchanged list. In either case, exact ties at a selection cutoff still need a tie-breaking rule that does not depend on the replaced markers. Because rules that replace names map all ten name pairs to the same placeholder, those conditions contain only {{N_DISTINCT_NAME_REPLACED}} distinct comparisons, each repeated across the {{N_PAIRS}} rows; shares are unaffected, but the name dimension is gone.
+We test three case-preserving rules: replace names only, neutralize pronouns only, and both. The full rule replaces every detected name with “the candidate” and every gendered pronoun with “they”; Appendix D adds four comparison conditions. Under the full rule the two counterfactual versions become the same string, so any deterministic pointwise reranker, whose only inputs are the query and the document, must score them identically; this is a symmetry guarantee, not a discovery. A listwise reranker, which also reads the other candidates and their positions, is guaranteed this only for a candidate held at the same position in an otherwise unchanged list, and ties at a selection cutoff still need a tie-breaking rule that ignores the replaced markers. Rules that replace names collapse the ten name pairs into one text, leaving {{N_DISTINCT_NAME_REPLACED}} distinct comparisons repeated across the {{N_PAIRS}} rows.
 
-We run the transformations on four open-weight rerankers. On the worked reranker we also test relevance on a synthetic occupation-matching task: in each of {{UTILITY_N_EVENTS}} ranking events, the model ranks a pool of {{UTILITY_POOL_SIZE}} documents, one per retained occupation, and success means placing the document that names the queried occupation first. Every document states its occupation, and the transforms never touch that term, so the task is near ceiling by design. It checks that the transform does not destroy the occupation signal; it cannot measure retained ranking quality, and it does not test whether a system selects the best-qualified person within an occupation.
+We apply the rules to four open-weight rerankers. On the worked reranker, a synthetic occupation-matching check ranks one document per retained occupation ({{UTILITY_POOL_SIZE}} documents) for each of {{UTILITY_N_EVENTS}} queries, and success means ranking the queried occupation's document first. Because every document names its occupation and the rules never touch that word, the check is near ceiling by design: it confirms that the occupation signal survives, not that ranking quality or selection within an occupation is preserved.
 
 # Results
 
@@ -60,7 +60,7 @@ In {{N_CONTRAST_CI_POS}} of the {{N_MODELS}} audited models, the male-associated
 Evenly split occupations reveal substantial model variation. The median male-favored share is {{MEDIAN_PCT_MALE_NEUTRAL}}, but {{N_MODELS_NEUTRAL_LEAN_MALE}} models lie above an even split and {{N_MODELS_NEUTRAL_LEAN_FEMALE}} lie below it. For {{N_NEUTRAL_INDETERMINATE}} models, the occupation-clustered confidence interval includes an even split. A deployer therefore cannot infer either the size or direction of a model's behavior without testing that model.
 
 ```latex
-\begin{figure}[H]
+\begin{figure}[tbp]
 \centering
 \includegraphics[width=0.78\linewidth]{figures/fig_single_stage.pdf}
 \caption{\textbf{Reranker preferences across female- and male-typed
@@ -78,9 +78,7 @@ The result is not invariant to design choices. Across document templates, query 
 
 ## Request order and reproducibility
 
-We compare each layout with the repeated identical request rather than with the original run, so that variability between calls is not mistaken for an order effect. Re-sending an identical request does move one model: Voyage rerank-2's male-typed versus female-typed contrast changes by {{R2_REPEAT_CHANGE}} points (interval {{R2_REPEAT_LO}} to {{R2_REPEAT_HI}}), while reversing each pair, measured against that repeat, changes it by only {{R2_REV_VS_REPEAT}} points ({{R2_REV_VS_REPEAT_LO}} to {{R2_REV_VS_REPEAT_HI}}). Against the repeat, reversing pairs or shuffling the request moves the contrast for {{ORDER_N_MOVED_BEYOND_REPEAT}} of the {{ORDER_N_API}} tested models: every interval includes zero. This is limited evidence. It detects aggregate shifts of roughly one to two points, it does not establish that order has no effect, and the intervals are individual, not adjusted for testing {{ORDER_N_API}} models. Listwise rerankers, which read all candidates in one pass, behave differently. jina-reranker-v3 returns identical scores for an identical request, but when each pair is reversed it keeps the same winner in only {{JINA3_REV_SAME_WINNER}} of pairs, and its male-favored share moves from {{JINA3_PCT_MALE_SAME}} to {{JINA3_PCT_MALE_REV}}; shuffling the request shifts its contrast by {{J3_SHUF_CHANGE}} points ({{J3_SHUF_LO}} to {{J3_SHUF_HI}}). Its scores therefore depend on document position as well as on the changed markers.
-
-Open-weight scores reproduce across hardware. The same bge-reranker-base revision scored on an NVIDIA RTX 4090 and on an Apple M4 Pro picks the same winner in {{XHW_SAME_WINNER}} of pairs, with scores differing by at most {{XHW_MAX_DIFF}}. A self-hosted copy of IBM's Granite reranker agrees with the vendor-hosted API in {{SELF_GRANITE_SAME_WINNER}} of pairs. The Qwen3-Reranker-8B served through OpenRouter does not reproduce its public weights: the two agree in only {{SELF_QWEN_SAME_WINNER}} of pairs, and the contrast is {{SELF_QWEN_CONTRAST_API}} points through OpenRouter against {{SELF_QWEN_CONTRAST_SELF}} points from the public weights. We cannot tell whether serving precision or prompt formatting causes the difference, but an audit of a hosted open model measures the hosted version, not the published weights.
+Measured against an identical repeat of each request, so that call-to-call variability is not mistaken for an order effect, reversing pairs or shuffling the request moves the contrast for {{ORDER_N_MOVED_BEYOND_REPEAT}} of the {{ORDER_N_API}} tested API rerankers. These are individual 95% intervals that detect only aggregate shifts of about one to two points, not proof that order has no effect; the repeat itself moves Voyage rerank-2 by {{R2_REPEAT_CHANGE}} points ({{R2_REPEAT_LO}} to {{R2_REPEAT_HI}}). The listwise jina-reranker-v3 is deterministic but position-dependent: reversing each pair keeps the same winner in only {{JINA3_REV_SAME_WINNER}} of pairs. Open-weight scores reproduce across hardware (the same winner in {{XHW_SAME_WINNER}} of pairs on an NVIDIA RTX 4090 and an Apple M4 Pro), and a self-hosted copy of IBM's Granite reranker matches its API in {{SELF_GRANITE_SAME_WINNER}} of pairs. Qwen3-Reranker-8B served through OpenRouter, however, agrees with its public weights in only {{SELF_QWEN_SAME_WINNER}} of pairs (contrast {{SELF_QWEN_CONTRAST_API}} against {{SELF_QWEN_CONTRAST_SELF}} points), so an audit of a hosted open model measures the hosted version.
 
 ## The reranker can dominate the pipeline
 
@@ -89,7 +87,7 @@ In the worked pipeline, the retriever alone assigns {{SHORTLIST_PCT_MALE_SEARCH}
 The interaction depends on occupation type. On male-typed occupations, the male-associated share rises from {{SHORTLIST_PCT_MALE_SEARCH_MALEJOBS}} under retrieval to {{SHORTLIST_PCT_MALE_RANKER_MALEJOBS}} under reranking and {{SHORTLIST_PCT_MALE_PIPELINE_MALEJOBS}} in sequence. On female-typed occupations, retrieval assigns {{SHORTLIST_PCT_MALE_SEARCH_FEMJOBS}} to male-associated documents, while reranking assigns {{SHORTLIST_PCT_MALE_RANKER_FEMJOBS}} and the combined pipeline assigns {{SHORTLIST_PCT_MALE_PIPELINE_FEMJOBS}}. The two stages can therefore compound or counteract one another.
 
 ```latex
-\begin{figure}[H]
+\begin{figure}[tbp]
 \centering
 \includegraphics[width=0.78\linewidth]{figures/fig_pipeline.pdf}
 \caption{\textbf{Shortlist composition by pipeline stage and occupation group.}
@@ -112,7 +110,7 @@ The full rule makes every tested counterfactual pair textually identical, so all
 On the worked reranker, synthetic occupation-matching top-rank accuracy is {{UTILITY_CORRECT_BEFORE}} of {{UTILITY_N_EVENTS}} ({{UTILITY_TOP1_BEFORE}}) before the full transform and {{UTILITY_CORRECT_AFTER}} of {{UTILITY_N_EVENTS}} ({{UTILITY_TOP1_AFTER}}) after it: {{UTILITY_IMPROVED}} ranking events improved, {{UTILITY_WORSENED}} worsened, and accuracy changed by {{UTILITY_DELTA_PTS}} percentage points. Top-three accuracy is {{UTILITY_TOP3}} in both conditions. The ranking events repeat across templates and query phrasings within each occupation, so we report these counts descriptively rather than as a test of equivalence. Because the task is near ceiling, they show only that the transform leaves the occupation signal intact on this check. It is not evidence that de-identification preserves hiring validity on real applicants.
 
 ```latex
-\begin{figure}[H]
+\begin{figure}[tbp]
 \centering
 \includegraphics[width=0.78\linewidth]{figures/fig_deid.pdf}
 \caption{\textbf{Pairwise balance under de-identification rules on the worked
@@ -219,6 +217,8 @@ means female-associated documents rank lower.}
 ```
 
 # De-identification results
+
+Besides the three core rules, Table~\ref{tab:deid} includes a lowercasing-only control that removes no marker; two naive grammatical rewrites that also replace names and map “she/he” to “they,” “him” to “them,” “his” to “their,” and “her” to either “their” or “them”; and a following-word rule, otherwise identical, that maps “her” to “their” or “them” depending on the next word.
 
 ```latex
 \begin{table}[H]
