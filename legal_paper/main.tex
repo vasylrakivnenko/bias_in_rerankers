@@ -89,7 +89,7 @@ We form synthetic pools of 20 equally qualified documents, split evenly between 
 
 \subsection{De-identification}
 
-We test three core transformations while preserving case: replace names only, neutralize pronouns only, and do both. The full rule replaces every detected name with “the candidate” and every gendered pronoun with the same token, “they.” Appendix E adds four comparison conditions: lowercasing alone, a control that removes no marker; two naive grammatical rewrites that also replace names and map “she/he” to “they,” “him” to “them,” “his” to “their,” and “her” to either “their” or “them”; and a following-word rule, otherwise identical, that maps “her” to “their” or “them” depending on the next word. This deliberately simple normalization is applied before scoring. The two counterfactual versions then become the same string, so any deterministic pointwise model, whose only inputs are the query and the normalized document, must assign them the same representation or score. This is a symmetry guarantee, not an empirical discovery. It does not extend automatically to listwise rerankers, which also read the other candidates and their positions: for them, identical text guarantees an identical score only for a candidate held at the same position in an otherwise unchanged list. In either case, exact ties at a selection cutoff still need a tie-breaking rule that does not depend on the replaced markers. Because rules that replace names map all ten name pairs to the same placeholder, those conditions contain only 832 distinct comparisons, each repeated across the 8,320 rows; shares are unaffected, but the name dimension is gone.
+We test three core transformations while preserving case: replace names only, neutralize pronouns only, and do both. The full rule replaces every detected name with “the candidate” and every gendered pronoun with the same token, “they.” Appendix D adds four comparison conditions: lowercasing alone, a control that removes no marker; two naive grammatical rewrites that also replace names and map “she/he” to “they,” “him” to “them,” “his” to “their,” and “her” to either “their” or “them”; and a following-word rule, otherwise identical, that maps “her” to “their” or “them” depending on the next word. This deliberately simple normalization is applied before scoring. The two counterfactual versions then become the same string, so any deterministic pointwise model, whose only inputs are the query and the normalized document, must assign them the same representation or score. This is a symmetry guarantee, not an empirical discovery. It does not extend automatically to listwise rerankers, which also read the other candidates and their positions: for them, identical text guarantees an identical score only for a candidate held at the same position in an otherwise unchanged list. In either case, exact ties at a selection cutoff still need a tie-breaking rule that does not depend on the replaced markers. Because rules that replace names map all ten name pairs to the same placeholder, those conditions contain only 832 distinct comparisons, each repeated across the 8,320 rows; shares are unaffected, but the name dimension is gone.
 
 We run the transformations on four open-weight rerankers. On the worked reranker we also test relevance on a synthetic occupation-matching task: in each of 832 ranking events, the model ranks a pool of 52 documents, one per retained occupation, and success means placing the document that names the queried occupation first. Every document states its occupation, and the transforms never touch that term, so the task is near ceiling by design. It checks that the transform does not destroy the occupation signal; it cannot measure retained ranking quality, and it does not test whether a system selects the best-qualified person within an occupation.
 
@@ -114,7 +114,7 @@ occupation-clustered intervals are in Appendix B.}
 \label{fig:single}
 \end{figure}
 
-The result is not invariant to design choices. Appendix C shows variation across document templates, query phrasings, and name pairs. Variation across names is especially large. This reinforces the limited causal interpretation: the audit establishes model sensitivity to the selected markers, while part of the name effect may come from associations other than gender.
+The result is not invariant to design choices. Across document templates, query phrasings, and name pairs, the median model's male-favored share ranges over 19, 22, and 35 percentage points respectively, so variation across names is especially large; the full tables are released with the data. This reinforces the limited causal interpretation: the audit establishes model sensitivity to the selected markers, while part of the name effect may come from associations other than gender.
 
 \subsection{Request order and reproducibility}
 
@@ -139,11 +139,11 @@ bootstrap intervals.}
 \label{fig:pipeline}
 \end{figure}
 
-Appendix D repeats the simulation with each of the 28 pointwise rerankers behind the same retriever; the listwise jina-reranker-v3 is left out because its scores depend on the other documents in a request, so scores from the audit's larger requests cannot be replayed in a smaller pool. The resulting shortlist share ranges from 44\% to 85\%, and 11 rerankers produce a shortlist with a lower male-associated share than retrieval alone (60\%). The worked example sits near the top of that range rather than being typical. Replayed scores match actual ten-document requests: for 14 of the 15 API rerankers we re-queried on 104 pools, the difference between the actual and replayed male-associated shortlist share has a 95\% interval that includes zero; for Cohere v4 pro it is -1.2 points (interval -2.4 to -0.2). The upper end of the range comes from IBM's Granite reranker, whose API endpoint we could not re-query. It is a pointwise cross-encoder, for which replay is exact, and its self-hosted copy agrees with the API in 99.9\% of pairs; without it, the range ends at 80\%. The behavior of a two-stage system is therefore a property of the selected components and their interaction, rather than retrieval alone.
+Appendix C repeats the simulation with each of the 28 pointwise rerankers behind the same retriever; the listwise jina-reranker-v3 is left out because its scores depend on the other documents in a request, so scores from the audit's larger requests cannot be replayed in a smaller pool. The resulting shortlist share ranges from 44\% to 85\%, and 11 rerankers produce a shortlist with a lower male-associated share than retrieval alone (60\%). The worked example sits near the top of that range rather than being typical. Replayed scores match actual ten-document requests: for 14 of the 15 API rerankers we re-queried on 104 pools, the difference between the actual and replayed male-associated shortlist share has a 95\% interval that includes zero; for Cohere v4 pro it is -1.2 points (interval -2.4 to -0.2). The upper end of the range comes from IBM's Granite reranker, whose API endpoint we could not re-query. It is a pointwise cross-encoder, for which replay is exact, and its self-hosted copy agrees with the API in 99.9\% of pairs; without it, the range ends at 80\%. The behavior of a two-stage system is therefore a property of the selected components and their interaction, rather than retrieval alone.
 
 \subsection{Full marker removal eliminates the measured pathway}
 
-Removing only names does not remove the difference. On the worked reranker, the male-associated version wins 98.6\% of comparisons on male-typed occupations after names are removed, compared with 87.0\% before. The mean absolute gap is essentially unchanged (0.036 to 0.038; paired occupation-clustered 95\% interval on the difference [-0.0005, 0.0047]). Neutralizing pronouns while retaining names reduces the mean absolute gap to 0.024 (interval on the difference [-0.0147, -0.0101]). Partial removal is not consistent across the four rerankers in Appendix E: removing names alone leaves the mean absolute gap unchanged or higher on two models and reduces it on the other two, and on one model it lowers the male-favored share where the worked reranker's rises. Partial de-identification therefore affected the tested models differently.
+Removing only names does not remove the difference. On the worked reranker, the male-associated version wins 98.6\% of comparisons on male-typed occupations after names are removed, compared with 87.0\% before. The mean absolute gap is essentially unchanged (0.036 to 0.038; paired occupation-clustered 95\% interval on the difference [-0.0005, 0.0047]). Neutralizing pronouns while retaining names reduces the mean absolute gap to 0.024 (interval on the difference [-0.0147, -0.0101]). Partial removal is not consistent across the four rerankers in Appendix D: removing names alone leaves the mean absolute gap unchanged or higher on two models and reduces it on the other two, and on one model it lowers the male-favored share where the worked reranker's rises. Partial de-identification therefore affected the tested models differently.
 
 The full rule makes every tested counterfactual pair textually identical, so all pairs tie under each tested reranker by construction. Identical strings are scored once and the score is reused, so this tie rate is not an observation; it holds for any deterministic pointwise reranker, which all four tested models are. The same equality would hold at an upstream text-embedding stage because both versions supply exactly the same input. This result should be read precisely: the transform removes differences attributable to the names and pronouns it successfully replaces. It does not establish demographic fairness of the remaining text or the surrounding decision process.
 
@@ -174,9 +174,9 @@ Names carry several social signals at once. Our pairs are not systematically mat
 
 The full transform guarantees equality only for information it actually removes. Real resumes may signal gender through schools, affiliations, activities, job histories, and writing patterns \cite{parasurama2022full}. Reliable name detection is also harder in real documents than in a synthetic corpus. A production implementation would need validated entity detection, grammatical rewriting, and post-transformation leakage tests.
 
-The worked pipeline uses one retriever-reranker pair, although Appendix D varies the reranker and Appendix E tests four open-weight rerankers. Commercial systems may add features, thresholds, personalization, or human review that change outcomes. The results are a dated snapshot of model versions queried on 2026-02-24 and from 2026-10-16 to 2026-10-17.
+The worked pipeline uses one retriever-reranker pair, although Appendix C varies the reranker and Appendix D tests four open-weight rerankers. Commercial systems may add features, thresholds, personalization, or human review that change outcomes. The results are a dated snapshot of model versions queried on 2026-02-24 and from 2026-10-16 to 2026-10-17.
 
-A companion experiment sampled 1,952 distinct documents from a public corpus of 2,483 publicly posted résumé examples scraped from a career website (released under CC0), with no observed hiring decisions or applicant outcomes. The publisher had already removed most names: across the corpus, 2,182 of the 2,483 counterfactual pairs had to be built by inserting a name, and among the 3,840 scored comparisons per model, 3,374 were built by inserting a name rather than swapping an existing marker. Its directions and magnitudes differ from the synthetic results (Appendix F); the worked reranker, for example, favors the male-associated version in 52\% of comparisons, against 78\% in the synthetic audit. Because the documents, queries, and marker construction change together, that comparison cannot identify the cause. We retain it as a warning against generalizing the synthetic effect size to applicant résumés in deployment. Its corpus must be rebuilt from the repository's provenance notes to reproduce it; Appendix F describes its design.
+A companion experiment sampled 1,952 distinct documents from a public corpus of 2,483 publicly posted résumé examples scraped from a career website (released under CC0), with no observed hiring decisions or applicant outcomes. The publisher had already removed most names: across the corpus, 2,182 of the 2,483 counterfactual pairs had to be built by inserting a name, and among the 3,840 scored comparisons per model, 3,374 were built by inserting a name rather than swapping an existing marker. Its directions and magnitudes differ from the synthetic results (Appendix E); the worked reranker, for example, favors the male-associated version in 52\% of comparisons, against 78\% in the synthetic audit. Because the documents, queries, and marker construction change together, that comparison cannot identify the cause. We retain it as a warning against generalizing the synthetic effect size to applicant résumés in deployment. Its corpus must be rebuilt from the repository's provenance notes to reproduce it; Appendix E describes its design.
 
 \section{Conclusion}
 
@@ -247,7 +247,7 @@ The complete occupation inventory is released as \texttt{results/tex/occupations
 
 \section{Models and single-stage results}
 
-Tables use the short labels in Table~\ref{tab:models}, which maps each label to the model's full identifier, vendor and access route, and records the number of comparisons, score range, overall tie rate, and scoring date.
+The three-way split by occupation category for every model, occupation-level consistency, and the robustness tables by document template, query phrasing, and name pair are released as \texttt{results/tex/single\_stage\_main.tex}, \texttt{results/tex/occupation\_consistency.tex}, and \texttt{results/tex/robustness\_*.tex}. Tables use the short labels in Table~\ref{tab:models}, which maps each label to the model's full identifier, vendor and access route, and records the number of comparisons, score range, overall tie rate, and scoring date.
 
 \newcommand{\ModelsCaption}{Model labels, identifiers, and provenance.}
 {\footnotesize
@@ -296,142 +296,6 @@ Jina: reranker v3 & \texttt{jinaai/\allowbreak{}jina-\allowbreak{}reranker-\allo
 \end{longtable}
 }
 
-\newcommand{\SingleStageCaption}{Counterfactual outcomes by reranker and occupation
-category. M and F denote the male- and female-associated documents. The final
-column counts each tie as half for each version and reports occupation-clustered
-intervals.}
-{\small
-% Generated by code/analyze_single_stage.py -- do not edit by hand.
-\begin{longtable}{llrrrr}
-\caption{\SingleStageCaption}\label{tab:single}\\
-\toprule
-Model & Category & \%\,M & \%\,tie & \%\,F & Tie-aware \%\,M [95\% CI] \\
-\midrule
-\endfirsthead
-\toprule
-Model & Category & \%\,M & \%\,tie & \%\,F & Tie-aware \%\,M [95\% CI] \\
-\midrule
-\endhead
-\bottomrule
-\endlastfoot
-Voyage: rerank-2.5 & male & 93.1 & 4.8 & 2.2 & 95.4 [94.3, 96.5] \\
- & female & 26.9 & 21.7 & 51.4 & 37.7 [27.7, 47.4] \\
- & neutral & 78.5 & 11.8 & 9.7 & 84.4 [78.1, 88.8] \\
-\addlinespace
-ZeroEntropy: zerank-2 & male & 91.1 & 2.1 & 6.8 & 92.1 [88.9, 95.3] \\
- & female & 24.3 & 5.1 & 70.6 & 26.9 [16.2, 38.9] \\
- & neutral & 66.2 & 7.1 & 26.7 & 69.7 [61.3, 78.4] \\
-\addlinespace
-Google: default-002 & male & 88.8 & 5.5 & 5.8 & 91.5 [87.9, 94.6] \\
- & female & 62.4 & 8.5 & 29.1 & 66.7 [54.2, 77.6] \\
- & neutral & 73.8 & 9.5 & 16.7 & 78.5 [65.1, 88.6] \\
-\addlinespace
-IBM: Granite r2 & male & 91.3 & 0.0 & 8.7 & 91.3 [89.9, 92.9] \\
- & female & 76.0 & 0.0 & 24.0 & 76.0 [69.7, 81.5] \\
- & neutral & 87.8 & 0.0 & 12.2 & 87.8 [84.7, 90.7] \\
-\addlinespace
-Voyage: rerank-3 & male & 87.2 & 6.6 & 6.2 & 90.5 [88.0, 92.9] \\
- & female & 19.1 & 21.0 & 59.9 & 29.6 [19.8, 40.8] \\
- & neutral & 61.6 & 15.6 & 22.8 & 69.4 [60.6, 77.2] \\
-\addlinespace
-BAAI: BGE v2-m3 & male & 87.0 & 0.0 & 13.0 & 87.0 [84.5, 89.4] \\
- & female & 71.9 & 0.0 & 28.1 & 71.9 [61.5, 79.8] \\
- & neutral & 75.4 & 0.0 & 24.6 & 75.4 [71.4, 79.1] \\
-\addlinespace
-Open: MiniLM-L6-v2 & male & 86.6 & 0.0 & 13.4 & 86.6 [81.2, 90.8] \\
- & female & 61.5 & 0.0 & 38.5 & 61.5 [50.2, 71.6] \\
- & neutral & 91.3 & 0.0 & 8.7 & 91.3 [89.0, 93.5] \\
-\addlinespace
-NVIDIA: Nemotron 1B & male & 85.8 & 1.2 & 13.0 & 86.4 [78.7, 91.5] \\
- & female & 41.7 & 2.6 & 55.7 & 43.0 [35.0, 51.5] \\
- & neutral & 67.9 & 1.9 & 30.2 & 68.9 [62.8, 75.0] \\
-\addlinespace
-Voyage: rerank-2 & male & 80.1 & 11.1 & 8.8 & 85.6 [80.9, 89.8] \\
- & female & 18.2 & 20.4 & 61.4 & 28.4 [19.0, 37.7] \\
- & neutral & 50.1 & 23.4 & 26.5 & 61.8 [56.3, 67.7] \\
-\addlinespace
-Cohere: v3.5 & male & 85.1 & 0.1 & 14.8 & 85.1 [79.8, 89.5] \\
- & female & 47.9 & 0.1 & 52.0 & 47.9 [37.7, 57.8] \\
- & neutral & 81.6 & 0.1 & 18.2 & 81.7 [77.5, 85.7] \\
-\addlinespace
-Open: MiniLM-L12-v2 & male & 84.8 & 0.0 & 15.2 & 84.8 [79.0, 88.6] \\
- & female & 58.8 & 0.0 & 41.2 & 58.8 [46.1, 71.0] \\
- & neutral & 86.4 & 0.0 & 13.6 & 86.4 [82.3, 89.7] \\
-\addlinespace
-Voyage: rerank-2.5-lite & male & 72.7 & 14.0 & 13.3 & 79.7 [76.0, 83.2] \\
- & female & 34.2 & 20.6 & 45.2 & 44.5 [38.1, 51.1] \\
- & neutral & 49.5 & 21.2 & 29.3 & 60.1 [54.5, 65.6] \\
-\addlinespace
-NVIDIA: Nemotron VL 1B & male & 79.4 & 0.3 & 20.3 & 79.6 [75.0, 83.5] \\
- & female & 47.2 & 0.4 & 52.5 & 47.4 [41.2, 53.7] \\
- & neutral & 66.1 & 0.6 & 33.3 & 66.4 [61.2, 71.2] \\
-\addlinespace
-Voyage: rerank-1 & male & 75.6 & 6.5 & 17.9 & 78.9 [72.8, 83.6] \\
- & female & 41.9 & 10.5 & 47.6 & 47.2 [39.2, 55.5] \\
- & neutral & 68.0 & 11.0 & 21.0 & 73.5 [69.4, 77.6] \\
-\addlinespace
-Mixedbread: large v2 & male & 67.0 & 14.8 & 18.2 & 74.4 [71.4, 77.3] \\
- & female & 40.3 & 26.6 & 33.1 & 53.6 [47.8, 59.6] \\
- & neutral & 63.7 & 17.3 & 19.1 & 72.3 [67.8, 76.7] \\
-\addlinespace
-Cohere: v4 pro & male & 70.6 & 2.5 & 26.8 & 71.9 [68.4, 75.1] \\
- & female & 29.6 & 2.5 & 67.9 & 30.8 [23.9, 37.7] \\
- & neutral & 49.8 & 3.3 & 46.9 & 51.4 [46.6, 56.1] \\
-\addlinespace
-Qwen: Qwen3 0.6B & male & 65.1 & 7.3 & 27.6 & 68.7 [62.4, 74.7] \\
- & female & 36.1 & 10.3 & 53.6 & 41.3 [32.5, 49.3] \\
- & neutral & 60.4 & 8.5 & 31.1 & 64.7 [58.5, 70.3] \\
-\addlinespace
-Google: fast-004 & male & 67.4 & 0.2 & 32.4 & 67.5 [61.4, 72.1] \\
- & female & 28.7 & 0.2 & 71.0 & 28.8 [23.1, 35.9] \\
- & neutral & 48.2 & 0.4 & 51.4 & 48.4 [43.7, 53.5] \\
-\addlinespace
-Cohere: v4 fast & male & 64.7 & 5.5 & 29.8 & 67.5 [63.2, 71.6] \\
- & female & 33.4 & 5.4 & 61.3 & 36.0 [29.1, 43.6] \\
- & neutral & 62.0 & 4.3 & 33.7 & 64.2 [57.2, 70.7] \\
-\addlinespace
-Qwen: Qwen3 8B & male & 51.9 & 29.6 & 18.5 & 66.7 [64.5, 69.0] \\
- & female & 21.8 & 26.6 & 51.7 & 35.0 [29.9, 40.2] \\
- & neutral & 38.2 & 30.0 & 31.8 & 53.2 [49.0, 57.8] \\
-\addlinespace
-Alibaba: GTE ModernBERT & male & 62.5 & 0.0 & 37.5 & 62.5 [58.8, 66.6] \\
- & female & 69.2 & 0.0 & 30.8 & 69.2 [64.0, 73.5] \\
- & neutral & 63.5 & 0.0 & 36.5 & 63.5 [60.2, 67.2] \\
-\addlinespace
-Voyage: rerank-3-lite & male & 53.8 & 16.4 & 29.8 & 62.0 [57.0, 67.1] \\
- & female & 7.5 & 9.9 & 82.6 & 12.4 [7.9, 17.7] \\
- & neutral & 23.8 & 15.3 & 60.9 & 31.4 [25.2, 38.8] \\
-\addlinespace
-Google: default-004 & male & 59.1 & 0.3 & 40.7 & 59.2 [52.9, 65.8] \\
- & female & 15.5 & 0.2 & 84.3 & 15.6 [10.2, 22.2] \\
- & neutral & 32.6 & 0.3 & 67.1 & 32.8 [27.2, 38.4] \\
-\addlinespace
-Qwen: Qwen3 4B & male & 56.0 & 6.2 & 37.8 & 59.1 [54.7, 63.2] \\
- & female & 32.8 & 9.3 & 57.8 & 37.5 [31.4, 42.5] \\
- & neutral & 46.9 & 8.1 & 45.0 & 51.0 [46.9, 55.4] \\
-\addlinespace
-BAAI: BGE large & male & 57.1 & 0.0 & 42.9 & 57.1 [53.9, 61.0] \\
- & female & 37.4 & 0.0 & 62.6 & 37.4 [32.6, 41.8] \\
- & neutral & 41.3 & 0.0 & 58.7 & 41.3 [36.8, 46.1] \\
-\addlinespace
-BAAI: BGE base & male & 57.0 & 0.0 & 43.0 & 57.0 [52.7, 61.8] \\
- & female & 37.2 & 0.0 & 62.8 & 37.2 [28.5, 47.1] \\
- & neutral & 49.1 & 0.0 & 50.9 & 49.1 [38.2, 60.5] \\
-\addlinespace
-Jina: reranker v2 & male & 45.9 & 6.8 & 47.3 & 49.3 [42.9, 55.4] \\
- & female & 31.8 & 6.5 & 61.7 & 35.1 [28.4, 40.8] \\
- & neutral & 39.1 & 7.1 & 53.8 & 42.7 [34.6, 50.8] \\
-\addlinespace
-Voyage: rerank-2-lite & male & 34.5 & 22.7 & 42.8 & 45.8 [41.4, 50.1] \\
- & female & 17.3 & 18.7 & 64.0 & 26.7 [21.7, 32.0] \\
- & neutral & 26.9 & 20.7 & 52.5 & 37.2 [32.5, 42.8] \\
-\addlinespace
-Jina: reranker v3 & male & 32.6 & 0.0 & 67.4 & 32.6 [30.9, 34.6] \\
- & female & 31.8 & 0.0 & 68.2 & 31.8 [29.9, 33.7] \\
- & neutral & 36.1 & 0.0 & 63.9 & 36.1 [33.2, 39.0] \\
-\addlinespace
-\end{longtable}
-}
 
 \begin{table}[H]
 \centering
@@ -482,233 +346,7 @@ Alibaba: GTE ModernBERT & -6.7 & [-12.7, -0.3] & [-12.8, -0.5] & [-13.9, 0.5] \\
 }
 \end{table}
 
-\begin{table}[H]
-\centering
-\caption{Occupation-level directional consistency by model and category. Each
-cell counts the occupations whose tie-aware male-favored share is strictly above
-50\% (for the female-typed column, strictly below 50\%). An occupation at exactly
-50\% counts toward neither side, so the complement of a cell is not the number
-leaning the other way.}
-\label{tab:consistency}
-\resizebox{\textwidth}{!}{%
-% Generated by code/analyze_single_stage.py
-\begin{tabular}{lccc}
-\toprule
-Model & male-stereo.\ leaning male & female-stereo.\ leaning female & neutral leaning male \\
-\midrule
-Voyage: rerank-2.5 & 18/18 & 16/21 & 13/13 \\
-ZeroEntropy: zerank-2 & 18/18 & 17/21 & 11/13 \\
-Google: default-002 & 18/18 & 7/21 & 12/13 \\
-IBM: Granite r2 & 18/18 & 2/21 & 13/13 \\
-Voyage: rerank-3 & 18/18 & 14/21 & 12/13 \\
-BAAI: BGE v2-m3 & 18/18 & 3/21 & 13/13 \\
-Open: MiniLM-L6-v2 & 17/18 & 6/21 & 13/13 \\
-NVIDIA: Nemotron 1B & 17/18 & 11/21 & 12/13 \\
-Voyage: rerank-2 & 18/18 & 16/21 & 10/13 \\
-Cohere: v3.5 & 18/18 & 9/21 & 13/13 \\
-Open: MiniLM-L12-v2 & 17/18 & 6/21 & 13/13 \\
-Voyage: rerank-2.5-lite & 18/18 & 13/21 & 11/13 \\
-NVIDIA: Nemotron VL 1B & 18/18 & 12/21 & 12/13 \\
-Voyage: rerank-1 & 17/18 & 10/21 & 13/13 \\
-Mixedbread: large v2 & 18/18 & 6/21 & 13/13 \\
-Cohere: v4 pro & 18/18 & 17/21 & 7/13 \\
-Qwen: Qwen3 0.6B & 16/18 & 14/21 & 12/13 \\
-Google: fast-004 & 17/18 & 18/21 & 4/13 \\
-Cohere: v4 fast & 17/18 & 14/21 & 12/13 \\
-Qwen: Qwen3 8B & 18/18 & 17/21 & 8/13 \\
-Alibaba: GTE ModernBERT & 17/18 & 1/21 & 13/13 \\
-Voyage: rerank-3-lite & 16/18 & 21/21 & 1/13 \\
-Google: default-004 & 13/18 & 20/21 & 0/13 \\
-Qwen: Qwen3 4B & 14/18 & 18/21 & 6/13 \\
-BAAI: BGE large & 14/18 & 19/21 & 3/13 \\
-BAAI: BGE base & 13/18 & 15/21 & 6/13 \\
-Jina: reranker v2 & 7/18 & 18/21 & 4/13 \\
-Voyage: rerank-2-lite & 6/18 & 20/21 & 2/13 \\
-Jina: reranker v3 & 0/18 & 21/21 & 0/13 \\
-\bottomrule
-\end{tabular}%
-}
-\end{table}
 
-\section{Robustness across inputs}
-
-\begin{table}[H]
-\centering
-\caption{Tie-aware male-favored share by document template.}
-\label{tab:robtemplate}
-\resizebox{\textwidth}{!}{%
-% Generated by code/analyze_single_stage.py -- tie-aware \% male-favoured.
-\begin{tabular}{lrrrr}
-\toprule
-Model & linkedin\_style & news\_article & professional\_bio & resume\_summary \\
-\midrule
-Voyage: rerank-2.5 & 77.5 & 65.6 & 64.0 & 70.5 \\
-ZeroEntropy: zerank-2 & 50.9 & 65.7 & 58.1 & 65.9 \\
-Google: default-002 & 76.3 & 73.8 & 71.6 & 91.2 \\
-IBM: Granite r2 & 78.4 & 80.0 & 94.4 & 84.2 \\
-Voyage: rerank-3 & 65.9 & 53.2 & 54.3 & 69.1 \\
-BAAI: BGE v2-m3 & 84.2 & 87.2 & 56.0 & 84.7 \\
-Open: MiniLM-L6-v2 & 72.8 & 85.3 & 75.4 & 77.2 \\
-NVIDIA: Nemotron 1B & 65.3 & 57.3 & 67.2 & 68.1 \\
-Voyage: rerank-2 & 65.1 & 51.3 & 47.4 & 62.5 \\
-Cohere: v3.5 & 79.1 & 62.3 & 53.4 & 82.2 \\
-Open: MiniLM-L12-v2 & 66.5 & 83.9 & 65.5 & 82.7 \\
-Voyage: rerank-2.5-lite & 32.9 & 70.2 & 59.5 & 79.7 \\
-NVIDIA: Nemotron VL 1B & 65.6 & 58.2 & 66.5 & 62.7 \\
-Voyage: rerank-1 & 66.1 & 66.6 & 58.8 & 67.3 \\
-Mixedbread: large v2 & 73.7 & 54.3 & 56.3 & 77.5 \\
-Cohere: v4 pro & 49.5 & 49.9 & 60.1 & 41.2 \\
-Qwen: Qwen3 0.6B & 39.6 & 54.8 & 59.0 & 73.1 \\
-Google: fast-004 & 40.3 & 46.1 & 58.6 & 43.5 \\
-Cohere: v4 fast & 63.0 & 51.9 & 54.2 & 46.7 \\
-Qwen: Qwen3 8B & 76.1 & 50.6 & 28.1 & 47.4 \\
-Alibaba: GTE ModernBERT & 72.4 & 58.1 & 61.2 & 70.1 \\
-Voyage: rerank-3-lite & 38.1 & 32.0 & 19.4 & 47.9 \\
-Google: default-004 & 21.6 & 58.5 & 32.9 & 27.0 \\
-Qwen: Qwen3 4B & 31.7 & 70.3 & 15.6 & 75.7 \\
-BAAI: BGE large & 21.8 & 61.0 & 45.4 & 52.6 \\
-BAAI: BGE base & 41.5 & 60.1 & 36.6 & 50.0 \\
-Jina: reranker v2 & 28.8 & 38.4 & 61.1 & 39.4 \\
-Voyage: rerank-2-lite & 41.1 & 51.2 & 27.0 & 24.3 \\
-Jina: reranker v3 & 34.0 & 25.9 & 27.5 & 45.1 \\
-\bottomrule
-\end{tabular}%
-}
-\end{table}
-
-\begin{table}[H]
-\centering
-\caption{Tie-aware male-favored share by query phrasing.}
-\label{tab:robquery}
-\resizebox{\textwidth}{!}{%
-% Generated by code/analyze_single_stage.py -- tie-aware \% male-favoured.
-\begin{tabular}{lrrrr}
-\toprule
-Model & bare & experienced & expertise & qualified \\
-\midrule
-Voyage: rerank-2.5 & 68.6 & 76.7 & 68.4 & 63.8 \\
-ZeroEntropy: zerank-2 & 61.7 & 68.4 & 54.2 & 56.4 \\
-Google: default-002 & 75.1 & 78.1 & 78.8 & 80.9 \\
-IBM: Granite r2 & 82.7 & 88.6 & 82.7 & 83.0 \\
-Voyage: rerank-3 & 61.1 & 66.1 & 64.0 & 51.2 \\
-BAAI: BGE v2-m3 & 62.7 & 81.3 & 77.0 & 91.2 \\
-Open: MiniLM-L6-v2 & 80.0 & 62.4 & 84.1 & 84.2 \\
-NVIDIA: Nemotron 1B & 59.0 & 82.8 & 58.7 & 57.5 \\
-Voyage: rerank-2 & 46.1 & 61.0 & 67.1 & 52.0 \\
-Cohere: v3.5 & 80.3 & 53.7 & 53.2 & 89.9 \\
-Open: MiniLM-L12-v2 & 84.7 & 68.6 & 86.6 & 58.8 \\
-Voyage: rerank-2.5-lite & 54.7 & 60.8 & 56.9 & 69.9 \\
-NVIDIA: Nemotron VL 1B & 56.7 & 79.2 & 58.1 & 59.1 \\
-Voyage: rerank-1 & 56.8 & 57.8 & 75.2 & 69.0 \\
-Mixedbread: large v2 & 71.2 & 79.3 & 67.2 & 44.3 \\
-Cohere: v4 pro & 48.1 & 52.8 & 46.7 & 53.1 \\
-Qwen: Qwen3 0.6B & 59.2 & 67.5 & 57.5 & 42.4 \\
-Google: fast-004 & 39.9 & 72.7 & 41.8 & 34.0 \\
-Cohere: v4 fast & 35.7 & 84.6 & 58.3 & 37.3 \\
-Qwen: Qwen3 8B & 52.9 & 51.4 & 53.4 & 44.4 \\
-Alibaba: GTE ModernBERT & 64.0 & 68.3 & 60.2 & 69.2 \\
-Voyage: rerank-3-lite & 52.6 & 34.6 & 19.1 & 31.1 \\
-Google: default-004 & 29.6 & 49.9 & 14.7 & 45.9 \\
-Qwen: Qwen3 4B & 43.8 & 50.4 & 50.4 & 48.8 \\
-BAAI: BGE large & 42.5 & 31.8 & 45.5 & 60.9 \\
-BAAI: BGE base & 58.1 & 48.7 & 55.8 & 25.6 \\
-Jina: reranker v2 & 50.5 & 44.5 & 32.8 & 39.8 \\
-Voyage: rerank-2-lite & 23.2 & 45.3 & 44.5 & 30.6 \\
-Jina: reranker v3 & 27.7 & 40.4 & 36.4 & 27.9 \\
-\bottomrule
-\end{tabular}%
-}
-\end{table}
-
-\newcommand{\NamePairCaption}{Tie-aware male-favored share by name pair.}
-{\small
-% Generated by code/analyze_single_stage.py -- do not edit by hand.
-\begin{longtable}{lrrrrr}
-\caption{\NamePairCaption}\label{tab:robname}\\
-\toprule
-Model & \shortstack[r]{Christopher/\\Margaret} & \shortstack[r]{Daniel/\\Susan} & \shortstack[r]{David/\\Linda} & \shortstack[r]{James/\\Sarah} & \shortstack[r]{John/\\Maria} \\
-\midrule
-\endfirsthead
-\toprule
-Model & \shortstack[r]{Christopher/\\Margaret} & \shortstack[r]{Daniel/\\Susan} & \shortstack[r]{David/\\Linda} & \shortstack[r]{James/\\Sarah} & \shortstack[r]{John/\\Maria} \\
-\midrule
-\endhead
-\bottomrule
-\endlastfoot
-Voyage: rerank-2.5 & 83.8 & 66.6 & 82.2 & 50.5 & 72.5 \\
-ZeroEntropy: zerank-2 & 70.4 & 68.8 & 64.7 & 54.9 & 60.8 \\
-Google: default-002 & 87.1 & 82.5 & 74.0 & 63.2 & 81.0 \\
-IBM: Granite r2 & 74.9 & 69.1 & 94.8 & 62.4 & 97.7 \\
-Voyage: rerank-3 & 74.6 & 56.9 & 71.2 & 44.4 & 70.6 \\
-BAAI: BGE v2-m3 & 59.5 & 91.8 & 90.5 & 79.4 & 63.3 \\
-Open: MiniLM-L6-v2 & 79.1 & 63.8 & 89.1 & 77.9 & 88.8 \\
-NVIDIA: Nemotron 1B & 68.9 & 64.8 & 68.1 & 65.1 & 75.8 \\
-Voyage: rerank-2 & 51.8 & 66.5 & 67.4 & 40.2 & 65.8 \\
-Cohere: v3.5 & 89.5 & 83.0 & 70.0 & 68.0 & 69.5 \\
-Open: MiniLM-L12-v2 & 78.5 & 61.5 & 90.6 & 70.2 & 89.2 \\
-Voyage: rerank-2.5-lite & 63.9 & 67.8 & 69.7 & 43.6 & 49.3 \\
-NVIDIA: Nemotron VL 1B & 65.4 & 64.6 & 62.3 & 63.3 & 73.4 \\
-Voyage: rerank-1 & 59.3 & 52.6 & 85.2 & 40.6 & 88.5 \\
-Mixedbread: large v2 & 70.4 & 43.9 & 75.4 & 71.2 & 72.1 \\
-Cohere: v4 pro & 42.0 & 37.1 & 76.0 & 4.4 & 70.1 \\
-Qwen: Qwen3 0.6B & 64.0 & 65.0 & 52.1 & 46.6 & 69.2 \\
-Google: fast-004 & 57.6 & 50.8 & 55.8 & 37.7 & 29.3 \\
-Cohere: v4 fast & 58.5 & 49.6 & 70.0 & 32.0 & 62.7 \\
-Qwen: Qwen3 8B & 50.1 & 61.4 & 51.4 & 44.2 & 43.8 \\
-Alibaba: GTE ModernBERT & 72.5 & 75.7 & 87.3 & 54.9 & 73.0 \\
-Voyage: rerank-3-lite & 52.6 & 35.0 & 37.4 & 24.8 & 55.5 \\
-Google: default-004 & 31.4 & 34.4 & 29.9 & 43.9 & 28.7 \\
-Qwen: Qwen3 4B & 61.4 & 45.9 & 49.9 & 21.1 & 58.4 \\
-BAAI: BGE large & 50.7 & 87.5 & 28.8 & 47.0 & 28.8 \\
-BAAI: BGE base & 50.7 & 33.7 & 60.2 & 55.0 & 39.1 \\
-Jina: reranker v2 & 76.5 & 77.6 & 30.0 & 58.0 & 18.9 \\
-Voyage: rerank-2-lite & 33.4 & 19.8 & 59.6 & 22.5 & 70.4 \\
-Jina: reranker v3 & 80.0 & 9.1 & 10.9 & 5.4 & 33.2 \\
-\end{longtable}
-
-\begin{longtable}{lrrrrr}
-\caption*{(continued)}\\
-\toprule
-Model & \shortstack[r]{Michael/\\Jessica} & \shortstack[r]{Richard/\\Patricia} & \shortstack[r]{Robert/\\Jennifer} & \shortstack[r]{Thomas/\\Barbara} & \shortstack[r]{William/\\Elizabeth} \\
-\midrule
-\endfirsthead
-\toprule
-Model & \shortstack[r]{Michael/\\Jessica} & \shortstack[r]{Richard/\\Patricia} & \shortstack[r]{Robert/\\Jennifer} & \shortstack[r]{Thomas/\\Barbara} & \shortstack[r]{William/\\Elizabeth} \\
-\midrule
-\endhead
-\bottomrule
-\endlastfoot
-Voyage: rerank-2.5 & 63.8 & 63.6 & 73.6 & 73.6 & 63.5 \\
-ZeroEntropy: zerank-2 & 60.3 & 61.2 & 49.7 & 61.6 & 49.5 \\
-Google: default-002 & 76.4 & 88.5 & 85.0 & 76.9 & 67.4 \\
-IBM: Granite r2 & 94.1 & 77.0 & 91.5 & 85.0 & 95.9 \\
-Voyage: rerank-3 & 53.4 & 72.2 & 55.1 & 49.8 & 58.2 \\
-BAAI: BGE v2-m3 & 88.8 & 78.6 & 88.1 & 60.3 & 79.8 \\
-Open: MiniLM-L6-v2 & 53.4 & 84.1 & 74.5 & 86.3 & 79.7 \\
-NVIDIA: Nemotron 1B & 65.1 & 40.2 & 59.1 & 66.3 & 71.3 \\
-Voyage: rerank-2 & 49.9 & 56.4 & 60.3 & 50.4 & 56.7 \\
-Cohere: v3.5 & 61.1 & 60.6 & 54.8 & 68.1 & 67.9 \\
-Open: MiniLM-L12-v2 & 82.9 & 71.9 & 80.9 & 61.5 & 59.4 \\
-Voyage: rerank-2.5-lite & 54.3 & 63.8 & 59.8 & 75.1 & 58.5 \\
-NVIDIA: Nemotron VL 1B & 64.2 & 43.9 & 54.5 & 70.1 & 70.8 \\
-Voyage: rerank-1 & 66.4 & 79.6 & 77.3 & 38.0 & 59.7 \\
-Mixedbread: large v2 & 71.2 & 56.6 & 66.3 & 63.0 & 64.8 \\
-Cohere: v4 pro & 58.2 & 58.7 & 45.9 & 66.5 & 43.0 \\
-Qwen: Qwen3 0.6B & 59.5 & 76.7 & 44.8 & 53.4 & 35.0 \\
-Google: fast-004 & 50.6 & 49.0 & 30.0 & 52.0 & 58.1 \\
-Cohere: v4 fast & 56.3 & 72.2 & 35.9 & 60.6 & 41.8 \\
-Qwen: Qwen3 8B & 42.5 & 65.6 & 41.2 & 56.7 & 48.5 \\
-Alibaba: GTE ModernBERT & 62.4 & 78.8 & 61.9 & 53.5 & 34.4 \\
-Voyage: rerank-3-lite & 36.1 & 36.8 & 23.4 & 17.7 & 24.2 \\
-Google: default-004 & 35.6 & 43.0 & 42.1 & 31.4 & 29.7 \\
-Qwen: Qwen3 4B & 48.1 & 53.8 & 40.7 & 61.2 & 42.8 \\
-BAAI: BGE large & 62.6 & 50.8 & 64.2 & 15.7 & 15.6 \\
-BAAI: BGE base & 72.7 & 24.2 & 50.6 & 48.1 & 36.3 \\
-Jina: reranker v2 & 48.3 & 37.1 & 28.7 & 30.4 & 13.6 \\
-Voyage: rerank-2-lite & 31.3 & 39.7 & 18.4 & 45.9 & 18.4 \\
-Jina: reranker v3 & 63.3 & 17.8 & 48.0 & 5.6 & 57.8 \\
-\end{longtable}
-}
 
 \section{Pipeline results across rerankers}
 

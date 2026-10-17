@@ -1364,5 +1364,23 @@
     "path": "models.bge-m3.token_window.n_marker_outside_token_window",
     "format": "d",
     "needs": "Companion: comparisons whose every marker falls beyond the 512-token window (worked reranker's tokenizer)."
+  },
+  "ROB_TEMPLATE": {
+    "file": "results/single_stage_summary.json",
+    "path": "robustness_spread.by_template.median_range",
+    "format": ".0f",
+    "needs": "Median across models of the range (max-min, points) of the tie-aware male-favored share across template."
+  },
+  "ROB_QUERY": {
+    "file": "results/single_stage_summary.json",
+    "path": "robustness_spread.by_query_type.median_range",
+    "format": ".0f",
+    "needs": "Median across models of the range (max-min, points) of the tie-aware male-favored share across query_type."
+  },
+  "ROB_NAMEPAIR": {
+    "file": "results/single_stage_summary.json",
+    "path": "robustness_spread.by_name_pair.median_range",
+    "format": ".0f",
+    "needs": "Median across models of the range (max-min, points) of the tie-aware male-favored share across name_pair."
   }
 }

@@ -49,9 +49,9 @@ third-party Python packages are needed.
 ## Empirical backbone (all reproducible from `../code` + `../results`)
 | Claim | Script | Output |
 |---|---|---|
-| Single-stage re-ranker bias, 29 models (Tables A1–A3) | `../code/analyze_single_stage.py`, over the banked `../code/run_experiment.py` scores | `../results/single_stage_summary.json` |
-| Pipeline shortlist, one pair and swept over the 28 pointwise re-rankers (Figure 2, Table A7) | `../code/compounding_experiment.py` | `../results/compounding_bge_pipeline.json`, `../results/compounding_all_rerankers.json` |
-| De-identification mitigation, one model and all four local re-rankers (Figure 3, Tables A8–A9) | `../code/deidentification_experiment.py` | `../results/deidentification_bge.json`, `../results/deidentification_summary.json` |
+| Single-stage re-ranker bias, 29 models (Figure 1, Tables A1–A2) | `../code/analyze_single_stage.py`, over the banked `../code/run_experiment.py` scores | `../results/single_stage_summary.json` |
+| Pipeline shortlist, one pair and swept over the 28 pointwise re-rankers (Figure 2, Table A3) | `../code/compounding_experiment.py` | `../results/compounding_bge_pipeline.json`, `../results/compounding_all_rerankers.json` |
+| De-identification mitigation, one model and all four local re-rankers (Figure 3, Tables A4–A5) | `../code/deidentification_experiment.py` | `../results/deidentification_bge.json`, `../results/deidentification_summary.json` |
 | The documents, query forms, name pairs, and full occupation list (Appendix A; the occupation list is released, not printed) | `../code/generate_appendix_tables.py` | `../results/tex/documents_appendix.tex`, `../results/tex/occupations_table.tex` |
 | Vendor documentation and public weight availability | `../code/vendor_docs_audit.py` | `../results/vendor_docs_audit_summary.json` |
 | Open-weight rerankers scored on a rented GPU (checkpointed, canary-gated) | `../code/score_open_models.py` | `../results/*_full_raw.json`, `../results/selfhost/` |
@@ -60,7 +60,7 @@ third-party Python packages are needed.
 | Interval sensitivity (BLS-category and occupation × name resampling) | `../code/interval_sensitivity.py` | `../results/interval_sensitivity.json` |
 | Paired de-identification statistics | `../code/deid_statistics.py` | `../results/deid_statistics_bge.json` |
 | Pinned local model revisions and runtime | `../code/model_manifest.py` | `../results/model_manifest.json` |
-| Companion results table (Appendix F) | `../code/companion_table.py` | `../results/tex/companion_table.tex` |
+| Companion results table (Appendix E) | `../code/companion_table.py` | `../results/tex/companion_table.tex` |
 | Real-résumé companion run and sampled population | `../code/realistic_pool_experiment.py`, `../code/reconstruct_realistic_sampling.py` | `../results/realistic_pool_four_rerankers.json`, `../results/realistic_pool_sampling.json` |
 
 All inputs for `python3 build.py` are included in the release; building the PDF
@@ -111,7 +111,7 @@ on any unresolved one. These are a sanity check for a human reader only.
   see `code/deidentification_experiment.py`'s module docstring for the fix.
   Neutralising pronouns but keeping names does the opposite: gap down to
   0.0236. Which channel dominates is **not the same on every re-ranker** —
-  see Table A8 in the paper.
+  see Table A5 in the paper.
 - **Full de-id → 100% ties by construction** (a check on the symmetry
   argument, not a finding). The following-word heuristic also equalises the
   tested templates. It is not a POS tagger, fails on ordinary sentences and
@@ -127,7 +127,7 @@ on any unresolved one. These are a sanity check for a human reader only.
 - One of the four locally-run re-rankers (jina-reranker-v2) did not exactly
   reproduce its own banked scores on a plain local re-run six months later
   (max score difference 0.012 on its own ~0.15–0.84 range) — flagged in the
-  rendered note under Table A8, not hidden.
+  rendered note under Table A5, not hidden.
 
 
 ## References

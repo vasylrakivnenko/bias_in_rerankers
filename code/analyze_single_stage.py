@@ -912,6 +912,19 @@ def main() -> None:
         "duplicate_detection": {"groups": groups, "evidence": evidence},
         "raw_scored_date": RAW_SCORED_DATE,
         # Models were scored on more than one date once newer rerankers were added.
+        # How far each model's tie-aware male-favored share moves across the
+        # inputs held fixed in the main analysis (range = max - min, points),
+        # summarised across models; the full tables are released, not printed.
+        "robustness_spread": {
+            dim: {"median_range": statistics.median(
+                      max(v["tie_aware_pct_male"] for v in e[dim].values())
+                      - min(v["tie_aware_pct_male"] for v in e[dim].values())
+                      for e in models.values()),
+                  "max_range": max(
+                      max(v["tie_aware_pct_male"] for v in e[dim].values())
+                      - min(v["tie_aware_pct_male"] for v in e[dim].values())
+                      for e in models.values())}
+            for dim in ("by_template", "by_query_type", "by_name_pair")},
         "scored_dates": [{"date": d, "n_models": sum(1 for e in models.values()
                                                      if e["date_scored"] == d)}
                          for d in sorted({e["date_scored"] for e in models.values()})],

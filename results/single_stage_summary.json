@@ -1,6 +1,6 @@
 {
   "script_version": "analyze_single_stage.py v1.0 (REVIEW_TODO A1/A2/A3/B1/B2/B7)",
-  "generated": "2026-10-16T19:57:38",
+  "generated": "2026-10-16T21:59:14",
   "label_source": "BLS CPS Table 11 via occupations_bls.csv",
   "n_labelled_occupations": 52,
   "n_distinct_bls_categories": 48,
@@ -32,6 +32,20 @@
     }
   },
   "raw_scored_date": "2026-02-24",
+  "robustness_spread": {
+    "by_template": {
+      "median_range": 19.182692307692307,
+      "max_range": 60.04807692307693
+    },
+    "by_query_type": {
+      "median_range": 21.826923076923073,
+      "max_range": 48.84615384615385
+    },
+    "by_name_pair": {
+      "median_range": 35.33653846153847,
+      "max_range": 74.63942307692308
+    }
+  },
   "scored_dates": [
     {
       "date": "2026-02-24",

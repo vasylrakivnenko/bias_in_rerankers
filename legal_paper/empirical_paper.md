@@ -47,7 +47,7 @@ We form synthetic pools of {{SLATE_SIZE}} equally qualified documents, split eve
 
 ## De-identification
 
-We test three core transformations while preserving case: replace names only, neutralize pronouns only, and do both. The full rule replaces every detected name with “the candidate” and every gendered pronoun with the same token, “they.” Appendix E adds four comparison conditions: lowercasing alone, a control that removes no marker; two naive grammatical rewrites that also replace names and map “she/he” to “they,” “him” to “them,” “his” to “their,” and “her” to either “their” or “them”; and a following-word rule, otherwise identical, that maps “her” to “their” or “them” depending on the next word. This deliberately simple normalization is applied before scoring. The two counterfactual versions then become the same string, so any deterministic pointwise model, whose only inputs are the query and the normalized document, must assign them the same representation or score. This is a symmetry guarantee, not an empirical discovery. It does not extend automatically to listwise rerankers, which also read the other candidates and their positions: for them, identical text guarantees an identical score only for a candidate held at the same position in an otherwise unchanged list. In either case, exact ties at a selection cutoff still need a tie-breaking rule that does not depend on the replaced markers. Because rules that replace names map all ten name pairs to the same placeholder, those conditions contain only {{N_DISTINCT_NAME_REPLACED}} distinct comparisons, each repeated across the {{N_PAIRS}} rows; shares are unaffected, but the name dimension is gone.
+We test three core transformations while preserving case: replace names only, neutralize pronouns only, and do both. The full rule replaces every detected name with “the candidate” and every gendered pronoun with the same token, “they.” Appendix D adds four comparison conditions: lowercasing alone, a control that removes no marker; two naive grammatical rewrites that also replace names and map “she/he” to “they,” “him” to “them,” “his” to “their,” and “her” to either “their” or “them”; and a following-word rule, otherwise identical, that maps “her” to “their” or “them” depending on the next word. This deliberately simple normalization is applied before scoring. The two counterfactual versions then become the same string, so any deterministic pointwise model, whose only inputs are the query and the normalized document, must assign them the same representation or score. This is a symmetry guarantee, not an empirical discovery. It does not extend automatically to listwise rerankers, which also read the other candidates and their positions: for them, identical text guarantees an identical score only for a candidate held at the same position in an otherwise unchanged list. In either case, exact ties at a selection cutoff still need a tie-breaking rule that does not depend on the replaced markers. Because rules that replace names map all ten name pairs to the same placeholder, those conditions contain only {{N_DISTINCT_NAME_REPLACED}} distinct comparisons, each repeated across the {{N_PAIRS}} rows; shares are unaffected, but the name dimension is gone.
 
 We run the transformations on four open-weight rerankers. On the worked reranker we also test relevance on a synthetic occupation-matching task: in each of {{UTILITY_N_EVENTS}} ranking events, the model ranks a pool of {{UTILITY_POOL_SIZE}} documents, one per retained occupation, and success means placing the document that names the queried occupation first. Every document states its occupation, and the transforms never touch that term, so the task is near ceiling by design. It checks that the transform does not destroy the occupation signal; it cannot measure retained ranking quality, and it does not test whether a system selects the best-qualified person within an occupation.
 
@@ -74,7 +74,7 @@ occupation-clustered intervals are in Appendix B.}
 \end{figure}
 ```
 
-The result is not invariant to design choices. Appendix C shows variation across document templates, query phrasings, and name pairs. Variation across names is especially large. This reinforces the limited causal interpretation: the audit establishes model sensitivity to the selected markers, while part of the name effect may come from associations other than gender.
+The result is not invariant to design choices. Across document templates, query phrasings, and name pairs, the median model's male-favored share ranges over {{ROB_TEMPLATE}}, {{ROB_QUERY}}, and {{ROB_NAMEPAIR}} percentage points respectively, so variation across names is especially large; the full tables are released with the data. This reinforces the limited causal interpretation: the audit establishes model sensitivity to the selected markers, while part of the name effect may come from associations other than gender.
 
 ## Request order and reproducibility
 
@@ -101,11 +101,11 @@ bootstrap intervals.}
 \end{figure}
 ```
 
-Appendix D repeats the simulation with each of the {{N_SWEEP}} pointwise rerankers behind the same retriever; the listwise jina-reranker-v3 is left out because its scores depend on the other documents in a request, so scores from the audit's larger requests cannot be replayed in a smaller pool. The resulting shortlist share ranges from {{PIPELINE_SWEEP_MIN}} to {{PIPELINE_SWEEP_MAX}}, and {{N_PIPELINE_BELOW_RETRIEVER}} rerankers produce a shortlist with a lower male-associated share than retrieval alone ({{SHORTLIST_PCT_MALE_SEARCH}}). The worked example sits near the top of that range rather than being typical. Replayed scores match actual ten-document requests: for {{REPLAY_N_SUPPORTED}} of the {{REPLAY_N_MODELS}} API rerankers we re-queried on {{REPLAY_N_POOLS}} pools, the difference between the actual and replayed male-associated shortlist share has a 95% interval that includes zero; for Cohere v4 pro it is {{REPLAY_COHEREPRO_DIFF}} points (interval {{REPLAY_COHEREPRO_LO}} to {{REPLAY_COHEREPRO_HI}}). The upper end of the range comes from IBM's Granite reranker, whose API endpoint we could not re-query. It is a pointwise cross-encoder, for which replay is exact, and its self-hosted copy agrees with the API in {{SELF_GRANITE_SAME_WINNER}} of pairs; without it, the range ends at {{SWEEP_MAX_WITHOUT_GRANITE}}. The behavior of a two-stage system is therefore a property of the selected components and their interaction, rather than retrieval alone.
+Appendix C repeats the simulation with each of the {{N_SWEEP}} pointwise rerankers behind the same retriever; the listwise jina-reranker-v3 is left out because its scores depend on the other documents in a request, so scores from the audit's larger requests cannot be replayed in a smaller pool. The resulting shortlist share ranges from {{PIPELINE_SWEEP_MIN}} to {{PIPELINE_SWEEP_MAX}}, and {{N_PIPELINE_BELOW_RETRIEVER}} rerankers produce a shortlist with a lower male-associated share than retrieval alone ({{SHORTLIST_PCT_MALE_SEARCH}}). The worked example sits near the top of that range rather than being typical. Replayed scores match actual ten-document requests: for {{REPLAY_N_SUPPORTED}} of the {{REPLAY_N_MODELS}} API rerankers we re-queried on {{REPLAY_N_POOLS}} pools, the difference between the actual and replayed male-associated shortlist share has a 95% interval that includes zero; for Cohere v4 pro it is {{REPLAY_COHEREPRO_DIFF}} points (interval {{REPLAY_COHEREPRO_LO}} to {{REPLAY_COHEREPRO_HI}}). The upper end of the range comes from IBM's Granite reranker, whose API endpoint we could not re-query. It is a pointwise cross-encoder, for which replay is exact, and its self-hosted copy agrees with the API in {{SELF_GRANITE_SAME_WINNER}} of pairs; without it, the range ends at {{SWEEP_MAX_WITHOUT_GRANITE}}. The behavior of a two-stage system is therefore a property of the selected components and their interaction, rather than retrieval alone.
 
 ## Full marker removal eliminates the measured pathway
 
-Removing only names does not remove the difference. On the worked reranker, the male-associated version wins {{DEID_NAMESONLY_PCT_MALE_MALEJOBS}} of comparisons on male-typed occupations after names are removed, compared with {{DEID_ORIGINAL_PCT_MALE_MALEJOBS}} before. The mean absolute gap is essentially unchanged ({{DEID_ORIGINAL_MEAN_GAP}} to {{DEID_NAMESONLY_MEAN_GAP}}; paired occupation-clustered 95% interval on the difference [{{DEID_NAMESONLY_GAPDIFF_LO}}, {{DEID_NAMESONLY_GAPDIFF_HI}}]). Neutralizing pronouns while retaining names reduces the mean absolute gap to {{DEID_PRONOUNSONLY_MEAN_GAP}} (interval on the difference [{{DEID_PRONOUNSONLY_GAPDIFF_LO}}, {{DEID_PRONOUNSONLY_GAPDIFF_HI}}]). Partial removal is not consistent across the four rerankers in Appendix E: removing names alone leaves the mean absolute gap unchanged or higher on two models and reduces it on the other two, and on one model it lowers the male-favored share where the worked reranker's rises. Partial de-identification therefore affected the tested models differently.
+Removing only names does not remove the difference. On the worked reranker, the male-associated version wins {{DEID_NAMESONLY_PCT_MALE_MALEJOBS}} of comparisons on male-typed occupations after names are removed, compared with {{DEID_ORIGINAL_PCT_MALE_MALEJOBS}} before. The mean absolute gap is essentially unchanged ({{DEID_ORIGINAL_MEAN_GAP}} to {{DEID_NAMESONLY_MEAN_GAP}}; paired occupation-clustered 95% interval on the difference [{{DEID_NAMESONLY_GAPDIFF_LO}}, {{DEID_NAMESONLY_GAPDIFF_HI}}]). Neutralizing pronouns while retaining names reduces the mean absolute gap to {{DEID_PRONOUNSONLY_MEAN_GAP}} (interval on the difference [{{DEID_PRONOUNSONLY_GAPDIFF_LO}}, {{DEID_PRONOUNSONLY_GAPDIFF_HI}}]). Partial removal is not consistent across the four rerankers in Appendix D: removing names alone leaves the mean absolute gap unchanged or higher on two models and reduces it on the other two, and on one model it lowers the male-favored share where the worked reranker's rises. Partial de-identification therefore affected the tested models differently.
 
 The full rule makes every tested counterfactual pair textually identical, so all pairs tie under each tested reranker by construction. Identical strings are scored once and the score is reused, so this tie rate is not an observation; it holds for any deterministic pointwise reranker, which all four tested models are. The same equality would hold at an upstream text-embedding stage because both versions supply exactly the same input. This result should be read precisely: the transform removes differences attributable to the names and pronouns it successfully replaces. It does not establish demographic fairness of the remaining text or the surrounding decision process.
 
@@ -138,9 +138,9 @@ Names carry several social signals at once. Our pairs are not systematically mat
 
 The full transform guarantees equality only for information it actually removes. Real resumes may signal gender through schools, affiliations, activities, job histories, and writing patterns [@parasurama2022full]. Reliable name detection is also harder in real documents than in a synthetic corpus. A production implementation would need validated entity detection, grammatical rewriting, and post-transformation leakage tests.
 
-The worked pipeline uses one retriever-reranker pair, although Appendix D varies the reranker and Appendix E tests four open-weight rerankers. Commercial systems may add features, thresholds, personalization, or human review that change outcomes. The results are a dated snapshot of model versions queried on {{SCORED_DATE_1}} and from {{LATER_FIRST}} to {{LATER_LAST}}.
+The worked pipeline uses one retriever-reranker pair, although Appendix C varies the reranker and Appendix D tests four open-weight rerankers. Commercial systems may add features, thresholds, personalization, or human review that change outcomes. The results are a dated snapshot of model versions queried on {{SCORED_DATE_1}} and from {{LATER_FIRST}} to {{LATER_LAST}}.
 
-A companion experiment sampled {{N_REAL_RESUMES}} distinct documents from a public corpus of {{N_REAL_CORPUS}} publicly posted résumé examples scraped from a career website (released under CC0), with no observed hiring decisions or applicant outcomes. The publisher had already removed most names: across the corpus, {{N_COMPANION_INJECTED}} of the {{N_REAL_CORPUS}} counterfactual pairs had to be built by inserting a name, and among the {{N_COMPANION_COMPARISONS}} scored comparisons per model, {{N_COMPANION_INJECTED_SCORED}} were built by inserting a name rather than swapping an existing marker. Its directions and magnitudes differ from the synthetic results (Appendix F); the worked reranker, for example, favors the male-associated version in {{COMPANION_BGE_PCT_MALE}} of comparisons, against {{SYNTH_BGE_PCT_MALE}} in the synthetic audit. Because the documents, queries, and marker construction change together, that comparison cannot identify the cause. We retain it as a warning against generalizing the synthetic effect size to applicant résumés in deployment. Its corpus must be rebuilt from the repository's provenance notes to reproduce it; Appendix F describes its design.
+A companion experiment sampled {{N_REAL_RESUMES}} distinct documents from a public corpus of {{N_REAL_CORPUS}} publicly posted résumé examples scraped from a career website (released under CC0), with no observed hiring decisions or applicant outcomes. The publisher had already removed most names: across the corpus, {{N_COMPANION_INJECTED}} of the {{N_REAL_CORPUS}} counterfactual pairs had to be built by inserting a name, and among the {{N_COMPANION_COMPARISONS}} scored comparisons per model, {{N_COMPANION_INJECTED_SCORED}} were built by inserting a name rather than swapping an existing marker. Its directions and magnitudes differ from the synthetic results (Appendix E); the worked reranker, for example, favors the male-associated version in {{COMPANION_BGE_PCT_MALE}} of comparisons, against {{SYNTH_BGE_PCT_MALE}} in the synthetic audit. Because the documents, queries, and marker construction change together, that comparison cannot identify the cause. We retain it as a warning against generalizing the synthetic effect size to applicant résumés in deployment. Its corpus must be rebuilt from the repository's provenance notes to reproduce it; Appendix E describes its design.
 
 # Conclusion
 
@@ -173,7 +173,7 @@ category and workforce share, the assigned label, and each exclusion reason.
 
 # Models and single-stage results
 
-Tables use the short labels in Table~\ref{tab:models}, which maps each label to
+The three-way split by occupation category for every model, occupation-level consistency, and the robustness tables by document template, query phrasing, and name pair are released as `results/tex/single_stage_main.tex`, `results/tex/occupation_consistency.tex`, and `results/tex/robustness_*.tex`. Tables use the short labels in Table~\ref{tab:models}, which maps each label to
 the model's full identifier, vendor and access route, and records the number of
 comparisons, score range, overall tie rate, and scoring date.
 
@@ -185,13 +185,6 @@ comparisons, score range, overall tie rate, and scoring date.
 ```
 
 ```latex
-\newcommand{\SingleStageCaption}{Counterfactual outcomes by reranker and occupation
-category. M and F denote the male- and female-associated documents. The final
-column counts each tie as half for each version and reports occupation-clustered
-intervals.}
-{\small
-{{TABLE_SINGLE_STAGE_LONG}}
-}
 
 \begin{table}[H]
 \centering
@@ -205,45 +198,7 @@ jointly. Intervals are not adjusted for multiple comparisons.}
 }
 \end{table}
 
-\begin{table}[H]
-\centering
-\caption{Occupation-level directional consistency by model and category. Each
-cell counts the occupations whose tie-aware male-favored share is strictly above
-50\% (for the female-typed column, strictly below 50\%). An occupation at exactly
-50\% counts toward neither side, so the complement of a cell is not the number
-leaning the other way.}
-\label{tab:consistency}
-\resizebox{\textwidth}{!}{%
-{{TABLE_CONSISTENCY}}%
-}
-\end{table}
-```
 
-# Robustness across inputs
-
-```latex
-\begin{table}[H]
-\centering
-\caption{Tie-aware male-favored share by document template.}
-\label{tab:robtemplate}
-\resizebox{\textwidth}{!}{%
-{{TABLE_ROBUST_TEMPLATE}}%
-}
-\end{table}
-
-\begin{table}[H]
-\centering
-\caption{Tie-aware male-favored share by query phrasing.}
-\label{tab:robquery}
-\resizebox{\textwidth}{!}{%
-{{TABLE_ROBUST_QUERY}}%
-}
-\end{table}
-
-\newcommand{\NamePairCaption}{Tie-aware male-favored share by name pair.}
-{\small
-{{TABLE_ROBUST_NAMEPAIR_LONG}}
-}
 ```
 
 # Pipeline results across rerankers
