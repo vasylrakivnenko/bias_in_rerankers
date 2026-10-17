@@ -173,7 +173,7 @@ category and workforce share, the assigned label, and each exclusion reason.
 
 # Models and single-stage results
 
-The three-way split by occupation category for every model, occupation-level consistency, and the robustness tables by document template, query phrasing, and name pair are released as `results/tex/single_stage_main.tex`, `results/tex/occupation_consistency.tex`, and `results/tex/robustness_*.tex`. Tables use the short labels in Table~\ref{tab:models}, which maps each label to
+The three-way split by occupation category for every model, occupation-level consistency, and the robustness tables by document template, query phrasing, and name pair are released in the repository's `results/tex` folder. Tables use the short labels in Table~\ref{tab:models}, which maps each label to
 the model's full identifier, vendor and access route, and records the number of
 comparisons, score range, overall tie rate, and scoring date.
 
