@@ -1,6 +1,6 @@
 {
   "script_version": "analyze_single_stage.py v1.0 (REVIEW_TODO A1/A2/A3/B1/B2/B7)",
-  "generated": "2026-10-16T21:59:14",
+  "generated": "2026-10-16T23:42:24",
   "label_source": "BLS CPS Table 11 via occupations_bls.csv",
   "n_labelled_occupations": 52,
   "n_distinct_bls_categories": 48,

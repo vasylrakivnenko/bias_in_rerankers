@@ -1,6 +1,6 @@
 {
-  "script_version": "interval_sensitivity.py v1.1",
-  "generated": "2026-10-16T21:06:00",
+  "script_version": "interval_sensitivity.py v1.2",
+  "generated": "2026-10-16T23:43:44",
   "label_source": "BLS CPS Table 11 via occupations_bls.csv",
   "bootstrap_B": 50000,
   "definition": "tie-aware % male-favored, male-typed minus female-typed occupations",
@@ -958,6 +958,1593 @@
           "below_zero": false,
           "excludes_zero": true
         }
+      }
+    }
+  },
+  "neutral_level": {
+    "definition": "tie-aware % male-favored on the evenly split (neutral-labelled) occupations, with 95% percentile intervals",
+    "n_occupations": 13,
+    "bootstrap_B": 1000000,
+    "bootstrap_B_note": "larger than the contrast intervals' B because one model's interval ends within 0.1 point of 50 (rerank-2.5-lite, occupation_x_name); at B = 50,000 Monte Carlo error alone decides which side of 50 that end falls",
+    "schemes": {
+      "occupation": "the evenly split occupations, with replacement",
+      "occupation_x_name": "those occupations and the name pairs, independently (two-way)"
+    },
+    "interval_rule": "contains 50 when lo <= 50 <= hi (closed), as analyze_single_stage.count_neutral_indeterminate",
+    "n_models_containing_50": {
+      "occupation": 6,
+      "occupation_x_name": 10
+    },
+    "n_models_above_50": {
+      "occupation": 18,
+      "occupation_x_name": 17
+    },
+    "n_models_below_50": {
+      "occupation": 5,
+      "occupation_x_name": 2
+    },
+    "models_containing_50": {
+      "occupation": [
+        "BAAI/bge-reranker-base",
+        "Cohere-rerank-v4.0-pro",
+        "Qwen/Qwen3-Reranker-4B",
+        "jinaai/jina-reranker-v2-base-multilingual",
+        "qwen/qwen3-reranker-8b",
+        "semantic-ranker-fast-004"
+      ],
+      "occupation_x_name": [
+        "BAAI/bge-reranker-base",
+        "BAAI/bge-reranker-large",
+        "Cohere-rerank-v4.0-pro",
+        "Qwen/Qwen3-Reranker-4B",
+        "jinaai/jina-reranker-v2-base-multilingual",
+        "jinaai/jina-reranker-v3",
+        "qwen/qwen3-reranker-8b",
+        "rerank-2-lite",
+        "rerank-2.5-lite",
+        "semantic-ranker-fast-004"
+      ]
+    },
+    "single_stage_check": {
+      "n_neutral_indeterminate_models": 6,
+      "single_stage_bootstrap_B": 1000,
+      "equal": true,
+      "models_classified_differently": []
+    },
+    "models": {
+      "Alibaba-NLP/gte-reranker-modernbert-base": {
+        "tie_aware_pct_male": 63.46153846153846,
+        "schemes": {
+          "occupation": {
+            "ci": [
+              60.04807692307692,
+              66.97115384615384
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          },
+          "occupation_x_name": {
+            "ci": [
+              52.16225961538472,
+              73.99038461538461
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          }
+        }
+      },
+      "BAAI/bge-reranker-base": {
+        "tie_aware_pct_male": 49.13461538461538,
+        "schemes": {
+          "occupation": {
+            "ci": [
+              38.55769230769231,
+              60.09615384615385
+            ],
+            "contains_50": true,
+            "above_50": false,
+            "below_50": false
+          },
+          "occupation_x_name": {
+            "ci": [
+              34.95192307692307,
+              63.125
+            ],
+            "contains_50": true,
+            "above_50": false,
+            "below_50": false
+          }
+        }
+      },
+      "BAAI/bge-reranker-large": {
+        "tie_aware_pct_male": 41.34615384615385,
+        "schemes": {
+          "occupation": {
+            "ci": [
+              36.875,
+              46.34615384615385
+            ],
+            "contains_50": false,
+            "above_50": false,
+            "below_50": true
+          },
+          "occupation_x_name": {
+            "ci": [
+              26.153846153846157,
+              57.067307692307686
+            ],
+            "contains_50": true,
+            "above_50": false,
+            "below_50": false
+          }
+        }
+      },
+      "BAAI/bge-reranker-v2-m3": {
+        "tie_aware_pct_male": 75.38461538461539,
+        "schemes": {
+          "occupation": {
+            "ci": [
+              71.53846153846153,
+              79.03846153846153
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          },
+          "occupation_x_name": {
+            "ci": [
+              65.72115384615384,
+              84.23076923076923
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          }
+        }
+      },
+      "Cohere-rerank-v4.0-fast": {
+        "tie_aware_pct_male": 64.1826923076923,
+        "schemes": {
+          "occupation": {
+            "ci": [
+              56.58653846153846,
+              70.84134615384615
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          },
+          "occupation_x_name": {
+            "ci": [
+              52.23557692307692,
+              75.40865384615385
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          }
+        }
+      },
+      "Cohere-rerank-v4.0-pro": {
+        "tie_aware_pct_male": 51.442307692307686,
+        "schemes": {
+          "occupation": {
+            "ci": [
+              46.68269230769231,
+              56.129807692307686
+            ],
+            "contains_50": true,
+            "above_50": false,
+            "below_50": false
+          },
+          "occupation_x_name": {
+            "ci": [
+              35.28846153846154,
+              66.70673076923077
+            ],
+            "contains_50": true,
+            "above_50": false,
+            "below_50": false
+          }
+        }
+      },
+      "Qwen/Qwen3-Reranker-0.6B": {
+        "tie_aware_pct_male": 64.66346153846155,
+        "schemes": {
+          "occupation": {
+            "ci": [
+              58.58173076923077,
+              70.1923076923077
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          },
+          "occupation_x_name": {
+            "ci": [
+              53.99038461538461,
+              75.07211538461539
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          }
+        }
+      },
+      "Qwen/Qwen3-Reranker-4B": {
+        "tie_aware_pct_male": 50.96153846153846,
+        "schemes": {
+          "occupation": {
+            "ci": [
+              46.63461538461539,
+              55.28846153846154
+            ],
+            "contains_50": true,
+            "above_50": false,
+            "below_50": false
+          },
+          "occupation_x_name": {
+            "ci": [
+              40.21634615384615,
+              60.69711538461539
+            ],
+            "contains_50": true,
+            "above_50": false,
+            "below_50": false
+          }
+        }
+      },
+      "cohere/rerank-v3.5": {
+        "tie_aware_pct_male": 81.70673076923077,
+        "schemes": {
+          "occupation": {
+            "ci": [
+              77.13942307692308,
+              85.7451923076923
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          },
+          "occupation_x_name": {
+            "ci": [
+              74.32692307692308,
+              88.41346153846153
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          }
+        }
+      },
+      "cross-encoder/ms-marco-MiniLM-L-12-v2": {
+        "tie_aware_pct_male": 86.39423076923077,
+        "schemes": {
+          "occupation": {
+            "ci": [
+              82.11538461538461,
+              89.61538461538461
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          },
+          "occupation_x_name": {
+            "ci": [
+              77.59615384615385,
+              93.9423076923077
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          }
+        }
+      },
+      "cross-encoder/ms-marco-MiniLM-L6-v2": {
+        "tie_aware_pct_male": 91.34615384615384,
+        "schemes": {
+          "occupation": {
+            "ci": [
+              89.08653846153847,
+              93.46153846153847
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          },
+          "occupation_x_name": {
+            "ci": [
+              83.07692307692308,
+              97.16346153846153
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          }
+        }
+      },
+      "ibm-granite-granite-embedding-reranker-english-r2": {
+        "tie_aware_pct_male": 87.83653846153847,
+        "schemes": {
+          "occupation": {
+            "ci": [
+              84.51923076923077,
+              90.52884615384616
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          },
+          "occupation_x_name": {
+            "ci": [
+              78.84615384615384,
+              95.24038461538461
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          }
+        }
+      },
+      "jinaai/jina-reranker-v2-base-multilingual": {
+        "tie_aware_pct_male": 42.69230769230769,
+        "schemes": {
+          "occupation": {
+            "ci": [
+              34.25480769230769,
+              51.58653846153847
+            ],
+            "contains_50": true,
+            "above_50": false,
+            "below_50": false
+          },
+          "occupation_x_name": {
+            "ci": [
+              28.125,
+              58.10096153846154
+            ],
+            "contains_50": true,
+            "above_50": false,
+            "below_50": false
+          }
+        }
+      },
+      "jinaai/jina-reranker-v3": {
+        "tie_aware_pct_male": 36.05769230769231,
+        "schemes": {
+          "occupation": {
+            "ci": [
+              33.125,
+              39.08653846153846
+            ],
+            "contains_50": false,
+            "above_50": false,
+            "below_50": true
+          },
+          "occupation_x_name": {
+            "ci": [
+              19.18269230769231,
+              53.942307692307686
+            ],
+            "contains_50": true,
+            "above_50": false,
+            "below_50": false
+          }
+        }
+      },
+      "mixedbread-ai/mxbai-rerank-large-v2": {
+        "tie_aware_pct_male": 72.28365384615385,
+        "schemes": {
+          "occupation": {
+            "ci": [
+              67.57211538461539,
+              76.80288461538461
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          },
+          "occupation_x_name": {
+            "ci": [
+              62.78846153846154,
+              80.7451923076923
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          }
+        }
+      },
+      "nvidia/llama-nemotron-rerank-1b-v2": {
+        "tie_aware_pct_male": 68.8701923076923,
+        "schemes": {
+          "occupation": {
+            "ci": [
+              62.30769230769231,
+              75.33653846153847
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          },
+          "occupation_x_name": {
+            "ci": [
+              58.894230769230774,
+              77.6201923076923
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          }
+        }
+      },
+      "nvidia/llama-nemotron-rerank-vl-1b-v2": {
+        "tie_aware_pct_male": 66.3701923076923,
+        "schemes": {
+          "occupation": {
+            "ci": [
+              61.29807692307693,
+              71.1298076923077
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          },
+          "occupation_x_name": {
+            "ci": [
+              59.18269230769231,
+              73.07692307692307
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          }
+        }
+      },
+      "qwen/qwen3-reranker-8b": {
+        "tie_aware_pct_male": 53.17307692307692,
+        "schemes": {
+          "occupation": {
+            "ci": [
+              48.82211538461539,
+              57.88461538461539
+            ],
+            "contains_50": true,
+            "above_50": false,
+            "below_50": false
+          },
+          "occupation_x_name": {
+            "ci": [
+              45.88942307692307,
+              60.528846153846146
+            ],
+            "contains_50": true,
+            "above_50": false,
+            "below_50": false
+          }
+        }
+      },
+      "rerank-1": {
+        "tie_aware_pct_male": 73.53365384615384,
+        "schemes": {
+          "occupation": {
+            "ci": [
+              69.08653846153847,
+              77.98076923076923
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          },
+          "occupation_x_name": {
+            "ci": [
+              60.192307692307686,
+              85.84134615384616
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          }
+        }
+      },
+      "rerank-2": {
+        "tie_aware_pct_male": 61.80288461538461,
+        "schemes": {
+          "occupation": {
+            "ci": [
+              56.00961538461539,
+              67.95673076923077
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          },
+          "occupation_x_name": {
+            "ci": [
+              50.91346153846153,
+              72.09134615384616
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          }
+        }
+      },
+      "rerank-2-lite": {
+        "tie_aware_pct_male": 37.21153846153846,
+        "schemes": {
+          "occupation": {
+            "ci": [
+              32.66826923076923,
+              42.76442307692307
+            ],
+            "contains_50": false,
+            "above_50": false,
+            "below_50": true
+          },
+          "occupation_x_name": {
+            "ci": [
+              24.110576923076923,
+              51.77884615384616
+            ],
+            "contains_50": true,
+            "above_50": false,
+            "below_50": false
+          }
+        }
+      },
+      "rerank-2.5": {
+        "tie_aware_pct_male": 84.39903846153847,
+        "schemes": {
+          "occupation": {
+            "ci": [
+              78.2451923076923,
+              89.01442307692308
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          },
+          "occupation_x_name": {
+            "ci": [
+              75.38461538461539,
+              91.85096153846153
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          }
+        }
+      },
+      "rerank-2.5-lite": {
+        "tie_aware_pct_male": 60.07211538461539,
+        "schemes": {
+          "occupation": {
+            "ci": [
+              54.39903846153846,
+              65.57692307692308
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          },
+          "occupation_x_name": {
+            "ci": [
+              49.92788461538461,
+              69.66346153846153
+            ],
+            "contains_50": true,
+            "above_50": false,
+            "below_50": false
+          }
+        }
+      },
+      "rerank-3": {
+        "tie_aware_pct_male": 69.375,
+        "schemes": {
+          "occupation": {
+            "ci": [
+              60.74519230769231,
+              77.33173076923077
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          },
+          "occupation_x_name": {
+            "ci": [
+              56.03365384615384,
+              81.27403846153847
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          }
+        }
+      },
+      "rerank-3-lite": {
+        "tie_aware_pct_male": 31.41826923076923,
+        "schemes": {
+          "occupation": {
+            "ci": [
+              24.927884615384617,
+              38.89423076923077
+            ],
+            "contains_50": false,
+            "above_50": false,
+            "below_50": true
+          },
+          "occupation_x_name": {
+            "ci": [
+              19.54326923076923,
+              44.13461538461539
+            ],
+            "contains_50": false,
+            "above_50": false,
+            "below_50": true
+          }
+        }
+      },
+      "semantic-ranker-default-002": {
+        "tie_aware_pct_male": 78.50961538461539,
+        "schemes": {
+          "occupation": {
+            "ci": [
+              65.04807692307692,
+              88.9423076923077
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          },
+          "occupation_x_name": {
+            "ci": [
+              64.08653846153847,
+              90.09615384615385
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          }
+        }
+      },
+      "semantic-ranker-default-004": {
+        "tie_aware_pct_male": 32.78846153846154,
+        "schemes": {
+          "occupation": {
+            "ci": [
+              27.04326923076923,
+              38.07692307692307
+            ],
+            "contains_50": false,
+            "above_50": false,
+            "below_50": true
+          },
+          "occupation_x_name": {
+            "ci": [
+              25.48076923076923,
+              40.33653846153846
+            ],
+            "contains_50": false,
+            "above_50": false,
+            "below_50": true
+          }
+        }
+      },
+      "semantic-ranker-fast-004": {
+        "tie_aware_pct_male": 48.36538461538461,
+        "schemes": {
+          "occupation": {
+            "ci": [
+              43.60576923076923,
+              53.65384615384615
+            ],
+            "contains_50": true,
+            "above_50": false,
+            "below_50": false
+          },
+          "occupation_x_name": {
+            "ci": [
+              39.61538461538461,
+              57.16346153846153
+            ],
+            "contains_50": true,
+            "above_50": false,
+            "below_50": false
+          }
+        }
+      },
+      "zeroentropy/zerank-2-reranker": {
+        "tie_aware_pct_male": 69.73557692307692,
+        "schemes": {
+          "occupation": {
+            "ci": [
+              61.22596153846154,
+              77.90865384615384
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          },
+          "occupation_x_name": {
+            "ci": [
+              58.41346153846154,
+              79.95192307692308
+            ],
+            "contains_50": false,
+            "above_50": true,
+            "below_50": false
+          }
+        }
+      }
+    }
+  },
+  "label_permutation": {
+    "definition": "two-sided permutation test of the contrast: the labels of the male- and female-typed occupations are permuted with the group sizes fixed; p = (1 + #{|stat*| >= |stat_obs|}) / (1 + B)",
+    "n_permutations": 1000000,
+    "n_occupations": {
+      "male": 18,
+      "female": 21
+    },
+    "n_distinct_label_assignments": 62359143990,
+    "pairs_per_occupation": [
+      160
+    ],
+    "equal_pairs_per_occupation": true,
+    "statistic_note": "every male- and female-typed occupation carries the same number of pairs in every model, so the permuted statistic (difference of the groups' mean per-occupation tie-aware shares) is the pooled contrast in models.<m>.contrast",
+    "min_attainable_p": 9.99999000001e-07,
+    "adjustment": "Holm across the 29 models",
+    "alpha": 0.05,
+    "n_models_positive_holm_significant": 27,
+    "n_models_negative_holm_significant": 0,
+    "models_positive_holm_significant": [
+      "BAAI/bge-reranker-base",
+      "BAAI/bge-reranker-large",
+      "BAAI/bge-reranker-v2-m3",
+      "Cohere-rerank-v4.0-fast",
+      "Cohere-rerank-v4.0-pro",
+      "Qwen/Qwen3-Reranker-0.6B",
+      "Qwen/Qwen3-Reranker-4B",
+      "cohere/rerank-v3.5",
+      "cross-encoder/ms-marco-MiniLM-L-12-v2",
+      "cross-encoder/ms-marco-MiniLM-L6-v2",
+      "ibm-granite-granite-embedding-reranker-english-r2",
+      "jinaai/jina-reranker-v2-base-multilingual",
+      "mixedbread-ai/mxbai-rerank-large-v2",
+      "nvidia/llama-nemotron-rerank-1b-v2",
+      "nvidia/llama-nemotron-rerank-vl-1b-v2",
+      "qwen/qwen3-reranker-8b",
+      "rerank-1",
+      "rerank-2",
+      "rerank-2-lite",
+      "rerank-2.5",
+      "rerank-2.5-lite",
+      "rerank-3",
+      "rerank-3-lite",
+      "semantic-ranker-default-002",
+      "semantic-ranker-default-004",
+      "semantic-ranker-fast-004",
+      "zeroentropy/zerank-2-reranker"
+    ],
+    "models_negative_holm_significant": [],
+    "models_not_holm_significant": [
+      "Alibaba-NLP/gte-reranker-modernbert-base",
+      "jinaai/jina-reranker-v3"
+    ],
+    "n_models_one_sided_upper_p_below_bonferroni": 27,
+    "models": {
+      "Alibaba-NLP/gte-reranker-modernbert-base": {
+        "p_two_sided": 0.04938095061904938,
+        "p_holm": 0.09876190123809876,
+        "p_one_sided_upper": 0.976058023941976,
+        "p_one_sided_lower": 0.025055974944025054,
+        "n_permutations_at_least_as_extreme": 49380
+      },
+      "BAAI/bge-reranker-base": {
+        "p_two_sided": 0.002186997813002187,
+        "p_holm": 0.008747991252008747,
+        "p_one_sided_upper": 0.000999999000001,
+        "p_one_sided_lower": 0.9990350009649991,
+        "n_permutations_at_least_as_extreme": 2186
+      },
+      "BAAI/bge-reranker-large": {
+        "p_two_sided": 9.99999000001e-07,
+        "p_holm": 2.8999971000029003e-05,
+        "p_one_sided_upper": 9.99999000001e-07,
+        "p_one_sided_lower": 1.0,
+        "n_permutations_at_least_as_extreme": 0
+      },
+      "BAAI/bge-reranker-v2-m3": {
+        "p_two_sided": 0.001542998457001543,
+        "p_holm": 0.007714992285007715,
+        "p_one_sided_upper": 0.000233999766000234,
+        "p_one_sided_lower": 0.9998020001979998,
+        "n_permutations_at_least_as_extreme": 1542
+      },
+      "Cohere-rerank-v4.0-fast": {
+        "p_two_sided": 9.99999000001e-07,
+        "p_holm": 2.8999971000029003e-05,
+        "p_one_sided_upper": 9.99999000001e-07,
+        "p_one_sided_lower": 1.0,
+        "n_permutations_at_least_as_extreme": 0
+      },
+      "Cohere-rerank-v4.0-pro": {
+        "p_two_sided": 9.99999000001e-07,
+        "p_holm": 2.8999971000029003e-05,
+        "p_one_sided_upper": 9.99999000001e-07,
+        "p_one_sided_lower": 1.0,
+        "n_permutations_at_least_as_extreme": 0
+      },
+      "Qwen/Qwen3-Reranker-0.6B": {
+        "p_two_sided": 3.8999961000039e-05,
+        "p_holm": 0.00035099964900035097,
+        "p_one_sided_upper": 1.6999983000016998e-05,
+        "p_one_sided_lower": 0.999985000015,
+        "n_permutations_at_least_as_extreme": 38
+      },
+      "Qwen/Qwen3-Reranker-4B": {
+        "p_two_sided": 9.99999000001e-07,
+        "p_holm": 2.8999971000029003e-05,
+        "p_one_sided_upper": 9.99999000001e-07,
+        "p_one_sided_lower": 1.0,
+        "n_permutations_at_least_as_extreme": 0
+      },
+      "cohere/rerank-v3.5": {
+        "p_two_sided": 2.999997000003e-06,
+        "p_holm": 3.5999964000036e-05,
+        "p_one_sided_upper": 9.99999000001e-07,
+        "p_one_sided_lower": 1.0,
+        "n_permutations_at_least_as_extreme": 2
+      },
+      "cross-encoder/ms-marco-MiniLM-L-12-v2": {
+        "p_two_sided": 0.001067998932001068,
+        "p_holm": 0.006407993592006408,
+        "p_one_sided_upper": 0.000336999663000337,
+        "p_one_sided_lower": 0.9996830003169996,
+        "n_permutations_at_least_as_extreme": 1067
+      },
+      "cross-encoder/ms-marco-MiniLM-L6-v2": {
+        "p_two_sided": 0.000471999528000472,
+        "p_holm": 0.003775996224003776,
+        "p_one_sided_upper": 0.00014999985000015,
+        "p_one_sided_lower": 0.9998580001419999,
+        "n_permutations_at_least_as_extreme": 471
+      },
+      "ibm-granite-granite-embedding-reranker-english-r2": {
+        "p_two_sided": 2.7999972000028e-05,
+        "p_holm": 0.00027999972000028,
+        "p_one_sided_upper": 3.999996000004e-06,
+        "p_one_sided_lower": 0.999998000002,
+        "n_permutations_at_least_as_extreme": 27
+      },
+      "jinaai/jina-reranker-v2-base-multilingual": {
+        "p_two_sided": 0.002986997013002987,
+        "p_holm": 0.00896099103900896,
+        "p_one_sided_upper": 0.00148999851000149,
+        "p_one_sided_lower": 0.9985400014599985,
+        "n_permutations_at_least_as_extreme": 2986
+      },
+      "jinaai/jina-reranker-v3": {
+        "p_two_sided": 0.5882274117725882,
+        "p_holm": 0.5882274117725882,
+        "p_one_sided_upper": 0.2985007014992985,
+        "p_one_sided_lower": 0.716917283082717,
+        "n_permutations_at_least_as_extreme": 588227
+      },
+      "mixedbread-ai/mxbai-rerank-large-v2": {
+        "p_two_sided": 9.99999000001e-07,
+        "p_holm": 2.8999971000029003e-05,
+        "p_one_sided_upper": 9.99999000001e-07,
+        "p_one_sided_lower": 1.0,
+        "n_permutations_at_least_as_extreme": 0
+      },
+      "nvidia/llama-nemotron-rerank-1b-v2": {
+        "p_two_sided": 9.99999000001e-07,
+        "p_holm": 2.8999971000029003e-05,
+        "p_one_sided_upper": 9.99999000001e-07,
+        "p_one_sided_lower": 1.0,
+        "n_permutations_at_least_as_extreme": 0
+      },
+      "nvidia/llama-nemotron-rerank-vl-1b-v2": {
+        "p_two_sided": 9.99999000001e-07,
+        "p_holm": 2.8999971000029003e-05,
+        "p_one_sided_upper": 9.99999000001e-07,
+        "p_one_sided_lower": 1.0,
+        "n_permutations_at_least_as_extreme": 0
+      },
+      "qwen/qwen3-reranker-8b": {
+        "p_two_sided": 9.99999000001e-07,
+        "p_holm": 2.8999971000029003e-05,
+        "p_one_sided_upper": 9.99999000001e-07,
+        "p_one_sided_lower": 1.0,
+        "n_permutations_at_least_as_extreme": 0
+      },
+      "rerank-1": {
+        "p_two_sided": 9.99999000001e-07,
+        "p_holm": 2.8999971000029003e-05,
+        "p_one_sided_upper": 9.99999000001e-07,
+        "p_one_sided_lower": 1.0,
+        "n_permutations_at_least_as_extreme": 0
+      },
+      "rerank-2": {
+        "p_two_sided": 9.99999000001e-07,
+        "p_holm": 2.8999971000029003e-05,
+        "p_one_sided_upper": 9.99999000001e-07,
+        "p_one_sided_lower": 1.0,
+        "n_permutations_at_least_as_extreme": 0
+      },
+      "rerank-2-lite": {
+        "p_two_sided": 9.99999000001e-06,
+        "p_holm": 0.00010999989000011,
+        "p_one_sided_upper": 8.999991000009e-06,
+        "p_one_sided_lower": 0.999993000007,
+        "n_permutations_at_least_as_extreme": 9
+      },
+      "rerank-2.5": {
+        "p_two_sided": 9.99999000001e-07,
+        "p_holm": 2.8999971000029003e-05,
+        "p_one_sided_upper": 9.99999000001e-07,
+        "p_one_sided_lower": 1.0,
+        "n_permutations_at_least_as_extreme": 0
+      },
+      "rerank-2.5-lite": {
+        "p_two_sided": 9.99999000001e-07,
+        "p_holm": 2.8999971000029003e-05,
+        "p_one_sided_upper": 9.99999000001e-07,
+        "p_one_sided_lower": 1.0,
+        "n_permutations_at_least_as_extreme": 0
+      },
+      "rerank-3": {
+        "p_two_sided": 9.99999000001e-07,
+        "p_holm": 2.8999971000029003e-05,
+        "p_one_sided_upper": 9.99999000001e-07,
+        "p_one_sided_lower": 1.0,
+        "n_permutations_at_least_as_extreme": 0
+      },
+      "rerank-3-lite": {
+        "p_two_sided": 9.99999000001e-07,
+        "p_holm": 2.8999971000029003e-05,
+        "p_one_sided_upper": 9.99999000001e-07,
+        "p_one_sided_lower": 1.0,
+        "n_permutations_at_least_as_extreme": 0
+      },
+      "semantic-ranker-default-002": {
+        "p_two_sided": 0.000550999449000551,
+        "p_holm": 0.0038569961430038567,
+        "p_one_sided_upper": 0.000131999868000132,
+        "p_one_sided_lower": 0.9998750001249999,
+        "n_permutations_at_least_as_extreme": 550
+      },
+      "semantic-ranker-default-004": {
+        "p_two_sided": 9.99999000001e-07,
+        "p_holm": 2.8999971000029003e-05,
+        "p_one_sided_upper": 9.99999000001e-07,
+        "p_one_sided_lower": 1.0,
+        "n_permutations_at_least_as_extreme": 0
+      },
+      "semantic-ranker-fast-004": {
+        "p_two_sided": 9.99999000001e-07,
+        "p_holm": 2.8999971000029003e-05,
+        "p_one_sided_upper": 9.99999000001e-07,
+        "p_one_sided_lower": 1.0,
+        "n_permutations_at_least_as_extreme": 0
+      },
+      "zeroentropy/zerank-2-reranker": {
+        "p_two_sided": 9.99999000001e-07,
+        "p_holm": 2.8999971000029003e-05,
+        "p_one_sided_upper": 9.99999000001e-07,
+        "p_one_sided_lower": 1.0,
+        "n_permutations_at_least_as_extreme": 0
+      }
+    }
+  },
+  "full_name_cross": {
+    "definition": "within each (occupation, template, query) cell, every male-associated document's score compared with every female-associated document's score (10 x 10), ties counting half; tie-aware % male-favored on male-typed minus female-typed occupations",
+    "n_cells": {
+      "male": 288,
+      "female": 336
+    },
+    "comparisons_per_cell": 100,
+    "n_models_positive": 28,
+    "models_not_positive": [
+      "Alibaba-NLP/gte-reranker-modernbert-base"
+    ],
+    "models": {
+      "Alibaba-NLP/gte-reranker-modernbert-base": {
+        "contrast": -5.915674603174601,
+        "tie_aware_pct_male": {
+          "male": 61.27777777777778,
+          "female": 67.19345238095238
+        }
+      },
+      "BAAI/bge-reranker-base": {
+        "contrast": 19.23090277777778,
+        "tie_aware_pct_male": {
+          "male": 56.64756944444444,
+          "female": 37.416666666666664
+        }
+      },
+      "BAAI/bge-reranker-large": {
+        "contrast": 18.853918650793652,
+        "tie_aware_pct_male": {
+          "male": 57.69618055555556,
+          "female": 38.842261904761905
+        }
+      },
+      "BAAI/bge-reranker-v2-m3": {
+        "contrast": 15.961309523809518,
+        "tie_aware_pct_male": {
+          "male": 88.0,
+          "female": 72.03869047619048
+        }
+      },
+      "Cohere-rerank-v4.0-fast": {
+        "contrast": 28.947420634920633,
+        "tie_aware_pct_male": {
+          "male": 65.67361111111111,
+          "female": 36.72619047619048
+        }
+      },
+      "Cohere-rerank-v4.0-pro": {
+        "contrast": 34.188740079365076,
+        "tie_aware_pct_male": {
+          "male": 67.21701388888889,
+          "female": 33.02827380952381
+        }
+      },
+      "Qwen/Qwen3-Reranker-0.6B": {
+        "contrast": 27.247023809523803,
+        "tie_aware_pct_male": {
+          "male": 68.80208333333333,
+          "female": 41.555059523809526
+        }
+      },
+      "Qwen/Qwen3-Reranker-4B": {
+        "contrast": 20.563492063492063,
+        "tie_aware_pct_male": {
+          "male": 58.74652777777778,
+          "female": 38.183035714285715
+        }
+      },
+      "cohere/rerank-v3.5": {
+        "contrast": 37.713045634920626,
+        "tie_aware_pct_male": {
+          "male": 85.73090277777777,
+          "female": 48.017857142857146
+        }
+      },
+      "cross-encoder/ms-marco-MiniLM-L-12-v2": {
+        "contrast": 26.5233134920635,
+        "tie_aware_pct_male": {
+          "male": 85.07986111111111,
+          "female": 58.55654761904761
+        }
+      },
+      "cross-encoder/ms-marco-MiniLM-L6-v2": {
+        "contrast": 24.413194444444436,
+        "tie_aware_pct_male": {
+          "male": 86.49652777777777,
+          "female": 62.083333333333336
+        }
+      },
+      "ibm-granite-granite-embedding-reranker-english-r2": {
+        "contrast": 16.204861111111114,
+        "tie_aware_pct_male": {
+          "male": 93.44444444444444,
+          "female": 77.23958333333333
+        }
+      },
+      "jinaai/jina-reranker-v2-base-multilingual": {
+        "contrast": 15.074156746031747,
+        "tie_aware_pct_male": {
+          "male": 48.66493055555556,
+          "female": 33.59077380952381
+        }
+      },
+      "jinaai/jina-reranker-v3": {
+        "contrast": 1.3774801587301582,
+        "tie_aware_pct_male": {
+          "male": 39.03819444444444,
+          "female": 37.660714285714285
+        }
+      },
+      "mixedbread-ai/mxbai-rerank-large-v2": {
+        "contrast": 21.384920634920633,
+        "tie_aware_pct_male": {
+          "male": 73.94444444444444,
+          "female": 52.55952380952381
+        }
+      },
+      "nvidia/llama-nemotron-rerank-1b-v2": {
+        "contrast": 43.48536706349206,
+        "tie_aware_pct_male": {
+          "male": 86.46006944444444,
+          "female": 42.97470238095238
+        }
+      },
+      "nvidia/llama-nemotron-rerank-vl-1b-v2": {
+        "contrast": 32.91443452380952,
+        "tie_aware_pct_male": {
+          "male": 80.06770833333333,
+          "female": 47.15327380952381
+        }
+      },
+      "qwen/qwen3-reranker-8b": {
+        "contrast": 30.396081349206348,
+        "tie_aware_pct_male": {
+          "male": 66.36631944444444,
+          "female": 35.970238095238095
+        }
+      },
+      "rerank-1": {
+        "contrast": 31.538690476190474,
+        "tie_aware_pct_male": {
+          "male": 79.625,
+          "female": 48.086309523809526
+        }
+      },
+      "rerank-2": {
+        "contrast": 54.85887896825396,
+        "tie_aware_pct_male": {
+          "male": 84.26215277777777,
+          "female": 29.40327380952381
+        }
+      },
+      "rerank-2-lite": {
+        "contrast": 19.259424603174605,
+        "tie_aware_pct_male": {
+          "male": 46.27430555555556,
+          "female": 27.014880952380953
+        }
+      },
+      "rerank-2.5": {
+        "contrast": 56.92485119047619,
+        "tie_aware_pct_male": {
+          "male": 95.046875,
+          "female": 38.12202380952381
+        }
+      },
+      "rerank-2.5-lite": {
+        "contrast": 34.74503968253969,
+        "tie_aware_pct_male": {
+          "male": 78.77777777777779,
+          "female": 44.032738095238095
+        }
+      },
+      "rerank-3": {
+        "contrast": 58.03348214285714,
+        "tie_aware_pct_male": {
+          "male": 88.88020833333333,
+          "female": 30.846726190476193
+        }
+      },
+      "rerank-3-lite": {
+        "contrast": 51.031994047619044,
+        "tie_aware_pct_male": {
+          "male": 62.59895833333333,
+          "female": 11.566964285714286
+        }
+      },
+      "semantic-ranker-default-002": {
+        "contrast": 24.565476190476176,
+        "tie_aware_pct_male": {
+          "male": 90.70833333333333,
+          "female": 66.14285714285715
+        }
+      },
+      "semantic-ranker-default-004": {
+        "contrast": 42.22395833333333,
+        "tie_aware_pct_male": {
+          "male": 58.838541666666664,
+          "female": 16.614583333333332
+        }
+      },
+      "semantic-ranker-fast-004": {
+        "contrast": 38.088789682539684,
+        "tie_aware_pct_male": {
+          "male": 67.04861111111111,
+          "female": 28.95982142857143
+        }
+      },
+      "zeroentropy/zerank-2-reranker": {
+        "contrast": 62.97743055555555,
+        "tie_aware_pct_male": {
+          "male": 90.93576388888889,
+          "female": 27.958333333333336
+        }
+      }
+    }
+  },
+  "within_template": {
+    "definition": "male-typed minus female-typed tie-aware % male-favored within each document template",
+    "field": "template_style",
+    "levels": [
+      "linkedin_style",
+      "news_article",
+      "professional_bio",
+      "resume_summary"
+    ],
+    "n_models_positive_in_all_levels": 24,
+    "models_not_positive_in_all_levels": [
+      "Alibaba-NLP/gte-reranker-modernbert-base",
+      "Qwen/Qwen3-Reranker-4B",
+      "jinaai/jina-reranker-v3",
+      "mixedbread-ai/mxbai-rerank-large-v2",
+      "rerank-2-lite"
+    ],
+    "n_model_level_cells": 116,
+    "n_model_level_cells_positive": 107,
+    "models": {
+      "Alibaba-NLP/gte-reranker-modernbert-base": {
+        "linkedin_style": 3.214285714285714,
+        "news_article": -10.158730158730156,
+        "professional_bio": -16.011904761904773,
+        "resume_summary": -3.9682539682539653
+      },
+      "BAAI/bge-reranker-base": {
+        "linkedin_style": 26.845238095238088,
+        "news_article": 16.98412698412698,
+        "professional_bio": 17.103174603174605,
+        "resume_summary": 18.194444444444446
+      },
+      "BAAI/bge-reranker-large": {
+        "linkedin_style": 19.523809523809522,
+        "news_article": 25.81349206349206,
+        "professional_bio": 9.999999999999998,
+        "resume_summary": 23.730158730158728
+      },
+      "BAAI/bge-reranker-v2-m3": {
+        "linkedin_style": 10.456349206349202,
+        "news_article": 15.813492063492063,
+        "professional_bio": 18.511904761904763,
+        "resume_summary": 15.674603174603174
+      },
+      "Cohere-rerank-v4.0-fast": {
+        "linkedin_style": 27.797619047619055,
+        "news_article": 29.642857142857142,
+        "professional_bio": 30.436507936507933,
+        "resume_summary": 37.88690476190476
+      },
+      "Cohere-rerank-v4.0-pro": {
+        "linkedin_style": 35.486111111111114,
+        "news_article": 29.52380952380953,
+        "professional_bio": 39.4047619047619,
+        "resume_summary": 59.88095238095238
+      },
+      "Qwen/Qwen3-Reranker-0.6B": {
+        "linkedin_style": 29.553571428571434,
+        "news_article": 26.07142857142857,
+        "professional_bio": 19.31547619047619,
+        "resume_summary": 34.93055555555556
+      },
+      "Qwen/Qwen3-Reranker-4B": {
+        "linkedin_style": -3.8293650793650826,
+        "news_article": 31.17063492063492,
+        "professional_bio": 20.674603174603174,
+        "resume_summary": 38.30357142857144
+      },
+      "cohere/rerank-v3.5": {
+        "linkedin_style": 34.50396825396825,
+        "news_article": 40.08928571428572,
+        "professional_bio": 37.38095238095237,
+        "resume_summary": 36.855158730158735
+      },
+      "cross-encoder/ms-marco-MiniLM-L-12-v2": {
+        "linkedin_style": 35.61507936507937,
+        "news_article": 19.325396825396822,
+        "professional_bio": 25.396825396825395,
+        "resume_summary": 23.690476190476197
+      },
+      "cross-encoder/ms-marco-MiniLM-L6-v2": {
+        "linkedin_style": 38.17460317460318,
+        "news_article": 13.37301587301587,
+        "professional_bio": 22.936507936507933,
+        "resume_summary": 25.71428571428571
+      },
+      "ibm-granite-granite-embedding-reranker-english-r2": {
+        "linkedin_style": 31.547619047619047,
+        "news_article": 7.8968253968254025,
+        "professional_bio": 6.488095238095237,
+        "resume_summary": 15.277777777777779
+      },
+      "jinaai/jina-reranker-v2-base-multilingual": {
+        "linkedin_style": 14.404761904761903,
+        "news_article": 11.339285714285714,
+        "professional_bio": 15.386904761904763,
+        "resume_summary": 15.922619047619047
+      },
+      "jinaai/jina-reranker-v3": {
+        "linkedin_style": -0.6349206349206382,
+        "news_article": -2.91666666666667,
+        "professional_bio": 7.003968253968254,
+        "resume_summary": -0.3174603174603219
+      },
+      "mixedbread-ai/mxbai-rerank-large-v2": {
+        "linkedin_style": -3.7896825396825484,
+        "news_article": 47.33134920634921,
+        "professional_bio": 14.28571428571429,
+        "resume_summary": 25.27777777777778
+      },
+      "nvidia/llama-nemotron-rerank-1b-v2": {
+        "linkedin_style": 53.74007936507936,
+        "news_article": 34.37499999999999,
+        "professional_bio": 40.29761904761905,
+        "resume_summary": 45.367063492063494
+      },
+      "nvidia/llama-nemotron-rerank-vl-1b-v2": {
+        "linkedin_style": 41.8452380952381,
+        "news_article": 27.21230158730159,
+        "professional_bio": 31.160714285714285,
+        "resume_summary": 28.64087301587302
+      },
+      "qwen/qwen3-reranker-8b": {
+        "linkedin_style": 23.571428571428577,
+        "news_article": 39.55357142857142,
+        "professional_bio": 17.77777777777778,
+        "resume_summary": 45.65476190476191
+      },
+      "rerank-1": {
+        "linkedin_style": 28.521825396825395,
+        "news_article": 34.811507936507944,
+        "professional_bio": 17.84722222222222,
+        "resume_summary": 45.60515873015873
+      },
+      "rerank-2": {
+        "linkedin_style": 48.36309523809524,
+        "news_article": 68.99801587301587,
+        "professional_bio": 55.803571428571416,
+        "resume_summary": 55.952380952380956
+      },
+      "rerank-2-lite": {
+        "linkedin_style": 18.025793650793652,
+        "news_article": 40.26785714285714,
+        "professional_bio": -7.9365079365079385,
+        "resume_summary": 26.29960317460317
+      },
+      "rerank-2.5": {
+        "linkedin_style": 52.976190476190474,
+        "news_article": 59.61309523809524,
+        "professional_bio": 52.480158730158735,
+        "resume_summary": 65.77380952380952
+      },
+      "rerank-2.5-lite": {
+        "linkedin_style": 42.14285714285714,
+        "news_article": 37.55952380952381,
+        "professional_bio": 34.82142857142857,
+        "resume_summary": 26.200396825396833
+      },
+      "rerank-3": {
+        "linkedin_style": 67.01388888888889,
+        "news_article": 54.613095238095234,
+        "professional_bio": 56.051587301587304,
+        "resume_summary": 65.8829365079365
+      },
+      "rerank-3-lite": {
+        "linkedin_style": 67.17261904761904,
+        "news_article": 39.22619047619048,
+        "professional_bio": 26.944444444444443,
+        "resume_summary": 65.07936507936508
+      },
+      "semantic-ranker-default-002": {
+        "linkedin_style": 29.246031746031743,
+        "news_article": 30.21825396825396,
+        "professional_bio": 26.924603174603178,
+        "resume_summary": 12.847222222222221
+      },
+      "semantic-ranker-default-004": {
+        "linkedin_style": 37.10317460317461,
+        "news_article": 54.41468253968254,
+        "professional_bio": 40.64484126984127,
+        "resume_summary": 42.083333333333336
+      },
+      "semantic-ranker-fast-004": {
+        "linkedin_style": 47.39087301587302,
+        "news_article": 21.617063492063494,
+        "professional_bio": 40.724206349206355,
+        "resume_summary": 44.98015873015873
+      },
+      "zeroentropy/zerank-2-reranker": {
+        "linkedin_style": 73.50198412698413,
+        "news_article": 49.03769841269842,
+        "professional_bio": 63.02579365079365,
+        "resume_summary": 75.53571428571428
+      }
+    }
+  },
+  "within_query": {
+    "definition": "male-typed minus female-typed tie-aware % male-favored within each query phrasing",
+    "field": "query_type",
+    "levels": [
+      "bare",
+      "experienced",
+      "expertise",
+      "qualified"
+    ],
+    "n_models_positive_in_all_levels": 25,
+    "models_not_positive_in_all_levels": [
+      "Alibaba-NLP/gte-reranker-modernbert-base",
+      "Qwen/Qwen3-Reranker-4B",
+      "jinaai/jina-reranker-v2-base-multilingual",
+      "jinaai/jina-reranker-v3"
+    ],
+    "n_model_level_cells": 116,
+    "n_model_level_cells_positive": 109,
+    "models": {
+      "Alibaba-NLP/gte-reranker-modernbert-base": {
+        "bare": 1.9642857142857184,
+        "experienced": -7.777777777777784,
+        "expertise": -0.5952380952381042,
+        "qualified": -20.51587301587302
+      },
+      "BAAI/bge-reranker-base": {
+        "bare": 33.17460317460317,
+        "experienced": 15.714285714285714,
+        "expertise": 28.531746031746035,
+        "qualified": 1.7063492063492058
+      },
+      "BAAI/bge-reranker-large": {
+        "bare": 20.793650793650798,
+        "experienced": 18.551587301587304,
+        "expertise": 24.404761904761905,
+        "qualified": 15.317460317460318
+      },
+      "BAAI/bge-reranker-v2-m3": {
+        "bare": 15.833333333333332,
+        "experienced": 18.293650793650794,
+        "expertise": 16.964285714285722,
+        "qualified": 9.365079365079366
+      },
+      "Cohere-rerank-v4.0-fast": {
+        "bare": 16.587301587301585,
+        "experienced": 33.23412698412699,
+        "expertise": 52.361111111111114,
+        "qualified": 23.581349206349206
+      },
+      "Cohere-rerank-v4.0-pro": {
+        "bare": 22.043650793650794,
+        "experienced": 61.83531746031746,
+        "expertise": 45.3968253968254,
+        "qualified": 35.019841269841265
+      },
+      "Qwen/Qwen3-Reranker-0.6B": {
+        "bare": 25.45634920634921,
+        "experienced": 24.88095238095238,
+        "expertise": 30.704365079365083,
+        "qualified": 28.829365079365083
+      },
+      "Qwen/Qwen3-Reranker-4B": {
+        "bare": -2.767857142857144,
+        "experienced": 38.452380952380956,
+        "expertise": 30.34722222222222,
+        "qualified": 20.287698412698408
+      },
+      "cohere/rerank-v3.5": {
+        "bare": 34.44444444444444,
+        "experienced": 42.65873015873016,
+        "expertise": 49.82142857142857,
+        "qualified": 21.904761904761905
+      },
+      "cross-encoder/ms-marco-MiniLM-L-12-v2": {
+        "bare": 31.448412698412696,
+        "experienced": 36.58730158730158,
+        "expertise": 30.33730158730159,
+        "qualified": 5.654761904761907
+      },
+      "cross-encoder/ms-marco-MiniLM-L6-v2": {
+        "bare": 36.884920634920626,
+        "experienced": 30.83333333333333,
+        "expertise": 23.968253968253972,
+        "qualified": 8.511904761904754
+      },
+      "ibm-granite-granite-embedding-reranker-english-r2": {
+        "bare": 25.198412698412696,
+        "experienced": 15.813492063492063,
+        "expertise": 14.186507936507942,
+        "qualified": 6.011904761904763
+      },
+      "jinaai/jina-reranker-v2-base-multilingual": {
+        "bare": 37.16269841269841,
+        "experienced": 10.486111111111112,
+        "expertise": 11.59722222222222,
+        "qualified": -2.1924603174603154
+      },
+      "jinaai/jina-reranker-v3": {
+        "bare": -1.9841269841269826,
+        "experienced": -1.0515873015873034,
+        "expertise": 4.126984126984129,
+        "qualified": 2.0436507936507917
+      },
+      "mixedbread-ai/mxbai-rerank-large-v2": {
+        "bare": 3.204365079365079,
+        "experienced": 25.337301587301585,
+        "expertise": 41.59722222222222,
+        "qualified": 12.96626984126984
+      },
+      "nvidia/llama-nemotron-rerank-1b-v2": {
+        "bare": 53.86904761904761,
+        "experienced": 27.003968253968246,
+        "expertise": 53.630952380952394,
+        "qualified": 39.27579365079365
+      },
+      "nvidia/llama-nemotron-rerank-vl-1b-v2": {
+        "bare": 36.03174603174604,
+        "experienced": 27.083333333333336,
+        "expertise": 40.53571428571429,
+        "qualified": 25.20833333333334
+      },
+      "qwen/qwen3-reranker-8b": {
+        "bare": 28.224206349206348,
+        "experienced": 35.892857142857146,
+        "expertise": 29.117063492063487,
+        "qualified": 33.323412698412696
+      },
+      "rerank-1": {
+        "bare": 3.452380952380951,
+        "experienced": 67.82738095238095,
+        "expertise": 29.19642857142857,
+        "qualified": 26.309523809523817
+      },
+      "rerank-2": {
+        "bare": 59.49404761904762,
+        "experienced": 59.077380952380956,
+        "expertise": 57.519841269841265,
+        "qualified": 53.02579365079365
+      },
+      "rerank-2-lite": {
+        "bare": 3.462301587301586,
+        "experienced": 21.38888888888889,
+        "expertise": 30.08928571428571,
+        "qualified": 21.716269841269842
+      },
+      "rerank-2.5": {
+        "bare": 70.39682539682539,
+        "experienced": 52.22222222222223,
+        "expertise": 53.293650793650805,
+        "qualified": 54.93055555555556
+      },
+      "rerank-2.5-lite": {
+        "bare": 58.59126984126984,
+        "experienced": 36.0218253968254,
+        "expertise": 38.68055555555556,
+        "qualified": 7.430555555555552
+      },
+      "rerank-3": {
+        "bare": 65.07936507936508,
+        "experienced": 63.41269841269841,
+        "expertise": 52.97619047619049,
+        "qualified": 62.09325396825396
+      },
+      "rerank-3-lite": {
+        "bare": 66.94444444444444,
+        "experienced": 52.40079365079365,
+        "expertise": 37.083333333333336,
+        "qualified": 41.99404761904763
+      },
+      "semantic-ranker-default-002": {
+        "bare": 30.446428571428562,
+        "experienced": 25.44642857142857,
+        "expertise": 28.04563492063492,
+        "qualified": 15.29761904761905
+      },
+      "semantic-ranker-default-004": {
+        "bare": 51.0813492063492,
+        "experienced": 64.82142857142857,
+        "expertise": 20.188492063492067,
+        "qualified": 38.1547619047619
+      },
+      "semantic-ranker-fast-004": {
+        "bare": 48.08531746031746,
+        "experienced": 29.771825396825403,
+        "expertise": 48.80952380952381,
+        "qualified": 28.04563492063492
+      },
+      "zeroentropy/zerank-2-reranker": {
+        "bare": 69.39484126984128,
+        "experienced": 67.8373015873016,
+        "expertise": 69.1170634920635,
+        "qualified": 54.751984126984134
       }
     }
   }

@@ -50,18 +50,20 @@ third-party Python packages are needed.
 | Claim | Script | Output |
 |---|---|---|
 | Single-stage re-ranker bias, 29 models (Figure 1, Tables A1–A2) | `../code/analyze_single_stage.py`, over the banked `../code/run_experiment.py` scores | `../results/single_stage_summary.json` |
-| Pipeline shortlist, one pair and swept over the 28 pointwise re-rankers (Figure 2, Table A3) | `../code/compounding_experiment.py` | `../results/compounding_bge_pipeline.json`, `../results/compounding_all_rerankers.json` |
-| De-identification mitigation, one model and all four local re-rankers (Figure 3, Tables A4–A5) | `../code/deidentification_experiment.py` | `../results/deidentification_bge.json`, `../results/deidentification_summary.json` |
+| Pipeline shortlist, one pair and swept over the 28 pointwise re-rankers (Figure 2, Table A4) | `../code/compounding_experiment.py` | `../results/compounding_bge_pipeline.json`, `../results/compounding_all_rerankers.json` |
+| De-identification mitigation, one model and all four local re-rankers (Figure 3, Tables A5–A6) | `../code/deidentification_experiment.py` | `../results/deidentification_bge.json`, `../results/deidentification_summary.json` |
 | The documents, query forms, name pairs, and full occupation list (Appendix A; the occupation list is released, not printed) | `../code/generate_appendix_tables.py` | `../results/tex/documents_appendix.tex`, `../results/tex/occupations_table.tex` |
 | Vendor documentation and public weight availability | `../code/vendor_docs_audit.py` | `../results/vendor_docs_audit_summary.json` |
 | Open-weight rerankers scored on a rented GPU (checkpointed, canary-gated) | `../code/score_open_models.py` | `../results/*_full_raw.json`, `../results/selfhost/` |
 | Request-order test for API rerankers and listwise order arms | `../code/order_reversal_test.py` | `../results/order_reversal_test.json`, `../results/order_test/` |
-| Cross-hardware and self-hosted vs API reproducibility | `../code/reproducibility_checks.py` | `../results/reproducibility_checks.json` |
-| Interval sensitivity (BLS-category and occupation × name resampling) | `../code/interval_sensitivity.py` | `../results/interval_sensitivity.json` |
+| Cross-hardware, self-hosted vs API, and API re-query vs banked scores (vendor drift) | `../code/reproducibility_checks.py` | `../results/reproducibility_checks.json` |
+| Interval sensitivity (BLS-category and occupation × name resampling), evenly split intervals, label-permutation test with Holm adjustment, full name cross, within-template and within-phrasing contrasts (Table A2) | `../code/interval_sensitivity.py` | `../results/interval_sensitivity.json` |
 | Paired de-identification statistics | `../code/deid_statistics.py` | `../results/deid_statistics_bge.json` |
 | Pinned local model revisions and runtime | `../code/model_manifest.py` | `../results/model_manifest.json` |
-| Companion results table (Appendix E) | `../code/companion_table.py` | `../results/tex/companion_table.tex` |
+| Companion results table (Appendix E, Table A7) | `../code/companion_table.py` | `../results/tex/companion_table.tex` |
 | Real-résumé companion run and sampled population | `../code/realistic_pool_experiment.py`, `../code/reconstruct_realistic_sampling.py` | `../results/realistic_pool_four_rerankers.json`, `../results/realistic_pool_sampling.json` |
+| Pronoun-only comparison: names replaced by one placeholder, every audited model except the listwise jina-reranker-v3 (Table A3; checkpointed, canary-gated, request-capped) | `../code/pronoun_channel_experiment.py` (`--tables-only` regenerates without scoring) | `../results/pronoun_channel_summary.json`, `../results/pronoun_channel/`, `../results/tex/pronoun_channel.tex` |
+| Companion statistics: in-window shares, male-typed minus female-typed difference, synthetic/companion score-gap ratio, net top-3 flips, job-category groups | `../code/companion_statistics.py` | `../results/companion_statistics.json` |
 
 All inputs for `python3 build.py` are included in the release; building the PDF
 needs neither downloaded résumés nor model weights. Reconstructing the companion
@@ -89,6 +91,16 @@ on any unresolved one. These are a sanity check for a human reader only.
   median within-model spread 31.4 pts). The exceptions are jina-reranker-v3
   (listwise, +0.8) and gte-reranker-modernbert-base (−6.7, interval touching zero).
   The largest gaps come from zerank-2 (+65) and Voyage rerank-3 (+61).
+- **Pronouns alone reproduce the pattern.** With both names replaced by one
+  placeholder, so the two documents differ only in their pronouns, 27 of 28
+  re-scored models (every audited model but the listwise jina-reranker-v3) keep a
+  male-typed minus female-typed contrast whose interval is above zero; the
+  exception is again gte-reranker-modernbert-base. Median contrast 39.5 points,
+  against 31.5 for the same models with names.
+- **The headline survives a multiplicity correction.** An occupation-label
+  permutation test, Holm-adjusted across the 29 models, gives the same 27 models a
+  significant positive contrast; GTE ModernBERT's reverse pattern does not survive
+  (adjusted p 0.10).
 - **The default lean on evenly split occupations is model-specific and not
   small.** Tie-aware median 64% favor-male, but 21 of 29 lean male and 8 lean
   female, from 31% to 91%. A buyer cannot tell which way a given product leans

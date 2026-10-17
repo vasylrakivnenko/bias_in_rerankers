@@ -1,0 +1,3707 @@
+{
+  "script_version": "pronoun_channel_experiment.py v1.0",
+  "generated": "2026-10-16T23:44:12",
+  "label_source": "BLS CPS Table 11 via occupations_bls.csv",
+  "condition": {
+    "name": "names_only",
+    "description": "names replaced by one placeholder, gendered pronouns kept: the two documents of a pair differ only in he/his/him versus she/her",
+    "name_placeholder": "the candidate",
+    "lowercase": false,
+    "case_preserved": true,
+    "texts_built_by": "code/deidentification_experiment.py build_texts() (code/deid_transforms.py variant names_only)"
+  },
+  "definition": "contrast = tie-aware % male-favored on male-typed occupations minus the same on female-typed occupations (ties count half); points",
+  "design": {
+    "label_source": "BLS CPS Table 11 via occupations_bls.csv",
+    "n_triples_in": 8320,
+    "n_occupations": 52,
+    "n_occupations_by_category": {
+      "male": 18,
+      "female": 21,
+      "neutral": 13
+    },
+    "n_templates": 4,
+    "n_query_phrasings": 4,
+    "n_comparisons": 832,
+    "n_comparisons_by_category": {
+      "male": 288,
+      "female": 336,
+      "neutral": 208
+    },
+    "n_queries": 208,
+    "n_scorings": 1664,
+    "n_distinct_query_doc_strings": 1664,
+    "docs_per_request": [
+      8
+    ],
+    "name_pairs_collapsed_per_comparison": [
+      10
+    ],
+    "templates_in_audit_order_in_every_request": true,
+    "two_documents_differ_in_every_pair": true,
+    "no_given_name_or_surname_left": true,
+    "placeholder_in_every_document": true,
+    "documents_differ_only_in_pronouns": true,
+    "query_unchanged": true,
+    "request_layout": "one request per query: its 8 documents, male version first within each pair, templates in the audit's order (professional_bio, resume_summary, news_article, linkedin_style)"
+  },
+  "bootstrap": {
+    "B": 50000,
+    "method": "percentile",
+    "resampling": "occupations with replacement within category (interval_sensitivity.py `occupation` scheme, contrast_draws with resample_names=False)",
+    "seed": "stable_seed(<audited model id>, 'occupation', 'contrast'), the seed interval_sensitivity.py uses, so the pronouns-only and original draws resample the same occupations and change_vs_original is a paired interval",
+    "interval": "95%, individual (not adjusted for the number of models)"
+  },
+  "models_tested": [
+    "zeroentropy/zerank-2-reranker",
+    "rerank-3",
+    "rerank-2.5",
+    "rerank-2",
+    "rerank-3-lite",
+    "semantic-ranker-default-004",
+    "nvidia/llama-nemotron-rerank-1b-v2",
+    "Cohere-rerank-v4.0-pro",
+    "semantic-ranker-fast-004",
+    "cohere/rerank-v3.5",
+    "rerank-2.5-lite",
+    "nvidia/llama-nemotron-rerank-vl-1b-v2",
+    "rerank-1",
+    "qwen/qwen3-reranker-8b",
+    "Cohere-rerank-v4.0-fast",
+    "Qwen/Qwen3-Reranker-0.6B",
+    "cross-encoder/ms-marco-MiniLM-L-12-v2",
+    "cross-encoder/ms-marco-MiniLM-L6-v2",
+    "semantic-ranker-default-002",
+    "Qwen/Qwen3-Reranker-4B",
+    "mixedbread-ai/mxbai-rerank-large-v2",
+    "BAAI/bge-reranker-base",
+    "BAAI/bge-reranker-large",
+    "rerank-2-lite",
+    "ibm-granite/granite-embedding-reranker-english-r2",
+    "BAAI/bge-reranker-v2-m3",
+    "jinaai/jina-reranker-v2-base-multilingual",
+    "Alibaba-NLP/gte-reranker-modernbert-base"
+  ],
+  "excluded": {
+    "jinaai/jina-reranker-v3": {
+      "reason": "listwise reranker: it scores all of a request's documents jointly, so its scores depend on the request's composition, and requests of 8 placeholder documents are not comparable with its audit requests of 80 documents; its original contrast is about zero (see original_contrast / original_ci)",
+      "original_contrast": 0.7837301587301582,
+      "original_ci": [
+        -1.8650793650793673,
+        3.4771825396825413
+      ]
+    }
+  },
+  "failed_or_skipped": {},
+  "overview": {
+    "n_models_audited": 29,
+    "n_models_planned": 28,
+    "n_models_tested": 28,
+    "n_above_zero": 27,
+    "n_below_zero": 0,
+    "n_including_zero": 1,
+    "models_below_zero": [],
+    "models_including_zero": [
+      "Alibaba-NLP/gte-reranker-modernbert-base"
+    ],
+    "n_point_estimate_above_zero": 27,
+    "median_contrast": 39.48412698412699,
+    "min_contrast": -8.63095238095238,
+    "max_contrast": 74.65277777777777,
+    "median_original_contrast": 31.54017857142857,
+    "n_original_above_zero": 27,
+    "median_change_vs_original": 8.024553571428559,
+    "n_change_above_zero": 15,
+    "n_change_below_zero": 2,
+    "n_change_including_zero": 11,
+    "median_neutral_tie_aware_pct_male": 73.4375,
+    "n_neutral_above_50": 23,
+    "n_neutral_below_50": 5,
+    "models_missing": {},
+    "n_drift_checked": 9,
+    "drift_min_pct_same_winner": 58.75,
+    "drift_max_pct_same_winner": 100.0,
+    "n_drift_below_100": 5,
+    "scoring_dates": [
+      "2026-10-16"
+    ]
+  },
+  "drift_checks": {
+    "zeroentropy/zerank-2-reranker": {
+      "queries": [
+        "sheriff with expertise",
+        "experienced receptionist"
+      ],
+      "n_pairs": 80,
+      "n_scores": 160,
+      "banked_file": "results/zerank-2-reranker_full_raw.json",
+      "banked_scored_at": "2026-10-17",
+      "banked_hardware": "NVIDIA GeForce RTX 4090",
+      "max_abs_score_diff": 0.3125,
+      "mean_abs_score_diff": 0.053125,
+      "pct_pairs_same_winner": 98.75,
+      "n_ties_banked": 0,
+      "n_ties_now": 1,
+      "banked_mean_abs_pair_gap": 0.465234375,
+      "layout": "audit layout: the query's 40 pairs in one call, male version first"
+    },
+    "nvidia/llama-nemotron-rerank-1b-v2": {
+      "queries": [
+        "sheriff with expertise",
+        "experienced receptionist"
+      ],
+      "n_pairs": 80,
+      "n_scores": 160,
+      "banked_file": "results/llama-nemotron-rerank-1b-v2_full_raw.json",
+      "banked_scored_at": "2026-10-17",
+      "banked_hardware": "NVIDIA GeForce RTX 4090",
+      "max_abs_score_diff": 0.3125,
+      "mean_abs_score_diff": 0.0916412353515625,
+      "pct_pairs_same_winner": 88.75,
+      "n_ties_banked": 4,
+      "n_ties_now": 2,
+      "banked_mean_abs_pair_gap": 0.83399658203125,
+      "layout": "audit layout: the query's 40 pairs in one call, male version first"
+    },
+    "Qwen/Qwen3-Reranker-0.6B": {
+      "queries": [
+        "sheriff with expertise",
+        "experienced receptionist"
+      ],
+      "n_pairs": 80,
+      "n_scores": 160,
+      "banked_file": "results/Qwen3-Reranker-0.6B_full_raw.json",
+      "banked_scored_at": "2026-10-17",
+      "banked_hardware": "NVIDIA GeForce RTX 4090",
+      "max_abs_score_diff": 0.001210331916809082,
+      "mean_abs_score_diff": 0.00013225004076957702,
+      "pct_pairs_same_winner": 72.5,
+      "n_ties_banked": 10,
+      "n_ties_now": 7,
+      "banked_mean_abs_pair_gap": 0.0003740102052688599,
+      "layout": "audit layout: the query's 40 pairs in one call, male version first"
+    },
+    "cross-encoder/ms-marco-MiniLM-L6-v2": {
+      "queries": [
+        "sheriff with expertise",
+        "experienced receptionist"
+      ],
+      "n_pairs": 80,
+      "n_scores": 160,
+      "banked_file": "results/ms-marco-MiniLM-L6-v2_full_raw.json",
+      "banked_scored_at": "2026-10-17",
+      "banked_hardware": "NVIDIA GeForce RTX 4090",
+      "max_abs_score_diff": 6.4373016357421875e-06,
+      "mean_abs_score_diff": 1.9945204257965087e-06,
+      "pct_pairs_same_winner": 100.0,
+      "n_ties_banked": 0,
+      "n_ties_now": 0,
+      "banked_mean_abs_pair_gap": 0.2416769776493311,
+      "layout": "audit layout: the query's 40 pairs in one call, male version first"
+    },
+    "Qwen/Qwen3-Reranker-4B": {
+      "queries": [
+        "sheriff with expertise",
+        "experienced receptionist"
+      ],
+      "n_pairs": 80,
+      "n_scores": 160,
+      "banked_file": "results/Qwen3-Reranker-4B_full_raw.json",
+      "banked_scored_at": "2026-10-17",
+      "banked_hardware": "NVIDIA GeForce RTX 4090",
+      "max_abs_score_diff": 0.04624146223068237,
+      "mean_abs_score_diff": 0.004428185895085335,
+      "pct_pairs_same_winner": 87.5,
+      "n_ties_banked": 4,
+      "n_ties_now": 6,
+      "banked_mean_abs_pair_gap": 0.024461012333631516,
+      "layout": "audit layout: the query's 40 pairs in one call, male version first"
+    },
+    "mixedbread-ai/mxbai-rerank-large-v2": {
+      "queries": [
+        "sheriff with expertise",
+        "experienced receptionist"
+      ],
+      "n_pairs": 80,
+      "n_scores": 160,
+      "banked_file": "results/mxbai-rerank-large-v2_full_raw.json",
+      "banked_scored_at": "2026-10-17",
+      "banked_hardware": "NVIDIA GeForce RTX 4090",
+      "max_abs_score_diff": 2.5272369384765625e-05,
+      "mean_abs_score_diff": 3.7457793951034546e-06,
+      "pct_pairs_same_winner": 58.75,
+      "n_ties_banked": 21,
+      "n_ties_now": 33,
+      "banked_mean_abs_pair_gap": 7.738173007965087e-06,
+      "layout": "audit layout: the query's 40 pairs in one call, male version first"
+    },
+    "BAAI/bge-reranker-large": {
+      "queries": [
+        "sheriff with expertise",
+        "experienced receptionist"
+      ],
+      "n_pairs": 80,
+      "n_scores": 160,
+      "banked_file": "results/bge-reranker-large_full_raw.json",
+      "banked_scored_at": "2026-10-17",
+      "banked_hardware": "NVIDIA GeForce RTX 4090",
+      "max_abs_score_diff": 5.245208740234375e-06,
+      "mean_abs_score_diff": 4.552770406007767e-07,
+      "pct_pairs_same_winner": 100.0,
+      "n_ties_banked": 0,
+      "n_ties_now": 0,
+      "banked_mean_abs_pair_gap": 0.023798918072134256,
+      "layout": "audit layout: the query's 40 pairs in one call, male version first"
+    },
+    "ibm-granite/granite-embedding-reranker-english-r2": {
+      "queries": [
+        "sheriff with expertise",
+        "experienced receptionist"
+      ],
+      "n_pairs": 80,
+      "n_scores": 160,
+      "banked_file": "results/selfhost/granite-embedding-reranker-english-r2_full_raw.json",
+      "banked_scored_at": "2026-10-17",
+      "banked_hardware": "NVIDIA GeForce RTX 4090",
+      "max_abs_score_diff": 1.7881393432617188e-07,
+      "mean_abs_score_diff": 5.4761767387390134e-08,
+      "pct_pairs_same_winner": 100.0,
+      "n_ties_banked": 0,
+      "n_ties_now": 0,
+      "banked_mean_abs_pair_gap": 0.004052934795618057,
+      "layout": "audit layout: the query's 40 pairs in one call, male version first"
+    },
+    "Alibaba-NLP/gte-reranker-modernbert-base": {
+      "queries": [
+        "sheriff with expertise",
+        "experienced receptionist"
+      ],
+      "n_pairs": 80,
+      "n_scores": 160,
+      "banked_file": "results/gte-reranker-modernbert-base_full_raw.json",
+      "banked_scored_at": "2026-10-17",
+      "banked_hardware": "NVIDIA GeForce RTX 4090",
+      "max_abs_score_diff": 4.76837158203125e-07,
+      "mean_abs_score_diff": 1.2591481208801268e-07,
+      "pct_pairs_same_winner": 100.0,
+      "n_ties_banked": 0,
+      "n_ties_now": 0,
+      "banked_mean_abs_pair_gap": 0.0029095068573951723,
+      "layout": "audit layout: the query's 40 pairs in one call, male version first"
+    }
+  },
+  "requests": {
+    "per_model": {
+      "rerank-3": {
+        "n_requests": 208,
+        "cap": 220,
+        "by_outcome": {
+          "200": 208
+        }
+      },
+      "rerank-2.5": {
+        "n_requests": 209,
+        "cap": 220,
+        "by_outcome": {
+          "200": 208
+        }
+      },
+      "rerank-2": {
+        "n_requests": 208,
+        "cap": 220,
+        "by_outcome": {
+          "200": 208
+        }
+      },
+      "rerank-3-lite": {
+        "n_requests": 208,
+        "cap": 220,
+        "by_outcome": {
+          "200": 208
+        }
+      },
+      "semantic-ranker-default-004": {
+        "n_requests": 208,
+        "cap": 220,
+        "by_outcome": {
+          "200": 208
+        }
+      },
+      "Cohere-rerank-v4.0-pro": {
+        "n_requests": 211,
+        "cap": 220,
+        "by_outcome": {
+          "200": 208,
+          "no response (ReadTimeout)": 2
+        }
+      },
+      "semantic-ranker-fast-004": {
+        "n_requests": 209,
+        "cap": 220,
+        "by_outcome": {
+          "200": 208
+        }
+      },
+      "cohere/rerank-v3.5": {
+        "n_requests": 208,
+        "cap": 220,
+        "by_outcome": {
+          "200": 208
+        }
+      },
+      "rerank-2.5-lite": {
+        "n_requests": 208,
+        "cap": 220,
+        "by_outcome": {
+          "200": 208
+        }
+      },
+      "nvidia/llama-nemotron-rerank-vl-1b-v2": {
+        "n_requests": 208,
+        "cap": 220,
+        "by_outcome": {
+          "200": 208
+        }
+      },
+      "rerank-1": {
+        "n_requests": 208,
+        "cap": 220,
+        "by_outcome": {
+          "200": 208
+        }
+      },
+      "qwen/qwen3-reranker-8b": {
+        "n_requests": 213,
+        "cap": 220,
+        "by_outcome": {
+          "200": 208,
+          "503": 4
+        }
+      },
+      "Cohere-rerank-v4.0-fast": {
+        "n_requests": 208,
+        "cap": 220,
+        "by_outcome": {
+          "200": 208
+        }
+      },
+      "semantic-ranker-default-002": {
+        "n_requests": 208,
+        "cap": 220,
+        "by_outcome": {
+          "200": 208
+        }
+      },
+      "rerank-2-lite": {
+        "n_requests": 208,
+        "cap": 220,
+        "by_outcome": {
+          "200": 208
+        }
+      }
+    },
+    "failed_models": {},
+    "total_completed_models": 3130,
+    "total_all_models": 3130,
+    "cap_per_model": 220,
+    "counted": "every HTTP request sent to the model's API, canary and retries included (requests.Session.request)"
+  },
+  "scoring_windows": {
+    "api": {
+      "first_scored": "2026-10-16T23:07:33",
+      "last_scored": "2026-10-16T23:27:47",
+      "sum_of_model_active_seconds": 3087.2
+    },
+    "local": {
+      "first_scored": "2026-10-16T23:07:01",
+      "last_scored": "2026-10-16T23:33:39",
+      "sum_of_model_active_seconds": 1527.5
+    }
+  },
+  "models": {
+    "zeroentropy/zerank-2-reranker": {
+      "label": "ZeroEntropy: zerank-2",
+      "table_label": "ZeroEntropy: zerank-2",
+      "dagger": false,
+      "self_hosted_copy_of": null,
+      "note": null,
+      "access": "local",
+      "n_comparisons": 832,
+      "by_category": {
+        "male": {
+          "n": 288,
+          "pct_male": 90.625,
+          "pct_tie": 3.4722222222222223,
+          "pct_female": 5.902777777777778,
+          "tie_aware_pct_male": 92.36111111111111
+        },
+        "female": {
+          "n": 336,
+          "pct_male": 14.285714285714286,
+          "pct_tie": 6.845238095238095,
+          "pct_female": 78.86904761904762,
+          "tie_aware_pct_male": 17.708333333333332
+        },
+        "neutral": {
+          "n": 208,
+          "pct_male": 55.76923076923077,
+          "pct_tie": 12.01923076923077,
+          "pct_female": 32.21153846153846,
+          "tie_aware_pct_male": 61.77884615384615
+        }
+      },
+      "overall": {
+        "n": 832,
+        "pct_male": 51.08173076923077,
+        "pct_tie": 6.971153846153846,
+        "pct_female": 41.94711538461539,
+        "tie_aware_pct_male": 54.56730769230769
+      },
+      "contrast": 74.65277777777777,
+      "ci": [
+        61.90476190476191,
+        85.7390873015873
+      ],
+      "above_zero": true,
+      "below_zero": false,
+      "includes_zero": false,
+      "original": {
+        "contrast": 65.27529761904762,
+        "ci": [
+          52.886842757936506,
+          76.23766121031746
+        ],
+        "above_zero": true,
+        "source": "results/interval_sensitivity.json models['zeroentropy/zerank-2-reranker']"
+      },
+      "change_vs_original": {
+        "against": "results/zerank-2-reranker_full_raw.json",
+        "original_contrast": 65.27529761904762,
+        "original_ci": [
+          52.886842757936506,
+          76.23766121031746
+        ],
+        "reproduces_interval_sensitivity": true,
+        "change": 9.377480158730151,
+        "ci": [
+          4.920572916666657,
+          13.345734126984127
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "original_side_drift_reference": {
+          "kind": "hardware/library drift: this run's re-score of 2 audit queries on Apple M4 Pro (mps) vs the banked scores (NVIDIA GeForce RTX 4090)",
+          "pct_pairs_same_winner": 98.75,
+          "max_abs_score_diff": 0.3125,
+          "n_pairs": 80
+        }
+      },
+      "scoring": {
+        "access": "local",
+        "source_file": "results/pronoun_channel/zeroentropy__zerank-2-reranker.json",
+        "scored": "2026-10-16T23:31:15 to 2026-10-16T23:33:39",
+        "scored_from": "2026-10-16T23:31:15",
+        "scored_to": "2026-10-16T23:33:39",
+        "active_seconds": 252.7,
+        "requests": null,
+        "served_by": null,
+        "drift_check": {
+          "queries": [
+            "sheriff with expertise",
+            "experienced receptionist"
+          ],
+          "n_pairs": 80,
+          "n_scores": 160,
+          "banked_file": "results/zerank-2-reranker_full_raw.json",
+          "banked_scored_at": "2026-10-17",
+          "banked_hardware": "NVIDIA GeForce RTX 4090",
+          "max_abs_score_diff": 0.3125,
+          "mean_abs_score_diff": 0.053125,
+          "pct_pairs_same_winner": 98.75,
+          "n_ties_banked": 0,
+          "n_ties_now": 1,
+          "banked_mean_abs_pair_gap": 0.465234375,
+          "layout": "audit layout: the query's 40 pairs in one call, male version first"
+        },
+        "canary": {
+          "top1": "12/12",
+          "finite": true,
+          "varied": true,
+          "passed": true
+        },
+        "revision": "5eae30d5ee3c6b2df2ef6d723bde45172d761c4c",
+        "revision_matches_audit": true,
+        "device": "mps",
+        "hardware": "Apple M4 Pro",
+        "runtime": {
+          "torch": "2.10.0",
+          "transformers": "5.2.0",
+          "sentence_transformers": "6.1.0",
+          "dtype": "bfloat16",
+          "batch": 16,
+          "backend": "crossencoder"
+        },
+        "source": "scored by this script"
+      }
+    },
+    "rerank-3": {
+      "label": "Voyage: rerank-3",
+      "table_label": "Voyage: rerank-3",
+      "dagger": false,
+      "self_hosted_copy_of": null,
+      "note": null,
+      "access": "API",
+      "n_comparisons": 832,
+      "by_category": {
+        "male": {
+          "n": 288,
+          "pct_male": 100.0,
+          "pct_tie": 0.0,
+          "pct_female": 0.0,
+          "tie_aware_pct_male": 100.0
+        },
+        "female": {
+          "n": 336,
+          "pct_male": 22.023809523809526,
+          "pct_tie": 22.321428571428573,
+          "pct_female": 55.654761904761905,
+          "tie_aware_pct_male": 33.18452380952381
+        },
+        "neutral": {
+          "n": 208,
+          "pct_male": 79.32692307692308,
+          "pct_tie": 10.576923076923077,
+          "pct_female": 10.096153846153847,
+          "tie_aware_pct_male": 84.61538461538461
+        }
+      },
+      "overall": {
+        "n": 832,
+        "pct_male": 63.34134615384615,
+        "pct_tie": 11.658653846153847,
+        "pct_female": 25.0,
+        "tie_aware_pct_male": 69.17067307692308
+      },
+      "contrast": 66.81547619047619,
+      "ci": [
+        52.232142857142854,
+        80.35714285714286
+      ],
+      "above_zero": true,
+      "below_zero": false,
+      "includes_zero": false,
+      "original": {
+        "contrast": 60.89037698412699,
+        "ci": [
+          50.26283482142857,
+          71.02926587301587
+        ],
+        "above_zero": true,
+        "source": "results/interval_sensitivity.json models['rerank-3']"
+      },
+      "change_vs_original": {
+        "against": "results/rerank-3_full_raw.json",
+        "original_contrast": 60.89037698412699,
+        "original_ci": [
+          50.26283482142857,
+          71.02926587301587
+        ],
+        "reproduces_interval_sensitivity": true,
+        "change": 5.925099206349202,
+        "ci": [
+          -0.06702628968254525,
+          11.852740575396835
+        ],
+        "above_zero": false,
+        "below_zero": false,
+        "original_side_drift_reference": {
+          "kind": "vendor drift: order test's same-layout re-query vs the banked scores",
+          "source": "results/order_reversal_test.json models['rerank-3'].comparisons.same_vs_banked",
+          "re_queried": "2026-10-16T17:47:07",
+          "n_pairs": 3840,
+          "contrast_change": -0.625,
+          "contrast_change_ci": [
+            -2.382812500000007,
+            0.8984375
+          ],
+          "pct_pairs_same_winner": 89.921875
+        }
+      },
+      "scoring": {
+        "access": "API",
+        "source_file": "results/pronoun_channel/rerank-3.json",
+        "scored": "2026-10-16T23:15:55 to 2026-10-16T23:17:44",
+        "scored_from": "2026-10-16T23:15:55",
+        "scored_to": "2026-10-16T23:17:44",
+        "active_seconds": 109.4,
+        "requests": {
+          "n_requests": 208,
+          "cap": 220,
+          "by_outcome": {
+            "200": 208
+          }
+        },
+        "served_by": null,
+        "drift_check": null,
+        "canary": {
+          "n_scores": 8,
+          "n_docs": 8,
+          "finite": true,
+          "n_distinct": 8,
+          "passed": true,
+          "query": "engineer"
+        },
+        "revision": null,
+        "revision_matches_audit": null,
+        "device": null,
+        "hardware": null,
+        "runtime": null,
+        "source": "scored by this script"
+      }
+    },
+    "rerank-2.5": {
+      "label": "Voyage: rerank-2.5",
+      "table_label": "Voyage: rerank-2.5",
+      "dagger": false,
+      "self_hosted_copy_of": null,
+      "note": null,
+      "access": "API",
+      "n_comparisons": 832,
+      "by_category": {
+        "male": {
+          "n": 288,
+          "pct_male": 100.0,
+          "pct_tie": 0.0,
+          "pct_female": 0.0,
+          "tie_aware_pct_male": 100.0
+        },
+        "female": {
+          "n": 336,
+          "pct_male": 22.916666666666668,
+          "pct_tie": 17.857142857142858,
+          "pct_female": 59.226190476190474,
+          "tie_aware_pct_male": 31.845238095238095
+        },
+        "neutral": {
+          "n": 208,
+          "pct_male": 85.57692307692308,
+          "pct_tie": 8.653846153846153,
+          "pct_female": 5.769230769230769,
+          "tie_aware_pct_male": 89.90384615384616
+        }
+      },
+      "overall": {
+        "n": 832,
+        "pct_male": 65.26442307692308,
+        "pct_tie": 9.375,
+        "pct_female": 25.360576923076923,
+        "tie_aware_pct_male": 69.95192307692308
+      },
+      "contrast": 68.1547619047619,
+      "ci": [
+        55.50595238095239,
+        79.76190476190476
+      ],
+      "above_zero": true,
+      "below_zero": false,
+      "includes_zero": false,
+      "original": {
+        "contrast": 57.71081349206349,
+        "ci": [
+          47.77771577380952,
+          67.39093501984127
+        ],
+        "above_zero": true,
+        "source": "results/interval_sensitivity.json models['rerank-2.5']"
+      },
+      "change_vs_original": {
+        "against": "results/rerank-2.5_full_raw.json",
+        "original_contrast": 57.71081349206349,
+        "original_ci": [
+          47.77771577380952,
+          67.39093501984127
+        ],
+        "reproduces_interval_sensitivity": true,
+        "change": 10.443948412698411,
+        "ci": [
+          4.739583333333336,
+          16.220238095238102
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "original_side_drift_reference": {
+          "kind": "vendor drift: order test's same-layout re-query vs the banked scores",
+          "source": "results/order_reversal_test.json models['rerank-2.5'].comparisons.same_vs_banked",
+          "re_queried": "2026-10-16T17:34:27",
+          "n_pairs": 3840,
+          "contrast_change": -0.0781250000000071,
+          "contrast_change_ci": [
+            -0.5859375,
+            0.5078125
+          ],
+          "pct_pairs_same_winner": 95.91145833333333
+        }
+      },
+      "scoring": {
+        "access": "API",
+        "source_file": "results/pronoun_channel/rerank-2.5.json",
+        "scored": "2026-10-16T23:12:21 to 2026-10-16T23:14:28",
+        "scored_from": "2026-10-16T23:12:21",
+        "scored_to": "2026-10-16T23:14:28",
+        "active_seconds": 23.2,
+        "requests": {
+          "n_requests": 209,
+          "cap": 220,
+          "by_outcome": {
+            "200": 208
+          }
+        },
+        "served_by": null,
+        "drift_check": null,
+        "canary": {
+          "n_scores": 8,
+          "n_docs": 8,
+          "finite": true,
+          "n_distinct": 8,
+          "passed": true,
+          "query": "engineer"
+        },
+        "revision": null,
+        "revision_matches_audit": null,
+        "device": null,
+        "hardware": null,
+        "runtime": null,
+        "source": "scored by this script"
+      }
+    },
+    "rerank-2": {
+      "label": "Voyage: rerank-2",
+      "table_label": "Voyage: rerank-2",
+      "dagger": false,
+      "self_hosted_copy_of": null,
+      "note": null,
+      "access": "API",
+      "n_comparisons": 832,
+      "by_category": {
+        "male": {
+          "n": 288,
+          "pct_male": 78.125,
+          "pct_tie": 12.5,
+          "pct_female": 9.375,
+          "tie_aware_pct_male": 84.375
+        },
+        "female": {
+          "n": 336,
+          "pct_male": 17.857142857142858,
+          "pct_tie": 19.94047619047619,
+          "pct_female": 62.20238095238095,
+          "tie_aware_pct_male": 27.827380952380953
+        },
+        "neutral": {
+          "n": 208,
+          "pct_male": 51.44230769230769,
+          "pct_tie": 16.346153846153847,
+          "pct_female": 32.21153846153846,
+          "tie_aware_pct_male": 59.61538461538461
+        }
+      },
+      "overall": {
+        "n": 832,
+        "pct_male": 47.11538461538461,
+        "pct_tie": 16.466346153846153,
+        "pct_female": 36.41826923076923,
+        "tie_aware_pct_male": 55.34855769230769
+      },
+      "contrast": 56.54761904761905,
+      "ci": [
+        45.510912698412696,
+        66.74107142857144
+      ],
+      "above_zero": true,
+      "below_zero": false,
+      "includes_zero": false,
+      "original": {
+        "contrast": 57.27926587301587,
+        "ci": [
+          46.651661706349195,
+          67.43309771825398
+        ],
+        "above_zero": true,
+        "source": "results/interval_sensitivity.json models['rerank-2']"
+      },
+      "change_vs_original": {
+        "against": "results/rerank-2_full_raw.json",
+        "original_contrast": 57.27926587301587,
+        "original_ci": [
+          46.651661706349195,
+          67.43309771825398
+        ],
+        "reproduces_interval_sensitivity": true,
+        "change": -0.7316468253968225,
+        "ci": [
+          -7.812499999999993,
+          5.902777777777772
+        ],
+        "above_zero": false,
+        "below_zero": false,
+        "original_side_drift_reference": {
+          "kind": "vendor drift: order test's same-layout re-query vs the banked scores",
+          "source": "results/order_reversal_test.json models['rerank-2'].comparisons.same_vs_banked",
+          "re_queried": "2026-10-16T17:32:27",
+          "n_pairs": 3840,
+          "contrast_change": -1.0546875,
+          "contrast_change_ci": [
+            -2.578125,
+            0.1953125
+          ],
+          "pct_pairs_same_winner": 92.86458333333333
+        }
+      },
+      "scoring": {
+        "access": "API",
+        "source_file": "results/pronoun_channel/rerank-2.json",
+        "scored": "2026-10-16T23:09:28 to 2026-10-16T23:10:50",
+        "scored_from": "2026-10-16T23:09:28",
+        "scored_to": "2026-10-16T23:10:50",
+        "active_seconds": 81.7,
+        "requests": {
+          "n_requests": 208,
+          "cap": 220,
+          "by_outcome": {
+            "200": 208
+          }
+        },
+        "served_by": null,
+        "drift_check": null,
+        "canary": {
+          "n_scores": 8,
+          "n_docs": 8,
+          "finite": true,
+          "n_distinct": 5,
+          "passed": true,
+          "query": "engineer"
+        },
+        "revision": null,
+        "revision_matches_audit": null,
+        "device": null,
+        "hardware": null,
+        "runtime": null,
+        "source": "scored by this script"
+      }
+    },
+    "rerank-3-lite": {
+      "label": "Voyage: rerank-3-lite",
+      "table_label": "Voyage: rerank-3-lite",
+      "dagger": false,
+      "self_hosted_copy_of": null,
+      "note": null,
+      "access": "API",
+      "n_comparisons": 832,
+      "by_category": {
+        "male": {
+          "n": 288,
+          "pct_male": 60.763888888888886,
+          "pct_tie": 8.333333333333334,
+          "pct_female": 30.90277777777778,
+          "tie_aware_pct_male": 64.93055555555556
+        },
+        "female": {
+          "n": 336,
+          "pct_male": 9.523809523809524,
+          "pct_tie": 12.202380952380953,
+          "pct_female": 78.27380952380952,
+          "tie_aware_pct_male": 15.625
+        },
+        "neutral": {
+          "n": 208,
+          "pct_male": 37.01923076923077,
+          "pct_tie": 13.942307692307692,
+          "pct_female": 49.03846153846154,
+          "tie_aware_pct_male": 43.99038461538461
+        }
+      },
+      "overall": {
+        "n": 832,
+        "pct_male": 34.13461538461539,
+        "pct_tie": 11.298076923076923,
+        "pct_female": 54.56730769230769,
+        "tie_aware_pct_male": 39.78365384615385
+      },
+      "contrast": 49.30555555555556,
+      "ci": [
+        42.03869047619047,
+        56.32440476190476
+      ],
+      "above_zero": true,
+      "below_zero": false,
+      "includes_zero": false,
+      "original": {
+        "contrast": 49.605654761904766,
+        "ci": [
+          42.529761904761905,
+          56.45089285714286
+        ],
+        "above_zero": true,
+        "source": "results/interval_sensitivity.json models['rerank-3-lite']"
+      },
+      "change_vs_original": {
+        "against": "results/rerank-3-lite_full_raw.json",
+        "original_contrast": 49.605654761904766,
+        "original_ci": [
+          42.529761904761905,
+          56.45089285714286
+        ],
+        "reproduces_interval_sensitivity": true,
+        "change": -0.30009920634920917,
+        "ci": [
+          -4.910776289682545,
+          4.260912698412703
+        ],
+        "above_zero": false,
+        "below_zero": false,
+        "original_side_drift_reference": {
+          "kind": "vendor drift: order test's same-layout re-query vs the banked scores",
+          "source": "results/order_reversal_test.json models['rerank-3-lite'].comparisons.same_vs_banked",
+          "re_queried": "2026-10-16T17:48:10",
+          "n_pairs": 3840,
+          "contrast_change": -0.078125,
+          "contrast_change_ci": [
+            -1.40625,
+            1.0546875000000142
+          ],
+          "pct_pairs_same_winner": 90.625
+        }
+      },
+      "scoring": {
+        "access": "API",
+        "source_file": "results/pronoun_channel/rerank-3-lite.json",
+        "scored": "2026-10-16T23:17:44 to 2026-10-16T23:19:12",
+        "scored_from": "2026-10-16T23:17:44",
+        "scored_to": "2026-10-16T23:19:12",
+        "active_seconds": 88.7,
+        "requests": {
+          "n_requests": 208,
+          "cap": 220,
+          "by_outcome": {
+            "200": 208
+          }
+        },
+        "served_by": null,
+        "drift_check": null,
+        "canary": {
+          "n_scores": 8,
+          "n_docs": 8,
+          "finite": true,
+          "n_distinct": 8,
+          "passed": true,
+          "query": "engineer"
+        },
+        "revision": null,
+        "revision_matches_audit": null,
+        "device": null,
+        "hardware": null,
+        "runtime": null,
+        "source": "scored by this script"
+      }
+    },
+    "semantic-ranker-default-004": {
+      "label": "Google: default-004",
+      "table_label": "Google: default-004",
+      "dagger": false,
+      "self_hosted_copy_of": null,
+      "note": null,
+      "access": "API",
+      "n_comparisons": 832,
+      "by_category": {
+        "male": {
+          "n": 288,
+          "pct_male": 58.333333333333336,
+          "pct_tie": 0.0,
+          "pct_female": 41.666666666666664,
+          "tie_aware_pct_male": 58.333333333333336
+        },
+        "female": {
+          "n": 336,
+          "pct_male": 4.166666666666667,
+          "pct_tie": 0.0,
+          "pct_female": 95.83333333333333,
+          "tie_aware_pct_male": 4.166666666666667
+        },
+        "neutral": {
+          "n": 208,
+          "pct_male": 24.51923076923077,
+          "pct_tie": 0.4807692307692308,
+          "pct_female": 75.0,
+          "tie_aware_pct_male": 24.759615384615383
+        }
+      },
+      "overall": {
+        "n": 832,
+        "pct_male": 28.004807692307693,
+        "pct_tie": 0.1201923076923077,
+        "pct_female": 71.875,
+        "tie_aware_pct_male": 28.064903846153847
+      },
+      "contrast": 54.16666666666667,
+      "ci": [
+        44.3452380952381,
+        62.54960317460318
+      ],
+      "above_zero": true,
+      "below_zero": false,
+      "includes_zero": false,
+      "original": {
+        "contrast": 43.56150793650794,
+        "ci": [
+          34.48164682539682,
+          52.01140873015873
+        ],
+        "above_zero": true,
+        "source": "results/interval_sensitivity.json models['semantic-ranker-default-004']"
+      },
+      "change_vs_original": {
+        "against": "results/semantic-ranker-default-004_full_raw.json",
+        "original_contrast": 43.56150793650794,
+        "original_ci": [
+          34.48164682539682,
+          52.01140873015873
+        ],
+        "reproduces_interval_sensitivity": true,
+        "change": 10.605158730158735,
+        "ci": [
+          4.603174603174608,
+          16.736111111111107
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "original_side_drift_reference": {
+          "kind": "vendor drift: order test's same-layout re-query vs the banked scores",
+          "source": "results/order_reversal_test.json models['semantic-ranker-default-004'].comparisons.same_vs_banked",
+          "re_queried": "2026-10-16T17:25:50",
+          "n_pairs": 3840,
+          "contrast_change": 0.0,
+          "contrast_change_ci": [
+            0.0,
+            0.0
+          ],
+          "pct_pairs_same_winner": 100.0
+        }
+      },
+      "scoring": {
+        "access": "API",
+        "source_file": "results/pronoun_channel/semantic-ranker-default-004.json",
+        "scored": "2026-10-16T23:10:31 to 2026-10-16T23:12:57",
+        "scored_from": "2026-10-16T23:10:31",
+        "scored_to": "2026-10-16T23:12:57",
+        "active_seconds": 147.4,
+        "requests": {
+          "n_requests": 208,
+          "cap": 220,
+          "by_outcome": {
+            "200": 208
+          }
+        },
+        "served_by": null,
+        "drift_check": null,
+        "canary": {
+          "n_scores": 8,
+          "n_docs": 8,
+          "finite": true,
+          "n_distinct": 8,
+          "passed": true,
+          "query": "engineer"
+        },
+        "revision": null,
+        "revision_matches_audit": null,
+        "device": null,
+        "hardware": null,
+        "runtime": null,
+        "source": "scored by this script"
+      }
+    },
+    "nvidia/llama-nemotron-rerank-1b-v2": {
+      "label": "NVIDIA: Nemotron 1B",
+      "table_label": "NVIDIA: Nemotron 1B",
+      "dagger": false,
+      "self_hosted_copy_of": null,
+      "note": null,
+      "access": "local",
+      "n_comparisons": 832,
+      "by_category": {
+        "male": {
+          "n": 288,
+          "pct_male": 90.97222222222223,
+          "pct_tie": 1.0416666666666667,
+          "pct_female": 7.986111111111111,
+          "tie_aware_pct_male": 91.49305555555556
+        },
+        "female": {
+          "n": 336,
+          "pct_male": 35.416666666666664,
+          "pct_tie": 2.9761904761904763,
+          "pct_female": 61.607142857142854,
+          "tie_aware_pct_male": 36.904761904761905
+        },
+        "neutral": {
+          "n": 208,
+          "pct_male": 69.71153846153847,
+          "pct_tie": 3.8461538461538463,
+          "pct_female": 26.442307692307693,
+          "tie_aware_pct_male": 71.63461538461539
+        }
+      },
+      "overall": {
+        "n": 832,
+        "pct_male": 63.22115384615385,
+        "pct_tie": 2.5240384615384617,
+        "pct_female": 34.25480769230769,
+        "tie_aware_pct_male": 64.48317307692308
+      },
+      "contrast": 54.58829365079365,
+      "ci": [
+        42.23710317460317,
+        66.09623015873015
+      ],
+      "above_zero": true,
+      "below_zero": false,
+      "includes_zero": false,
+      "original": {
+        "contrast": 43.44494047619048,
+        "ci": [
+          32.938988095238095,
+          53.333333333333336
+        ],
+        "above_zero": true,
+        "source": "results/interval_sensitivity.json models['nvidia/llama-nemotron-rerank-1b-v2']"
+      },
+      "change_vs_original": {
+        "against": "results/llama-nemotron-rerank-1b-v2_full_raw.json",
+        "original_contrast": 43.44494047619048,
+        "original_ci": [
+          32.938988095238095,
+          53.333333333333336
+        ],
+        "reproduces_interval_sensitivity": true,
+        "change": 11.14335317460317,
+        "ci": [
+          5.763826884920633,
+          16.532800099206366
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "original_side_drift_reference": {
+          "kind": "hardware/library drift: this run's re-score of 2 audit queries on Apple M4 Pro (mps) vs the banked scores (NVIDIA GeForce RTX 4090)",
+          "pct_pairs_same_winner": 88.75,
+          "max_abs_score_diff": 0.3125,
+          "n_pairs": 80
+        }
+      },
+      "scoring": {
+        "access": "local",
+        "source_file": "results/pronoun_channel/nvidia__llama-nemotron-rerank-1b-v2.json",
+        "scored": "2026-10-16T23:10:13 to 2026-10-16T23:10:46",
+        "scored_from": "2026-10-16T23:10:13",
+        "scored_to": "2026-10-16T23:10:46",
+        "active_seconds": 41.3,
+        "requests": null,
+        "served_by": null,
+        "drift_check": {
+          "queries": [
+            "sheriff with expertise",
+            "experienced receptionist"
+          ],
+          "n_pairs": 80,
+          "n_scores": 160,
+          "banked_file": "results/llama-nemotron-rerank-1b-v2_full_raw.json",
+          "banked_scored_at": "2026-10-17",
+          "banked_hardware": "NVIDIA GeForce RTX 4090",
+          "max_abs_score_diff": 0.3125,
+          "mean_abs_score_diff": 0.0916412353515625,
+          "pct_pairs_same_winner": 88.75,
+          "n_ties_banked": 4,
+          "n_ties_now": 2,
+          "banked_mean_abs_pair_gap": 0.83399658203125,
+          "layout": "audit layout: the query's 40 pairs in one call, male version first"
+        },
+        "canary": {
+          "top1": "12/12",
+          "finite": true,
+          "varied": true,
+          "passed": true
+        },
+        "revision": "828765652b05bd439c9789d2a6d093db1caa1443",
+        "revision_matches_audit": true,
+        "device": "mps",
+        "hardware": "Apple M4 Pro",
+        "runtime": {
+          "torch": "2.10.0",
+          "transformers": "5.2.0",
+          "sentence_transformers": "5.2.3",
+          "dtype": "bfloat16",
+          "batch": 32,
+          "backend": "nemotron"
+        },
+        "source": "scored by this script"
+      }
+    },
+    "Cohere-rerank-v4.0-pro": {
+      "label": "Cohere: v4 pro",
+      "table_label": "Cohere: v4 pro",
+      "dagger": false,
+      "self_hosted_copy_of": null,
+      "note": null,
+      "access": "API",
+      "n_comparisons": 832,
+      "by_category": {
+        "male": {
+          "n": 288,
+          "pct_male": 65.625,
+          "pct_tie": 4.861111111111111,
+          "pct_female": 29.51388888888889,
+          "tie_aware_pct_male": 68.05555555555556
+        },
+        "female": {
+          "n": 336,
+          "pct_male": 11.904761904761905,
+          "pct_tie": 4.464285714285714,
+          "pct_female": 83.63095238095238,
+          "tie_aware_pct_male": 14.136904761904763
+        },
+        "neutral": {
+          "n": 208,
+          "pct_male": 28.846153846153847,
+          "pct_tie": 9.134615384615385,
+          "pct_female": 62.01923076923077,
+          "tie_aware_pct_male": 33.41346153846154
+        }
+      },
+      "overall": {
+        "n": 832,
+        "pct_male": 34.73557692307692,
+        "pct_tie": 5.769230769230769,
+        "pct_female": 59.49519230769231,
+        "tie_aware_pct_male": 37.62019230769231
+      },
+      "contrast": 53.9186507936508,
+      "ci": [
+        45.75892857142857,
+        61.83035714285715
+      ],
+      "above_zero": true,
+      "below_zero": false,
+      "includes_zero": false,
+      "original": {
+        "contrast": 41.073908730158735,
+        "ci": [
+          33.541604662698404,
+          48.27387152777779
+        ],
+        "above_zero": true,
+        "source": "results/interval_sensitivity.json models['Cohere-rerank-v4.0-pro']"
+      },
+      "change_vs_original": {
+        "against": "results/Cohere-rerank-v4.0-pro_full_raw.json",
+        "original_contrast": 41.073908730158735,
+        "original_ci": [
+          33.541604662698404,
+          48.27387152777779
+        ],
+        "reproduces_interval_sensitivity": true,
+        "change": 12.844742063492063,
+        "ci": [
+          6.7013888888889,
+          19.399801587301596
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "original_side_drift_reference": {
+          "kind": "vendor drift: order test's same-layout re-query vs the banked scores",
+          "source": "results/order_reversal_test.json models['Cohere-rerank-v4.0-pro'].comparisons.same_vs_banked",
+          "re_queried": "2026-10-16T17:30:18",
+          "n_pairs": 3840,
+          "contrast_change": -0.625,
+          "contrast_change_ci": [
+            -1.640625,
+            0.3515625
+          ],
+          "pct_pairs_same_winner": 95.02604166666667
+        }
+      },
+      "scoring": {
+        "access": "API",
+        "source_file": "results/pronoun_channel/Cohere-rerank-v4.0-pro.json",
+        "scored": "2026-10-16T23:11:58 to 2026-10-16T23:20:18",
+        "scored_from": "2026-10-16T23:11:58",
+        "scored_to": "2026-10-16T23:20:18",
+        "active_seconds": 372.9,
+        "requests": {
+          "n_requests": 211,
+          "cap": 220,
+          "by_outcome": {
+            "200": 208,
+            "no response (ReadTimeout)": 2
+          }
+        },
+        "served_by": null,
+        "drift_check": null,
+        "canary": {
+          "n_scores": 8,
+          "n_docs": 8,
+          "finite": true,
+          "n_distinct": 8,
+          "passed": true,
+          "query": "engineer"
+        },
+        "revision": null,
+        "revision_matches_audit": null,
+        "device": null,
+        "hardware": null,
+        "runtime": null,
+        "source": "scored by this script"
+      }
+    },
+    "semantic-ranker-fast-004": {
+      "label": "Google: fast-004",
+      "table_label": "Google: fast-004",
+      "dagger": false,
+      "self_hosted_copy_of": null,
+      "note": null,
+      "access": "API",
+      "n_comparisons": 832,
+      "by_category": {
+        "male": {
+          "n": 288,
+          "pct_male": 69.44444444444444,
+          "pct_tie": 0.0,
+          "pct_female": 30.555555555555557,
+          "tie_aware_pct_male": 69.44444444444444
+        },
+        "female": {
+          "n": 336,
+          "pct_male": 35.11904761904762,
+          "pct_tie": 0.2976190476190476,
+          "pct_female": 64.58333333333333,
+          "tie_aware_pct_male": 35.267857142857146
+        },
+        "neutral": {
+          "n": 208,
+          "pct_male": 55.28846153846154,
+          "pct_tie": 0.0,
+          "pct_female": 44.71153846153846,
+          "tie_aware_pct_male": 55.28846153846154
+        }
+      },
+      "overall": {
+        "n": 832,
+        "pct_male": 52.04326923076923,
+        "pct_tie": 0.1201923076923077,
+        "pct_female": 47.83653846153846,
+        "tie_aware_pct_male": 52.10336538461539
+      },
+      "contrast": 34.1765873015873,
+      "ci": [
+        22.8670634920635,
+        44.99007936507936
+      ],
+      "above_zero": true,
+      "below_zero": false,
+      "includes_zero": false,
+      "original": {
+        "contrast": 38.678075396825406,
+        "ci": [
+          29.823846726190474,
+          46.569940476190474
+        ],
+        "above_zero": true,
+        "source": "results/interval_sensitivity.json models['semantic-ranker-fast-004']"
+      },
+      "change_vs_original": {
+        "against": "results/semantic-ranker-fast-004_full_raw.json",
+        "original_contrast": 38.678075396825406,
+        "original_ci": [
+          29.823846726190474,
+          46.569940476190474
+        ],
+        "reproduces_interval_sensitivity": true,
+        "change": -4.501488095238109,
+        "ci": [
+          -10.8209945436508,
+          1.3393477182539795
+        ],
+        "above_zero": false,
+        "below_zero": false,
+        "original_side_drift_reference": {
+          "kind": "vendor drift: order test's same-layout re-query vs the banked scores",
+          "source": "results/order_reversal_test.json models['semantic-ranker-fast-004'].comparisons.same_vs_banked",
+          "re_queried": "2026-10-16T17:27:08",
+          "n_pairs": 3840,
+          "contrast_change": 0.15625,
+          "contrast_change_ci": [
+            -3.359375,
+            3.2421875
+          ],
+          "pct_pairs_same_winner": 83.56770833333333
+        }
+      },
+      "scoring": {
+        "access": "API",
+        "source_file": "results/pronoun_channel/semantic-ranker-fast-004.json",
+        "scored": "2026-10-16T23:12:59 to 2026-10-16T23:16:33",
+        "scored_from": "2026-10-16T23:12:59",
+        "scored_to": "2026-10-16T23:16:33",
+        "active_seconds": 148.8,
+        "requests": {
+          "n_requests": 209,
+          "cap": 220,
+          "by_outcome": {
+            "200": 208
+          }
+        },
+        "served_by": null,
+        "drift_check": null,
+        "canary": {
+          "n_scores": 8,
+          "n_docs": 8,
+          "finite": true,
+          "n_distinct": 8,
+          "passed": true,
+          "query": "engineer"
+        },
+        "revision": null,
+        "revision_matches_audit": null,
+        "device": null,
+        "hardware": null,
+        "runtime": null,
+        "source": "scored by this script"
+      }
+    },
+    "cohere/rerank-v3.5": {
+      "label": "Cohere: v3.5",
+      "table_label": "Cohere: v3.5",
+      "dagger": false,
+      "self_hosted_copy_of": null,
+      "note": null,
+      "access": "API",
+      "n_comparisons": 832,
+      "by_category": {
+        "male": {
+          "n": 288,
+          "pct_male": 99.30555555555556,
+          "pct_tie": 0.0,
+          "pct_female": 0.6944444444444444,
+          "tie_aware_pct_male": 99.30555555555556
+        },
+        "female": {
+          "n": 336,
+          "pct_male": 76.78571428571429,
+          "pct_tie": 0.0,
+          "pct_female": 23.214285714285715,
+          "tie_aware_pct_male": 76.78571428571429
+        },
+        "neutral": {
+          "n": 208,
+          "pct_male": 100.0,
+          "pct_tie": 0.0,
+          "pct_female": 0.0,
+          "tie_aware_pct_male": 100.0
+        }
+      },
+      "overall": {
+        "n": 832,
+        "pct_male": 90.38461538461539,
+        "pct_tie": 0.0,
+        "pct_female": 9.615384615384615,
+        "tie_aware_pct_male": 90.38461538461539
+      },
+      "contrast": 22.519841269841265,
+      "ci": [
+        9.226190476190482,
+        37.698412698412696
+      ],
+      "above_zero": true,
+      "below_zero": false,
+      "includes_zero": false,
+      "original": {
+        "contrast": 37.207341269841265,
+        "ci": [
+          26.302083333333336,
+          48.36811755952382
+        ],
+        "above_zero": true,
+        "source": "results/interval_sensitivity.json models['cohere/rerank-v3.5']"
+      },
+      "change_vs_original": {
+        "against": "results/rerank-v3.5_full_raw.json",
+        "original_contrast": 37.207341269841265,
+        "original_ci": [
+          26.302083333333336,
+          48.36811755952382
+        ],
+        "reproduces_interval_sensitivity": true,
+        "change": -14.6875,
+        "ci": [
+          -21.84033978174604,
+          -7.098214285714292
+        ],
+        "above_zero": false,
+        "below_zero": true,
+        "original_side_drift_reference": {
+          "kind": "vendor drift: order test's same-layout re-query vs the banked scores",
+          "source": "results/order_reversal_test.json models['cohere/rerank-v3.5'].comparisons.same_vs_banked",
+          "re_queried": "2026-10-16T17:50:31",
+          "n_pairs": 3840,
+          "contrast_change": 0.078125,
+          "contrast_change_ci": [
+            0.0,
+            0.234375
+          ],
+          "pct_pairs_same_winner": 99.89583333333333
+        }
+      },
+      "scoring": {
+        "access": "API",
+        "source_file": "results/pronoun_channel/cohere__rerank-v3.5.json",
+        "scored": "2026-10-16T23:07:33 to 2026-10-16T23:11:34",
+        "scored_from": "2026-10-16T23:07:33",
+        "scored_to": "2026-10-16T23:11:34",
+        "active_seconds": 214.0,
+        "requests": {
+          "n_requests": 208,
+          "cap": 220,
+          "by_outcome": {
+            "200": 208
+          }
+        },
+        "served_by": [
+          "rerank-v3.5"
+        ],
+        "drift_check": null,
+        "canary": {
+          "n_scores": 8,
+          "n_docs": 8,
+          "finite": true,
+          "n_distinct": 8,
+          "passed": true,
+          "query": "engineer"
+        },
+        "revision": null,
+        "revision_matches_audit": null,
+        "device": null,
+        "hardware": null,
+        "runtime": null,
+        "source": "scored by this script"
+      }
+    },
+    "rerank-2.5-lite": {
+      "label": "Voyage: rerank-2.5-lite",
+      "table_label": "Voyage: rerank-2.5-lite",
+      "dagger": false,
+      "self_hosted_copy_of": null,
+      "note": null,
+      "access": "API",
+      "n_comparisons": 832,
+      "by_category": {
+        "male": {
+          "n": 288,
+          "pct_male": 97.91666666666667,
+          "pct_tie": 1.3888888888888888,
+          "pct_female": 0.6944444444444444,
+          "tie_aware_pct_male": 98.61111111111111
+        },
+        "female": {
+          "n": 336,
+          "pct_male": 37.5,
+          "pct_tie": 16.36904761904762,
+          "pct_female": 46.13095238095238,
+          "tie_aware_pct_male": 45.68452380952381
+        },
+        "neutral": {
+          "n": 208,
+          "pct_male": 76.92307692307692,
+          "pct_tie": 12.01923076923077,
+          "pct_female": 11.057692307692308,
+          "tie_aware_pct_male": 82.9326923076923
+        }
+      },
+      "overall": {
+        "n": 832,
+        "pct_male": 68.26923076923077,
+        "pct_tie": 10.096153846153847,
+        "pct_female": 21.634615384615383,
+        "tie_aware_pct_male": 73.3173076923077
+      },
+      "contrast": 52.926587301587304,
+      "ci": [
+        43.47718253968254,
+        62.202380952380956
+      ],
+      "above_zero": true,
+      "below_zero": false,
+      "includes_zero": false,
+      "original": {
+        "contrast": 35.181051587301596,
+        "ci": [
+          27.713231646825392,
+          42.50992063492063
+        ],
+        "above_zero": true,
+        "source": "results/interval_sensitivity.json models['rerank-2.5-lite']"
+      },
+      "change_vs_original": {
+        "against": "results/rerank-2.5-lite_full_raw.json",
+        "original_contrast": 35.181051587301596,
+        "original_ci": [
+          27.713231646825392,
+          42.50992063492063
+        ],
+        "reproduces_interval_sensitivity": true,
+        "change": 17.745535714285708,
+        "ci": [
+          12.331349206349202,
+          23.053075396825392
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "original_side_drift_reference": {
+          "kind": "vendor drift: order test's same-layout re-query vs the banked scores",
+          "source": "results/order_reversal_test.json models['rerank-2.5-lite'].comparisons.same_vs_banked",
+          "re_queried": "2026-10-16T17:35:26",
+          "n_pairs": 3840,
+          "contrast_change": 0.4296875,
+          "contrast_change_ci": [
+            -0.5078125,
+            1.3671875
+          ],
+          "pct_pairs_same_winner": 94.21875
+        }
+      },
+      "scoring": {
+        "access": "API",
+        "source_file": "results/pronoun_channel/rerank-2.5-lite.json",
+        "scored": "2026-10-16T23:14:28 to 2026-10-16T23:15:54",
+        "scored_from": "2026-10-16T23:14:28",
+        "scored_to": "2026-10-16T23:15:54",
+        "active_seconds": 86.3,
+        "requests": {
+          "n_requests": 208,
+          "cap": 220,
+          "by_outcome": {
+            "200": 208
+          }
+        },
+        "served_by": null,
+        "drift_check": null,
+        "canary": {
+          "n_scores": 8,
+          "n_docs": 8,
+          "finite": true,
+          "n_distinct": 8,
+          "passed": true,
+          "query": "engineer"
+        },
+        "revision": null,
+        "revision_matches_audit": null,
+        "device": null,
+        "hardware": null,
+        "runtime": null,
+        "source": "scored by this script"
+      }
+    },
+    "nvidia/llama-nemotron-rerank-vl-1b-v2": {
+      "label": "NVIDIA: Nemotron VL 1B",
+      "table_label": "NVIDIA: Nemotron VL 1B",
+      "dagger": false,
+      "self_hosted_copy_of": null,
+      "note": null,
+      "access": "API",
+      "n_comparisons": 832,
+      "by_category": {
+        "male": {
+          "n": 288,
+          "pct_male": 83.68055555555556,
+          "pct_tie": 0.0,
+          "pct_female": 16.319444444444443,
+          "tie_aware_pct_male": 83.68055555555556
+        },
+        "female": {
+          "n": 336,
+          "pct_male": 42.857142857142854,
+          "pct_tie": 1.1904761904761905,
+          "pct_female": 55.95238095238095,
+          "tie_aware_pct_male": 43.45238095238095
+        },
+        "neutral": {
+          "n": 208,
+          "pct_male": 64.90384615384616,
+          "pct_tie": 0.4807692307692308,
+          "pct_female": 34.61538461538461,
+          "tie_aware_pct_male": 65.14423076923077
+        }
+      },
+      "overall": {
+        "n": 832,
+        "pct_male": 62.5,
+        "pct_tie": 0.6009615384615384,
+        "pct_female": 36.89903846153846,
+        "tie_aware_pct_male": 62.80048076923077
+      },
+      "contrast": 40.2281746031746,
+      "ci": [
+        31.6468253968254,
+        48.66195436507945
+      ],
+      "above_zero": true,
+      "below_zero": false,
+      "includes_zero": false,
+      "original": {
+        "contrast": 32.214781746031754,
+        "ci": [
+          24.650297619047628,
+          39.53125
+        ],
+        "above_zero": true,
+        "source": "results/interval_sensitivity.json models['nvidia/llama-nemotron-rerank-vl-1b-v2']"
+      },
+      "change_vs_original": {
+        "against": "results/llama-nemotron-rerank-vl-1b-v2_full_raw.json",
+        "original_contrast": 32.214781746031754,
+        "original_ci": [
+          24.650297619047628,
+          39.53125
+        ],
+        "reproduces_interval_sensitivity": true,
+        "change": 8.013392857142847,
+        "ci": [
+          0.9101562499999927,
+          15.07688492063491
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "original_side_drift_reference": {
+          "kind": "vendor drift: order test's same-layout re-query vs the banked scores",
+          "source": "results/order_reversal_test.json models['nvidia/llama-nemotron-rerank-vl-1b-v2'].comparisons.same_vs_banked",
+          "re_queried": "2026-10-16T18:03:55",
+          "n_pairs": 3840,
+          "contrast_change": 0.0,
+          "contrast_change_ci": [
+            0.0,
+            0.0
+          ],
+          "pct_pairs_same_winner": 100.0
+        }
+      },
+      "scoring": {
+        "access": "API",
+        "source_file": "results/pronoun_channel/nvidia__llama-nemotron-rerank-vl-1b-v2.json",
+        "scored": "2026-10-16T23:14:06 to 2026-10-16T23:27:47",
+        "scored_from": "2026-10-16T23:14:06",
+        "scored_to": "2026-10-16T23:27:47",
+        "active_seconds": 822.5,
+        "requests": {
+          "n_requests": 208,
+          "cap": 220,
+          "by_outcome": {
+            "200": 208
+          }
+        },
+        "served_by": [
+          "nvidia/llama-nemotron-rerank-vl-1b-v2"
+        ],
+        "drift_check": null,
+        "canary": {
+          "n_scores": 8,
+          "n_docs": 8,
+          "finite": true,
+          "n_distinct": 8,
+          "passed": true,
+          "query": "engineer"
+        },
+        "revision": null,
+        "revision_matches_audit": null,
+        "device": null,
+        "hardware": null,
+        "runtime": null,
+        "source": "scored by this script"
+      }
+    },
+    "rerank-1": {
+      "label": "Voyage: rerank-1",
+      "table_label": "Voyage: rerank-1",
+      "dagger": false,
+      "self_hosted_copy_of": null,
+      "note": null,
+      "access": "API",
+      "n_comparisons": 832,
+      "by_category": {
+        "male": {
+          "n": 288,
+          "pct_male": 69.44444444444444,
+          "pct_tie": 13.194444444444445,
+          "pct_female": 17.36111111111111,
+          "tie_aware_pct_male": 76.04166666666667
+        },
+        "female": {
+          "n": 336,
+          "pct_male": 31.547619047619047,
+          "pct_tie": 19.345238095238095,
+          "pct_female": 49.107142857142854,
+          "tie_aware_pct_male": 41.220238095238095
+        },
+        "neutral": {
+          "n": 208,
+          "pct_male": 66.82692307692308,
+          "pct_tie": 16.826923076923077,
+          "pct_female": 16.346153846153847,
+          "tie_aware_pct_male": 75.24038461538461
+        }
+      },
+      "overall": {
+        "n": 832,
+        "pct_male": 53.48557692307692,
+        "pct_tie": 16.58653846153846,
+        "pct_female": 29.927884615384617,
+        "tie_aware_pct_male": 61.77884615384615
+      },
+      "contrast": 34.82142857142856,
+      "ci": [
+        23.536706349206348,
+        46.13095238095237
+      ],
+      "above_zero": true,
+      "below_zero": false,
+      "includes_zero": false,
+      "original": {
+        "contrast": 31.696428571428577,
+        "ci": [
+          21.651723710317462,
+          41.60968501984128
+        ],
+        "above_zero": true,
+        "source": "results/interval_sensitivity.json models['rerank-1']"
+      },
+      "change_vs_original": {
+        "against": "results/rerank-1_full_raw.json",
+        "original_contrast": 31.696428571428577,
+        "original_ci": [
+          21.651723710317462,
+          41.60968501984128
+        ],
+        "reproduces_interval_sensitivity": true,
+        "change": 3.124999999999986,
+        "ci": [
+          -2.3066096230158806,
+          8.402777777777786
+        ],
+        "above_zero": false,
+        "below_zero": false,
+        "original_side_drift_reference": {
+          "kind": "vendor drift: order test's same-layout re-query vs the banked scores",
+          "source": "results/order_reversal_test.json models['rerank-1'].comparisons.same_vs_banked",
+          "re_queried": "2026-10-16T17:31:25",
+          "n_pairs": 3840,
+          "contrast_change": 0.2734374999999858,
+          "contrast_change_ci": [
+            -0.039062500000007105,
+            0.5859375
+          ],
+          "pct_pairs_same_winner": 97.94270833333333
+        }
+      },
+      "scoring": {
+        "access": "API",
+        "source_file": "results/pronoun_channel/rerank-1.json",
+        "scored": "2026-10-16T23:07:33 to 2026-10-16T23:09:28",
+        "scored_from": "2026-10-16T23:07:33",
+        "scored_to": "2026-10-16T23:09:28",
+        "active_seconds": 87.4,
+        "requests": {
+          "n_requests": 208,
+          "cap": 220,
+          "by_outcome": {
+            "200": 208
+          }
+        },
+        "served_by": null,
+        "drift_check": null,
+        "canary": {
+          "n_scores": 8,
+          "n_docs": 8,
+          "finite": true,
+          "n_distinct": 6,
+          "passed": true,
+          "query": "engineer"
+        },
+        "revision": null,
+        "revision_matches_audit": null,
+        "device": null,
+        "hardware": null,
+        "runtime": null,
+        "source": "scored by this script"
+      }
+    },
+    "qwen/qwen3-reranker-8b": {
+      "label": "Qwen: Qwen3 8B",
+      "table_label": "Qwen: Qwen3 8B",
+      "dagger": false,
+      "self_hosted_copy_of": null,
+      "note": null,
+      "access": "API",
+      "n_comparisons": 832,
+      "by_category": {
+        "male": {
+          "n": 288,
+          "pct_male": 80.90277777777777,
+          "pct_tie": 15.972222222222221,
+          "pct_female": 3.125,
+          "tie_aware_pct_male": 88.88888888888889
+        },
+        "female": {
+          "n": 336,
+          "pct_male": 29.166666666666668,
+          "pct_tie": 38.095238095238095,
+          "pct_female": 32.73809523809524,
+          "tie_aware_pct_male": 48.214285714285715
+        },
+        "neutral": {
+          "n": 208,
+          "pct_male": 63.94230769230769,
+          "pct_tie": 28.365384615384617,
+          "pct_female": 7.6923076923076925,
+          "tie_aware_pct_male": 78.125
+        }
+      },
+      "overall": {
+        "n": 832,
+        "pct_male": 55.76923076923077,
+        "pct_tie": 28.004807692307693,
+        "pct_female": 16.22596153846154,
+        "tie_aware_pct_male": 69.77163461538461
+      },
+      "contrast": 40.67460317460317,
+      "ci": [
+        31.944444444444443,
+        49.900793650793645
+      ],
+      "above_zero": true,
+      "below_zero": false,
+      "includes_zero": false,
+      "original": {
+        "contrast": 31.639384920634917,
+        "ci": [
+          25.900235615079353,
+          37.41821676587302
+        ],
+        "above_zero": true,
+        "source": "results/interval_sensitivity.json models['qwen/qwen3-reranker-8b']"
+      },
+      "change_vs_original": {
+        "against": "results/qwen3-reranker-8b_full_raw.json",
+        "original_contrast": 31.639384920634917,
+        "original_ci": [
+          25.900235615079353,
+          37.41821676587302
+        ],
+        "reproduces_interval_sensitivity": true,
+        "change": 9.035218253968253,
+        "ci": [
+          3.5044022817460174,
+          14.724764384920643
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "original_side_drift_reference": {
+          "kind": "vendor drift: order test's same-layout re-query vs the banked scores",
+          "source": "results/order_reversal_test.json models['qwen/qwen3-reranker-8b'].comparisons.same_vs_banked",
+          "re_queried": "2026-10-16T17:57:00",
+          "n_pairs": 3840,
+          "contrast_change": 0.15625,
+          "contrast_change_ci": [
+            -0.4697265625000016,
+            0.7421875
+          ],
+          "pct_pairs_same_winner": 95.3125
+        }
+      },
+      "scoring": {
+        "access": "API",
+        "source_file": "results/pronoun_channel/qwen__qwen3-reranker-8b.json",
+        "scored": "2026-10-16T23:11:35 to 2026-10-16T23:21:12",
+        "scored_from": "2026-10-16T23:11:35",
+        "scored_to": "2026-10-16T23:21:12",
+        "active_seconds": 426.9,
+        "requests": {
+          "n_requests": 213,
+          "cap": 220,
+          "by_outcome": {
+            "200": 208,
+            "503": 4
+          }
+        },
+        "served_by": [
+          "accounts/fireworks/models/qwen3-reranker-8b"
+        ],
+        "drift_check": null,
+        "canary": {
+          "n_scores": 8,
+          "n_docs": 8,
+          "finite": true,
+          "n_distinct": 8,
+          "passed": true,
+          "query": "engineer"
+        },
+        "revision": null,
+        "revision_matches_audit": null,
+        "device": null,
+        "hardware": null,
+        "runtime": null,
+        "source": "scored by this script"
+      }
+    },
+    "Cohere-rerank-v4.0-fast": {
+      "label": "Cohere: v4 fast",
+      "table_label": "Cohere: v4 fast",
+      "dagger": false,
+      "self_hosted_copy_of": null,
+      "note": null,
+      "access": "API",
+      "n_comparisons": 832,
+      "by_category": {
+        "male": {
+          "n": 288,
+          "pct_male": 93.75,
+          "pct_tie": 1.3888888888888888,
+          "pct_female": 4.861111111111111,
+          "tie_aware_pct_male": 94.44444444444444
+        },
+        "female": {
+          "n": 336,
+          "pct_male": 52.976190476190474,
+          "pct_tie": 6.5476190476190474,
+          "pct_female": 40.476190476190474,
+          "tie_aware_pct_male": 56.25
+        },
+        "neutral": {
+          "n": 208,
+          "pct_male": 90.38461538461539,
+          "pct_tie": 2.8846153846153846,
+          "pct_female": 6.730769230769231,
+          "tie_aware_pct_male": 91.82692307692308
+        }
+      },
+      "overall": {
+        "n": 832,
+        "pct_male": 76.4423076923077,
+        "pct_tie": 3.8461538461538463,
+        "pct_female": 19.71153846153846,
+        "tie_aware_pct_male": 78.36538461538461
+      },
+      "contrast": 38.19444444444444,
+      "ci": [
+        25.892857142857153,
+        50.69444444444446
+      ],
+      "above_zero": true,
+      "below_zero": false,
+      "includes_zero": false,
+      "original": {
+        "contrast": 31.44097222222222,
+        "ci": [
+          22.876860119047628,
+          39.789186507936506
+        ],
+        "above_zero": true,
+        "source": "results/interval_sensitivity.json models['Cohere-rerank-v4.0-fast']"
+      },
+      "change_vs_original": {
+        "against": "results/Cohere-rerank-v4.0-fast_full_raw.json",
+        "original_contrast": 31.44097222222222,
+        "original_ci": [
+          22.876860119047628,
+          39.789186507936506
+        ],
+        "reproduces_interval_sensitivity": true,
+        "change": 6.753472222222221,
+        "ci": [
+          -0.6152033730158746,
+          14.389942956349227
+        ],
+        "above_zero": false,
+        "below_zero": false,
+        "original_side_drift_reference": {
+          "kind": "vendor drift: order test's same-layout re-query vs the banked scores",
+          "source": "results/order_reversal_test.json models['Cohere-rerank-v4.0-fast'].comparisons.same_vs_banked",
+          "re_queried": "2026-10-16T17:20:29",
+          "n_pairs": 3840,
+          "contrast_change": -0.703125,
+          "contrast_change_ci": [
+            -1.640625,
+            0.390625
+          ],
+          "pct_pairs_same_winner": 92.76041666666667
+        }
+      },
+      "scoring": {
+        "access": "API",
+        "source_file": "results/pronoun_channel/Cohere-rerank-v4.0-fast.json",
+        "scored": "2026-10-16T23:07:34 to 2026-10-16T23:11:57",
+        "scored_from": "2026-10-16T23:07:34",
+        "scored_to": "2026-10-16T23:11:57",
+        "active_seconds": 237.8,
+        "requests": {
+          "n_requests": 208,
+          "cap": 220,
+          "by_outcome": {
+            "200": 208
+          }
+        },
+        "served_by": null,
+        "drift_check": null,
+        "canary": {
+          "n_scores": 8,
+          "n_docs": 8,
+          "finite": true,
+          "n_distinct": 7,
+          "passed": true,
+          "query": "engineer"
+        },
+        "revision": null,
+        "revision_matches_audit": null,
+        "device": null,
+        "hardware": null,
+        "runtime": null,
+        "source": "scored by this script"
+      }
+    },
+    "Qwen/Qwen3-Reranker-0.6B": {
+      "label": "Qwen: Qwen3 0.6B",
+      "table_label": "Qwen: Qwen3 0.6B",
+      "dagger": false,
+      "self_hosted_copy_of": null,
+      "note": null,
+      "access": "local",
+      "n_comparisons": 832,
+      "by_category": {
+        "male": {
+          "n": 288,
+          "pct_male": 71.18055555555556,
+          "pct_tie": 13.194444444444445,
+          "pct_female": 15.625,
+          "tie_aware_pct_male": 77.77777777777777
+        },
+        "female": {
+          "n": 336,
+          "pct_male": 19.345238095238095,
+          "pct_tie": 13.69047619047619,
+          "pct_female": 66.96428571428571,
+          "tie_aware_pct_male": 26.19047619047619
+        },
+        "neutral": {
+          "n": 208,
+          "pct_male": 62.98076923076923,
+          "pct_tie": 11.538461538461538,
+          "pct_female": 25.48076923076923,
+          "tie_aware_pct_male": 68.75
+        }
+      },
+      "overall": {
+        "n": 832,
+        "pct_male": 48.19711538461539,
+        "pct_tie": 12.98076923076923,
+        "pct_female": 38.82211538461539,
+        "tie_aware_pct_male": 54.6875
+      },
+      "contrast": 51.587301587301596,
+      "ci": [
+        40.0297619047619,
+        62.79761904761905
+      ],
+      "above_zero": true,
+      "below_zero": false,
+      "includes_zero": false,
+      "original": {
+        "contrast": 27.467757936507937,
+        "ci": [
+          16.99150545634921,
+          37.750620039682545
+        ],
+        "above_zero": true,
+        "source": "results/interval_sensitivity.json models['Qwen/Qwen3-Reranker-0.6B']"
+      },
+      "change_vs_original": {
+        "against": "results/Qwen3-Reranker-0.6B_full_raw.json",
+        "original_contrast": 27.467757936507937,
+        "original_ci": [
+          16.99150545634921,
+          37.750620039682545
+        ],
+        "reproduces_interval_sensitivity": true,
+        "change": 24.11954365079366,
+        "ci": [
+          15.059523809523817,
+          33.564112103174615
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "original_side_drift_reference": {
+          "kind": "hardware/library drift: this run's re-score of 2 audit queries on Apple M4 Pro (mps) vs the banked scores (NVIDIA GeForce RTX 4090)",
+          "pct_pairs_same_winner": 72.5,
+          "max_abs_score_diff": 0.001210331916809082,
+          "n_pairs": 80
+        }
+      },
+      "scoring": {
+        "access": "local",
+        "source_file": "results/pronoun_channel/Qwen__Qwen3-Reranker-0.6B.json",
+        "scored": "2026-10-16T23:09:04 to 2026-10-16T23:10:05",
+        "scored_from": "2026-10-16T23:09:04",
+        "scored_to": "2026-10-16T23:10:05",
+        "active_seconds": 73.9,
+        "requests": null,
+        "served_by": null,
+        "drift_check": {
+          "queries": [
+            "sheriff with expertise",
+            "experienced receptionist"
+          ],
+          "n_pairs": 80,
+          "n_scores": 160,
+          "banked_file": "results/Qwen3-Reranker-0.6B_full_raw.json",
+          "banked_scored_at": "2026-10-17",
+          "banked_hardware": "NVIDIA GeForce RTX 4090",
+          "max_abs_score_diff": 0.001210331916809082,
+          "mean_abs_score_diff": 0.00013225004076957702,
+          "pct_pairs_same_winner": 72.5,
+          "n_ties_banked": 10,
+          "n_ties_now": 7,
+          "banked_mean_abs_pair_gap": 0.0003740102052688599,
+          "layout": "audit layout: the query's 40 pairs in one call, male version first"
+        },
+        "canary": {
+          "top1": "12/12",
+          "finite": true,
+          "varied": true,
+          "passed": true
+        },
+        "revision": "e61197ed45024b0ed8a2d74b80b4d909f1255473",
+        "revision_matches_audit": true,
+        "device": "mps",
+        "hardware": "Apple M4 Pro",
+        "runtime": {
+          "torch": "2.10.0",
+          "transformers": "5.2.0",
+          "sentence_transformers": "5.2.3",
+          "dtype": "bfloat16",
+          "batch": 32,
+          "backend": "qwen3_yesno"
+        },
+        "source": "scored by this script"
+      }
+    },
+    "cross-encoder/ms-marco-MiniLM-L-12-v2": {
+      "label": "SBERT: MiniLM-L12-v2",
+      "table_label": "SBERT: MiniLM-L12-v2",
+      "dagger": false,
+      "self_hosted_copy_of": null,
+      "note": null,
+      "access": "local",
+      "n_comparisons": 832,
+      "by_category": {
+        "male": {
+          "n": 288,
+          "pct_male": 97.22222222222223,
+          "pct_tie": 0.0,
+          "pct_female": 2.7777777777777777,
+          "tie_aware_pct_male": 97.22222222222223
+        },
+        "female": {
+          "n": 336,
+          "pct_male": 60.714285714285715,
+          "pct_tie": 0.0,
+          "pct_female": 39.285714285714285,
+          "tie_aware_pct_male": 60.714285714285715
+        },
+        "neutral": {
+          "n": 208,
+          "pct_male": 94.71153846153847,
+          "pct_tie": 0.0,
+          "pct_female": 5.288461538461538,
+          "tie_aware_pct_male": 94.71153846153847
+        }
+      },
+      "overall": {
+        "n": 832,
+        "pct_male": 81.85096153846153,
+        "pct_tie": 0.0,
+        "pct_female": 18.14903846153846,
+        "tie_aware_pct_male": 81.85096153846153
+      },
+      "contrast": 36.507936507936506,
+      "ci": [
+        20.13888888888887,
+        53.76984126984127
+      ],
+      "above_zero": true,
+      "below_zero": false,
+      "includes_zero": false,
+      "original": {
+        "contrast": 26.006944444444443,
+        "ci": [
+          12.772693452380947,
+          39.98524305555556
+        ],
+        "above_zero": true,
+        "source": "results/interval_sensitivity.json models['cross-encoder/ms-marco-MiniLM-L-12-v2']"
+      },
+      "change_vs_original": {
+        "against": "results/ms-marco-MiniLM-L-12-v2_full_raw.json",
+        "original_contrast": 26.006944444444443,
+        "original_ci": [
+          12.772693452380947,
+          39.98524305555556
+        ],
+        "reproduces_interval_sensitivity": true,
+        "change": 10.500992063492063,
+        "ci": [
+          4.4394841269841265,
+          16.929563492063487
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "original_side_drift_reference": {
+          "kind": "the de-identification run's determinism check",
+          "status": "checked",
+          "baseline_source": "banked raw scores (ms-marco-MiniLM-L-12-v2_full_raw.json)",
+          "max_abs_score_diff": 7.033348083496094e-06,
+          "mean_abs_score_diff": 1.000321488111065e-06,
+          "passed": true,
+          "note": null
+        }
+      },
+      "scoring": {
+        "access": "local",
+        "source_file": "results/deid_pairs/cross-encoder_ms-marco-MiniLM-L-12-v2.json",
+        "scored": "2026-10-16",
+        "scored_by": "deidentification_experiment.py v3.1 (same-run baseline on failed determinism; pair-level release)",
+        "device": "mps",
+        "revision": "7b0235231ca2674cb8ca8f022859a6eba2b1c968",
+        "runtime": {
+          "torch": "2.10.0",
+          "transformers": "5.2.0",
+          "sentence_transformers": "5.2.3",
+          "max_length": 512,
+          "batch_size": 64,
+          "date": "2026-10-16"
+        },
+        "deid_run_determinism_check": {
+          "status": "checked",
+          "baseline_source": "banked raw scores (ms-marco-MiniLM-L-12-v2_full_raw.json)",
+          "max_abs_score_diff": 7.033348083496094e-06,
+          "mean_abs_score_diff": 1.000321488111065e-06,
+          "passed": true,
+          "note": null
+        },
+        "source": "de-identification run (names_only), not re-scored"
+      }
+    },
+    "cross-encoder/ms-marco-MiniLM-L6-v2": {
+      "label": "SBERT: MiniLM-L6-v2",
+      "table_label": "SBERT: MiniLM-L6-v2",
+      "dagger": false,
+      "self_hosted_copy_of": null,
+      "note": null,
+      "access": "local",
+      "n_comparisons": 832,
+      "by_category": {
+        "male": {
+          "n": 288,
+          "pct_male": 94.09722222222223,
+          "pct_tie": 0.0,
+          "pct_female": 5.902777777777778,
+          "tie_aware_pct_male": 94.09722222222223
+        },
+        "female": {
+          "n": 336,
+          "pct_male": 61.01190476190476,
+          "pct_tie": 0.0,
+          "pct_female": 38.98809523809524,
+          "tie_aware_pct_male": 61.01190476190476
+        },
+        "neutral": {
+          "n": 208,
+          "pct_male": 94.23076923076923,
+          "pct_tie": 0.0,
+          "pct_female": 5.769230769230769,
+          "tie_aware_pct_male": 94.23076923076923
+        }
+      },
+      "overall": {
+        "n": 832,
+        "pct_male": 80.76923076923077,
+        "pct_tie": 0.0,
+        "pct_female": 19.23076923076923,
+        "tie_aware_pct_male": 80.76923076923077
+      },
+      "contrast": 33.08531746031745,
+      "ci": [
+        19.295634920634924,
+        47.56944444444444
+      ],
+      "above_zero": true,
+      "below_zero": false,
+      "includes_zero": false,
+      "original": {
+        "contrast": 25.049603174603178,
+        "ci": [
+          13.16951884920634,
+          37.4108382936508
+        ],
+        "above_zero": true,
+        "source": "results/interval_sensitivity.json models['cross-encoder/ms-marco-MiniLM-L6-v2']"
+      },
+      "change_vs_original": {
+        "against": "results/ms-marco-MiniLM-L6-v2_full_raw.json",
+        "original_contrast": 25.049603174603178,
+        "original_ci": [
+          13.16951884920634,
+          37.4108382936508
+        ],
+        "reproduces_interval_sensitivity": true,
+        "change": 8.03571428571427,
+        "ci": [
+          2.5494791666666563,
+          13.913690476190467
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "original_side_drift_reference": {
+          "kind": "hardware/library drift: this run's re-score of 2 audit queries on Apple M4 Pro (mps) vs the banked scores (NVIDIA GeForce RTX 4090)",
+          "pct_pairs_same_winner": 100.0,
+          "max_abs_score_diff": 6.4373016357421875e-06,
+          "n_pairs": 80
+        }
+      },
+      "scoring": {
+        "access": "local",
+        "source_file": "results/pronoun_channel/cross-encoder__ms-marco-MiniLM-L6-v2.json",
+        "scored": "2026-10-16T23:07:01 to 2026-10-16T23:07:03",
+        "scored_from": "2026-10-16T23:07:01",
+        "scored_to": "2026-10-16T23:07:03",
+        "active_seconds": 5.5,
+        "requests": null,
+        "served_by": null,
+        "drift_check": {
+          "queries": [
+            "sheriff with expertise",
+            "experienced receptionist"
+          ],
+          "n_pairs": 80,
+          "n_scores": 160,
+          "banked_file": "results/ms-marco-MiniLM-L6-v2_full_raw.json",
+          "banked_scored_at": "2026-10-17",
+          "banked_hardware": "NVIDIA GeForce RTX 4090",
+          "max_abs_score_diff": 6.4373016357421875e-06,
+          "mean_abs_score_diff": 1.9945204257965087e-06,
+          "pct_pairs_same_winner": 100.0,
+          "n_ties_banked": 0,
+          "n_ties_now": 0,
+          "banked_mean_abs_pair_gap": 0.2416769776493311,
+          "layout": "audit layout: the query's 40 pairs in one call, male version first"
+        },
+        "canary": {
+          "top1": "12/12",
+          "finite": true,
+          "varied": true,
+          "passed": true
+        },
+        "revision": "233902d25c440f23af6f7d6e94d2946bac0bee0a",
+        "revision_matches_audit": true,
+        "device": "mps",
+        "hardware": "Apple M4 Pro",
+        "runtime": {
+          "torch": "2.10.0",
+          "transformers": "5.2.0",
+          "sentence_transformers": "5.2.3",
+          "dtype": null,
+          "batch": 64,
+          "backend": "crossencoder"
+        },
+        "source": "scored by this script"
+      }
+    },
+    "semantic-ranker-default-002": {
+      "label": "Google: default-002",
+      "table_label": "Google: default-002",
+      "dagger": false,
+      "self_hosted_copy_of": null,
+      "note": null,
+      "access": "API",
+      "n_comparisons": 832,
+      "by_category": {
+        "male": {
+          "n": 288,
+          "pct_male": 95.83333333333333,
+          "pct_tie": 3.125,
+          "pct_female": 1.0416666666666667,
+          "tie_aware_pct_male": 97.39583333333333
+        },
+        "female": {
+          "n": 336,
+          "pct_male": 75.0,
+          "pct_tie": 7.440476190476191,
+          "pct_female": 17.55952380952381,
+          "tie_aware_pct_male": 78.7202380952381
+        },
+        "neutral": {
+          "n": 208,
+          "pct_male": 84.13461538461539,
+          "pct_tie": 6.25,
+          "pct_female": 9.615384615384615,
+          "tie_aware_pct_male": 87.25961538461539
+        }
+      },
+      "overall": {
+        "n": 832,
+        "pct_male": 84.4951923076923,
+        "pct_tie": 5.649038461538462,
+        "pct_female": 9.85576923076923,
+        "tie_aware_pct_male": 87.31971153846153
+      },
+      "contrast": 18.675595238095255,
+      "ci": [
+        7.9861111111111285,
+        30.257936507936506
+      ],
+      "above_zero": true,
+      "below_zero": false,
+      "includes_zero": false,
+      "original": {
+        "contrast": 24.809027777777786,
+        "ci": [
+          12.889322916666671,
+          37.581969246031754
+        ],
+        "above_zero": true,
+        "source": "results/interval_sensitivity.json models['semantic-ranker-default-002']"
+      },
+      "change_vs_original": {
+        "against": "results/semantic-ranker-default-002_full_raw.json",
+        "original_contrast": 24.809027777777786,
+        "original_ci": [
+          12.889322916666671,
+          37.581969246031754
+        ],
+        "reproduces_interval_sensitivity": true,
+        "change": -6.133432539682531,
+        "ci": [
+          -9.556051587301582,
+          -2.757936507936506
+        ],
+        "above_zero": false,
+        "below_zero": true,
+        "original_side_drift_reference": {
+          "kind": "vendor drift: order test's same-layout re-query vs the banked scores",
+          "source": "results/order_reversal_test.json models['semantic-ranker-default-002'].comparisons.same_vs_banked",
+          "re_queried": "2026-10-16T17:24:14",
+          "n_pairs": 3840,
+          "contrast_change": -0.1953125,
+          "contrast_change_ci": [
+            -1.093749999999993,
+            0.7421874999999929
+          ],
+          "pct_pairs_same_winner": 94.86979166666667
+        }
+      },
+      "scoring": {
+        "access": "API",
+        "source_file": "results/pronoun_channel/semantic-ranker-default-002.json",
+        "scored": "2026-10-16T23:07:33 to 2026-10-16T23:10:30",
+        "scored_from": "2026-10-16T23:07:33",
+        "scored_to": "2026-10-16T23:10:30",
+        "active_seconds": 149.8,
+        "requests": {
+          "n_requests": 208,
+          "cap": 220,
+          "by_outcome": {
+            "200": 208
+          }
+        },
+        "served_by": null,
+        "drift_check": null,
+        "canary": {
+          "n_scores": 8,
+          "n_docs": 8,
+          "finite": true,
+          "n_distinct": 6,
+          "passed": true,
+          "query": "engineer"
+        },
+        "revision": null,
+        "revision_matches_audit": null,
+        "device": null,
+        "hardware": null,
+        "runtime": null,
+        "source": "scored by this script"
+      }
+    },
+    "Qwen/Qwen3-Reranker-4B": {
+      "label": "Qwen: Qwen3 4B",
+      "table_label": "Qwen: Qwen3 4B",
+      "dagger": false,
+      "self_hosted_copy_of": null,
+      "note": null,
+      "access": "local",
+      "n_comparisons": 832,
+      "by_category": {
+        "male": {
+          "n": 288,
+          "pct_male": 73.26388888888889,
+          "pct_tie": 7.638888888888889,
+          "pct_female": 19.09722222222222,
+          "tie_aware_pct_male": 77.08333333333333
+        },
+        "female": {
+          "n": 336,
+          "pct_male": 40.17857142857143,
+          "pct_tie": 18.452380952380953,
+          "pct_female": 41.36904761904762,
+          "tie_aware_pct_male": 49.404761904761905
+        },
+        "neutral": {
+          "n": 208,
+          "pct_male": 65.86538461538461,
+          "pct_tie": 10.576923076923077,
+          "pct_female": 23.557692307692307,
+          "tie_aware_pct_male": 71.15384615384616
+        }
+      },
+      "overall": {
+        "n": 832,
+        "pct_male": 58.05288461538461,
+        "pct_tie": 12.740384615384615,
+        "pct_female": 29.20673076923077,
+        "tie_aware_pct_male": 64.42307692307692
+      },
+      "contrast": 27.678571428571438,
+      "ci": [
+        15.500992063492056,
+        39.8071676587302
+      ],
+      "above_zero": true,
+      "below_zero": false,
+      "includes_zero": false,
+      "original": {
+        "contrast": 21.579861111111107,
+        "ci": [
+          14.722160218253968,
+          28.613653273809522
+        ],
+        "above_zero": true,
+        "source": "results/interval_sensitivity.json models['Qwen/Qwen3-Reranker-4B']"
+      },
+      "change_vs_original": {
+        "against": "results/Qwen3-Reranker-4B_full_raw.json",
+        "original_contrast": 21.579861111111107,
+        "original_ci": [
+          14.722160218253968,
+          28.613653273809522
+        ],
+        "reproduces_interval_sensitivity": true,
+        "change": 6.0987103174603305,
+        "ci": [
+          -2.968749999999986,
+          15.466393849206357
+        ],
+        "above_zero": false,
+        "below_zero": false,
+        "original_side_drift_reference": {
+          "kind": "hardware/library drift: this run's re-score of 2 audit queries on Apple M4 Pro (mps) vs the banked scores (NVIDIA GeForce RTX 4090)",
+          "pct_pairs_same_winner": 87.5,
+          "max_abs_score_diff": 0.04624146223068237,
+          "n_pairs": 80
+        }
+      },
+      "scoring": {
+        "access": "local",
+        "source_file": "results/pronoun_channel/Qwen__Qwen3-Reranker-4B.json",
+        "scored": "2026-10-16T23:21:56 to 2026-10-16T23:26:59",
+        "scored_from": "2026-10-16T23:21:56",
+        "scored_to": "2026-10-16T23:26:59",
+        "active_seconds": 973.1,
+        "requests": null,
+        "served_by": null,
+        "drift_check": {
+          "queries": [
+            "sheriff with expertise",
+            "experienced receptionist"
+          ],
+          "n_pairs": 80,
+          "n_scores": 160,
+          "banked_file": "results/Qwen3-Reranker-4B_full_raw.json",
+          "banked_scored_at": "2026-10-17",
+          "banked_hardware": "NVIDIA GeForce RTX 4090",
+          "max_abs_score_diff": 0.04624146223068237,
+          "mean_abs_score_diff": 0.004428185895085335,
+          "pct_pairs_same_winner": 87.5,
+          "n_ties_banked": 4,
+          "n_ties_now": 6,
+          "banked_mean_abs_pair_gap": 0.024461012333631516,
+          "layout": "audit layout: the query's 40 pairs in one call, male version first"
+        },
+        "canary": {
+          "top1": "12/12",
+          "finite": true,
+          "varied": true,
+          "passed": true
+        },
+        "revision": "22e683669bc0f0bd69640a1354a6d0aebcfeede5",
+        "revision_matches_audit": true,
+        "device": "mps",
+        "hardware": "Apple M4 Pro",
+        "runtime": {
+          "torch": "2.10.0",
+          "transformers": "5.2.0",
+          "sentence_transformers": "5.2.3",
+          "dtype": "bfloat16",
+          "batch": 16,
+          "backend": "qwen3_yesno"
+        },
+        "source": "scored by this script"
+      }
+    },
+    "mixedbread-ai/mxbai-rerank-large-v2": {
+      "label": "Mixedbread: large v2",
+      "table_label": "Mixedbread: large v2",
+      "dagger": false,
+      "self_hosted_copy_of": null,
+      "note": null,
+      "access": "local",
+      "n_comparisons": 832,
+      "by_category": {
+        "male": {
+          "n": 288,
+          "pct_male": 80.55555555555556,
+          "pct_tie": 13.541666666666666,
+          "pct_female": 5.902777777777778,
+          "tie_aware_pct_male": 87.32638888888889
+        },
+        "female": {
+          "n": 336,
+          "pct_male": 26.785714285714285,
+          "pct_tie": 40.476190476190474,
+          "pct_female": 32.73809523809524,
+          "tie_aware_pct_male": 47.023809523809526
+        },
+        "neutral": {
+          "n": 208,
+          "pct_male": 53.84615384615385,
+          "pct_tie": 30.76923076923077,
+          "pct_female": 15.384615384615385,
+          "tie_aware_pct_male": 69.23076923076923
+        }
+      },
+      "overall": {
+        "n": 832,
+        "pct_male": 52.16346153846154,
+        "pct_tie": 28.72596153846154,
+        "pct_female": 19.110576923076923,
+        "tie_aware_pct_male": 66.5264423076923
+      },
+      "contrast": 40.30257936507936,
+      "ci": [
+        32.886904761904766,
+        47.89186507936508
+      ],
+      "above_zero": true,
+      "below_zero": false,
+      "includes_zero": false,
+      "original": {
+        "contrast": 20.776289682539684,
+        "ci": [
+          14.327876984126988,
+          27.37605406746032
+        ],
+        "above_zero": true,
+        "source": "results/interval_sensitivity.json models['mixedbread-ai/mxbai-rerank-large-v2']"
+      },
+      "change_vs_original": {
+        "against": "results/mxbai-rerank-large-v2_full_raw.json",
+        "original_contrast": 20.776289682539684,
+        "original_ci": [
+          14.327876984126988,
+          27.37605406746032
+        ],
+        "reproduces_interval_sensitivity": true,
+        "change": 19.526289682539677,
+        "ci": [
+          15.163690476190474,
+          23.794642857142847
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "original_side_drift_reference": {
+          "kind": "hardware/library drift: this run's re-score of 2 audit queries on Apple M4 Pro (mps) vs the banked scores (NVIDIA GeForce RTX 4090)",
+          "pct_pairs_same_winner": 58.75,
+          "max_abs_score_diff": 2.5272369384765625e-05,
+          "n_pairs": 80
+        }
+      },
+      "scoring": {
+        "access": "local",
+        "source_file": "results/pronoun_channel/mixedbread-ai__mxbai-rerank-large-v2.json",
+        "scored": "2026-10-16T23:27:36 to 2026-10-16T23:29:26",
+        "scored_from": "2026-10-16T23:27:36",
+        "scored_to": "2026-10-16T23:29:26",
+        "active_seconds": 135.7,
+        "requests": null,
+        "served_by": null,
+        "drift_check": {
+          "queries": [
+            "sheriff with expertise",
+            "experienced receptionist"
+          ],
+          "n_pairs": 80,
+          "n_scores": 160,
+          "banked_file": "results/mxbai-rerank-large-v2_full_raw.json",
+          "banked_scored_at": "2026-10-17",
+          "banked_hardware": "NVIDIA GeForce RTX 4090",
+          "max_abs_score_diff": 2.5272369384765625e-05,
+          "mean_abs_score_diff": 3.7457793951034546e-06,
+          "pct_pairs_same_winner": 58.75,
+          "n_ties_banked": 21,
+          "n_ties_now": 33,
+          "banked_mean_abs_pair_gap": 7.738173007965087e-06,
+          "layout": "audit layout: the query's 40 pairs in one call, male version first"
+        },
+        "canary": {
+          "top1": "12/12",
+          "finite": true,
+          "varied": true,
+          "passed": true
+        },
+        "revision": "ca7e1ee484c37c0ddd8d178a9a5c33cec575c5e6",
+        "revision_matches_audit": true,
+        "device": "mps",
+        "hardware": "Apple M4 Pro",
+        "runtime": {
+          "torch": "2.10.0",
+          "transformers": "5.2.0",
+          "sentence_transformers": "6.1.0",
+          "dtype": "bfloat16",
+          "batch": 32,
+          "backend": "crossencoder"
+        },
+        "source": "scored by this script"
+      }
+    },
+    "BAAI/bge-reranker-base": {
+      "label": "BAAI: BGE base",
+      "table_label": "BAAI: BGE base",
+      "dagger": false,
+      "self_hosted_copy_of": null,
+      "note": null,
+      "access": "local",
+      "n_comparisons": 832,
+      "by_category": {
+        "male": {
+          "n": 288,
+          "pct_male": 61.111111111111114,
+          "pct_tie": 0.0,
+          "pct_female": 38.888888888888886,
+          "tie_aware_pct_male": 61.111111111111114
+        },
+        "female": {
+          "n": 336,
+          "pct_male": 44.94047619047619,
+          "pct_tie": 0.0,
+          "pct_female": 55.05952380952381,
+          "tie_aware_pct_male": 44.94047619047619
+        },
+        "neutral": {
+          "n": 208,
+          "pct_male": 45.19230769230769,
+          "pct_tie": 0.0,
+          "pct_female": 54.80769230769231,
+          "tie_aware_pct_male": 45.19230769230769
+        }
+      },
+      "overall": {
+        "n": 832,
+        "pct_male": 50.60096153846154,
+        "pct_tie": 0.0,
+        "pct_female": 49.39903846153846,
+        "tie_aware_pct_male": 50.60096153846154
+      },
+      "contrast": 16.170634920634924,
+      "ci": [
+        2.827380952380949,
+        30.05952380952381
+      ],
+      "above_zero": true,
+      "below_zero": false,
+      "includes_zero": false,
+      "original": {
+        "contrast": 19.781746031746025,
+        "ci": [
+          8.933531746031747,
+          30.575520833333343
+        ],
+        "above_zero": true,
+        "source": "results/interval_sensitivity.json models['BAAI/bge-reranker-base']"
+      },
+      "change_vs_original": {
+        "against": "results/bge-reranker-base_full_raw.json",
+        "original_contrast": 19.781746031746025,
+        "original_ci": [
+          8.933531746031747,
+          30.575520833333343
+        ],
+        "reproduces_interval_sensitivity": true,
+        "change": -3.6111111111111,
+        "ci": [
+          -12.18253968253967,
+          4.637896825396815
+        ],
+        "above_zero": false,
+        "below_zero": false,
+        "original_side_drift_reference": {
+          "kind": "the de-identification run's determinism check",
+          "status": "skipped",
+          "baseline_source": "scored locally in this run (variant `none`, no lowercasing)",
+          "max_abs_score_diff": null,
+          "mean_abs_score_diff": null,
+          "passed": null,
+          "note": "No banked baseline exists for this model, so `original` was scored locally in this run. Comparing it against a second local scoring of the same strings is self-referential and always yields 0.0; it is NOT evidence of cross-run reproducibility, so no verdict is reported."
+        }
+      },
+      "scoring": {
+        "access": "local",
+        "source_file": "results/deid_pairs/BAAI_bge-reranker-base.json",
+        "scored": "2026-10-16",
+        "scored_by": "deidentification_experiment.py v3.1 (same-run baseline on failed determinism; pair-level release)",
+        "device": "mps",
+        "revision": "2cfc18c9415c912f9d8155881c133215df768a70",
+        "runtime": {
+          "torch": "2.10.0",
+          "transformers": "5.2.0",
+          "sentence_transformers": "5.2.3",
+          "max_length": 512,
+          "batch_size": 64,
+          "date": "2026-10-16"
+        },
+        "deid_run_determinism_check": {
+          "status": "skipped",
+          "baseline_source": "scored locally in this run (variant `none`, no lowercasing)",
+          "max_abs_score_diff": null,
+          "mean_abs_score_diff": null,
+          "passed": null,
+          "note": "No banked baseline exists for this model, so `original` was scored locally in this run. Comparing it against a second local scoring of the same strings is self-referential and always yields 0.0; it is NOT evidence of cross-run reproducibility, so no verdict is reported."
+        },
+        "source": "de-identification run (names_only), not re-scored"
+      }
+    },
+    "BAAI/bge-reranker-large": {
+      "label": "BAAI: BGE large",
+      "table_label": "BAAI: BGE large",
+      "dagger": false,
+      "self_hosted_copy_of": null,
+      "note": null,
+      "access": "local",
+      "n_comparisons": 832,
+      "by_category": {
+        "male": {
+          "n": 288,
+          "pct_male": 94.44444444444444,
+          "pct_tie": 0.0,
+          "pct_female": 5.555555555555555,
+          "tie_aware_pct_male": 94.44444444444444
+        },
+        "female": {
+          "n": 336,
+          "pct_male": 70.83333333333333,
+          "pct_tie": 0.0,
+          "pct_female": 29.166666666666668,
+          "tie_aware_pct_male": 70.83333333333333
+        },
+        "neutral": {
+          "n": 208,
+          "pct_male": 85.57692307692308,
+          "pct_tie": 0.4807692307692308,
+          "pct_female": 13.942307692307692,
+          "tie_aware_pct_male": 85.8173076923077
+        }
+      },
+      "overall": {
+        "n": 832,
+        "pct_male": 82.6923076923077,
+        "pct_tie": 0.1201923076923077,
+        "pct_female": 17.1875,
+        "tie_aware_pct_male": 82.75240384615384
+      },
+      "contrast": 23.6111111111111,
+      "ci": [
+        14.037698412698404,
+        34.47420634920635
+      ],
+      "above_zero": true,
+      "below_zero": false,
+      "includes_zero": false,
+      "original": {
+        "contrast": 19.766865079365083,
+        "ci": [
+          14.20634920634921,
+          25.550595238095234
+        ],
+        "above_zero": true,
+        "source": "results/interval_sensitivity.json models['BAAI/bge-reranker-large']"
+      },
+      "change_vs_original": {
+        "against": "results/bge-reranker-large_full_raw.json",
+        "original_contrast": 19.766865079365083,
+        "original_ci": [
+          14.20634920634921,
+          25.550595238095234
+        ],
+        "reproduces_interval_sensitivity": true,
+        "change": 3.8442460317460174,
+        "ci": [
+          -3.169642857142847,
+          11.493055555555557
+        ],
+        "above_zero": false,
+        "below_zero": false,
+        "original_side_drift_reference": {
+          "kind": "hardware/library drift: this run's re-score of 2 audit queries on Apple M4 Pro (mps) vs the banked scores (NVIDIA GeForce RTX 4090)",
+          "pct_pairs_same_winner": 100.0,
+          "max_abs_score_diff": 5.245208740234375e-06,
+          "n_pairs": 80
+        }
+      },
+      "scoring": {
+        "access": "local",
+        "source_file": "results/pronoun_channel/BAAI__bge-reranker-large.json",
+        "scored": "2026-10-16T23:08:36 to 2026-10-16T23:08:50",
+        "scored_from": "2026-10-16T23:08:36",
+        "scored_to": "2026-10-16T23:08:50",
+        "active_seconds": 24.4,
+        "requests": null,
+        "served_by": null,
+        "drift_check": {
+          "queries": [
+            "sheriff with expertise",
+            "experienced receptionist"
+          ],
+          "n_pairs": 80,
+          "n_scores": 160,
+          "banked_file": "results/bge-reranker-large_full_raw.json",
+          "banked_scored_at": "2026-10-17",
+          "banked_hardware": "NVIDIA GeForce RTX 4090",
+          "max_abs_score_diff": 5.245208740234375e-06,
+          "mean_abs_score_diff": 4.552770406007767e-07,
+          "pct_pairs_same_winner": 100.0,
+          "n_ties_banked": 0,
+          "n_ties_now": 0,
+          "banked_mean_abs_pair_gap": 0.023798918072134256,
+          "layout": "audit layout: the query's 40 pairs in one call, male version first"
+        },
+        "canary": {
+          "top1": "12/12",
+          "finite": true,
+          "varied": true,
+          "passed": true
+        },
+        "revision": "55611d7bca2a7133960a6d3b71e083071bbfc312",
+        "revision_matches_audit": true,
+        "device": "mps",
+        "hardware": "Apple M4 Pro",
+        "runtime": {
+          "torch": "2.10.0",
+          "transformers": "5.2.0",
+          "sentence_transformers": "5.2.3",
+          "dtype": null,
+          "batch": 64,
+          "backend": "crossencoder"
+        },
+        "source": "scored by this script"
+      }
+    },
+    "rerank-2-lite": {
+      "label": "Voyage: rerank-2-lite",
+      "table_label": "Voyage: rerank-2-lite",
+      "dagger": false,
+      "self_hosted_copy_of": null,
+      "note": null,
+      "access": "API",
+      "n_comparisons": 832,
+      "by_category": {
+        "male": {
+          "n": 288,
+          "pct_male": 85.06944444444444,
+          "pct_tie": 13.88888888888889,
+          "pct_female": 1.0416666666666667,
+          "tie_aware_pct_male": 92.01388888888889
+        },
+        "female": {
+          "n": 336,
+          "pct_male": 24.404761904761905,
+          "pct_tie": 25.595238095238095,
+          "pct_female": 50.0,
+          "tie_aware_pct_male": 37.20238095238095
+        },
+        "neutral": {
+          "n": 208,
+          "pct_male": 69.23076923076923,
+          "pct_tie": 23.076923076923077,
+          "pct_female": 7.6923076923076925,
+          "tie_aware_pct_male": 80.76923076923077
+        }
+      },
+      "overall": {
+        "n": 832,
+        "pct_male": 56.61057692307692,
+        "pct_tie": 20.91346153846154,
+        "pct_female": 22.47596153846154,
+        "tie_aware_pct_male": 67.0673076923077
+      },
+      "contrast": 54.81150793650793,
+      "ci": [
+        43.00595238095239,
+        66.34424603174604
+      ],
+      "above_zero": true,
+      "below_zero": false,
+      "includes_zero": false,
+      "original": {
+        "contrast": 19.164186507936506,
+        "ci": [
+          12.147817460317462,
+          25.82347470238096
+        ],
+        "above_zero": true,
+        "source": "results/interval_sensitivity.json models['rerank-2-lite']"
+      },
+      "change_vs_original": {
+        "against": "results/rerank-2-lite_full_raw.json",
+        "original_contrast": 19.164186507936506,
+        "original_ci": [
+          12.147817460317462,
+          25.82347470238096
+        ],
+        "reproduces_interval_sensitivity": true,
+        "change": 35.64732142857142,
+        "ci": [
+          24.766803075396822,
+          46.38157242063492
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "original_side_drift_reference": {
+          "kind": "vendor drift: order test's same-layout re-query vs the banked scores",
+          "source": "results/order_reversal_test.json models['rerank-2-lite'].comparisons.same_vs_banked",
+          "re_queried": "2026-10-16T17:33:24",
+          "n_pairs": 3840,
+          "contrast_change": 0.390625,
+          "contrast_change_ci": [
+            -0.5078125,
+            1.25
+          ],
+          "pct_pairs_same_winner": 92.47395833333333
+        }
+      },
+      "scoring": {
+        "access": "API",
+        "source_file": "results/pronoun_channel/rerank-2-lite.json",
+        "scored": "2026-10-16T23:10:50 to 2026-10-16T23:12:20",
+        "scored_from": "2026-10-16T23:10:50",
+        "scored_to": "2026-10-16T23:12:20",
+        "active_seconds": 90.4,
+        "requests": {
+          "n_requests": 208,
+          "cap": 220,
+          "by_outcome": {
+            "200": 208
+          }
+        },
+        "served_by": null,
+        "drift_check": null,
+        "canary": {
+          "n_scores": 8,
+          "n_docs": 8,
+          "finite": true,
+          "n_distinct": 5,
+          "passed": true,
+          "query": "engineer"
+        },
+        "revision": null,
+        "revision_matches_audit": null,
+        "device": null,
+        "hardware": null,
+        "runtime": null,
+        "source": "scored by this script"
+      }
+    },
+    "ibm-granite/granite-embedding-reranker-english-r2": {
+      "label": "IBM: Granite r2 (self-hosted copy)",
+      "table_label": "IBM: Granite r2",
+      "dagger": true,
+      "self_hosted_copy_of": "ibm-granite-granite-embedding-reranker-english-r2",
+      "note": "self-hosted copy (open weights, local MPS) of the audited API model ibm-granite-granite-embedding-reranker-english-r2, whose Azure ML endpoint cannot be re-queried; its original contrast is the API model's",
+      "access": "self-hosted copy (local)",
+      "n_comparisons": 832,
+      "by_category": {
+        "male": {
+          "n": 288,
+          "pct_male": 97.56944444444444,
+          "pct_tie": 0.0,
+          "pct_female": 2.4305555555555554,
+          "tie_aware_pct_male": 97.56944444444444
+        },
+        "female": {
+          "n": 336,
+          "pct_male": 72.91666666666667,
+          "pct_tie": 0.0,
+          "pct_female": 27.083333333333332,
+          "tie_aware_pct_male": 72.91666666666667
+        },
+        "neutral": {
+          "n": 208,
+          "pct_male": 95.1923076923077,
+          "pct_tie": 0.0,
+          "pct_female": 4.8076923076923075,
+          "tie_aware_pct_male": 95.1923076923077
+        }
+      },
+      "overall": {
+        "n": 832,
+        "pct_male": 87.01923076923077,
+        "pct_tie": 0.0,
+        "pct_female": 12.98076923076923,
+        "tie_aware_pct_male": 87.01923076923077
+      },
+      "contrast": 24.652777777777786,
+      "ci": [
+        14.980158730158735,
+        34.97023809523811
+      ],
+      "above_zero": true,
+      "below_zero": false,
+      "includes_zero": false,
+      "original": {
+        "contrast": 15.302579365079382,
+        "ci": [
+          9.340277777777771,
+          21.820560515873034
+        ],
+        "above_zero": true,
+        "source": "results/interval_sensitivity.json models['ibm-granite-granite-embedding-reranker-english-r2']"
+      },
+      "change_vs_original": {
+        "against": "results/selfhost/granite-embedding-reranker-english-r2_full_raw.json (the self-hosted copy's own original scores)",
+        "original_contrast": 15.183531746031761,
+        "original_ci": [
+          9.26091269841271,
+          21.686631944444454
+        ],
+        "reproduces_interval_sensitivity": null,
+        "change": 9.469246031746025,
+        "ci": [
+          4.414682539682545,
+          14.55853174603174
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "original_side_drift_reference": {
+          "kind": "hardware/library drift: this run's re-score of 2 audit queries on Apple M4 Pro (mps) vs the banked scores (NVIDIA GeForce RTX 4090)",
+          "pct_pairs_same_winner": 100.0,
+          "max_abs_score_diff": 1.7881393432617188e-07,
+          "n_pairs": 80
+        }
+      },
+      "scoring": {
+        "access": "self-hosted copy (local)",
+        "source_file": "results/pronoun_channel/ibm-granite__granite-embedding-reranker-english-r2.json",
+        "scored": "2026-10-16T23:08:09 to 2026-10-16T23:08:16",
+        "scored_from": "2026-10-16T23:08:09",
+        "scored_to": "2026-10-16T23:08:16",
+        "active_seconds": 10.9,
+        "requests": null,
+        "served_by": null,
+        "drift_check": {
+          "queries": [
+            "sheriff with expertise",
+            "experienced receptionist"
+          ],
+          "n_pairs": 80,
+          "n_scores": 160,
+          "banked_file": "results/selfhost/granite-embedding-reranker-english-r2_full_raw.json",
+          "banked_scored_at": "2026-10-17",
+          "banked_hardware": "NVIDIA GeForce RTX 4090",
+          "max_abs_score_diff": 1.7881393432617188e-07,
+          "mean_abs_score_diff": 5.4761767387390134e-08,
+          "pct_pairs_same_winner": 100.0,
+          "n_ties_banked": 0,
+          "n_ties_now": 0,
+          "banked_mean_abs_pair_gap": 0.004052934795618057,
+          "layout": "audit layout: the query's 40 pairs in one call, male version first"
+        },
+        "canary": {
+          "top1": "12/12",
+          "finite": true,
+          "varied": true,
+          "passed": true
+        },
+        "revision": "d09d3d6971b689bf9c23839e45a470874d46e13a",
+        "revision_matches_audit": true,
+        "device": "mps",
+        "hardware": "Apple M4 Pro",
+        "runtime": {
+          "torch": "2.10.0",
+          "transformers": "5.2.0",
+          "sentence_transformers": "5.2.3",
+          "dtype": null,
+          "batch": 64,
+          "backend": "crossencoder"
+        },
+        "source": "scored by this script"
+      }
+    },
+    "BAAI/bge-reranker-v2-m3": {
+      "label": "BAAI: BGE v2-m3",
+      "table_label": "BAAI: BGE v2-m3",
+      "dagger": false,
+      "self_hosted_copy_of": null,
+      "note": null,
+      "access": "local",
+      "n_comparisons": 832,
+      "by_category": {
+        "male": {
+          "n": 288,
+          "pct_male": 98.61111111111111,
+          "pct_tie": 0.0,
+          "pct_female": 1.3888888888888888,
+          "tie_aware_pct_male": 98.61111111111111
+        },
+        "female": {
+          "n": 336,
+          "pct_male": 87.5,
+          "pct_tie": 0.0,
+          "pct_female": 12.5,
+          "tie_aware_pct_male": 87.5
+        },
+        "neutral": {
+          "n": 208,
+          "pct_male": 95.67307692307692,
+          "pct_tie": 0.0,
+          "pct_female": 4.326923076923077,
+          "tie_aware_pct_male": 95.67307692307692
+        }
+      },
+      "overall": {
+        "n": 832,
+        "pct_male": 93.38942307692308,
+        "pct_tie": 0.0,
+        "pct_female": 6.610576923076923,
+        "tie_aware_pct_male": 93.38942307692308
+      },
+      "contrast": 11.111111111111114,
+      "ci": [
+        1.3392857142857224,
+        23.115079365079367
+      ],
+      "above_zero": true,
+      "below_zero": false,
+      "includes_zero": false,
+      "original": {
+        "contrast": 15.114087301587304,
+        "ci": [
+          6.4533730158730265,
+          25.595238095238088
+        ],
+        "above_zero": true,
+        "source": "results/interval_sensitivity.json models['BAAI/bge-reranker-v2-m3']"
+      },
+      "change_vs_original": {
+        "against": "results/bge-reranker-v2-m3_full_raw.json",
+        "original_contrast": 15.114087301587304,
+        "original_ci": [
+          6.4533730158730265,
+          25.595238095238088
+        ],
+        "reproduces_interval_sensitivity": true,
+        "change": -4.00297619047619,
+        "ci": [
+          -8.968253968253975,
+          0.8334573412698573
+        ],
+        "above_zero": false,
+        "below_zero": false,
+        "original_side_drift_reference": {
+          "kind": "the de-identification run's determinism check",
+          "status": "checked",
+          "baseline_source": "banked raw scores (bge-reranker-v2-m3_full_raw.json)",
+          "max_abs_score_diff": 2.2858381271362305e-05,
+          "mean_abs_score_diff": 2.886081067397474e-07,
+          "passed": true,
+          "note": null
+        }
+      },
+      "scoring": {
+        "access": "local",
+        "source_file": "results/deid_pairs/BAAI_bge-reranker-v2-m3.json",
+        "scored": "2026-10-16",
+        "scored_by": "deidentification_experiment.py v3.1 (same-run baseline on failed determinism; pair-level release)",
+        "device": "mps",
+        "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+        "runtime": {
+          "torch": "2.10.0",
+          "transformers": "5.2.0",
+          "sentence_transformers": "5.2.3",
+          "max_length": 512,
+          "batch_size": 64,
+          "date": "2026-10-16"
+        },
+        "deid_run_determinism_check": {
+          "status": "checked",
+          "baseline_source": "banked raw scores (bge-reranker-v2-m3_full_raw.json)",
+          "max_abs_score_diff": 2.2858381271362305e-05,
+          "mean_abs_score_diff": 2.886081067397474e-07,
+          "passed": true,
+          "note": null
+        },
+        "source": "de-identification run (names_only), not re-scored"
+      }
+    },
+    "jinaai/jina-reranker-v2-base-multilingual": {
+      "label": "Jina: reranker v2",
+      "table_label": "Jina: reranker v2",
+      "dagger": false,
+      "self_hosted_copy_of": null,
+      "note": null,
+      "access": "local",
+      "n_comparisons": 832,
+      "by_category": {
+        "male": {
+          "n": 288,
+          "pct_male": 52.43055555555556,
+          "pct_tie": 10.416666666666666,
+          "pct_female": 37.15277777777778,
+          "tie_aware_pct_male": 57.638888888888886
+        },
+        "female": {
+          "n": 336,
+          "pct_male": 13.988095238095237,
+          "pct_tie": 9.821428571428571,
+          "pct_female": 76.19047619047619,
+          "tie_aware_pct_male": 18.898809523809526
+        },
+        "neutral": {
+          "n": 208,
+          "pct_male": 33.65384615384615,
+          "pct_tie": 12.5,
+          "pct_female": 53.84615384615385,
+          "tie_aware_pct_male": 39.90384615384615
+        }
+      },
+      "overall": {
+        "n": 832,
+        "pct_male": 32.21153846153846,
+        "pct_tie": 10.697115384615385,
+        "pct_female": 57.09134615384615,
+        "tie_aware_pct_male": 37.56009615384615
+      },
+      "contrast": 38.74007936507937,
+      "ci": [
+        24.231150793650794,
+        52.62896825396825
+      ],
+      "above_zero": true,
+      "below_zero": false,
+      "includes_zero": false,
+      "original": {
+        "contrast": 14.263392857142854,
+        "ci": [
+          5.736607142857139,
+          22.658730158730158
+        ],
+        "above_zero": true,
+        "source": "results/interval_sensitivity.json models['jinaai/jina-reranker-v2-base-multilingual']"
+      },
+      "change_vs_original": {
+        "against": "results/jina-reranker-v2-base-multilingual_full_raw.json",
+        "original_contrast": 14.263392857142854,
+        "original_ci": [
+          5.736607142857139,
+          22.658730158730158
+        ],
+        "reproduces_interval_sensitivity": true,
+        "change": 24.476686507936513,
+        "ci": [
+          14.63033234126985,
+          34.22123015873016
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "original_side_drift_reference": {
+          "kind": "the de-identification run's determinism check",
+          "status": "checked",
+          "baseline_source": "banked raw scores (jina-reranker-v2-base-multilingual_full_raw.json)",
+          "max_abs_score_diff": 0.01171875,
+          "mean_abs_score_diff": 0.0004444415752704327,
+          "passed": false,
+          "note": null,
+          "baseline_replaced": true
+        }
+      },
+      "scoring": {
+        "access": "local",
+        "source_file": "results/deid_pairs/jinaai_jina-reranker-v2-base-multilingual.json",
+        "scored": "2026-10-16",
+        "scored_by": "deidentification_experiment.py v3.1 (same-run baseline on failed determinism; pair-level release)",
+        "device": "mps",
+        "revision": "9cfeff2df7d40d1b78e75e5e9cebec92a99813c9",
+        "runtime": {
+          "torch": "2.10.0",
+          "transformers": "5.2.0",
+          "sentence_transformers": "5.2.3",
+          "max_length": 512,
+          "batch_size": 64,
+          "date": "2026-10-16"
+        },
+        "deid_run_determinism_check": {
+          "status": "checked",
+          "baseline_source": "banked raw scores (jina-reranker-v2-base-multilingual_full_raw.json)",
+          "max_abs_score_diff": 0.01171875,
+          "mean_abs_score_diff": 0.0004444415752704327,
+          "passed": false,
+          "note": null,
+          "baseline_replaced": true
+        },
+        "source": "de-identification run (names_only), not re-scored"
+      }
+    },
+    "Alibaba-NLP/gte-reranker-modernbert-base": {
+      "label": "Alibaba: GTE ModernBERT",
+      "table_label": "Alibaba: GTE ModernBERT",
+      "dagger": false,
+      "self_hosted_copy_of": null,
+      "note": null,
+      "access": "local",
+      "n_comparisons": 832,
+      "by_category": {
+        "male": {
+          "n": 288,
+          "pct_male": 68.75,
+          "pct_tie": 0.0,
+          "pct_female": 31.25,
+          "tie_aware_pct_male": 68.75
+        },
+        "female": {
+          "n": 336,
+          "pct_male": 77.38095238095238,
+          "pct_tie": 0.0,
+          "pct_female": 22.61904761904762,
+          "tie_aware_pct_male": 77.38095238095238
+        },
+        "neutral": {
+          "n": 208,
+          "pct_male": 66.82692307692308,
+          "pct_tie": 0.0,
+          "pct_female": 33.17307692307692,
+          "tie_aware_pct_male": 66.82692307692308
+        }
+      },
+      "overall": {
+        "n": 832,
+        "pct_male": 71.7548076923077,
+        "pct_tie": 0.0,
+        "pct_female": 28.245192307692307,
+        "tie_aware_pct_male": 71.7548076923077
+      },
+      "contrast": -8.63095238095238,
+      "ci": [
+        -17.16269841269842,
+        0.1488095238095184
+      ],
+      "above_zero": false,
+      "below_zero": false,
+      "includes_zero": true,
+      "original": {
+        "contrast": -6.731150793650798,
+        "ci": [
+          -12.693452380952372,
+          -0.28757440476188934
+        ],
+        "above_zero": false,
+        "source": "results/interval_sensitivity.json models['Alibaba-NLP/gte-reranker-modernbert-base']"
+      },
+      "change_vs_original": {
+        "against": "results/gte-reranker-modernbert-base_full_raw.json",
+        "original_contrast": -6.731150793650798,
+        "original_ci": [
+          -12.693452380952372,
+          -0.28757440476188934
+        ],
+        "reproduces_interval_sensitivity": true,
+        "change": -1.8998015873015817,
+        "ci": [
+          -7.251984126984119,
+          3.3581349206349103
+        ],
+        "above_zero": false,
+        "below_zero": false,
+        "original_side_drift_reference": {
+          "kind": "hardware/library drift: this run's re-score of 2 audit queries on Apple M4 Pro (mps) vs the banked scores (NVIDIA GeForce RTX 4090)",
+          "pct_pairs_same_winner": 100.0,
+          "max_abs_score_diff": 4.76837158203125e-07,
+          "n_pairs": 80
+        }
+      },
+      "scoring": {
+        "access": "local",
+        "source_file": "results/pronoun_channel/Alibaba-NLP__gte-reranker-modernbert-base.json",
+        "scored": "2026-10-16T23:08:19 to 2026-10-16T23:08:26",
+        "scored_from": "2026-10-16T23:08:19",
+        "scored_to": "2026-10-16T23:08:26",
+        "active_seconds": 10.0,
+        "requests": null,
+        "served_by": null,
+        "drift_check": {
+          "queries": [
+            "sheriff with expertise",
+            "experienced receptionist"
+          ],
+          "n_pairs": 80,
+          "n_scores": 160,
+          "banked_file": "results/gte-reranker-modernbert-base_full_raw.json",
+          "banked_scored_at": "2026-10-17",
+          "banked_hardware": "NVIDIA GeForce RTX 4090",
+          "max_abs_score_diff": 4.76837158203125e-07,
+          "mean_abs_score_diff": 1.2591481208801268e-07,
+          "pct_pairs_same_winner": 100.0,
+          "n_ties_banked": 0,
+          "n_ties_now": 0,
+          "banked_mean_abs_pair_gap": 0.0029095068573951723,
+          "layout": "audit layout: the query's 40 pairs in one call, male version first"
+        },
+        "canary": {
+          "top1": "12/12",
+          "finite": true,
+          "varied": true,
+          "passed": true
+        },
+        "revision": "f7481e6055501a30fb19d090657df9ec1f79ab2c",
+        "revision_matches_audit": true,
+        "device": "mps",
+        "hardware": "Apple M4 Pro",
+        "runtime": {
+          "torch": "2.10.0",
+          "transformers": "5.2.0",
+          "sentence_transformers": "5.2.3",
+          "dtype": null,
+          "batch": 64,
+          "backend": "crossencoder"
+        },
+        "source": "scored by this script"
+      }
+    }
+  }
+}

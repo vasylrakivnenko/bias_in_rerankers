@@ -18,6 +18,19 @@ both runs' male-typed minus female-typed contrast. Score scales can differ
 between serving paths, so score differences are reported only where the scale
 is the same; agreement and contrast are always comparable.
 
+A third block, `vendor_drift`, summarises a comparison already banked by
+code/order_reversal_test.py: its October 2026 re-query of every API model in
+the original request layout (`same`) against the banked audit scores
+(`same_vs_banked`), grouped by the date each model was first scored -- the
+February 2026 audit, about eight months before the re-query, or the day of
+the re-query itself. Per group: the largest |contrast change|, how many
+contrast-change intervals exclude zero (closed interval: an end exactly at
+zero does not exclude it), and the range of the share of pairs with the same
+winner.
+
+Offline: every input is a banked results file; nothing is scored or re-queried
+and no model is loaded.
+
 Output: results/reproducibility_checks.json
 Run:    venv/bin/python code/reproducibility_checks.py
 """
@@ -39,6 +52,8 @@ from labels import load_labels  # noqa: E402
 
 RESULTS = ROOT / "results"
 OUT = RESULTS / "reproducibility_checks.json"
+ORDER_TEST = RESULTS / "order_reversal_test.json"
+AUDIT = RESULTS / "single_stage_summary.json"
 
 CROSS_HARDWARE = {   # model -> (RunPod checkpoint, Mac pair-level file)
     "BAAI/bge-reranker-base": ("partial/BAAI__bge-reranker-base.jsonl",
@@ -96,6 +111,74 @@ def from_raw(path):
     return {key(r): (r["score_male"], r["score_female"]) for r in d["results"]}, d
 
 
+def vendor_drift():
+    """Summarise the order test's re-query of each API model against its banked scores.
+
+    Reads `models.<m>.comparisons.same_vs_banked` from the order test's summary
+    for the API models (access "API" in the single-stage summary) and groups
+    them by `date_scored`. Nothing is re-queried.
+    """
+    ot = json.loads(ORDER_TEST.read_text())
+    audit = json.loads(AUDIT.read_text())["models"]
+    api = sorted(m for m in ot["models"] if audit[m]["access"] == "API")
+    if len(api) != ot["api_overview"]["n_models"]:
+        raise AssertionError(f"{len(api)} API models in the order test's summary, but its "
+                             f"api_overview counts {ot['api_overview']['n_models']}")
+    per_model = {}
+    for m in api:
+        c = ot["models"][m]["comparisons"]["same_vs_banked"]
+        lo, hi = c["contrast_change_ci"]
+        scored, requeried = audit[m]["date_scored"], ot["models"][m]["scored"]
+        per_model[m] = {
+            "date_scored": scored,
+            "requeried": requeried,
+            "days_between": (_dt.date.fromisoformat(requeried[:10])
+                             - _dt.date.fromisoformat(scored)).days,
+            "n_pairs": ot["models"][m]["n_pairs"],
+            "contrast_change": c["contrast_change"],
+            "contrast_change_ci": c["contrast_change_ci"],
+            "ci_excludes_zero": lo > 0 or hi < 0,
+            "pct_pairs_same_winner": c["pct_pairs_same_winner"]}
+    groups = {}
+    for date in sorted({v["date_scored"] for v in per_model.values()}):
+        g = {m: v for m, v in per_model.items() if v["date_scored"] == date}
+        change = {m: abs(v["contrast_change"]) for m, v in g.items()}
+        same = {m: v["pct_pairs_same_winner"] for m, v in g.items()}
+        excl = sorted(m for m, v in g.items() if v["ci_excludes_zero"])
+        groups[date] = {
+            "n_models": len(g),
+            "models": sorted(g),
+            "days_between_scoring_and_requery": sorted({v["days_between"] for v in g.values()}),
+            "max_abs_contrast_change": max(change.values()),
+            "models_max_abs_contrast_change": sorted(m for m in g
+                                                     if change[m] == max(change.values())),
+            "n_contrast_change_ci_excluding_zero": len(excl),
+            "models_contrast_change_ci_excluding_zero": excl,
+            "min_pct_pairs_same_winner": min(same.values()),
+            "models_min_pct_pairs_same_winner": sorted(m for m in g
+                                                       if same[m] == min(same.values())),
+            "max_pct_pairs_same_winner": max(same.values()),
+            "models_max_pct_pairs_same_winner": sorted(m for m in g
+                                                       if same[m] == max(same.values()))}
+    return {
+        "source": "results/order_reversal_test.json: models.<m>.comparisons.same_vs_banked",
+        "definition": "October 2026 re-query in the original request layout (order test arm "
+                      "`same`) against the banked audit scores, on the order test's pairs "
+                      f"({ot['per_category']} occupations per category x 4 query phrasings x "
+                      "4 templates x 10 name pairs). contrast_change: re-query minus banked "
+                      "male-typed minus "
+                      "female-typed contrast (tie-aware points), with the order test's 95% "
+                      "paired occupation-bootstrap interval; pct_pairs_same_winner: share "
+                      "of pairs whose sign of score_male - score_female agrees",
+        "interval_rule": "an interval excludes zero when lo > 0 or hi < 0 (closed: an end "
+                         "exactly at zero does not exclude it)",
+        "group_by": "single_stage_summary.json models.<m>.date_scored",
+        "n_models": len(api),
+        "n_models_by_date_scored": {d: g["n_models"] for d, g in groups.items()},
+        "groups": groups,
+        "models": per_model}
+
+
 def main():
     labels, _ = load_labels()
     out = {"generated": _dt.datetime.now().isoformat(timespec="seconds"),
@@ -127,8 +210,18 @@ def main():
             "revision": ad["self_hosted"]["revision"],
             **compare(a, b, labels, same_scale=False)}
 
+    out["vendor_drift"] = vendor_drift()
+
     OUT.write_text(json.dumps(out, indent=2) + "\n")
-    print(json.dumps(out, indent=1))
+    print(json.dumps({k: v for k, v in out.items() if k != "vendor_drift"}, indent=1))
+    for date, g in out["vendor_drift"]["groups"].items():
+        print(f"vendor drift, first scored {date}: {g['n_models']} models, "
+              f"{g['days_between_scoring_and_requery']} days before the re-query; "
+              f"max |contrast change| {g['max_abs_contrast_change']:.2f} "
+              f"({', '.join(g['models_max_abs_contrast_change'])}); "
+              f"{g['n_contrast_change_ci_excluding_zero']} intervals exclude zero; "
+              f"same winner {g['min_pct_pairs_same_winner']:.1f}-"
+              f"{g['max_pct_pairs_same_winner']:.1f}%")
 
 
 if __name__ == "__main__":

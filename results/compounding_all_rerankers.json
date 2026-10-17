@@ -1,6 +1,6 @@
 {
   "script_version": "compounding_experiment.py v2.0 (REVIEW_TODO C1/A6/A2/B1/B5)",
-  "generated": "2026-10-16T20:16:37",
+  "generated": "2026-10-16T22:57:06",
   "label_source": "BLS CPS Table 11 via occupations_bls.csv",
   "seed": 20260822,
   "bootstrap_B": 1000,
@@ -29,6 +29,7 @@
     "min_model": "rerank-3-lite",
     "max": 84.85576923076928,
     "max_model": "ibm-granite-granite-embedding-reranker-english-r2",
+    "median": 62.62650240384617,
     "retriever_alone": 59.575320513,
     "n_models": 28,
     "n_below_retriever_alone": 11,

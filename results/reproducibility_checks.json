@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-16T22:15:41",
+  "generated": "2026-10-16T23:43:44",
   "cross_hardware": {
     "BAAI/bge-reranker-base": {
       "a": "NVIDIA GeForce RTX 4090 (CUDA)",
@@ -43,6 +43,275 @@
       "n_pairs_neither_ties": 8320,
       "contrast_a": 15.183531746031761,
       "contrast_b": 15.302579365079382
+    }
+  },
+  "vendor_drift": {
+    "source": "results/order_reversal_test.json: models.<m>.comparisons.same_vs_banked",
+    "definition": "October 2026 re-query in the original request layout (order test arm `same`) against the banked audit scores, on the order test's pairs (8 occupations per category x 4 query phrasings x 4 templates x 10 name pairs). contrast_change: re-query minus banked male-typed minus female-typed contrast (tie-aware points), with the order test's 95% paired occupation-bootstrap interval; pct_pairs_same_winner: share of pairs whose sign of score_male - score_female agrees",
+    "interval_rule": "an interval excludes zero when lo > 0 or hi < 0 (closed: an end exactly at zero does not exclude it)",
+    "group_by": "single_stage_summary.json models.<m>.date_scored",
+    "n_models": 15,
+    "n_models_by_date_scored": {
+      "2026-02-24": 10,
+      "2026-10-16": 5
+    },
+    "groups": {
+      "2026-02-24": {
+        "n_models": 10,
+        "models": [
+          "Cohere-rerank-v4.0-fast",
+          "Cohere-rerank-v4.0-pro",
+          "rerank-1",
+          "rerank-2",
+          "rerank-2-lite",
+          "rerank-2.5",
+          "rerank-2.5-lite",
+          "semantic-ranker-default-002",
+          "semantic-ranker-default-004",
+          "semantic-ranker-fast-004"
+        ],
+        "days_between_scoring_and_requery": [
+          234
+        ],
+        "max_abs_contrast_change": 1.0546875,
+        "models_max_abs_contrast_change": [
+          "rerank-2"
+        ],
+        "n_contrast_change_ci_excluding_zero": 0,
+        "models_contrast_change_ci_excluding_zero": [],
+        "min_pct_pairs_same_winner": 83.56770833333333,
+        "models_min_pct_pairs_same_winner": [
+          "semantic-ranker-fast-004"
+        ],
+        "max_pct_pairs_same_winner": 100.0,
+        "models_max_pct_pairs_same_winner": [
+          "semantic-ranker-default-004"
+        ]
+      },
+      "2026-10-16": {
+        "n_models": 5,
+        "models": [
+          "cohere/rerank-v3.5",
+          "nvidia/llama-nemotron-rerank-vl-1b-v2",
+          "qwen/qwen3-reranker-8b",
+          "rerank-3",
+          "rerank-3-lite"
+        ],
+        "days_between_scoring_and_requery": [
+          0
+        ],
+        "max_abs_contrast_change": 0.625,
+        "models_max_abs_contrast_change": [
+          "rerank-3"
+        ],
+        "n_contrast_change_ci_excluding_zero": 0,
+        "models_contrast_change_ci_excluding_zero": [],
+        "min_pct_pairs_same_winner": 89.921875,
+        "models_min_pct_pairs_same_winner": [
+          "rerank-3"
+        ],
+        "max_pct_pairs_same_winner": 100.0,
+        "models_max_pct_pairs_same_winner": [
+          "nvidia/llama-nemotron-rerank-vl-1b-v2"
+        ]
+      }
+    },
+    "models": {
+      "Cohere-rerank-v4.0-fast": {
+        "date_scored": "2026-02-24",
+        "requeried": "2026-10-16T17:20:29",
+        "days_between": 234,
+        "n_pairs": 3840,
+        "contrast_change": -0.703125,
+        "contrast_change_ci": [
+          -1.640625,
+          0.390625
+        ],
+        "ci_excludes_zero": false,
+        "pct_pairs_same_winner": 92.76041666666667
+      },
+      "Cohere-rerank-v4.0-pro": {
+        "date_scored": "2026-02-24",
+        "requeried": "2026-10-16T17:30:18",
+        "days_between": 234,
+        "n_pairs": 3840,
+        "contrast_change": -0.625,
+        "contrast_change_ci": [
+          -1.640625,
+          0.3515625
+        ],
+        "ci_excludes_zero": false,
+        "pct_pairs_same_winner": 95.02604166666667
+      },
+      "cohere/rerank-v3.5": {
+        "date_scored": "2026-10-16",
+        "requeried": "2026-10-16T17:50:31",
+        "days_between": 0,
+        "n_pairs": 3840,
+        "contrast_change": 0.078125,
+        "contrast_change_ci": [
+          0.0,
+          0.234375
+        ],
+        "ci_excludes_zero": false,
+        "pct_pairs_same_winner": 99.89583333333333
+      },
+      "nvidia/llama-nemotron-rerank-vl-1b-v2": {
+        "date_scored": "2026-10-16",
+        "requeried": "2026-10-16T18:03:55",
+        "days_between": 0,
+        "n_pairs": 3840,
+        "contrast_change": 0.0,
+        "contrast_change_ci": [
+          0.0,
+          0.0
+        ],
+        "ci_excludes_zero": false,
+        "pct_pairs_same_winner": 100.0
+      },
+      "qwen/qwen3-reranker-8b": {
+        "date_scored": "2026-10-16",
+        "requeried": "2026-10-16T17:57:00",
+        "days_between": 0,
+        "n_pairs": 3840,
+        "contrast_change": 0.15625,
+        "contrast_change_ci": [
+          -0.4697265625000016,
+          0.7421875
+        ],
+        "ci_excludes_zero": false,
+        "pct_pairs_same_winner": 95.3125
+      },
+      "rerank-1": {
+        "date_scored": "2026-02-24",
+        "requeried": "2026-10-16T17:31:25",
+        "days_between": 234,
+        "n_pairs": 3840,
+        "contrast_change": 0.2734374999999858,
+        "contrast_change_ci": [
+          -0.039062500000007105,
+          0.5859375
+        ],
+        "ci_excludes_zero": false,
+        "pct_pairs_same_winner": 97.94270833333333
+      },
+      "rerank-2": {
+        "date_scored": "2026-02-24",
+        "requeried": "2026-10-16T17:32:27",
+        "days_between": 234,
+        "n_pairs": 3840,
+        "contrast_change": -1.0546875,
+        "contrast_change_ci": [
+          -2.578125,
+          0.1953125
+        ],
+        "ci_excludes_zero": false,
+        "pct_pairs_same_winner": 92.86458333333333
+      },
+      "rerank-2-lite": {
+        "date_scored": "2026-02-24",
+        "requeried": "2026-10-16T17:33:24",
+        "days_between": 234,
+        "n_pairs": 3840,
+        "contrast_change": 0.390625,
+        "contrast_change_ci": [
+          -0.5078125,
+          1.25
+        ],
+        "ci_excludes_zero": false,
+        "pct_pairs_same_winner": 92.47395833333333
+      },
+      "rerank-2.5": {
+        "date_scored": "2026-02-24",
+        "requeried": "2026-10-16T17:34:27",
+        "days_between": 234,
+        "n_pairs": 3840,
+        "contrast_change": -0.0781250000000071,
+        "contrast_change_ci": [
+          -0.5859375,
+          0.5078125
+        ],
+        "ci_excludes_zero": false,
+        "pct_pairs_same_winner": 95.91145833333333
+      },
+      "rerank-2.5-lite": {
+        "date_scored": "2026-02-24",
+        "requeried": "2026-10-16T17:35:26",
+        "days_between": 234,
+        "n_pairs": 3840,
+        "contrast_change": 0.4296875,
+        "contrast_change_ci": [
+          -0.5078125,
+          1.3671875
+        ],
+        "ci_excludes_zero": false,
+        "pct_pairs_same_winner": 94.21875
+      },
+      "rerank-3": {
+        "date_scored": "2026-10-16",
+        "requeried": "2026-10-16T17:47:07",
+        "days_between": 0,
+        "n_pairs": 3840,
+        "contrast_change": -0.625,
+        "contrast_change_ci": [
+          -2.382812500000007,
+          0.8984375
+        ],
+        "ci_excludes_zero": false,
+        "pct_pairs_same_winner": 89.921875
+      },
+      "rerank-3-lite": {
+        "date_scored": "2026-10-16",
+        "requeried": "2026-10-16T17:48:10",
+        "days_between": 0,
+        "n_pairs": 3840,
+        "contrast_change": -0.078125,
+        "contrast_change_ci": [
+          -1.40625,
+          1.0546875000000142
+        ],
+        "ci_excludes_zero": false,
+        "pct_pairs_same_winner": 90.625
+      },
+      "semantic-ranker-default-002": {
+        "date_scored": "2026-02-24",
+        "requeried": "2026-10-16T17:24:14",
+        "days_between": 234,
+        "n_pairs": 3840,
+        "contrast_change": -0.1953125,
+        "contrast_change_ci": [
+          -1.093749999999993,
+          0.7421874999999929
+        ],
+        "ci_excludes_zero": false,
+        "pct_pairs_same_winner": 94.86979166666667
+      },
+      "semantic-ranker-default-004": {
+        "date_scored": "2026-02-24",
+        "requeried": "2026-10-16T17:25:50",
+        "days_between": 234,
+        "n_pairs": 3840,
+        "contrast_change": 0.0,
+        "contrast_change_ci": [
+          0.0,
+          0.0
+        ],
+        "ci_excludes_zero": false,
+        "pct_pairs_same_winner": 100.0
+      },
+      "semantic-ranker-fast-004": {
+        "date_scored": "2026-02-24",
+        "requeried": "2026-10-16T17:27:08",
+        "days_between": 234,
+        "n_pairs": 3840,
+        "contrast_change": 0.15625,
+        "contrast_change_ci": [
+          -3.359375,
+          3.2421875
+        ],
+        "ci_excludes_zero": false,
+        "pct_pairs_same_winner": 83.56770833333333
+      }
     }
   }
 }

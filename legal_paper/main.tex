@@ -53,7 +53,7 @@
 \begin{abstract}
 \noindent
 
-Automated hiring pipelines can retrieve candidate documents with an embedding model and then reorder the leading candidates with a neural reranker. Bias in embedding models is well documented, but rerankers are a different class of model, and few studies have tested how they respond to a candidate's name and pronouns. We audit 29 current commercial and open-weight rerankers with controlled name-and-pronoun comparisons; to our knowledge, no earlier bias study of rerankers covers this many models or includes the commercial reranking services sold today. Each model scores the same 8,320 document pairs, and within each pair, qualifications are unchanged and only the selected name and pronouns differ. In 27 of the 29 models, the male-associated document is favored more often for male-typed occupations than for female-typed occupations; of the two recent exceptions, one shows no difference and the other shows the reverse pattern. In synthetic pools of 20 equally qualified candidates, one retrieval-and-reranking pipeline assigns 79\% of top-3 positions to male-associated documents; behind the same retriever, the audited pointwise rerankers range from 44\% to 85\%, against 60\% for retrieval alone. Results vary materially across models, occupations, names, templates, and query wordings. We then test a simple input transform that replaces names with one placeholder and gendered pronouns with one uniform token before ranking. The transform makes each counterfactual pair textually identical and therefore removes score differences attributable to those markers by construction. On a near-ceiling synthetic occupation-matching check, the transform did not reduce top-rank accuracy (827 of 832 correct before, 830 after). These findings establish sensitivity to the tested names and pronouns, rather than discrimination in deployed hiring or a complete solution to demographic bias.
+Automated hiring pipelines can retrieve candidate documents with an embedding model and then reorder the leading candidates with a neural reranker. Bias in embedding models is well documented, but rerankers are a different class of model, and few studies have tested how they respond to a candidate's name and pronouns. We audit 29 current commercial and open-weight rerankers with controlled name-and-pronoun comparisons; to our knowledge, no earlier bias study of rerankers covers this many models or includes the commercial reranking services sold today. Each model scores the same 8,320 document pairs, and within each pair, qualifications are unchanged and only the selected name and pronouns differ. In 27 of the 29 models, the male-associated document is favored more often for male-typed occupations than for female-typed occupations; of the two recent exceptions, one shows no difference and the other shows the reverse pattern. When both names are replaced by one placeholder, so that the two documents differ only in their pronouns, the pattern holds in 27 of 28 re-scored models. In synthetic pools of 20 candidates whose documents differ only in name and pronouns, one retrieval-and-reranking pipeline assigns 79\% of top-3 positions to male-associated documents; behind the same retriever, the audited pointwise rerankers range from 44\% to 85\% (median 63\%), against 60\% for retrieval alone. Results vary materially across models, occupations, names, templates, and query wordings. We then test a simple input transform that replaces names with one placeholder and gendered pronouns with one uniform token before ranking. The transform makes each counterfactual pair textually identical and therefore removes score differences attributable to those markers by construction. On a near-ceiling synthetic occupation-matching check, the transform did not reduce top-rank accuracy (827 of 832 correct before, 830 after). These findings establish sensitivity to the tested names and pronouns, rather than discrimination in deployed hiring or a complete solution to demographic bias.
 
 \end{abstract}
 
@@ -61,19 +61,19 @@ Automated hiring pipelines can retrieve candidate documents with an embedding mo
 
 Modern search systems commonly retrieve a candidate set with a fast first-stage method, such as lexical matching or a dense embedding model \cite{karpukhin2020}, and then use a more expensive model to rerank that set \cite{nogueira2019}. The same architecture can be used for job and resume matching. A candidate must therefore pass two learned ordering stages before appearing near the top of a recruiter's list.
 
-Prior work on social bias spans several other model types. Word and text embeddings encode social stereotypes \cite{caliskan2017,rakivnenko2024}. Large language models that grade résumés directly show gender and racial effects whose direction differs across models \cite{an2025}. Embedding-based résumé retrieval favors some demographic groups when only the name changes \cite{wilson2024}. A hiring study of four commercial embedding models finds that swapping a résumé's first name changes which candidates reach the top of the ranking, but that swapping between two names of the same group, or adding typographical errors, does so as well \cite{seshadri2025}. Rerankers are a different type of model. Rather than comparing precomputed vectors, a reranker typically reads the query and a candidate document together and outputs a relevance score, and in a retrieval pipeline it sits on top of the embedding stage, reordering the candidates that retrieval returns. Findings about embedding models therefore cannot be assumed to carry over to rerankers. Work on rerankers themselves is sparse. Counterfactual inputs have been used to probe rerankers, but for lexical rather than demographic sensitivity: rewriting passages to remove keyword overlap with the query changes the relevance judgments of LLM-based rerankers \cite{mao2025}. LLMs prompted to rank documents have also been evaluated for gender and geographic fairness on a fair-ranking benchmark, without holding a document fixed while changing its demographic markers \cite{wang2024}. A recent comparison of six rerankers measures group exposure on a general search benchmark, without varying candidate names or pronouns and outside hiring \cite{samuel2026}. Closest to our setting, early BERT rankers were shown to return more male-skewed passages for gender-neutral queries \cite{rekabsaz2020,rekabsaz2021}. That work measures the gender content of search results rather than how a reranker treats the same candidate under different names and pronouns, and it predates the commercial rerankers sold today.
+Prior work on social bias spans several other model types. Word and text embeddings encode social stereotypes \cite{caliskan2017,rakivnenko2024}. Large language models that grade résumés directly show gender and racial effects whose direction differs across models \cite{an2025}. Embedding-based résumé retrieval favors some demographic groups when only the name changes \cite{wilson2024}. A hiring study of four commercial embedding models finds that swapping a résumé's first name changes which candidates reach the top of the ranking, but that swapping between two names of the same group, or adding typographical errors, does so as well \cite{seshadri2025}. Rerankers are a different type of model. Rather than comparing precomputed vectors, a reranker typically reads the query and a candidate document together and outputs a relevance score, and in a retrieval pipeline it sits on top of the embedding stage, reordering the candidates that retrieval returns. Findings about embedding models therefore cannot be assumed to carry over to rerankers. Work on rerankers themselves is less extensive and mostly concerns general search. Counterfactual inputs have probed rerankers for lexical sensitivity: rewriting passages to remove keyword overlap with the query changes the relevance judgments of LLM-based rerankers \cite{mao2025}. LLMs prompted to rank documents have been evaluated for gender and geographic fairness \cite{wang2024}, and six recent rerankers have been compared on group exposure \cite{samuel2026}, both on TREC Fair Ranking data and with the documents left unchanged. BERT rankers were shown to return more male-skewed passages for gender-neutral queries \cite{rekabsaz2020,rekabsaz2021}, and later work reduced this skew through bias-aware query revision, bias-aware sampling of training documents, or a neutrality penalty during training \cite{bigdeli2021,bigdeli2022,zerveas2022}. A related dataset pairs gender-neutral queries with male, female, and neutral versions of each document that differ only in gendered words \cite{krieg2023}. Closest to our setting, Kumar and colleagues swapped a placeholder name, a title, and pronouns in candidate biographies, scored both versions with a cross-encoder they had trained, and used the pairs to find the job-advertisement words behind the score difference \cite{kumar2023}. A follow-up reuses that counterfactual, with the candidate as the query and job advertisements as the ranked documents, for two such cross-encoders \cite{kumar2025}. None of these studies tests a commercial reranking service or compares released rerankers on the same counterfactual candidate documents.
 
 We ask three narrow empirical questions. First, do current rerankers score otherwise identical professional documents differently when selected names and pronouns change? Second, how do such differences affect a two-stage shortlist? Third, which simple de-identification rules remove the measured difference without reducing performance on a basic relevance check?
 
-Our contribution is an audit of 29 current rerankers, commercial and open-weight, in which every model scores the same documents with only the name and pronouns changed. To our knowledge, no earlier bias study of rerankers covers this many models or includes commercial reranking APIs, and none holds a candidate's qualifications fixed while changing both name and pronouns. The audit has three parts. First, 27 of the 29 audited rerankers favor the male-associated version more often on male-typed than on female-typed occupations, including some of the most recently released models. Second, in a retrieval-and-reranking simulation, the reranker can override the shortlist that retrieval produces. Third, on four locally runnable rerankers, replacing names and pronouns together removes the measured difference, while replacing names alone does not. The audit is dated and reproducible, and it makes no claim about any employer's deployed system. The design isolates sensitivity to the changed text. It does not isolate gender from every other association carried by a name, and it does not measure actual hiring decisions.
+Our contribution is an audit of 29 current rerankers, commercial and open-weight, in which every model scores the same documents with only the name and pronouns changed. To our knowledge, no earlier bias study of rerankers covers this many models or includes commercial reranking services. Earlier counterfactual tests of candidate text used one placeholder name per gender and one or two cross-encoders that the authors trained \cite{kumar2023,kumar2025}; this audit uses 10 pairs of common given names and rerankers as their developers release them. The audit has three parts. First, 27 of the 29 audited rerankers favor the male-associated version more often on male-typed than on female-typed occupations, including some of the most recently released models. The pattern holds in 27 of 28 re-scored models when the two documents differ only in their pronouns, so it does not depend on the names. Second, in a retrieval-and-reranking simulation, the reranker can override the shortlist that retrieval produces. Third, on four locally runnable rerankers, replacing names and pronouns together removes the measured difference, while replacing names alone does not. The audit is dated and reproducible, and it makes no claim about any employer's deployed system. The design isolates sensitivity to the changed text. Names carry associations beyond gender, but the pronoun-only comparison reproduces the pattern without them. The audit does not measure actual hiring decisions.
 
 \section{Experimental design}
 
 \subsection{Counterfactual documents}
 
-Each observation is a pair of short professional documents. The two versions describe the same occupation, experience, skills, and accomplishments. One version uses a male-associated given name and masculine pronouns; the other uses a female-associated given name and feminine pronouns. For a deterministic reranker that scores each document independently, any within-pair score difference is therefore caused by the changed name and pronoun tokens. The API rerankers received both versions of a pair in the same request, always with the male-associated version first, and vendors do not guarantee that a document's score is independent of its position in a request. We therefore re-sent the original requests for a category-balanced subset of 3,840 pairs to 15 of the 16 rerankers we accessed through an API (all except IBM's Granite reranker, whose endpoint could not be re-queried) in three layouts: unchanged, with each pair reversed, and fully shuffled, together with an identical repeat that measures run-to-run variability. Results are reported in Section 3. Because names can also signal age, ethnicity, nationality, and individual identity, the design cannot attribute the whole difference to gender alone.
+Each observation is a pair of short professional documents. The two versions describe the same occupation, experience, skills, and accomplishments. One version uses a male-associated given name and masculine pronouns; the other uses a female-associated given name and feminine pronouns. Like correspondence studies of hiring, which randomly assign different names to comparable job applications \cite{bertrand2004}, the design varies the name, and here also the pronouns, while holding the rest of the document fixed. For a deterministic reranker that scores each document independently, any within-pair score difference is therefore caused by the changed name and pronoun tokens. The API rerankers received both versions of a pair in the same request, always with the male-associated version first, and vendors do not guarantee that a document's score is independent of its position in a request. We therefore re-sent the original requests for a category-balanced subset of 3,840 pairs to 15 of the 16 rerankers we accessed through an API (all except IBM's Granite reranker, whose endpoint could not be re-queried) in three layouts: unchanged, with each pair reversed, and fully shuffled, together with an identical repeat that measures run-to-run variability. Results are reported in Section 3. Because names can also signal age, ethnicity, nationality, and individual identity, the name-and-pronoun comparison cannot attribute the whole difference to gender alone. We therefore also score a pronoun-only version of every comparison, in which both names are replaced by the same placeholder, so that the two documents differ only in their pronouns; this is the names-only de-identification rule below. We scored it on 2026-10-16 for every audited model except the listwise jina-reranker-v3, whose scores depend on the other documents in a request. The API models were re-queried, the open-weight models were re-run on an Apple M4 Pro, and IBM's Granite reranker, whose endpoint could not be re-queried, was scored from its public weights.
 
-We combine 4 document templates, 4 query phrasings, and 10 pairs of common American given names. Names come from national birth-name records \cite{ssa2026}. The complete templates, queries, and names appear in Appendix A.
+We combine 4 document templates, 4 query phrasings, and 10 pairs of common American given names. Names come from national birth-name records \cite{ssa2026}. Each pair joins one male-associated and one female-associated name; the pairing itself is arbitrary, and Section 3 checks that it does not drive the results. The complete templates, queries, and names appear in Appendix A.
 
 The 82 occupation words were assembled by hand before any labeling, from occupations chosen for this study and from the occupation list used in earlier work on embedding bias \cite{rakivnenko2024}, which draws on the BIG-bench gender-occupation data. They are everyday job words, not a sample of the labor market, and some (for example, boss, warrior, or socialite) name a rank or role rather than an occupation; the labeling step below removes these. Statements about how many models or occupations show an effect therefore describe this benchmark, not the distribution of occupations in employment or job postings. We label occupations with the share of women employed in the corresponding federal labor-force category \cite{bls2025}. An occupation is male-typed if women hold under 30\% of its jobs, female-typed if they hold over 70\%, and evenly split if they hold 40\% to 60\%; the bands in between are excluded as ambiguous. We retain 52 occupations with a clear label: 18 male-typed, 21 female-typed, and 13 close to evenly split. The remaining 30 lack a usable match, have a suppressed estimate, or fall in an intentionally ambiguous range. The released repository records every inclusion and exclusion, its federal category, and the exclusion reason.
 
@@ -81,25 +81,27 @@ The 82 occupation words were assembled by hand before any labeling, from occupat
 
 We evaluate 29 rerankers from commercial APIs and open-weight releases. The model set is a convenience sample, not a market sample: it comprises commercial rerankers we could query at scoring time through Voyage AI's and Google Cloud's APIs, Microsoft Azure, or the OpenRouter routing service, and open-weight rerankers published on Hugging Face by major model developers that run on a single 24 GB GPU and are licensed for research use. Scores for 14 models were collected on 2026-02-24. The remaining 15 were added from 2026-10-16 to 2026-10-17 with the same documents, queries, and request layout: through vendors' APIs or the OpenRouter routing service, or from public weights at pinned revisions on a rented NVIDIA RTX 4090. Each open-weight model scored on the rented GPU passed a short occupation-matching check before its full run. A further endpoint, semantic-ranker-default-003, returned scores identical to semantic-ranker-default-004 on every row; we treat the two as one model and exclude the duplicate from every reported figure. Appendix B lists each model's identifier, access route, score range, overall tie rate, and collection date, with its results.
 
-For each model and occupation group, we report whether the male-associated version scores higher, the versions tie, or the female-associated version scores higher. When a single directional share is needed, a tie contributes one half to each side. Ties largely reflect score resolution rather than indifference: several models return coarsely rounded scores, and one open-weight reranker, run in bfloat16, emits only 254 distinct values across 16,640 scored documents. Confidence intervals are percentile intervals from a cluster bootstrap that resamples occupations, because comparisons within an occupation are not independent: 1,000 replications for per-category shares and 50,000 for the male-typed versus female-typed contrasts and the order test (seed 20260822). They describe uncertainty over occupations for this benchmark, holding the names, templates, and query phrasings fixed; with 18 and 21 clusters in the two categories, the percentile intervals are approximate. As a sensitivity check, we also resample the 48 federal labor-force categories instead of the 52 occupations, so that occupations sharing a category move together, and we resample occupations and name pairs jointly; the interval for the contrast between male-typed and female-typed occupations stays above zero for 27 of the 29 models under the first check and 27 under the second. Scores from different models have different scales, so we compare directions and within-model gaps rather than raw magnitudes across models.
+For each model and occupation group, we report whether the male-associated version scores higher, the versions tie, or the female-associated version scores higher. When a single directional share is needed, a tie contributes one half to each side. Ties largely reflect score resolution rather than indifference: several models return coarsely rounded scores, and one open-weight reranker, run in bfloat16, emits only 254 distinct values across 16,640 scored documents. Confidence intervals are percentile intervals from a cluster bootstrap that resamples occupations, because comparisons within an occupation are not independent: 1,000 replications for per-category shares and 50,000 for the male-typed versus female-typed contrasts and the order test (seed 20260822). They describe uncertainty over occupations for this benchmark, holding the names, templates, and query phrasings fixed; with 18 and 21 clusters in the two categories, the percentile intervals are approximate. As a sensitivity check, we also resample the 48 federal labor-force categories instead of the 52 occupations, so that occupations sharing a category move together, and we resample occupations and name pairs jointly; the interval for the contrast between male-typed and female-typed occupations stays above zero for 27 of the 29 models under the first check and 27 under the second. Because these intervals are approximate and unadjusted for the number of models, we also test each contrast with a two-sided permutation test that randomly relabels which occupations are male-typed and which are female-typed (1,000,000 relabelings), with a Holm adjustment across the 29 models. Scores from different models have different scales, so we compare directions and within-model gaps rather than raw magnitudes across models.
 
 \subsection{Two-stage shortlist simulation}
 
-We form synthetic pools of 20 equally qualified documents: one document, with its occupation, template, and query fixed, in its 20 name-and-pronoun versions, half male- and half female-associated, so that every candidate in a pool is identical except for those markers. The retriever BAAI/bge-large-en-v1.5 selects the top 10 candidates. The reranker BAAI/bge-reranker-v2-m3 then produces a top-3 shortlist. We also evaluate the retriever and reranker separately and repeat the pipeline with every audited reranker behind the same retriever. The simulation reuses the reranker scores from the single-stage audit rather than rescoring each pool. This is exact for a reranker that scores documents independently; for the API rerankers, which scored each document inside a larger per-query request, it assumes the scores do not depend on the other documents in the request. We test that assumption directly by sending the retriever's actual ten documents for 104 sampled pools to each reachable API reranker and comparing the resulting shortlists with the replayed ones (Section 3). Exact score ties at a selection cutoff are broken at random, and each of the 832 pools is averaged over 200 such draws. Because candidate qualifications are identical by construction, departures from an even shortlist reflect ordering effects from the changed markers.
+We form synthetic pools of 20 equally qualified documents: one document, with its occupation, template, and query fixed, in its 20 name-and-pronoun versions, half male- and half female-associated, so that every candidate in a pool is identical except for those markers. The retriever BAAI/bge-large-en-v1.5 selects the top 10 candidates. The reranker BAAI/bge-reranker-v2-m3 then produces a top-3 shortlist. We use this pair as the worked example because both are open-weight models from the same developer that can be re-run locally; Appendix C shows where the reranker falls among all audited models. We also evaluate the retriever and reranker separately and repeat the pipeline with every audited reranker behind the same retriever. The simulation reuses the reranker scores from the single-stage audit rather than rescoring each pool. This is exact for a reranker that scores documents independently; for the API rerankers, which scored each document inside a larger per-query request, it assumes the scores do not depend on the other documents in the request. We test that assumption directly by sending the retriever's actual ten documents for 104 sampled pools to each reachable API reranker and comparing the resulting shortlists with the replayed ones (Section 3). Exact score ties at a selection cutoff are broken at random, and each of the 832 pools is averaged over 200 such draws. Because candidate qualifications are identical by construction, departures from an even shortlist reflect ordering effects from the changed markers.
 
 \subsection{De-identification}
 
 We test three case-preserving rules: replace names only, neutralize pronouns only, and both. The full rule replaces every detected name with “the candidate” and every gendered pronoun with “they”; Appendix D adds four comparison conditions. Under the full rule the two counterfactual versions become the same string, so any deterministic pointwise reranker, whose only inputs are the query and the document, must score them identically; this is a symmetry guarantee, not a discovery. A listwise reranker, which also reads the other candidates and their positions, is guaranteed this only for a candidate held at the same position in an otherwise unchanged list, and ties at a selection cutoff still need a tie-breaking rule that ignores the replaced markers. Rules that replace names collapse the ten name pairs into one text, leaving 832 distinct comparisons repeated across the 8,320 rows.
 
-We apply the rules to four open-weight rerankers. On the worked reranker, a synthetic occupation-matching check ranks one document per retained occupation (52 documents) for each of 832 queries, and success means ranking the queried occupation's document first. Because every document names its occupation and the rules never touch that word, the check is near ceiling by design: it confirms that the occupation signal survives, not that ranking quality or selection within an occupation is preserved.
+We apply all rules to four open-weight rerankers, and the names-only rule, as the pronoun-only comparison, to every model we could re-score. On the worked reranker, a synthetic occupation-matching check ranks one document per retained occupation (52 documents) for each of 832 queries, and success means ranking the queried occupation's document first. Because every document names its occupation and the rules never touch that word, the check is near ceiling by design: it confirms that the occupation signal survives, not that ranking quality or selection within an occupation is preserved.
 
 \section{Results}
 
 \subsection{Reranker scores track occupational gender composition}
 
-In 27 of the 29 audited models, the male-associated document is favored more often for male-typed occupations than for female-typed occupations, with an occupation-clustered interval above zero. The two exceptions are recent releases. The listwise jina-reranker-v3 shows no difference (0.8 points, interval -1.9 to 3.5). gte-reranker-modernbert-base shows the reverse pattern (-6.7 points, interval -12.7 to -0.3), although its interval includes zero when name pairs are resampled as well (-13.9 to 0.5). Appendix B lists every model's contrast with its intervals; these are individual 95\% intervals, not adjusted for the 29 comparisons. Some recently released models show the largest differences, including zerank-2 (65 points) and Voyage rerank-3 (61 points); the audit does not test for a trend over release dates. Across models, the median tie-aware male-favored share is 74\% on male-typed occupations and 38\% on female-typed occupations; the two medians are taken separately and need not come from the same model. Within a single model, the median gap between the two categories is 31 percentage points (range -7 to 65). The size varies widely across models.
+In 27 of the 29 audited models, the male-associated document is favored more often for male-typed occupations than for female-typed occupations, with an occupation-clustered interval above zero. The two exceptions are recent releases. The listwise jina-reranker-v3 shows no difference (0.8 points, interval \ensuremath{-}1.9 to 3.5). gte-reranker-modernbert-base shows the reverse pattern (\ensuremath{-}6.7 points, interval \ensuremath{-}12.7 to \ensuremath{-}0.3), although its interval includes zero when name pairs are resampled as well (\ensuremath{-}13.9 to 0.5). Appendix B lists every model's contrast with its intervals; these are individual 95\% intervals, not adjusted for the 29 comparisons. The permutation test gives the same 27 models a positive contrast that survives the Holm adjustment, while the reverse pattern of gte-reranker-modernbert-base does not (adjusted p = 0.10). All 29 models score the same documents, so these counts describe one benchmark seen through 29 models, not independent replications. Some recently released models show the largest differences, including zerank-2 (65 points) and Voyage rerank-3 (61 points); the audit does not test for a trend over release dates. Across models, the median tie-aware male-favored share is 74\% on male-typed occupations and 38\% on female-typed occupations; the two medians are taken separately and need not come from the same model. Within a single model, the median gap between the two categories is 31 percentage points (range \ensuremath{-}7 to 65). The size varies widely across models.
 
-Evenly split occupations reveal substantial model variation. The median male-favored share is 64\%, but 21 models lie above an even split and 8 lie below it. For 6 models, the occupation-clustered confidence interval includes an even split. A deployer therefore cannot infer either the size or direction of a model's behavior without testing that model.
+Names are not needed for this pattern. When both names are replaced by the same placeholder, so that the two documents differ only in their pronouns, the contrast has an occupation-clustered interval above zero for 27 of the 28 re-scored models (Table~\ref{tab:pronoun}). The exception is again gte-reranker-modernbert-base (\ensuremath{-}8.6 points, interval \ensuremath{-}17.2 to 0.1). The median contrast is 39.5 points, against 31.5 for the same models with names and pronouns; that comparison spans two scoring runs, and for some open-weight models two machines. Pronouns, which carry no ethnic or age association, are therefore enough to produce the stereotype-aligned pattern.
+
+Evenly split occupations reveal substantial model variation. The median male-favored share is 64\%, but 21 models lie above an even split and 8 lie below it. For 6 models, the occupation-clustered confidence interval includes an even split, and for 10 when name pairs are resampled as well (1,000,000 draws). A deployer therefore cannot infer either the size or direction of a model's behavior without testing that model.
 
 \begin{figure}[tbp]
 \centering
@@ -108,18 +110,18 @@ Evenly split occupations reveal substantial model variation. The median male-fav
 occupations.} Each row shows one reranker. Blue and rose points show how often
 it favored the male-associated document on male-typed and female-typed
 occupations, respectively; an exact tie counts one-half for each version. Rows
-run from the largest change at the top to the smallest at the bottom. In every row but
+are ordered by the blue value minus the rose value, largest at the top. In every row but
 the last, the blue point lies to the right of the rose one; in the second-to-last
 the two nearly coincide. Exact values and
 occupation-clustered intervals are in Appendix B.}
 \label{fig:single}
 \end{figure}
 
-The result is not invariant to design choices. Across document templates, query phrasings, and name pairs, the median model's male-favored share ranges over 19, 22, and 35 percentage points respectively, so variation across names is especially large; the full tables are released with the data. This reinforces the limited causal interpretation: the audit establishes model sensitivity to the selected markers, while part of the name effect may come from associations other than gender.
+The level is not invariant to design choices. Across document templates, query phrasings, and name pairs, the median model's male-favored share ranges over 19, 22, and 35 percentage points respectively, so variation across names is especially large; the full tables are released with the data. The direction of the contrast is steadier. It is positive in all four templates for 24 models and in all four query phrasings for 25 (107 and 109 of 116 model-level cells), and comparing every male-associated name with every female-associated name, rather than only the fixed pairs, leaves it positive for 28 models. The audit establishes model sensitivity to the selected markers; part of the name effect on the level may still come from associations other than gender.
 
 \subsection{Request order and reproducibility}
 
-Measured against an identical repeat of each request, so that call-to-call variability is not mistaken for an order effect, reversing pairs or shuffling the request moves the contrast for 0 of the 15 tested API rerankers. These are individual 95\% intervals that detect only aggregate shifts of about one to two points, not proof that order has no effect; the repeat itself moves Voyage rerank-2 by 2.0 points (0.5 to 3.7). The listwise jina-reranker-v3 is deterministic but position-dependent: reversing each pair keeps the same winner in only 65\% of pairs. For the one open-weight model we scored on two machines, bge-reranker-base, an NVIDIA RTX 4090 and an Apple M4 Pro pick the same winner in 100\% of pairs, and a self-hosted copy of IBM's Granite reranker matches its API in 99.9\% of pairs. Qwen3-Reranker-8B served through OpenRouter agrees with its public weights in 72\% of pairs overall, but the disagreement is mostly score resolution: the hosted service returns exact ties in 28\% of pairs against 9\% from the weights, and where neither ties the two agree in 98.8\%. Because ties are split evenly, the contrast still differs (32 against 40 points), so an audit of a hosted open model measures the hosted version, including its score resolution.
+Measured against an identical repeat of each request, so that call-to-call variability is not mistaken for an order effect, reversing pairs or shuffling the request shifted the contrast beyond that variability in 0 of the 15 tested API rerankers. These are individual 95\% intervals that detect only aggregate shifts of about one to two points, not proof that order has no effect. The repeat itself moves Voyage rerank-2 by 2.0 points (0.5 to 3.7), the only one of the 15 repeat intervals to exclude zero, which is about what chance alone produces at the 95\% level. Re-sending the original requests also reproduced the banked scores. For the 10 API models first scored in February, 234 days earlier, the contrast moved by at most 1.1 points, 0 of the 10 intervals on the change exclude zero, and the two runs pick the same winner in 84\% to 100\% of pairs. The listwise jina-reranker-v3 is deterministic but position-dependent: reversing each pair keeps the same winner in only 65\% of pairs. For the one open-weight model we scored on two machines, bge-reranker-base, an NVIDIA RTX 4090 and an Apple M4 Pro pick the same winner in 100\% of pairs, and a self-hosted copy of IBM's Granite reranker matches its API in 99.9\% of pairs. Qwen3-Reranker-8B served through OpenRouter agrees with its public weights in 72\% of pairs overall, but the disagreement is mostly score resolution: the hosted service returns exact ties in 28\% of pairs against 9\% from the weights, and where neither ties the two agree in 98.8\%. Because ties are split evenly, the contrast still differs (32 against 40 points), so an audit of a hosted open model measures the hosted version, including its score resolution. The audit's Qwen3-Reranker-8B row is the hosted version; the self-hosted scores are released separately.
 
 \subsection{The reranker can dominate the pipeline}
 
@@ -138,11 +140,11 @@ bootstrap intervals.}
 \label{fig:pipeline}
 \end{figure}
 
-Appendix C repeats the simulation with each of the 28 pointwise rerankers behind the same retriever; the listwise jina-reranker-v3 is left out because its scores depend on the other documents in a request, so scores from the audit's larger requests cannot be replayed in a smaller pool. The resulting shortlist share ranges from 44\% to 85\%, and 11 rerankers produce a shortlist with a lower male-associated share than retrieval alone (60\%). The worked example sits near the top of that range rather than being typical. Replayed scores match actual ten-document requests: for 14 of the 15 API rerankers we re-queried on 104 pools, the difference between the actual and replayed male-associated shortlist share has a 95\% interval that includes zero; for Cohere v4 pro it is -1.2 points (interval -2.4 to -0.2). The upper end of the range comes from IBM's Granite reranker, whose API endpoint we could not re-query. It is a pointwise cross-encoder, for which replay is exact, and its self-hosted copy agrees with the API in 99.9\% of pairs; without it, the range ends at 80\%. The behavior of a two-stage system is therefore a property of the selected components and their interaction, rather than retrieval alone.
+Appendix C repeats the simulation with each of the 28 pointwise rerankers behind the same retriever; the listwise jina-reranker-v3 is left out because its scores depend on the other documents in a request, so scores from the audit's larger requests cannot be replayed in a smaller pool. The resulting shortlist share ranges from 44\% to 85\%, and 11 rerankers produce a shortlist with a lower male-associated share than retrieval alone (60\%). The worked example sits near the top of that range, whose median is 63\%, rather than being typical. Replayed scores match actual ten-document requests: for 14 of the 15 API rerankers we re-queried on 104 pools, the difference between the actual and replayed male-associated shortlist share has a 95\% interval that includes zero; for Cohere v4 pro it is \ensuremath{-}1.2 points (interval \ensuremath{-}2.4 to \ensuremath{-}0.2). The upper end of the range comes from IBM's Granite reranker, whose API endpoint we could not re-query. It is a pointwise cross-encoder, for which replay is exact, and its self-hosted copy agrees with the API in 99.9\% of pairs; without it, the range ends at 80\%. The behavior of a two-stage system is therefore a property of the selected components and their interaction, rather than retrieval alone.
 
 \subsection{Full marker removal eliminates the measured pathway}
 
-Lowercasing alone, which removes no marker, moves the worked reranker's overall male-favored share from 78\% to 59\%, so the level is sensitive to surface form. Removing only names does not remove the difference. On the worked reranker, the male-associated version wins 98.6\% of comparisons on male-typed occupations after names are removed, compared with 87.0\% before. The mean absolute gap is essentially unchanged (0.036 to 0.038; paired occupation-clustered 95\% interval on the difference [-0.0005, 0.0047]). Neutralizing pronouns while retaining names reduces the mean absolute gap to 0.024 (interval on the difference [-0.0147, -0.0101]). Partial removal is not consistent across the four rerankers in Appendix D: removing names alone leaves the mean absolute gap unchanged or higher on two models and reduces it on the other two, and on one model it lowers the male-favored share where the worked reranker's rises. Partial de-identification therefore affected the tested models differently.
+Lowercasing alone, which removes no marker, moves the worked reranker's overall male-favored share from 78\% to 59\%, so the level is sensitive to surface form. It also moves the contrast between male-typed and female-typed occupations, from 15.1 to 19.9 points, although the contrast stays positive on all four tested rerankers (Table~\ref{tab:deidall}). Removing only names does not remove the difference. On the worked reranker, the male-associated version wins 93\% of all comparisons after names are removed, against 78\% before, and the contrast between male-typed and female-typed occupations is 11.1 points, against 15.1 before (Table~\ref{tab:deid}). The mean absolute gap is essentially unchanged (0.036 to 0.038; paired occupation-clustered 95\% interval on the difference [\ensuremath{-}0.0005, 0.0047]). Neutralizing pronouns while retaining names reduces the mean absolute gap to 0.024 (interval on the difference [\ensuremath{-}0.0147, \ensuremath{-}0.0101]). Partial removal is not consistent across the four rerankers in Appendix D: removing names alone leaves the mean absolute gap unchanged or higher on two models and reduces it on the other two, and on one model it lowers the male-favored share where the worked reranker's rises. Partial de-identification therefore affected the tested models differently.
 
 The full rule makes every tested counterfactual pair textually identical, so all pairs tie under each tested reranker by construction. Identical strings are scored once and the score is reused, so this tie rate is not an observation; it holds for any deterministic pointwise reranker, which all four tested models are. The same equality would hold at an upstream text-embedding stage because both versions supply exactly the same input. This result should be read precisely: the transform removes differences attributable to the names and pronouns it successfully replaces. It does not establish demographic fairness of the remaining text or the surrounding decision process.
 
@@ -163,29 +165,29 @@ either document. Conditions are defined in Section~2.}
 
 \section{Implications and future work}
 
-These results may matter for business process design, fairness audits, and legal evaluation, but those consequences require deployment data and are future work; the present paper's claim is empirical and narrower. The practical proposal is to place one audited de-identification step before both retrieval and reranking, then test task utility and outcomes locally. Because both stages receive the same normalized text, this removes the measured name-and-pronoun pathway from both stages when they are pointwise scorers. It may also reduce one source of repeated exclusion when many employers reuse the same ranking components, connecting our study to the “algorithmic monoculture” described by Bommasani and colleagues \cite{bommasani2026}. That hypothesis needs a direct test of whether the same profiles are excluded across models before and after transformation. Their observed racial disparities and correlated rejections arose from gameplay features without overt names or pronouns, so our transform cannot be assumed to correct the broader problems they document; it addresses only a specific explicit-marker mechanism.
+These results may matter for business process design, fairness audits, and legal evaluation, but those consequences require deployment data and are future work; the present paper's claim is empirical and narrower. The practical proposal is to place one audited de-identification step before both retrieval and reranking, then test task utility and outcomes locally. Anonymization can backfire. In a French field experiment, volunteer firms randomly assigned anonymized résumés interviewed minority candidates less often than volunteer firms that saw standard résumés \cite{behaghel2015}. A de-identification step should therefore be judged by its measured effect on outcomes, not by the markers it removes. Because both stages receive the same normalized text, this removes the measured name-and-pronoun pathway from both stages when they are pointwise scorers. It may also reduce one source of repeated exclusion when many employers reuse the same ranking components, connecting our study to the “algorithmic monoculture” described by Bommasani and colleagues \cite{bommasani2026}. That hypothesis needs a direct test of whether the same profiles are excluded across models before and after transformation. Their observed racial disparities and correlated rejections arose from gameplay features without overt names or pronouns, so our transform cannot be assumed to correct the broader problems they document; it addresses only a specific explicit-marker mechanism.
 
 \section{Limitations}
 
 The main audit uses short synthetic documents and simulated shortlists. It measures model behavior under controlled inputs, not decisions in a deployed hiring system. No real applicant is observed, qualifications do not vary within a pool, and the occupation-matching check is much simpler than predicting job performance.
 
-Names carry several social signals at once. Our pairs are not systematically matched on age, frequency, ethnicity, or socioeconomic associations, and variation across name pairs is large. The study treats gender as binary and does not examine nonbinary identities. It also does not audit race or intersectional effects.
+Names carry several social signals at once. Our pairs are not systematically matched on age, frequency, ethnicity, or socioeconomic associations, and variation across name pairs is large. The pronoun-only comparison avoids these confounds but measures the pronoun channel alone. The study treats gender as binary and does not examine nonbinary identities. It also does not audit race or intersectional effects.
 
 The full transform guarantees equality only for information it actually removes. Real resumes may signal gender through schools, affiliations, activities, job histories, and writing patterns \cite{parasurama2022full}. Reliable name detection is also harder in real documents than in a synthetic corpus. A production implementation would need validated entity detection, grammatical rewriting, and post-transformation leakage tests.
 
 The worked pipeline uses one retriever-reranker pair, although Appendix C varies the reranker and Appendix D tests four open-weight rerankers. Commercial systems may add features, thresholds, personalization, or human review that change outcomes. The results are a dated snapshot of model versions queried on 2026-02-24 and from 2026-10-16 to 2026-10-17.
 
-A companion experiment sampled 1,952 distinct documents from a public corpus of 2,483 publicly posted résumé examples scraped from a career website (released under CC0), with no observed hiring decisions or applicant outcomes. The publisher had already removed most names: across the corpus, 2,182 of the 2,483 counterfactual pairs had to be built by inserting a name, and among the 3,840 scored comparisons per model, 3,374 were built by inserting a name rather than swapping an existing marker. Its directions and magnitudes differ from the synthetic results (Appendix E); the worked reranker, for example, favors the male-associated version in 52\% of comparisons, against 78\% in the synthetic audit. Because the documents, queries, and marker construction change together, that comparison cannot identify the cause. We retain it as a warning against generalizing the synthetic effect size to applicant résumés in deployment. Its corpus must be rebuilt from the repository's provenance notes to reproduce it; Appendix E describes its design.
+A companion experiment sampled 1,952 distinct documents from a public corpus of 2,483 publicly posted résumé examples scraped from a career website (released under CC0), with no observed hiring decisions or applicant outcomes. The publisher had already removed most names: across the corpus, 2,182 of the 2,483 counterfactual pairs had to be built by inserting a name, and among the 3,840 scored comparisons per model, 3,374 were built by inserting a name rather than swapping an existing marker. Its results differ from the synthetic audit in level and size (Appendix E). The worked reranker favors the male-associated version in 52\% of comparisons, against 78\% in the synthetic audit, and across the four rerankers the mean score difference between the two versions is 5 to 66 times smaller than on the synthetic documents. The male-typed minus female-typed difference is positive for 3 of the 4 rerankers, but the female-typed group rests on only 3 job categories. Because the documents, queries, and marker construction change together, that comparison cannot identify the cause; longer documents, for instance, may dilute the markers. We retain it as a warning against generalizing the synthetic effect size to applicant résumés in deployment. Its corpus must be rebuilt from the repository's provenance notes to reproduce it; Appendix E describes its design.
 
 \section{Conclusion}
 
-Current neural rerankers respond differently to professional documents that differ only in selected names and pronouns. In 27 of 29 models, the male-favored share is higher for male-typed than for female-typed occupations, while the baseline direction varies by product and the size of the difference varies within vendors and model families. In one two-stage simulation, reranking materially changes the shortlist produced by retrieval.
+Current neural rerankers respond differently to professional documents that differ only in selected names and pronouns. In 27 of 29 models, the male-favored share is higher for male-typed than for female-typed occupations, and the same holds in 27 of 28 re-scored models when only the pronouns differ. The baseline direction varies by product, and the size of the difference varies within vendors and model families. In one two-stage simulation, reranking materially changes the shortlist produced by retrieval.
 
 For pointwise rerankers, a simple normalization of names and gendered pronouns eliminates this particular pairwise difference because it makes the compared inputs identical. No loss was observed on a near-ceiling occupation-matching check, but real hiring utility and residual demographic leakage remain untested. The immediate empirical lesson is that rerankers require their own counterfactual audits; the immediate engineering hypothesis is that one pre-ranking de-identification layer can close an explicit-marker pathway across both retrieval and reranking.
 
 \paragraph{Data and code availability.}
 
-The generated documents, banked model scores, analysis scripts, pipeline simulation, and de-identification code are available in the \href{https://github.com/vasylrakivnenko/bias\_in\_rerankers}{project repository}. Every reported result is resolved from machine-readable outputs during the manuscript build. Every table and figure can be regenerated exactly from the scores saved in the repository, with no model or API access; the release includes the pair-level scores for every de-identification condition and the per-event occupation-matching outcomes, and this manuscript corresponds to the repository tag \texttt{arxiv-v1}. Re-running the scoring is another matter. The October 2026 local and GPU runs recorded each model's revision, numeric precision, library versions, and scoring recipe, and the scripts reload those exact revisions. The February 2026 local runs did not record the model revision or library versions, and those settings cannot be recovered; the API models' scores cannot be reproduced either, since vendors may change the model behind a name, so for them the saved scores are the record. The benchmark's occupation words were assembled by hand and labeled with BLS shares; O*NET 30.3 (National Center for O*NET Development for the U.S. Department of Labor, Employment and Training Administration), used under CC BY 4.0 \cite{onet2026}, supplies the occupation titles and descriptions that serve as job queries in the companion experiment, and the SOC codes recorded beside the BLS categories in the repository's label table. The companion corpus is released under CC0 1.0, and the BLS and SSA inputs are U.S. Government works. Full provenance is in \texttt{data/PROVENANCE.md}.
+The generated documents, banked model scores, analysis scripts, pipeline simulation, and de-identification code are available in the project repository at \href{https://github.com/vasylrakivnenko/bias\_in\_rerankers}{\texttt{github.com/\allowbreak vasylrakivnenko/\allowbreak bias\_in\_rerankers}}. Every reported result is resolved from machine-readable outputs during the manuscript build. Every table and figure can be regenerated exactly from the scores saved in the repository, with no model or API access; the release includes the pair-level scores for every de-identification condition and the per-event occupation-matching outcomes, and this manuscript corresponds to the repository tag \texttt{arxiv-v2}. Re-running the scoring is another matter. The October 2026 local and GPU runs recorded each model's revision, numeric precision, library versions, and scoring recipe, and the scripts reload those exact revisions. The February 2026 local runs did not record the model revision or library versions, and those settings cannot be recovered; the API models' scores may not reproduce either, since vendors can change the model behind a name, so for them the saved scores are the record, although an October 2026 re-query reproduced the February API models' contrasts within 1.1 points (Section 3). The benchmark's occupation words were assembled by hand and labeled with BLS shares; O*NET 30.3 (National Center for O*NET Development for the U.S. Department of Labor, Employment and Training Administration), used under CC BY 4.0 \cite{onet2026}, supplies the occupation titles and descriptions that serve as job queries in the companion experiment, and the SOC codes recorded beside the BLS categories in the repository's label table. The companion corpus is released under CC0 1.0, and the BLS and SSA inputs are U.S. Government works. Full provenance is in \texttt{data/PROVENANCE.md}.
 
 \appendix
 \renewcommand{\thetable}{A\arabic{table}}
@@ -193,7 +195,7 @@ The generated documents, banked model scores, analysis scripts, pipeline simulat
 
 \section{Audit inputs}
 
-The following table gives the document templates, query forms, and name pairs used in the counterfactual audit.
+The document templates, query phrasings, and name pairs used in the counterfactual audit follow.
 
 % Generated by code/generate_appendix_tables.py -- do not edit by hand.
 % Source: code/synthetic_dataset.py (TEMPLATES, QUERY_TYPES, NAME_PAIRS)
@@ -248,7 +250,7 @@ The complete occupation inventory is released as \texttt{results/tex/occupations
 
 The three-way split by occupation category for every model, occupation-level consistency, and the robustness tables by document template, query phrasing, and name pair are released in the repository's \texttt{results/tex} folder. Tables use the short labels in Table~\ref{tab:models}, which maps each label to the model's full identifier, vendor and access route, and records the number of comparisons, score range, overall tie rate, and scoring date.
 
-\newcommand{\ModelsCaption}{Model labels, identifiers, and provenance.}
+\newcommand{\ModelsCaption}{Model labels, identifiers, and provenance, in descending order of the male-favored share on male-typed occupations.}
 {\footnotesize
 % Generated by code/analyze_single_stage.py -- do not edit by hand.
 \begin{longtable}{>{\raggedright\arraybackslash}p{2.5cm}>{\raggedright\arraybackslash}p{3.6cm}>{\raggedright\arraybackslash}p{1.9cm}rrrl}
@@ -269,11 +271,11 @@ Google: default-002 & \texttt{semantic-\allowbreak{}ranker-\allowbreak{}default-
 IBM: Granite r2 & \texttt{ibm-\allowbreak{}granite-\allowbreak{}granite-\allowbreak{}embedding-\allowbreak{}reranker-\allowbreak{}english-\allowbreak{}r2} & API (Azure) & 8,320 & $0.73$ to $0.90$ & 0.0 & 2026-02-24 \\
 Voyage: rerank-3 & \texttt{rerank-\allowbreak{}3} & API & 8,320 & $0.47$ to $0.94$ & 14.7 & 2026-10-16 \\
 BAAI: BGE v2-m3 & \texttt{BAAI/\allowbreak{}bge-\allowbreak{}reranker-\allowbreak{}v2-\allowbreak{}m3} & open weights & 8,320 & $0.01$ to $1.00$ & 0.0 & 2026-02-24 \\
-Open: MiniLM-L6-v2 & \texttt{cross-\allowbreak{}encoder/\allowbreak{}ms-\allowbreak{}marco-\allowbreak{}MiniLM-\allowbreak{}L6-\allowbreak{}v2} & open weights & 8,320 & $-8.25$ to $9.71$ & 0.0 & 2026-10-17 \\
+SBERT: MiniLM-L6-v2 & \texttt{cross-\allowbreak{}encoder/\allowbreak{}ms-\allowbreak{}marco-\allowbreak{}MiniLM-\allowbreak{}L6-\allowbreak{}v2} & open weights & 8,320 & $-8.25$ to $9.71$ & 0.0 & 2026-10-17 \\
 NVIDIA: Nemotron 1B & \texttt{nvidia/\allowbreak{}llama-\allowbreak{}nemotron-\allowbreak{}rerank-\allowbreak{}1b-\allowbreak{}v2} & open weights & 8,320 & $-16.62$ to $21.50$ & 1.9 & 2026-10-17 \\
 Voyage: rerank-2 & \texttt{rerank-\allowbreak{}2} & API & 8,320 & $0.38$ to $0.91$ & 18.0 & 2026-02-24 \\
 Cohere: v3.5 & \texttt{cohere/\allowbreak{}rerank-\allowbreak{}v3.5} & API (OpenRouter) & 8,320 & $0.05$ to $0.81$ & 0.1 & 2026-10-16 \\
-Open: MiniLM-L12-v2 & \texttt{cross-\allowbreak{}encoder/\allowbreak{}ms-\allowbreak{}marco-\allowbreak{}MiniLM-\allowbreak{}L-\allowbreak{}12-\allowbreak{}v2} & open weights & 8,320 & $-6.60$ to $9.53$ & 0.0 & 2026-02-24 \\
+SBERT: MiniLM-L12-v2 & \texttt{cross-\allowbreak{}encoder/\allowbreak{}ms-\allowbreak{}marco-\allowbreak{}MiniLM-\allowbreak{}L-\allowbreak{}12-\allowbreak{}v2} & open weights & 8,320 & $-6.60$ to $9.53$ & 0.0 & 2026-02-24 \\
 Voyage: rerank-2.5-lite & \texttt{rerank-\allowbreak{}2.5-\allowbreak{}lite} & API & 8,320 & $0.46$ to $0.93$ & 18.5 & 2026-02-24 \\
 NVIDIA: Nemotron VL 1B & \texttt{nvidia/\allowbreak{}llama-\allowbreak{}nemotron-\allowbreak{}rerank-\allowbreak{}vl-\allowbreak{}1b-\allowbreak{}v2} & API (OpenRouter) & 8,320 & $0.00$ to $0.97$ & 0.4 & 2026-10-16 \\
 Voyage: rerank-1 & \texttt{rerank-\allowbreak{}1} & API & 8,320 & $0.00$ to $0.99$ & 9.2 & 2026-02-24 \\
@@ -301,45 +303,102 @@ Jina: reranker v3 & \texttt{jinaai/\allowbreak{}jina-\allowbreak{}reranker-\allo
 \caption{Male-typed minus female-typed contrast (tie-aware percentage points) for
 every model, with individual 95\% intervals under three resampling schemes:
 occupations; federal labor-force categories; and occupations and name pairs
-jointly. Intervals are not adjusted for multiple comparisons.}
+jointly. Intervals are not adjusted for multiple comparisons. The last column is
+the two-sided p-value of an occupation-label permutation test of the contrast
+(1,000,000 permutations), Holm-adjusted across the 29 models.}
 \label{tab:contrast}
 {\small
-% Generated by code/interval_sensitivity.py (B = 50,000 draws per scheme) -- do not edit by hand.
-\begin{tabular}{lrlll}
+% Generated by code/interval_sensitivity.py (B = 50,000 draws per scheme; 1,000,000 label permutations per model) -- do not edit by hand.
+\begin{tabular}{lrlllr}
 \toprule
- & & \multicolumn{3}{c}{95\% interval, resampling} \\
+ & & \multicolumn{3}{c}{95\% interval, resampling} & Permutation \\
 \cmidrule(l){3-5}
-Model & Contrast & Occupation & BLS category & Occ.\,$\times$\,name \\
+Model & Contrast & Occupation & BLS category & Occ.\,$\times$\,name & $p$ (Holm) \\
 \midrule
-ZeroEntropy: zerank-2 & 65.3 & [52.9, 76.2] & [52.8, 76.2] & [52.3, 76.8] \\
-Voyage: rerank-3 & 60.9 & [50.3, 71.0] & [49.5, 71.4] & [49.5, 71.4] \\
-Voyage: rerank-2.5 & 57.7 & [47.8, 67.4] & [47.2, 67.3] & [45.6, 69.0] \\
-Voyage: rerank-2 & 57.3 & [46.7, 67.4] & [46.1, 67.7] & [46.2, 67.7] \\
-Voyage: rerank-3-lite & 49.6 & [42.5, 56.5] & [42.5, 56.5] & [41.3, 57.9] \\
-Google: default-004 & 43.6 & [34.5, 52.0] & [34.1, 52.0] & [33.8, 52.9] \\
-NVIDIA: Nemotron 1B & 43.4 & [32.9, 53.3] & [32.9, 53.3] & [32.1, 54.3] \\
-Cohere: v4 pro & 41.1 & [33.5, 48.3] & [32.9, 48.6] & [29.1, 53.0] \\
-Google: fast-004 & 38.7 & [29.8, 46.6] & [29.6, 46.7] & [29.1, 47.6] \\
-Cohere: v3.5 & 37.2 & [26.3, 48.4] & [25.1, 49.7] & [25.6, 49.3] \\
-Voyage: rerank-2.5-lite & 35.2 & [27.7, 42.5] & [27.0, 43.4] & [27.1, 43.2] \\
-NVIDIA: Nemotron VL 1B & 32.2 & [24.7, 39.5] & [24.3, 39.6] & [24.0, 40.2] \\
-Voyage: rerank-1 & 31.7 & [21.7, 41.6] & [20.8, 42.2] & [20.3, 43.1] \\
-Qwen: Qwen3 8B & 31.6 & [25.9, 37.4] & [25.3, 37.8] & [24.4, 38.9] \\
-Cohere: v4 fast & 31.4 & [22.9, 39.8] & [22.3, 40.2] & [22.1, 40.4] \\
-Qwen: Qwen3 0.6B & 27.5 & [17.0, 37.8] & [16.5, 37.9] & [16.5, 38.3] \\
-Open: MiniLM-L12-v2 & 26.0 & [12.8, 40.0] & [12.1, 39.9] & [12.4, 40.4] \\
-Open: MiniLM-L6-v2 & 25.0 & [13.2, 37.4] & [12.5, 37.3] & [12.8, 37.7] \\
-Google: default-002 & 24.8 & [12.9, 37.6] & [11.9, 37.9] & [12.5, 38.2] \\
-Qwen: Qwen3 4B & 21.6 & [14.7, 28.6] & [14.1, 29.1] & [13.9, 29.2] \\
-Mixedbread: large v2 & 20.8 & [14.3, 27.4] & [14.0, 27.3] & [13.0, 28.7] \\
-BAAI: BGE base & 19.8 & [8.9, 30.6] & [8.0, 31.2] & [8.3, 30.9] \\
-BAAI: BGE large & 19.8 & [14.2, 25.6] & [13.8, 25.9] & [12.8, 27.4] \\
-Voyage: rerank-2-lite & 19.2 & [12.1, 25.8] & [12.3, 25.9] & [11.1, 27.0] \\
-IBM: Granite r2 & 15.3 & [9.3, 21.8] & [8.9, 21.9] & [7.7, 24.1] \\
-BAAI: BGE v2-m3 & 15.1 & [6.5, 25.6] & [5.4, 25.9] & [5.7, 26.0] \\
-Jina: reranker v2 & 14.3 & [5.7, 22.7] & [5.7, 22.4] & [4.7, 23.4] \\
-Jina: reranker v3 & 0.8 & [-1.9, 3.5] & [-1.8, 3.4] & [-3.0, 4.9] \\
-Alibaba: GTE ModernBERT & -6.7 & [-12.7, -0.3] & [-12.8, -0.5] & [-13.9, 0.5] \\
+ZeroEntropy: zerank-2 & 65.3 & [52.9, 76.2] & [52.8, 76.2] & [52.3, 76.8] & $<$0.001 \\
+Voyage: rerank-3 & 60.9 & [50.3, 71.0] & [49.5, 71.4] & [49.5, 71.4] & $<$0.001 \\
+Voyage: rerank-2.5 & 57.7 & [47.8, 67.4] & [47.2, 67.3] & [45.6, 69.0] & $<$0.001 \\
+Voyage: rerank-2 & 57.3 & [46.7, 67.4] & [46.1, 67.7] & [46.2, 67.7] & $<$0.001 \\
+Voyage: rerank-3-lite & 49.6 & [42.5, 56.5] & [42.5, 56.5] & [41.3, 57.9] & $<$0.001 \\
+Google: default-004 & 43.6 & [34.5, 52.0] & [34.1, 52.0] & [33.8, 52.9] & $<$0.001 \\
+NVIDIA: Nemotron 1B & 43.4 & [32.9, 53.3] & [32.9, 53.3] & [32.1, 54.3] & $<$0.001 \\
+Cohere: v4 pro & 41.1 & [33.5, 48.3] & [32.9, 48.6] & [29.1, 53.0] & $<$0.001 \\
+Google: fast-004 & 38.7 & [29.8, 46.6] & [29.6, 46.7] & [29.1, 47.6] & $<$0.001 \\
+Cohere: v3.5 & 37.2 & [26.3, 48.4] & [25.1, 49.7] & [25.6, 49.3] & $<$0.001 \\
+Voyage: rerank-2.5-lite & 35.2 & [27.7, 42.5] & [27.0, 43.4] & [27.1, 43.2] & $<$0.001 \\
+NVIDIA: Nemotron VL 1B & 32.2 & [24.7, 39.5] & [24.3, 39.6] & [24.0, 40.2] & $<$0.001 \\
+Voyage: rerank-1 & 31.7 & [21.7, 41.6] & [20.8, 42.2] & [20.3, 43.1] & $<$0.001 \\
+Qwen: Qwen3 8B & 31.6 & [25.9, 37.4] & [25.3, 37.8] & [24.4, 38.9] & $<$0.001 \\
+Cohere: v4 fast & 31.4 & [22.9, 39.8] & [22.3, 40.2] & [22.1, 40.4] & $<$0.001 \\
+Qwen: Qwen3 0.6B & 27.5 & [17.0, 37.8] & [16.5, 37.9] & [16.5, 38.3] & $<$0.001 \\
+SBERT: MiniLM-L12-v2 & 26.0 & [12.8, 40.0] & [12.1, 39.9] & [12.4, 40.4] & 0.006 \\
+SBERT: MiniLM-L6-v2 & 25.0 & [13.2, 37.4] & [12.5, 37.3] & [12.8, 37.7] & 0.004 \\
+Google: default-002 & 24.8 & [12.9, 37.6] & [11.9, 37.9] & [12.5, 38.2] & 0.004 \\
+Qwen: Qwen3 4B & 21.6 & [14.7, 28.6] & [14.1, 29.1] & [13.9, 29.2] & $<$0.001 \\
+Mixedbread: large v2 & 20.8 & [14.3, 27.4] & [14.0, 27.3] & [13.0, 28.7] & $<$0.001 \\
+BAAI: BGE base & 19.8 & [8.9, 30.6] & [8.0, 31.2] & [8.3, 30.9] & 0.009 \\
+BAAI: BGE large & 19.8 & [14.2, 25.6] & [13.8, 25.9] & [12.8, 27.4] & $<$0.001 \\
+Voyage: rerank-2-lite & 19.2 & [12.1, 25.8] & [12.3, 25.9] & [11.1, 27.0] & $<$0.001 \\
+IBM: Granite r2 & 15.3 & [9.3, 21.8] & [8.9, 21.9] & [7.7, 24.1] & $<$0.001 \\
+BAAI: BGE v2-m3 & 15.1 & [6.5, 25.6] & [5.4, 25.9] & [5.7, 26.0] & 0.008 \\
+Jina: reranker v2 & 14.3 & [5.7, 22.7] & [5.7, 22.4] & [4.7, 23.4] & 0.009 \\
+Jina: reranker v3 & 0.8 & [$-$1.9, 3.5] & [$-$1.8, 3.4] & [$-$3.0, 4.9] & 0.59 \\
+Alibaba: GTE ModernBERT & $-$6.7 & [$-$12.7, $-$0.3] & [$-$12.8, $-$0.5] & [$-$13.9, 0.5] & 0.099 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Pronoun-only comparison. Male-typed minus female-typed contrast
+(tie-aware percentage points) in the name-and-pronoun audit (Original, as in
+Table~\ref{tab:contrast}) and when both names are replaced by the same
+placeholder, so that the two documents differ only in their pronouns, with
+occupation-clustered 95\% intervals (50,000 draws). Scored on
+2026-10-16; the listwise jina-reranker-v3 is excluded. For
+5 of the 9 open-weight models newly
+re-run on an Apple M4 Pro, re-scoring sampled original pairs did not reproduce
+every banked winner (lowest agreement 59\%), so for those models
+the two columns also differ in hardware. $^{\dagger}$Scored from IBM's public
+weights, which agree with its API on 99.9\% of pairs.}
+\label{tab:pronoun}
+{\small
+% Generated by code/pronoun_channel_experiment.py (B = 50,000 occupation-clustered draws) -- do not edit by hand.
+\begin{tabular}{lrrl}
+\toprule
+ & & \multicolumn{2}{c}{Pronouns only} \\
+\cmidrule(l){3-4}
+Model & Original & Contrast & 95\% interval \\
+\midrule
+ZeroEntropy: zerank-2 & 65.3 & 74.7 & [61.9, 85.7] \\
+Voyage: rerank-3 & 60.9 & 66.8 & [52.2, 80.4] \\
+Voyage: rerank-2.5 & 57.7 & 68.2 & [55.5, 79.8] \\
+Voyage: rerank-2 & 57.3 & 56.5 & [45.5, 66.7] \\
+Voyage: rerank-3-lite & 49.6 & 49.3 & [42.0, 56.3] \\
+Google: default-004 & 43.6 & 54.2 & [44.3, 62.5] \\
+NVIDIA: Nemotron 1B & 43.4 & 54.6 & [42.2, 66.1] \\
+Cohere: v4 pro & 41.1 & 53.9 & [45.8, 61.8] \\
+Google: fast-004 & 38.7 & 34.2 & [22.9, 45.0] \\
+Cohere: v3.5 & 37.2 & 22.5 & [9.2, 37.7] \\
+Voyage: rerank-2.5-lite & 35.2 & 52.9 & [43.5, 62.2] \\
+NVIDIA: Nemotron VL 1B & 32.2 & 40.2 & [31.6, 48.7] \\
+Voyage: rerank-1 & 31.7 & 34.8 & [23.5, 46.1] \\
+Qwen: Qwen3 8B & 31.6 & 40.7 & [31.9, 49.9] \\
+Cohere: v4 fast & 31.4 & 38.2 & [25.9, 50.7] \\
+Qwen: Qwen3 0.6B & 27.5 & 51.6 & [40.0, 62.8] \\
+SBERT: MiniLM-L12-v2 & 26.0 & 36.5 & [20.1, 53.8] \\
+SBERT: MiniLM-L6-v2 & 25.0 & 33.1 & [19.3, 47.6] \\
+Google: default-002 & 24.8 & 18.7 & [8.0, 30.3] \\
+Qwen: Qwen3 4B & 21.6 & 27.7 & [15.5, 39.8] \\
+Mixedbread: large v2 & 20.8 & 40.3 & [32.9, 47.9] \\
+BAAI: BGE base & 19.8 & 16.2 & [2.8, 30.1] \\
+BAAI: BGE large & 19.8 & 23.6 & [14.0, 34.5] \\
+Voyage: rerank-2-lite & 19.2 & 54.8 & [43.0, 66.3] \\
+IBM: Granite r2$^{\dagger}$ & 15.3 & 24.7 & [15.0, 35.0] \\
+BAAI: BGE v2-m3 & 15.1 & 11.1 & [1.3, 23.1] \\
+Jina: reranker v2 & 14.3 & 38.7 & [24.2, 52.6] \\
+Alibaba: GTE ModernBERT & $-$6.7 & $-$8.6 & [$-$17.2, 0.1] \\
 \bottomrule
 \end{tabular}
 }
@@ -363,14 +422,14 @@ means female-associated documents rank lower.}
 \toprule
 Re-ranker & \multicolumn{4}{c}{Pipeline \% male in top-3} & Re-ranker & Pipeline mean \\
 \cmidrule(lr){2-5}
- & all & male & female & neutral & alone \% & rank gap, woman $-$ man \\
+ & all & male-typed & female-typed & evenly split & alone \% & rank gap, woman $-$ man \\
  & & & & & & (20-doc pool; $+$: woman lower) \\
 \midrule
 IBM: Granite r2 & 84.9 & 95.9 & 71.7 & 90.7 & 89.3 & 3.69 \\
 Google: default-002 & 79.7 & 94.2 & 63.3 & 86.2 & 77.5 & 3.48 \\
-Open: MiniLM-L6-v2 & 79.5 & 93.3 & 58.4 & 94.4 & 79.0 & 3.38 \\
+SBERT: MiniLM-L6-v2 & 79.5 & 93.3 & 58.4 & 94.4 & 79.0 & 3.38 \\
 BAAI: BGE v2-m3 & 79.3 & 95.0 & 67.3 & 76.9 & 78.6 & 3.41 \\
-Open: MiniLM-L12-v2 & 78.4 & 91.9 & 58.6 & 91.7 & 78.6 & 3.32 \\
+SBERT: MiniLM-L12-v2 & 78.4 & 91.9 & 58.6 & 91.7 & 78.6 & 3.32 \\
 Cohere: v3.5 & 73.1 & 92.6 & 47.7 & 87.1 & 64.1 & 3.18 \\
 Voyage: rerank-1 & 70.5 & 91.2 & 45.0 & 82.9 & 68.3 & 2.94 \\
 Mixedbread: large v2 & 70.5 & 86.2 & 52.0 & 78.5 & 66.5 & 2.95 \\
@@ -406,25 +465,28 @@ Besides the three core rules, Table~\ref{tab:deid} includes a lowercasing-only c
 \begin{table}[H]
 \centering
 \caption{De-identification conditions on BAAI/bge-reranker-v2-m3. A dagger marks a
-condition that makes paired documents identical by construction. The utility
-column is synthetic occupation-matching top-rank accuracy; a dash means that
-check was not run for the condition.}
+condition that makes paired documents identical by construction. The
+contrast column is the tie-aware male-favored share on male-typed minus
+female-typed occupations, in percentage points; the three share columns before
+it count exact ties separately. The utility column is synthetic
+occupation-matching top-rank accuracy; a dash means that check was not run for
+the condition.}
 \label{tab:deid}
 \resizebox{\textwidth}{!}{%
 % Generated by code/deidentification_experiment.py -- do not edit by hand.
 % model: BAAI/bge-reranker-v2-m3; label source: BLS CPS Table 11 via occupations_bls.csv
-\begin{tabular}{lrrrrrr}
+\begin{tabular}{lrrrrrrr}
 \toprule
-Condition & \%\,M & \%\,tie & \%\,F & mean $|$score gap$|$ & identical text \% & occupation top-1 \% \\
+Condition & \%\,M & \%\,tie & \%\,F & M$-$F contrast & mean $|$score gap$|$ & identical text \% & occupation top-1 \% \\
 \midrule
-Original (no transform) & 78.0 & 0.0 & 22.0 & 0.0358 & 0.0 & 99.4 \\
-Lowercase only (control) & 58.7 & 0.0 & 41.3 & 0.0301 & 0.0 & -- \\
-Names only & 93.4 & 0.0 & 6.6 & 0.0380 & 0.0 & 99.5 \\
-Pronouns only & 68.4 & 0.0 & 31.6 & 0.0236 & 0.0 & 99.6 \\
-Full rule (names + pronouns)$^{\dagger}$ & 0.0 & 100.0 & 0.0 & 0.0000 & 100.0 & 99.8 \\
-Naive rewrite: her $\to$ their & 1.0 & 75.0 & 24.0 & 0.0007 & 75.0 & -- \\
-Naive rewrite: her $\to$ them & 88.8 & 0.0 & 11.2 & 0.0094 & 0.0 & -- \\
-Following-word rule for her$^{\dagger}$ & 0.0 & 100.0 & 0.0 & 0.0000 & 100.0 & 99.8 \\
+Original (no transform) & 78.0 & 0.0 & 22.0 & 15.1 & 0.0358 & 0.0 & 99.4 \\
+Lowercase only (control) & 58.7 & 0.0 & 41.3 & 19.9 & 0.0301 & 0.0 & -- \\
+Names only & 93.4 & 0.0 & 6.6 & 11.1 & 0.0380 & 0.0 & 99.5 \\
+Pronouns only & 68.4 & 0.0 & 31.6 & 11.0 & 0.0236 & 0.0 & 99.6 \\
+Full rule (names + pronouns)$^{\dagger}$ & 0.0 & 100.0 & 0.0 & 0.0 & 0.0000 & 100.0 & 99.8 \\
+Naive rewrite: her $\to$ their & 1.0 & 75.0 & 24.0 & $-$0.1 & 0.0007 & 75.0 & -- \\
+Naive rewrite: her $\to$ them & 88.8 & 0.0 & 11.2 & $-$3.2 & 0.0094 & 0.0 & -- \\
+Following-word rule for her$^{\dagger}$ & 0.0 & 100.0 & 0.0 & 0.0 & 0.0000 & 100.0 & 99.8 \\
 \bottomrule
 \end{tabular}%
 }
@@ -432,23 +494,27 @@ Following-word rule for her$^{\dagger}$ & 0.0 & 100.0 & 0.0 & 0.0000 & 100.0 & 9
 
 \begin{table}[H]
 \centering
-\caption{De-identification conditions across four locally run rerankers.}
+\caption{De-identification conditions across four locally run rerankers. For
+each model the columns give the tie-aware male-favored share, the male-typed
+minus female-typed contrast in percentage points, and the mean absolute score
+gap.}
 \label{tab:deidall}
 \resizebox{\textwidth}{!}{%
 % Generated by code/deidentification_experiment.py -- do not edit by hand.
-\begin{tabular}{lrrrrrrrr}
+\begin{tabular}{lrrrrrrrrrrrr}
 \toprule
-Condition & \multicolumn{2}{c}{BAAI: BGE v2-m3} & \multicolumn{2}{c}{BAAI: BGE base} & \multicolumn{2}{c}{Open: MiniLM-L12-v2} & \multicolumn{2}{c}{Jina: reranker v2} \\
- & tie-aware \%\,M & mean $|$gap$|$ & tie-aware \%\,M & mean $|$gap$|$ & tie-aware \%\,M & mean $|$gap$|$ & tie-aware \%\,M & mean $|$gap$|$ \\
+Condition & \multicolumn{3}{c}{BAAI: BGE v2-m3} & \multicolumn{3}{c}{BAAI: BGE base} & \multicolumn{3}{c}{SBERT: MiniLM-L12-v2} & \multicolumn{3}{c}{Jina: reranker v2} \\
+ & tie-aware & M$-$F & mean & tie-aware & M$-$F & mean & tie-aware & M$-$F & mean & tie-aware & M$-$F & mean \\
+ & \%\,M & contrast & $|$gap$|$ & \%\,M & contrast & $|$gap$|$ & \%\,M & contrast & $|$gap$|$ & \%\,M & contrast & $|$gap$|$ \\
 \midrule
-Original (no transform) & 78.0 & 0.0358 & 47.1 & 0.0373 & 74.7 & 0.2797 & 41.9 & 0.0186 \\
-Lowercase only (control) & 58.7 & 0.0301 & 44.9 & 0.0576 & 74.7 & 0.2797 & 35.2 & 0.0191 \\
-Names only & 93.4 & 0.0380 & 50.6 & 0.0178 & 81.9 & 0.2974 & 37.6 & 0.0127 \\
-Pronouns only & 68.4 & 0.0236 & 63.1 & 0.0363 & 72.9 & 0.2189 & 55.7 & 0.0167 \\
-Full rule (names + pronouns)$^{\dagger}$ & 50.0 & 0.0000 & 50.0 & 0.0000 & 50.0 & 0.0000 & 50.0 & 0.0000 \\
-Naive rewrite: her $\to$ their & 38.5 & 0.0007 & 44.2 & 0.0018 & 53.5 & 0.0064 & 47.5 & 0.0007 \\
-Naive rewrite: her $\to$ them & 88.8 & 0.0094 & 84.1 & 0.0086 & 82.0 & 0.0750 & 64.8 & 0.0031 \\
-Following-word rule for her$^{\dagger}$ & 50.0 & 0.0000 & 50.0 & 0.0000 & 50.0 & 0.0000 & 50.0 & 0.0000 \\
+Original (no transform) & 78.0 & 15.1 & 0.0358 & 47.1 & 19.8 & 0.0373 & 74.7 & 26.0 & 0.2797 & 41.9 & 14.7 & 0.0186 \\
+Lowercase only (control) & 58.7 & 19.9 & 0.0301 & 44.9 & 8.9 & 0.0576 & 74.7 & 26.0 & 0.2797 & 35.2 & 13.1 & 0.0191 \\
+Names only & 93.4 & 11.1 & 0.0380 & 50.6 & 16.2 & 0.0178 & 81.9 & 36.5 & 0.2974 & 37.6 & 38.7 & 0.0127 \\
+Pronouns only & 68.4 & 11.0 & 0.0236 & 63.1 & 20.1 & 0.0363 & 72.9 & 19.2 & 0.2189 & 55.7 & 8.3 & 0.0167 \\
+Full rule (names + pronouns)$^{\dagger}$ & 50.0 & 0.0 & 0.0000 & 50.0 & 0.0 & 0.0000 & 50.0 & 0.0 & 0.0000 & 50.0 & 0.0 & 0.0000 \\
+Naive rewrite: her $\to$ their & 38.5 & $-$0.1 & 0.0007 & 44.2 & $-$0.9 & 0.0018 & 53.5 & 0.3 & 0.0064 & 47.5 & $-$0.7 & 0.0007 \\
+Naive rewrite: her $\to$ them & 88.8 & $-$3.2 & 0.0094 & 84.1 & 7.1 & 0.0086 & 82.0 & 1.6 & 0.0750 & 64.8 & $-$2.0 & 0.0031 \\
+Following-word rule for her$^{\dagger}$ & 50.0 & 0.0 & 0.0000 & 50.0 & 0.0 & 0.0000 & 50.0 & 0.0 & 0.0000 & 50.0 & 0.0 & 0.0000 \\
 \bottomrule
 \end{tabular}%
 }
@@ -460,6 +526,8 @@ Following-word rule for her$^{\dagger}$ & 50.0 & 0.0000 & 50.0 & 0.0000 & 50.0 &
 
 For each of the corpus's 24 job categories, the title and description of the matched O*NET occupation served as the job query. We drew 8 pools of 20 résumés per query (192 pools), each combining 5 résumés from the query's category with 15 drawn at random from the whole corpus. Each pool member served once as the focal candidate, giving 3,840 comparisons per model, in which only the focal résumé switched between its male- and female-associated forms while the other members stayed in a fixed, randomly assigned form. Pools were drawn independently, so the 1,952 distinct résumés appear in one or several pools. Where a document carried a detected given name or a clear pronoun majority (301 of 2,483), we built the pair by swapping the name for an opposite-gender name of matched frequency rank and swapping pronouns; otherwise (2,182 documents; 3,374 of the scored comparisons) we prepended a frequency-matched male or female given name with an identical surname and made any pronouns agree. Each model scored the query and résumé truncated to 512 tokens; in 267 comparisons, all built by swapping, every marker fell beyond that window for the worked reranker, so the two inputs it saw were identical. Top-three membership selects exactly three candidates in every scoring, breaking score ties with a seeded key fixed per pool and résumé, so that a tie cannot favor either version.
 
+The 24 job categories fall into 7 male-typed, 3 female-typed, 7 evenly split, and 7 unlabeled groups. Each category takes the women's share of its matched federal labor-force category and the thresholds of Section 2; categories with no match or a share in an excluded band stay unlabeled. Excluding the comparisons whose markers all fell outside the scored window changes no share in Table~\ref{tab:companion} by more than 1.1 points. In all 4 rerankers, comparisons whose two versions land on opposite sides of the top-three cutoff more often favor the female-associated version; these counts are small, and the comparisons share pools.
+
 \begin{table}[H]
 \centering
 \caption{Companion experiment on publicly posted résumé examples: tie-aware
@@ -467,7 +535,8 @@ share (\%) of comparisons in which the male-associated version scores higher,
 overall and by occupation group, and the share of comparisons in which the two
 versions land on opposite sides of the top-three cutoff. Groups follow the
 corpus's own job categories, mapped to the same labels where possible; the last
-row gives each group's denominator. These documents, queries, and marker
+row gives each group's denominator. Comparisons whose markers fell outside the
+scored window count as ties. These documents, queries, and marker
 constructions differ from the synthetic audit, so differences between the two
 cannot be attributed to any single cause.}
 \label{tab:companion}
@@ -475,11 +544,11 @@ cannot be attributed to any single cause.}
 % Generated by code/companion_table.py -- do not edit by hand.
 \begin{tabular}{lrrrrrrr}
 \toprule
-Reranker & Comparisons & All & Male-typed & Female-typed & Neutral & Unlabeled & Top-3 flips \% \\
+Reranker & Comparisons & All & Male-typed & Female-typed & Evenly split & Unlabeled & Top-3 flips \% \\
 \midrule
 BAAI: BGE v2-m3 & 3,840 & 51.5 & 55.9 & 43.2 & 49.2 & 53.0 & 2.1 \\
 BAAI: BGE base & 3,840 & 46.3 & 47.0 & 47.2 & 47.4 & 44.0 & 2.6 \\
-Open: MiniLM-L12-v2 & 3,840 & 37.5 & 43.1 & 38.4 & 34.6 & 34.2 & 0.4 \\
+SBERT: MiniLM-L12-v2 & 3,840 & 37.5 & 43.1 & 38.4 & 34.6 & 34.2 & 0.4 \\
 Jina: reranker v2 & 3,840 & 41.4 & 48.7 & 33.4 & 41.9 & 37.0 & 1.6 \\
 \midrule
 Comparisons per group & & & 1,120 & 480 & 1,120 & 1,120 & \\
@@ -494,6 +563,28 @@ Comparisons per group & & & 1,120 & 480 & 1,120 & 1,120 & \\
 J.~An, D.~Huang, C.~Lin, and M.~Tai.
 \newblock Measuring gender and racial biases in large language models: Intersectional evidence from automated resume evaluation.
 \newblock \emph{PNAS Nexus}, 4(3):pgaf089, 2025. \doi{10.1093/pnasnexus/pgaf089}.
+
+\bibitem{behaghel2015}
+L.~Behaghel, B.~Cr\'{e}pon, and T.~Le~Barbanchon.
+\newblock Unintended Effects of Anonymous R\'{e}sum\'{e}s.
+\newblock \emph{American Economic Journal: Applied Economics}, 7(3):1--27, 2015. \doi{10.1257/app.20140185}.
+
+\bibitem{bertrand2004}
+M.~Bertrand and S.~Mullainathan.
+\newblock Are Emily and Greg More Employable Than Lakisha and Jamal? A Field Experiment on Labor Market Discrimination.
+\newblock \emph{American Economic Review}, 94(4):991--1013, 2004. \doi{10.1257/0002828042002561}.
+
+\bibitem{bigdeli2021}
+A.~Bigdeli, N.~Arabzadeh, S.~Seyedsalehi, M.~Zihayat, and E.~Bagheri.
+\newblock On the Orthogonality of Bias and Utility in Ad hoc Retrieval.
+\newblock In \emph{Proceedings of the 44th International ACM SIGIR Conference on Research and Development in Information Retrieval}, pages 1748--1752, 2021.
+\doi{10.1145/3404835.3463110}.
+
+\bibitem{bigdeli2022}
+A.~Bigdeli, N.~Arabzadeh, S.~Seyedsalehi, M.~Zihayat, and E.~Bagheri.
+\newblock A Light-Weight Strategy for Restraining Gender Biases in Neural Rankers.
+\newblock In \emph{Advances in Information Retrieval: 44th European Conference on IR Research (ECIR 2022), Part II}, volume 13186 of \emph{Lecture Notes in Computer Science}, pages 47--55, 2022.
+\doi{10.1007/978-3-030-99739-7\_6}.
 
 \bibitem{bls2025}
 Bureau of Labor Statistics, U.S. Department of Labor.
@@ -517,6 +608,24 @@ V.~Karpukhin, B.~O\u{g}uz, S.~Min, P.~Lewis, L.~Wu, S.~Edunov, D.~Chen, and W.~Y
 \newblock Dense Passage Retrieval for Open-Domain Question Answering.
 \newblock In \emph{Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP)}, pages 6769--6781, 2020.
 \doi{10.18653/v1/2020.emnlp-main.550}.
+
+\bibitem{krieg2023}
+K.~Krieg, E.~Parada-Cabaleiro, G.~Medicus, O.~Lesota, M.~Schedl, and N.~Rekabsaz.
+\newblock Grep-BiasIR: A Dataset for Investigating Gender Representation Bias in Information Retrieval Results.
+\newblock In \emph{Proceedings of the 2023 Conference on Human Information Interaction and Retrieval (CHIIR '23)}, pages 444--448, 2023.
+\doi{10.1145/3576840.3578295}.
+
+\bibitem{kumar2023}
+D.~Kumar, T.~Grosz, E.~Greif, N.~Rekabsaz, and M.~Schedl.
+\newblock Identifying Words in Job Advertisements Responsible for Gender Bias in Candidate Ranking Systems via Counterfactual Learning.
+\newblock In \emph{Proceedings of the 3rd Workshop on Recommender Systems for Human Resources (RecSys in HR 2023)}, volume 3490 of \emph{CEUR Workshop Proceedings}, 2023.
+\url{https://ceur-ws.org/Vol-3490/RecSysHR2023-paper_7.pdf}.
+
+\bibitem{kumar2025}
+D.~Kumar, S.~Masoudian, A.~B.~Melchiorre, and M.~Schedl.
+\newblock Mitigating Gender Bias in Job Ranking Systems Using Job Advertisement Neutrality.
+\newblock In \emph{Proceedings of the Fourth Workshop on NLP for Positive Impact (NLP4PI)}, pages 264--271, 2025.
+\doi{10.18653/v1/2025.nlp4pi-1.23}.
 
 \bibitem{mao2025}
 Y.~Mao, B.~Plank, and R.~Litschko.
@@ -585,6 +694,12 @@ K.~Wilson and A.~Caliskan.
 \newblock Gender, Race, and Intersectional Bias in Resume Screening via Language Model Retrieval.
 \newblock In \emph{Proceedings of the AAAI/ACM Conference on AI, Ethics, and Society}, 7(1):1578--1590, 2024.
 \doi{10.1609/aies.v7i1.31748}.
+
+\bibitem{zerveas2022}
+G.~Zerveas, N.~Rekabsaz, D.~Cohen, and C.~Eickhoff.
+\newblock Mitigating Bias in Search Results Through Contextual Document Reranking and Neutrality Regularization.
+\newblock In \emph{Proceedings of the 45th International ACM SIGIR Conference on Research and Development in Information Retrieval}, pages 2532--2538, 2022.
+\doi{10.1145/3477495.3531891}.
 
 \end{thebibliography}
 

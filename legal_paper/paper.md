@@ -388,8 +388,9 @@ Table~\ref{tab:deid} reports every de-identification rule tested on the same rer
 \centering
 \caption{Every de-identification rule tested on {{RERANKER_MODEL}}: the share of
 counterfactual pairs favoring the man's document (M), tied, and favoring the
-woman's document (F); the average size of the score gap on this model's own
-scale; the share of pairs the rule leaves textually identical; and synthetic occupation-matching top-1
+woman's document (F); the male-typed minus female-typed contrast in the
+tie-aware share favoring the man's document, in percentage points (M$-$F
+contrast); the average size of the score gap on this model's own scale; the share of pairs the rule leaves textually identical; and synthetic occupation-matching top-1
 accuracy where measured. A dagger marks a rule that makes the two documents
 identical by construction, so its row is a check on that fact rather than an
 independent measurement.}
@@ -406,8 +407,9 @@ Table~\ref{tab:deidall} repeats the same eight rules on three more rerankers. Th
 \begin{table}[H]
 \centering
 \caption{The same eight de-identification conditions on all four locally run
-rerankers: the tie-aware share favoring the man's document and the average
-size of the score gap, on each model's own scale. One model's untransformed
+rerankers: the tie-aware share favoring the man's document, its male-typed
+minus female-typed contrast in percentage points, and the average size of the
+score gap, on each model's own scale. One model's untransformed
 scores did not exactly reproduce themselves on a plain re-run six months
 later (Limits); its other seven rows were scored fresh in this same run and
 are internally consistent.}

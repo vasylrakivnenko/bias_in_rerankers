@@ -1,6 +1,6 @@
 {
   "script_version": "deidentification_experiment.py v3.1 (same-run baseline on failed determinism; pair-level release)",
-  "generated": "2026-10-16T18:42:32",
+  "generated": "2026-10-16T23:44:01",
   "label_source": "BLS CPS Table 11 via occupations_bls.csv",
   "seed": 20260822,
   "bootstrap_B": 1000,

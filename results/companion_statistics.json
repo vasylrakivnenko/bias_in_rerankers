@@ -1,0 +1,359 @@
+{
+  "script_version": "companion_statistics.py v1.0",
+  "generated": "2026-10-16T23:43:45",
+  "source": {
+    "summary": "results/realistic_pool_four_rerankers.json",
+    "rows": "results/realistic_pool_four_rerankers_rows.json.gz",
+    "summary_script_version": "g3-2026-10-16-exact-k",
+    "synthetic_audit": "results/single_stage_summary.json",
+    "synthetic_label_source": "BLS CPS Table 11 via occupations_bls.csv"
+  },
+  "group_labels": {
+    "male": "male-typed",
+    "female": "female-typed",
+    "neutral": "evenly split",
+    "unknown": "unlabeled"
+  },
+  "n_models": 4,
+  "n_models_male_minus_female_positive_all_comparisons": 3,
+  "n_models_male_minus_female_positive_in_window": 3,
+  "n_models_overall_share_below_50_all_comparisons": 3,
+  "n_models_overall_share_below_50_in_window": 3,
+  "max_abs_share_change_in_window": 1.1370445829338465,
+  "max_abs_share_change_in_window_where": {
+    "model": "ms-marco",
+    "cell": "neutral"
+  },
+  "mean_abs_delta_ratio_synthetic_to_companion_min": 4.530389679899631,
+  "mean_abs_delta_ratio_synthetic_to_companion_max": 66.10117743813078,
+  "mean_abs_delta_ratio_min_model": "jina",
+  "mean_abs_delta_ratio_max_model": "bge-base",
+  "n_models_net_top3_flips_favor_female_form": 4,
+  "n_job_categories": 24,
+  "n_job_categories_male_typed": 7,
+  "n_job_categories_female_typed": 3,
+  "n_job_categories_evenly_split": 7,
+  "n_job_categories_unlabeled": 7,
+  "job_categories_by_group": {
+    "male": [
+      "AGRICULTURE",
+      "AUTOMOBILE",
+      "AVIATION",
+      "CHEF",
+      "CONSTRUCTION",
+      "ENGINEERING",
+      "INFORMATION-TECHNOLOGY"
+    ],
+    "female": [
+      "HEALTHCARE",
+      "HR",
+      "TEACHER"
+    ],
+    "neutral": [
+      "ACCOUNTANT",
+      "ADVOCATE",
+      "APPAREL",
+      "CONSULTANT",
+      "DESIGNER",
+      "FINANCE",
+      "SALES"
+    ],
+    "unknown": [
+      "ARTS",
+      "BANKING",
+      "BPO",
+      "BUSINESS-DEVELOPMENT",
+      "DIGITAL-MEDIA",
+      "FITNESS",
+      "PUBLIC-RELATIONS"
+    ]
+  },
+  "notes": {
+    "window": "outside-window comparisons are rows with marker_in_token_window false: every gender marker lies beyond the model's tokenizer window (512 tokens) for the (query, résumé) pair, so the two forms' token ids are identical and the scores tie. Counts differ by tokenizer (MiniLM uses a different vocabulary). The character-based marker_in_scored_window heuristic is not used.",
+    "shares": "tie-aware % male-favored (ties count half), full precision; Table A6 prints the all-comparison values to one decimal",
+    "magnitude": "mean |score_male - score_female| on each model's own output scale (its CrossEncoder default: scores in (0, 1) for BGE and Jina, unbounded logits for MiniLM). Both runs score a given model on the same scale (see score_range), so each ratio compares like with like; ratios are not comparable to raw score gaps across models",
+    "flips": "top-3 membership from the exact-k ranks; net_female_form = female-form-only minus male-form-only. The binomial p tests female_form_only ~ Binomial(n_flips, 1/2) and is descriptive only: the 3,840 comparisons come from 192 pools of 20 focal comparisons that share their other members, and 1,952 distinct résumés fill them, so flips are not independent"
+  },
+  "models": {
+    "bge-m3": {
+      "model": "BAAI/bge-reranker-v2-m3",
+      "n_comparisons": 3840,
+      "n_outside_window": 267,
+      "n_in_window": 3573,
+      "outside_window_all_ties": true,
+      "n_in_window_by_group": {
+        "male": 1041,
+        "female": 459,
+        "neutral": 1037,
+        "unknown": 1036
+      },
+      "tie_aware_pct_male": {
+        "all_comparisons": {
+          "overall": 51.5234375,
+          "male": 55.848214285714285,
+          "female": 43.229166666666664,
+          "neutral": 49.24107142857143,
+          "unknown": 53.035714285714285
+        },
+        "in_window": {
+          "overall": 51.63727959697733,
+          "male": 56.292026897214214,
+          "female": 42.91938997821351,
+          "neutral": 49.18032786885246,
+          "unknown": 53.28185328185328
+        },
+        "change_in_window_minus_all": {
+          "overall": 0.11384209697732928,
+          "male": 0.44381261149992923,
+          "female": -0.3097766884531552,
+          "neutral": -0.06074355971897205,
+          "unknown": 0.24613899613899548
+        }
+      },
+      "max_abs_change": 0.44381261149992923,
+      "max_abs_change_cell": "male",
+      "male_minus_female": {
+        "all_comparisons": 12.61904761904762,
+        "in_window": 13.372636919000705
+      },
+      "mean_abs_delta": {
+        "companion_in_window": 0.0020205321825239376,
+        "companion_all_comparisons": 0.00188004205420782,
+        "synthetic_audit": 0.03580423763532263,
+        "ratio_synthetic_to_companion_in_window": 17.720201610744923
+      },
+      "synthetic_audit": {
+        "raw_file": "bge-reranker-v2-m3_full_raw.json",
+        "n_pairs": 8320
+      },
+      "score_range": {
+        "companion": [
+          2.1775525965495035e-05,
+          0.8445984721183777
+        ],
+        "synthetic_audit": [
+          0.00582867581397295,
+          0.9989551305770874
+        ]
+      },
+      "top3": {
+        "n_flips": 82,
+        "male_form_only": 37,
+        "female_form_only": 45,
+        "net_female_form": 8,
+        "binomial_p_two_sided": 0.439705429185822,
+        "n_pools_with_a_flip": 58
+      }
+    },
+    "bge-base": {
+      "model": "BAAI/bge-reranker-base",
+      "n_comparisons": 3840,
+      "n_outside_window": 267,
+      "n_in_window": 3573,
+      "outside_window_all_ties": true,
+      "n_in_window_by_group": {
+        "male": 1041,
+        "female": 459,
+        "neutral": 1037,
+        "unknown": 1036
+      },
+      "tie_aware_pct_male": {
+        "all_comparisons": {
+          "overall": 46.263020833333336,
+          "male": 47.00892857142857,
+          "female": 47.1875,
+          "neutral": 47.36607142857143,
+          "unknown": 44.017857142857146
+        },
+        "in_window": {
+          "overall": 45.98376714245732,
+          "male": 46.7819404418828,
+          "female": 47.05882352941177,
+          "neutral": 47.155255544840884,
+          "unknown": 43.53281853281853
+        },
+        "change_in_window_minus_all": {
+          "overall": -0.27925369087601837,
+          "male": -0.22698812954576653,
+          "female": -0.12867647058823195,
+          "neutral": -0.21081588373054672,
+          "unknown": -0.4850386100386146
+        }
+      },
+      "max_abs_change": 0.4850386100386146,
+      "max_abs_change_cell": "unknown",
+      "male_minus_female": {
+        "all_comparisons": -0.1785714285714306,
+        "in_window": -0.2768830875289652
+      },
+      "mean_abs_delta": {
+        "companion_in_window": 0.0005641715385701573,
+        "companion_all_comparisons": 0.000524943986278951,
+        "synthetic_audit": 0.0372924029765692,
+        "ratio_synthetic_to_companion_in_window": 66.10117743813078
+      },
+      "synthetic_audit": {
+        "raw_file": "bge-reranker-base_full_raw.json",
+        "n_pairs": 8320
+      },
+      "score_range": {
+        "companion": [
+          3.7284356949385256e-05,
+          0.922855794429779
+        ],
+        "synthetic_audit": [
+          0.0013967648847028613,
+          0.999853253364563
+        ]
+      },
+      "top3": {
+        "n_flips": 101,
+        "male_form_only": 39,
+        "female_form_only": 62,
+        "net_female_form": 23,
+        "binomial_p_two_sided": 0.028089467947778154,
+        "n_pools_with_a_flip": 74
+      }
+    },
+    "ms-marco": {
+      "model": "cross-encoder/ms-marco-MiniLM-L-12-v2",
+      "n_comparisons": 3840,
+      "n_outside_window": 244,
+      "n_in_window": 3596,
+      "outside_window_all_ties": true,
+      "n_in_window_by_group": {
+        "male": 1048,
+        "female": 459,
+        "neutral": 1043,
+        "unknown": 1046
+      },
+      "tie_aware_pct_male": {
+        "all_comparisons": {
+          "overall": 37.447916666666664,
+          "male": 43.125,
+          "female": 38.4375,
+          "neutral": 34.598214285714285,
+          "unknown": 34.19642857142857
+        },
+        "in_window": {
+          "overall": 36.59621802002225,
+          "male": 42.652671755725194,
+          "female": 37.908496732026144,
+          "neutral": 33.46116970278044,
+          "unknown": 33.07839388145315
+        },
+        "change_in_window_minus_all": {
+          "overall": -0.8516986466444152,
+          "male": -0.4723282442748058,
+          "female": -0.5290032679738559,
+          "neutral": -1.1370445829338465,
+          "unknown": -1.118034689975417
+        }
+      },
+      "max_abs_change": 1.1370445829338465,
+      "max_abs_change_cell": "neutral",
+      "male_minus_female": {
+        "all_comparisons": 4.6875,
+        "in_window": 4.74417502369905
+      },
+      "mean_abs_delta": {
+        "companion_in_window": 0.06031926059567093,
+        "companion_all_comparisons": 0.05648647424532101,
+        "synthetic_audit": 0.2797443377342111,
+        "ratio_synthetic_to_companion_in_window": 4.637728230944
+      },
+      "synthetic_audit": {
+        "raw_file": "ms-marco-MiniLM-L-12-v2_full_raw.json",
+        "n_pairs": 8320
+      },
+      "score_range": {
+        "companion": [
+          -11.248278617858887,
+          4.347289085388184
+        ],
+        "synthetic_audit": [
+          -6.598535537719727,
+          9.534603118896484
+        ]
+      },
+      "top3": {
+        "n_flips": 15,
+        "male_form_only": 3,
+        "female_form_only": 12,
+        "net_female_form": 9,
+        "binomial_p_two_sided": 0.03515625,
+        "n_pools_with_a_flip": 13
+      }
+    },
+    "jina": {
+      "model": "jinaai/jina-reranker-v2-base-multilingual",
+      "n_comparisons": 3840,
+      "n_outside_window": 267,
+      "n_in_window": 3573,
+      "outside_window_all_ties": true,
+      "n_in_window_by_group": {
+        "male": 1041,
+        "female": 459,
+        "neutral": 1037,
+        "unknown": 1036
+      },
+      "tie_aware_pct_male": {
+        "all_comparisons": {
+          "overall": 41.40625,
+          "male": 48.705357142857146,
+          "female": 33.4375,
+          "neutral": 41.875,
+          "unknown": 37.05357142857143
+        },
+        "in_window": {
+          "overall": 40.76406381192275,
+          "male": 48.60710854947166,
+          "female": 32.6797385620915,
+          "neutral": 41.224686595949855,
+          "unknown": 36.003861003861005
+        },
+        "change_in_window_minus_all": {
+          "overall": -0.6421861880772468,
+          "male": -0.09824859338548464,
+          "female": -0.7577614379084991,
+          "neutral": -0.650313404050145,
+          "unknown": -1.049710424710426
+        }
+      },
+      "max_abs_change": 1.049710424710426,
+      "max_abs_change_cell": "unknown",
+      "male_minus_female": {
+        "all_comparisons": 15.267857142857146,
+        "in_window": 15.92736998738016
+      },
+      "mean_abs_delta": {
+        "companion_in_window": 0.004109803014798488,
+        "companion_all_comparisons": 0.0038240432739257814,
+        "synthetic_audit": 0.018619009164663462,
+        "ratio_synthetic_to_companion_in_window": 4.530389679899631
+      },
+      "synthetic_audit": {
+        "raw_file": "jina-reranker-v2-base-multilingual_full_raw.json",
+        "n_pairs": 8320
+      },
+      "score_range": {
+        "companion": [
+          0.023681640625,
+          0.68359375
+        ],
+        "synthetic_audit": [
+          0.1943359375,
+          0.84375
+        ]
+      },
+      "top3": {
+        "n_flips": 61,
+        "male_form_only": 19,
+        "female_form_only": 42,
+        "net_female_form": 23,
+        "binomial_p_two_sided": 0.004444019471066869,
+        "n_pools_with_a_flip": 50
+      }
+    }
+  }
+}

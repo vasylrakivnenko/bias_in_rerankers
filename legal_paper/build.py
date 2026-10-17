@@ -295,6 +295,11 @@ class NumberStore:
             txt = format(val, fmt)
         else:
             txt = str(val)
+        # A negative number prints with a true minus sign, matching the
+        # generated tables, rather than a hyphen. \ensuremath works in text
+        # and math mode alike, and _latex_escape leaves it untouched.
+        if re.match(r"-\d", txt):
+            txt = r"\ensuremath{-}" + txt[1:]
         return txt + spec.get("unit", "")
 
     # -- public ----------------------------------------------------------

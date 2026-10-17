@@ -1434,5 +1434,324 @@
     "path": "label_counts.female",
     "format": "d",
     "needs": "Occupation clusters in the female-typed category."
+  },
+  "DEID_ORIGINAL_CONTRAST": {
+    "expr": "m - f",
+    "refs": {
+      "m": {
+        "file": "results/deidentification_bge.json",
+        "path": "conditions.original.by_category.male.tie_aware_pct_male"
+      },
+      "f": {
+        "file": "results/deidentification_bge.json",
+        "path": "conditions.original.by_category.female.tie_aware_pct_male"
+      }
+    },
+    "format": ".1f",
+    "needs": "Review round 4 (W3): worked reranker's male-typed minus female-typed contrast (tie-aware points), untransformed documents, in the de-identification run."
+  },
+  "DEID_LOWERCASE_CONTRAST": {
+    "expr": "m - f",
+    "refs": {
+      "m": {
+        "file": "results/deidentification_bge.json",
+        "path": "conditions.lowercase_only.by_category.male.tie_aware_pct_male"
+      },
+      "f": {
+        "file": "results/deidentification_bge.json",
+        "path": "conditions.lowercase_only.by_category.female.tie_aware_pct_male"
+      }
+    },
+    "format": ".1f",
+    "needs": "Review round 4 (W3): same contrast after lowercasing only, which removes no marker."
+  },
+  "PIPELINE_SWEEP_MEDIAN": {
+    "file": "results/compounding_all_rerankers.json",
+    "path": "pipeline_spread.median",
+    "format": ".0f",
+    "unit": "%",
+    "needs": "Review round 4 (W8): median pipeline top-3 male-associated share across the 28 pointwise rerankers behind the same retriever."
+  },
+  "N_NEUTRAL_INDETERMINATE_TWOWAY": {
+    "file": "results/interval_sensitivity.json",
+    "path": "neutral_level.n_models_containing_50.occupation_x_name",
+    "format": "d",
+    "needs": "Review round 4 (W2): models whose evenly split tie-aware share interval contains 50 when occupations and name pairs are resampled jointly (1,000,000 draws)."
+  },
+  "NEUTRAL_TWOWAY_B": {
+    "file": "results/interval_sensitivity.json",
+    "path": "neutral_level.bootstrap_B",
+    "format": ",d",
+    "needs": "Review round 4 (W2): bootstrap draws behind the evenly split intervals under joint resampling."
+  },
+  "PERM_N": {
+    "file": "results/interval_sensitivity.json",
+    "path": "label_permutation.n_permutations",
+    "format": ",d",
+    "needs": "Review round 4 (W7): occupation-label permutations per model for the contrast test."
+  },
+  "PERM_N_POS_HOLM": {
+    "file": "results/interval_sensitivity.json",
+    "path": "label_permutation.n_models_positive_holm_significant",
+    "format": "d",
+    "needs": "Review round 4 (W7): models whose positive contrast is significant after the Holm adjustment across all models."
+  },
+  "GTE_PERM_HOLM": {
+    "file": "results/interval_sensitivity.json",
+    "path": [
+      "label_permutation",
+      "models",
+      "Alibaba-NLP/gte-reranker-modernbert-base",
+      "p_holm"
+    ],
+    "format": ".2f",
+    "needs": "Review round 4 (W7): Holm-adjusted two-sided permutation p for the one model with a negative contrast."
+  },
+  "CROSS_N_POS": {
+    "file": "results/interval_sensitivity.json",
+    "path": "full_name_cross.n_models_positive",
+    "format": "d",
+    "needs": "Review round 4 (W2): models whose contrast stays positive when every male-associated name is compared with every female-associated name."
+  },
+  "WT_N_ALL": {
+    "file": "results/interval_sensitivity.json",
+    "path": "within_template.n_models_positive_in_all_levels",
+    "format": "d",
+    "needs": "Review round 4 (W3): models with a positive contrast in all four document templates."
+  },
+  "WQ_N_ALL": {
+    "file": "results/interval_sensitivity.json",
+    "path": "within_query.n_models_positive_in_all_levels",
+    "format": "d",
+    "needs": "Review round 4 (W3): models with a positive contrast in all four query phrasings."
+  },
+  "WT_CELLS_POS": {
+    "file": "results/interval_sensitivity.json",
+    "path": "within_template.n_model_level_cells_positive",
+    "format": "d",
+    "needs": "Review round 4 (W3): positive model-by-template contrasts."
+  },
+  "WQ_CELLS_POS": {
+    "file": "results/interval_sensitivity.json",
+    "path": "within_query.n_model_level_cells_positive",
+    "format": "d",
+    "needs": "Review round 4 (W3): positive model-by-query-phrasing contrasts."
+  },
+  "WT_CELLS": {
+    "file": "results/interval_sensitivity.json",
+    "path": "within_template.n_model_level_cells",
+    "format": "d",
+    "needs": "Review round 4 (W3): model-by-template cells (29 x 4)."
+  },
+  "DRIFT_FEB_N": {
+    "file": "results/reproducibility_checks.json",
+    "path": "vendor_drift.groups.2026-02-24.n_models",
+    "format": "d",
+    "needs": "Review round 4 (W6): API models first scored in February and re-queried in October."
+  },
+  "DRIFT_FEB_DAYS": {
+    "file": "results/reproducibility_checks.json",
+    "path": "vendor_drift.groups.2026-02-24.days_between_scoring_and_requery.0",
+    "format": "d",
+    "needs": "Review round 4 (W6): days between the February scoring and the October re-query."
+  },
+  "DRIFT_FEB_MAX": {
+    "file": "results/reproducibility_checks.json",
+    "path": "vendor_drift.groups.2026-02-24.max_abs_contrast_change",
+    "format": ".1f",
+    "needs": "Review round 4 (W6): largest absolute change in the contrast between the February scores and the October re-query."
+  },
+  "DRIFT_FEB_N_EXCL": {
+    "file": "results/reproducibility_checks.json",
+    "path": "vendor_drift.groups.2026-02-24.n_contrast_change_ci_excluding_zero",
+    "format": "d",
+    "needs": "Review round 4 (W6): February models whose interval on the contrast change excludes zero."
+  },
+  "DRIFT_FEB_SAMEWIN_MIN": {
+    "file": "results/reproducibility_checks.json",
+    "path": "vendor_drift.groups.2026-02-24.min_pct_pairs_same_winner",
+    "format": ".0f",
+    "unit": "%",
+    "needs": "Review round 4 (W6): lowest share of pairs with the same winner in both runs."
+  },
+  "DRIFT_FEB_SAMEWIN_MAX": {
+    "file": "results/reproducibility_checks.json",
+    "path": "vendor_drift.groups.2026-02-24.max_pct_pairs_same_winner",
+    "format": ".0f",
+    "unit": "%",
+    "needs": "Review round 4 (W6): highest share of pairs with the same winner in both runs."
+  },
+  "COMP_RATIO_MIN": {
+    "file": "results/companion_statistics.json",
+    "path": "mean_abs_delta_ratio_synthetic_to_companion_min",
+    "format": ".0f",
+    "needs": "Review round 4 (W1): smallest ratio of the synthetic to the companion mean absolute score difference (markers inside the window)."
+  },
+  "COMP_RATIO_MAX": {
+    "file": "results/companion_statistics.json",
+    "path": "mean_abs_delta_ratio_synthetic_to_companion_max",
+    "format": ".0f",
+    "needs": "Review round 4 (W1): largest such ratio."
+  },
+  "COMP_N_CONTRAST_POS": {
+    "file": "results/companion_statistics.json",
+    "path": "n_models_male_minus_female_positive_all_comparisons",
+    "format": "d",
+    "needs": "Review round 4 (W1): companion rerankers whose male-typed minus female-typed difference is positive."
+  },
+  "COMP_N_FEMALE_CATS": {
+    "file": "results/companion_statistics.json",
+    "path": "n_job_categories_female_typed",
+    "format": "d",
+    "needs": "Review round 4 (W7): female-typed job categories in the companion corpus."
+  },
+  "COMP_N_MALE_CATS": {
+    "file": "results/companion_statistics.json",
+    "path": "n_job_categories_male_typed",
+    "format": "d",
+    "needs": "Review round 4 (W7): male-typed job categories in the companion corpus."
+  },
+  "COMP_N_EVEN_CATS": {
+    "file": "results/companion_statistics.json",
+    "path": "n_job_categories_evenly_split",
+    "format": "d",
+    "needs": "Review round 4 (W7): evenly split job categories in the companion corpus."
+  },
+  "COMP_N_UNLABELED_CATS": {
+    "file": "results/companion_statistics.json",
+    "path": "n_job_categories_unlabeled",
+    "format": "d",
+    "needs": "Review round 4 (W7): unlabeled job categories in the companion corpus."
+  },
+  "COMP_MAX_SHARE_CHANGE": {
+    "file": "results/companion_statistics.json",
+    "path": "max_abs_share_change_in_window",
+    "format": ".1f",
+    "needs": "Review round 4 (W7): largest change in any Table A6 share when comparisons whose markers fell outside the token window are excluded."
+  },
+  "COMP_N_FLIPS_FEMALE": {
+    "file": "results/companion_statistics.json",
+    "path": "n_models_net_top3_flips_favor_female_form",
+    "format": "d",
+    "needs": "Review round 4 (W1): companion rerankers whose net top-3 flips favor the female-associated form."
+  },
+  "DEID_NAMESONLY_PCT_MALE": {
+    "file": "results/deidentification_bge.json",
+    "path": "conditions.names_only.overall.tie_aware_pct_male",
+    "format": ".0f",
+    "unit": "%",
+    "needs": "Review round 4 (minor 7): worked reranker's overall tie-aware male-favored share with names replaced and pronouns kept (Table A4)."
+  },
+  "DEID_NAMESONLY_CONTRAST": {
+    "expr": "m - f",
+    "refs": {
+      "m": {
+        "file": "results/deidentification_bge.json",
+        "path": "conditions.names_only.by_category.male.tie_aware_pct_male"
+      },
+      "f": {
+        "file": "results/deidentification_bge.json",
+        "path": "conditions.names_only.by_category.female.tie_aware_pct_male"
+      }
+    },
+    "format": ".1f",
+    "needs": "Review round 4 (W2): worked reranker's male-typed minus female-typed contrast with names replaced and pronouns kept (Table A4)."
+  },
+  "COMP_N_MODELS": {
+    "file": "results/realistic_pool_four_rerankers.json",
+    "path": "models",
+    "len": true,
+    "format": "d",
+    "needs": "Review round 4: rerankers scored in the companion experiment."
+  },
+  "PRON_N_MODELS": {
+    "file": "results/pronoun_channel_summary.json",
+    "path": "overview.n_models_tested",
+    "format": "d",
+    "needs": "Review round 4 (W2): models scored in the pronoun-only comparison (all audited models except the listwise jina-reranker-v3)."
+  },
+  "PRON_N_ABOVE": {
+    "file": "results/pronoun_channel_summary.json",
+    "path": "overview.n_above_zero",
+    "format": "d",
+    "needs": "Review round 4 (W2): models whose pronoun-only contrast has an occupation-clustered 95% interval above zero."
+  },
+  "PRON_MEDIAN": {
+    "file": "results/pronoun_channel_summary.json",
+    "path": "overview.median_contrast",
+    "format": ".1f",
+    "needs": "Review round 4 (W2): median pronoun-only contrast across the tested models."
+  },
+  "PRON_ORIG_MEDIAN": {
+    "file": "results/pronoun_channel_summary.json",
+    "path": "overview.median_original_contrast",
+    "format": ".1f",
+    "needs": "Review round 4 (W2): median name-and-pronoun contrast across the same tested models."
+  },
+  "PRON_GTE": {
+    "file": "results/pronoun_channel_summary.json",
+    "path": [
+      "models",
+      "Alibaba-NLP/gte-reranker-modernbert-base",
+      "contrast"
+    ],
+    "format": ".1f",
+    "needs": "Review round 4 (W2): pronoun-only contrast of the one model whose interval includes zero."
+  },
+  "PRON_GTE_LO": {
+    "file": "results/pronoun_channel_summary.json",
+    "path": [
+      "models",
+      "Alibaba-NLP/gte-reranker-modernbert-base",
+      "ci",
+      0
+    ],
+    "format": ".1f",
+    "needs": "Its interval, lower end."
+  },
+  "PRON_GTE_HI": {
+    "file": "results/pronoun_channel_summary.json",
+    "path": [
+      "models",
+      "Alibaba-NLP/gte-reranker-modernbert-base",
+      "ci",
+      1
+    ],
+    "format": ".1f",
+    "needs": "Its interval, upper end."
+  },
+  "PRON_B": {
+    "file": "results/pronoun_channel_summary.json",
+    "path": "bootstrap.B",
+    "format": ",d",
+    "needs": "Review round 4 (W2): bootstrap draws behind the pronoun-only intervals."
+  },
+  "PRON_DATE": {
+    "file": "results/pronoun_channel_summary.json",
+    "path": "overview.scoring_dates.0",
+    "needs": "Review round 4 (W2): date of the pronoun-only scoring (a single date)."
+  },
+  "PRON_N_DRIFT": {
+    "file": "results/pronoun_channel_summary.json",
+    "path": "overview.n_drift_checked",
+    "format": "d",
+    "needs": "Review round 4 (W2): locally re-run models with a hardware drift check on sampled original pairs."
+  },
+  "PRON_N_DRIFT_BELOW_100": {
+    "file": "results/pronoun_channel_summary.json",
+    "path": "overview.n_drift_below_100",
+    "format": "d",
+    "needs": "Review round 4 (W2): of those, models whose re-run did not reproduce every banked winner."
+  },
+  "PRON_DRIFT_MIN": {
+    "file": "results/pronoun_channel_summary.json",
+    "path": "overview.drift_min_pct_same_winner",
+    "format": ".0f",
+    "unit": "%",
+    "needs": "Review round 4 (W2): lowest same-winner share between the local re-run and the banked scores."
+  },
+  "TABLE_PRONOUN": {
+    "tex_file": "results/tex/pronoun_channel.tex",
+    "needs": "Review round 4 (W2): tabular-only fragment, one row per tested model: original contrast, pronoun-only contrast, 95% interval (code/pronoun_channel_experiment.py --tables-only)."
   }
 }
