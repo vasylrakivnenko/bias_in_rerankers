@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-16T18:36:26",
+  "generated": "2026-10-16T22:15:41",
   "cross_hardware": {
     "BAAI/bge-reranker-base": {
       "a": "NVIDIA GeForce RTX 4090 (CUDA)",
@@ -7,6 +7,10 @@
       "revision": "2cfc18c9415c912f9d8155881c133215df768a70",
       "n_pairs": 8320,
       "pct_same_winner": 100.0,
+      "pct_tie_a": 0.0,
+      "pct_tie_b": 0.0,
+      "pct_same_winner_excluding_ties": 100.0,
+      "n_pairs_neither_ties": 8320,
       "contrast_a": 19.781746031746025,
       "contrast_b": 19.781746031746025,
       "max_abs_score_diff": 5.424022674560547e-06,
@@ -20,6 +24,10 @@
       "revision": "77d193c791ed757ca307ee72715aa132723da912",
       "n_pairs": 8320,
       "pct_same_winner": 72.13942307692308,
+      "pct_tie_a": 9.411057692307692,
+      "pct_tie_b": 28.485576923076923,
+      "pct_same_winner_excluding_ties": 98.7720234917245,
+      "n_pairs_neither_ties": 5619,
       "contrast_a": 40.48859126984128,
       "contrast_b": 31.639384920634917
     },
@@ -29,6 +37,10 @@
       "revision": "d09d3d6971b689bf9c23839e45a470874d46e13a",
       "n_pairs": 8320,
       "pct_same_winner": 99.93990384615384,
+      "pct_tie_a": 0.0,
+      "pct_tie_b": 0.0,
+      "pct_same_winner_excluding_ties": 99.93990384615384,
+      "n_pairs_neither_ties": 8320,
       "contrast_a": 15.183531746031761,
       "contrast_b": 15.302579365079382
     }

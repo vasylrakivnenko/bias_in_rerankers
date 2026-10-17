@@ -74,8 +74,15 @@ def compare(a, b, labels, same_scale):
     sb = np.array([b[k] for k in keys])
     win_a = np.sign(sa[:, 0] - sa[:, 1])
     win_b = np.sign(sb[:, 0] - sb[:, 1])
+    both = (win_a != 0) & (win_b != 0)
     out = {"n_pairs": len(keys),
            "pct_same_winner": float((win_a == win_b).mean() * 100),
+           # ties count as disagreements above; coarse hosted scores tie often,
+           # so also report agreement where neither run ties
+           "pct_tie_a": float((win_a == 0).mean() * 100),
+           "pct_tie_b": float((win_b == 0).mean() * 100),
+           "pct_same_winner_excluding_ties": float((win_a[both] == win_b[both]).mean() * 100),
+           "n_pairs_neither_ties": int(both.sum()),
            "contrast_a": contrast(a, labels), "contrast_b": contrast(b, labels)}
     if same_scale:
         diff = np.abs(sa - sb)

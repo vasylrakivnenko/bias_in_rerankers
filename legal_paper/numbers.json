@@ -1382,5 +1382,57 @@
     "path": "robustness_spread.by_name_pair.median_range",
     "format": ".0f",
     "needs": "Median across models of the range (max-min, points) of the tie-aware male-favored share across name_pair."
+  },
+  "SELF_QWEN_SAME_WINNER_NOTIE": {
+    "file": "results/reproducibility_checks.json",
+    "path": [
+      "selfhost_vs_api",
+      "Qwen/Qwen3-Reranker-8B",
+      "pct_same_winner_excluding_ties"
+    ],
+    "format": ".1f",
+    "unit": "%",
+    "needs": "Qwen3-8B hosted vs weights: same winner among pairs where neither run ties."
+  },
+  "SELF_QWEN_HOSTED_TIES": {
+    "file": "results/reproducibility_checks.json",
+    "path": [
+      "selfhost_vs_api",
+      "Qwen/Qwen3-Reranker-8B",
+      "pct_tie_b"
+    ],
+    "format": ".0f",
+    "unit": "%",
+    "needs": "Share of pairs the hosted Qwen3-8B scores as exact ties."
+  },
+  "SELF_QWEN_SELF_TIES": {
+    "file": "results/reproducibility_checks.json",
+    "path": [
+      "selfhost_vs_api",
+      "Qwen/Qwen3-Reranker-8B",
+      "pct_tie_a"
+    ],
+    "format": ".0f",
+    "unit": "%",
+    "needs": "Share of pairs the self-hosted Qwen3-8B scores as exact ties."
+  },
+  "DEID_LOWERCASE_PCT_MALE": {
+    "file": "results/deidentification_bge.json",
+    "path": "conditions.lowercase_only.overall.tie_aware_pct_male",
+    "format": ".0f",
+    "unit": "%",
+    "needs": "Worked reranker's overall tie-aware male-favored share after lowercasing only (no marker removed)."
+  },
+  "N_OCC_MALE_CLUSTERS": {
+    "file": "results/single_stage_summary.json",
+    "path": "label_counts.male",
+    "format": "d",
+    "needs": "Occupation clusters in the male-typed category."
+  },
+  "N_OCC_FEMALE_CLUSTERS": {
+    "file": "results/single_stage_summary.json",
+    "path": "label_counts.female",
+    "format": "d",
+    "needs": "Occupation clusters in the female-typed category."
   }
 }
