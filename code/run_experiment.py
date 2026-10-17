@@ -1338,6 +1338,7 @@ def main():
 
     batch_size = args.batch_size
     served_by = None
+    local_revision = None
     is_voyage = args.model in VOYAGE_MODELS
     is_azure = args.model in AZURE_MODELS
     is_cohere = args.model in COHERE_MODELS
@@ -1435,9 +1436,14 @@ def main():
         elapsed = time.time() - t0
         print(f"Scoring complete: {elapsed:.1f}s; served by {served_by}")
     else:
-        # Load local CrossEncoder model
-        print("Loading model...")
-        model = CrossEncoder(args.model, trust_remote_code=True)
+        # Load local CrossEncoder model at the pinned revision (results/run_records.json,
+        # else the manifest). The February 2026 runs recorded no revision, so for those
+        # models this falls back, with a warning, to the revision the October runs pinned.
+        # No pin at all -> revision=None, the current Hugging Face revision, as before.
+        from run_records import pinned_revision
+        local_revision = pinned_revision(args.model, experiment="audit")
+        print("Loading model..." + (f" (revision {local_revision})" if local_revision else ""))
+        model = CrossEncoder(args.model, trust_remote_code=True, revision=local_revision)
 
         print(f"Scoring {len(triples):,} triples (batch_size={batch_size})...")
         t0 = time.time()
@@ -1466,6 +1472,7 @@ def main():
             "elapsed_seconds": elapsed,
             "scored_at": datetime.now().date().isoformat(),
             "served_by": served_by,
+            **({"revision": local_revision} if local_revision else {}),
             "metrics": metrics,
             "results": results,
         }, f, indent=2)

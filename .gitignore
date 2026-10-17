@@ -102,3 +102,8 @@ FACTCHECK_ROUND3.md
 # Per-query GPU checkpoints (redundant with the finalized results/*_full_raw.json)
 results/partial/
 results/partial_smoke/
+
+# RunPod SSH keys and pod state
+code/runpod/id_ed25519*
+code/runpod/pod*.json
+code/runpod/milestones_seen.json

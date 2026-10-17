@@ -1,0 +1,7 @@
+{
+ "model": "Cohere-rerank-v4.0-pro",
+ "status": "ok",
+ "n_pools": 104,
+ "sample_hash": "66bfba2a4e633b31",
+ "finished": "2026-10-16T21:10:27"
+}

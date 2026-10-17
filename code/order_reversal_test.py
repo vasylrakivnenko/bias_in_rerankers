@@ -13,9 +13,12 @@ same requests in three layouts, in the same session:
     reversed   the female version first in every pair, same pair order
     shuffled   all 80 documents in a seeded random order
 
-`reversed` and `shuffled` are compared with `same` (position effect), against
-the `repeat` vs `same` difference as the noise floor; `same` is compared with
-the banked February scores (vendor drift since the audit).
+`reversed` and `shuffled` are compared with `same` and, because a vendor's
+scores can themselves move between two identical requests (`repeat` vs `same`),
+also with `repeat`: `reversed_vs_repeat` and `shuffled_vs_repeat` ask whether
+the layout moves the contrast by more than re-sending the original layout
+does. `same` is compared with the banked February scores (vendor drift since
+the audit).
 
 Sample: a seeded, category-balanced subset of the retained occupations
 (`--per-category` each of male-, female- and neutral-typed) crossed with all
@@ -53,7 +56,11 @@ from analyze_single_stage import stable_seed  # noqa: E402
 from labels import load_labels  # noqa: E402
 from synthetic_dataset import generate_dataset  # noqa: E402
 
-SCRIPT_VERSION = "order_reversal_test.py v1.1"
+SCRIPT_VERSION = "order_reversal_test.py v1.2"
+# Version stamped on, and required of, the per-model raw files. The scoring and
+# layouts are unchanged since v1.1, so the banked raw files stay valid; bump this
+# only when a change would make a re-scored raw file differ.
+RAW_VERSION = "order_reversal_test.py v1.1"
 RESULTS = ROOT / "results"
 OUT_DIR = RESULTS / "order_test"
 SUMMARY = RESULTS / "order_reversal_test.json"
@@ -67,6 +74,11 @@ VOYAGE_MODELS = ("rerank-1", "rerank-2", "rerank-2-lite", "rerank-2.5", "rerank-
                  "rerank-3", "rerank-3-lite")
 GOOGLE_MODELS = ("semantic-ranker-default-002", "semantic-ranker-default-004",
                  "semantic-ranker-fast-004")
+# API-accessed audit models this test does not cover, and why.
+NOT_TESTED = {
+    "ibm-granite-granite-embedding-reranker-english-r2":
+        "served on an Azure ML endpoint whose URL is not available, so it cannot be re-queried",
+}
 OPENROUTER_MODELS = {   # project model name -> OpenRouter id (as in run_experiment.py)
     "cohere/rerank-v3.5": "cohere/rerank-v3.5",
     "qwen/qwen3-reranker-8b": "qwen/qwen3-reranker-8b",
@@ -258,9 +270,11 @@ def run_model(model, labels, args):
     reqs, chosen = build_requests(model, labels, args.per_category)
     if out.exists():
         prev = json.loads(out.read_text())
-        if prev.get("script_version") == SCRIPT_VERSION and prev.get("occupations") == chosen:
+        if prev.get("script_version") == RAW_VERSION and prev.get("occupations") == chosen:
             print(f"  reusing {out.name}")
             return prev
+    if args.offline:
+        raise SystemExit(f"{model}: no reusable raw file at {out}; --offline forbids API calls")
     score = make_scorer(model)
     rows = []
     t0 = time.time()
@@ -274,7 +288,7 @@ def run_model(model, labels, args):
                  for p in pairs]
         if (i + 1) % 12 == 0:
             print(f"  {model}: {i + 1}/{len(reqs)} queries ({time.time() - t0:.0f}s)", flush=True)
-    res = {"script_version": SCRIPT_VERSION, "model": model,
+    res = {"script_version": RAW_VERSION, "model": model,
            "generated": _dt.datetime.now().isoformat(timespec="seconds"),
            "occupations": chosen, "n_requests_per_arm": len(reqs),
            "docs_per_request": 2 * len(reqs[0][1]), "rows": rows}
@@ -296,21 +310,38 @@ def contrast(rows, src):
     return tie_aware_male(d["male"]) - tie_aware_male(d["female"])
 
 
-def paired_contrast_ci(rows, a, b, seed, B):
-    occs = sorted({r["occupation"] for r in rows})
-    by = defaultdict(list)
-    for r in rows:
-        by[r["occupation"]].append(r)
+def paired_contrast_ci(rows, a, b, seed, B, chunk=10_000):
+    """95% interval for contrast(b) - contrast(a), resampling occupations.
+
+    Occupations are resampled with replacement within each category, and the
+    same draw is applied to both arms (a paired bootstrap). The contrast only
+    involves male- and female-typed occupations, so each draw is a
+    multinomial count vector per category applied to per-occupation tie-aware
+    win totals -- vectorised, which makes large B cheap.
+    """
     rng = np.random.default_rng(seed)
-    cat = {o: by[o][0]["category"] for o in occs}
-    groups = {c: [o for o in occs if cat[o] == c] for c in CATEGORIES}
-    diffs = []
-    for _ in range(B):
-        # resample occupations within each category so every draw has all three
-        samp = [r for c in CATEGORIES
-                for o in rng.choice(groups[c], size=len(groups[c]), replace=True)
-                for r in by[o]]
-        diffs.append(contrast(samp, b) - contrast(samp, a))
+    occs = sorted({r["occupation"] for r in rows})
+    oi = {o: i for i, o in enumerate(occs)}
+    tot = np.zeros((len(occs), 3))              # wins in a, wins in b, pairs
+    cat = {}
+    for r in rows:
+        i = oi[r["occupation"]]
+        cat[r["occupation"]] = r["category"]
+        for j, arm in enumerate((a, b)):
+            d = r[f"{arm}_male"] - r[f"{arm}_female"]
+            tot[i, j] += 1.0 if d > 0 else 0.5 if d == 0 else 0.0
+        tot[i, 2] += 1
+    T = {c: tot[[oi[o] for o in occs if cat[o] == c]] for c in ("male", "female")}
+    diffs = np.empty(B)
+    for start in range(0, B, chunk):
+        n = min(chunk, B - start)
+        pct = {}
+        for c in ("male", "female"):
+            k = len(T[c])
+            s = rng.multinomial(k, np.full(k, 1 / k), size=n) @ T[c]
+            pct[c] = s[:, :2] / s[:, 2:3] * 100           # (n, 2): arm a, arm b
+        con = pct["male"] - pct["female"]
+        diffs[start:start + n] = con[:, 1] - con[:, 0]
     return [float(x) for x in np.percentile(diffs, [2.5, 97.5])]
 
 
@@ -328,7 +359,12 @@ def summarise(res, B):
                 for c in CATEGORIES},
             "contrast_male_minus_female": contrast(rows, src)}
     comps = {"repeat_vs_same": ("same", "repeat"), "reversed_vs_same": ("same", "reversed"),
-             "shuffled_vs_same": ("same", "shuffled"), "same_vs_banked": ("banked", "same")}
+             "shuffled_vs_same": ("same", "shuffled"),
+             # the order effect net of run-to-run variability: compare each
+             # layout with the repeated original-layout request
+             "reversed_vs_repeat": ("repeat", "reversed"),
+             "shuffled_vs_repeat": ("repeat", "shuffled"),
+             "same_vs_banked": ("banked", "same")}
     s["comparisons"] = {}
     for name, (a, b) in comps.items():
         diff = np.array([r[f"{b}_{g}"] - r[f"{a}_{g}"] for r in rows for g in ("male", "female")])
@@ -380,7 +416,9 @@ def main():
                     help="model to test (repeatable); default: every Cohere, Voyage and "
                          "Google model")
     ap.add_argument("--per-category", type=int, default=8)
-    ap.add_argument("--bootstrap", type=int, default=2000)
+    ap.add_argument("--bootstrap", type=int, default=50_000)
+    ap.add_argument("--offline", action="store_true",
+                    help="never call an API: stop if a model has no reusable raw file")
     ap.add_argument("--allow-legacy-labels", action="store_true",
                     help="fall back to the pre-BLS labels instead of failing")
     args = ap.parse_args()
@@ -407,16 +445,48 @@ def main():
         api = {m: v for m, v in summary["models"].items()
                if m in COHERE_MODELS + VOYAGE_MODELS + GOOGLE_MODELS + tuple(OPENROUTER_MODELS)}
 
-        def moved(v, arm):
-            lo, hi = v["comparisons"][f"{arm}_vs_same"]["contrast_change_ci"]
+        def moved(v, arm, base="same"):
+            # a model summarised by an older version lacks the *_vs_repeat
+            # comparisons; it is listed in `models_missing_repeat_comparisons`
+            c = v["comparisons"].get(f"{arm}_vs_{base}")
+            if c is None:
+                return False
+            lo, hi = c["contrast_change_ci"]
             return lo > 0 or hi < 0
+
+        def beyond_repeat(v):
+            return moved(v, "reversed", "repeat") or moved(v, "shuffled", "repeat")
+        audit = json.loads((RESULTS / "single_stage_summary.json").read_text())["models"]
+        audit_api = sorted(m for m, v in audit.items() if v["access"] == "API")
+        untested = sorted(set(audit_api) - set(api))
         summary["api_overview"] = {
             "n_models": len(api),
             "n_pairs_per_model": sorted({v["n_pairs"] for v in api.values()}),
+            # against the first (same-layout) request
             "models_contrast_moved_by_reversal": sorted(m for m, v in api.items() if moved(v, "reversed")),
             "models_contrast_moved_by_shuffle": sorted(m for m, v in api.items() if moved(v, "shuffled")),
             "n_models_unmoved": sum(not moved(v, "reversed") and not moved(v, "shuffled")
-                                    for v in api.values())}
+                                    for v in api.values()),
+            # serving variability: two identical requests give different contrasts
+            "models_repeat_vs_same_excludes_zero": sorted(m for m, v in api.items()
+                                                          if moved(v, "repeat")),
+            "n_models_repeat_vs_same_excludes_zero": sum(moved(v, "repeat") for v in api.values()),
+            # against the repeated request: does the layout move the contrast
+            # by more than re-sending the original layout does?
+            "models_contrast_moved_beyond_repeat_by_reversal":
+                sorted(m for m, v in api.items() if moved(v, "reversed", "repeat")),
+            "models_contrast_moved_beyond_repeat_by_shuffle":
+                sorted(m for m, v in api.items() if moved(v, "shuffled", "repeat")),
+            "models_contrast_moved_beyond_repeat":
+                sorted(m for m, v in api.items() if beyond_repeat(v)),
+            "n_models_contrast_moved_beyond_repeat": sum(beyond_repeat(v) for v in api.values()),
+            "n_models_unmoved_beyond_repeat": sum(not beyond_repeat(v) for v in api.values()),
+            "models_missing_repeat_comparisons": sorted(
+                m for m, v in api.items() if "reversed_vs_repeat" not in v["comparisons"]),
+            "coverage": {
+                "n_api_models_in_audit": len(audit_api),
+                "n_api_models_tested": len(api),
+                "not_tested": {m: NOT_TESTED.get(m, "not run") for m in untested}}}
         SUMMARY.write_text(json.dumps(summary, indent=2) + "\n")
         c = summary["models"][model]["comparisons"]
         print(f"  repeat vs same:   max|diff| {c['repeat_vs_same']['max_abs_score_diff']:.2e}, "
@@ -425,6 +495,10 @@ def main():
               f"same winner {c['reversed_vs_same']['pct_pairs_same_winner']:.1f}%, "
               f"contrast change {c['reversed_vs_same']['contrast_change']:+.2f} "
               f"{c['reversed_vs_same']['contrast_change_ci']}", flush=True)
+        for name in ("repeat_vs_same", "reversed_vs_repeat", "shuffled_vs_repeat"):
+            lo, hi = c[name]["contrast_change_ci"]
+            print(f"  {name:<19} contrast change {c[name]['contrast_change']:+.2f} "
+                  f"[{lo:+.2f}, {hi:+.2f}]", flush=True)
         print(f"  same vs banked:   max|diff| {c['same_vs_banked']['max_abs_score_diff']:.2e}, "
               f"contrast change {c['same_vs_banked']['contrast_change']:+.2f}", flush=True)
 

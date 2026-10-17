@@ -250,8 +250,24 @@ def _patch_transformers_for_jina():
     _xlm.create_position_ids_from_input_ids = create_position_ids_from_input_ids
 
 
+_PINNED = {}
+
+
+def pinned_model_revision(model_name):
+    """The commit recorded for this experiment in results/run_records.json (else the
+    manifest); None, with a printed warning, when neither pins the model."""
+    if model_name not in _PINNED:
+        from run_records import pinned_revision
+        _PINNED[model_name] = pinned_revision(model_name, experiment="deidentification")
+    return _PINNED[model_name]
+
+
 def model_revision(model_name):
-    """The Hugging Face commit the local cache resolves `model_name` to."""
+    """The Hugging Face commit the run loads: the pinned one, else what the local
+    cache resolves `model_name` to."""
+    pinned = pinned_model_revision(model_name)
+    if pinned:
+        return pinned
     ref = (Path.home() / ".cache" / "huggingface" / "hub"
            / f"models--{model_name.replace('/', '--')}" / "refs" / "main")
     return ref.read_text().strip() if ref.exists() else None
@@ -262,8 +278,10 @@ def get_model(model_name, device):
         from sentence_transformers import CrossEncoder
         _patch_transformers_for_jina()
         # jina-reranker-v2 ships custom modelling code (same flag run_experiment.py used).
+        # revision=None (no pin found) resolves the current revision, as before.
         _MODEL_CACHE[model_name] = CrossEncoder(model_name, device=device, max_length=512,
-                                               trust_remote_code=True)
+                                               trust_remote_code=True,
+                                               revision=pinned_model_revision(model_name))
     return _MODEL_CACHE[model_name]
 
 

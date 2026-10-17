@@ -27,6 +27,10 @@ audit's results/<model>_full_raw.json schema. Self-hosted copies of models the
 audit already reaches through an API are written to results/selfhost/ instead,
 so they never enter the main audit.
 
+Revisions. A re-run loads each model at the commit recorded for its run in
+results/run_records.json (a resumed checkpoint keeps its own); --unpinned loads
+the current Hugging Face revision instead.
+
 Run on the pod:   python code/score_open_models.py --worker big
 Finalize locally: venv/bin/python code/score_open_models.py --finalize
 """
@@ -134,11 +138,27 @@ def canary_set(groups, labels, n_occ=12):
 # Backends: score(query, docs) -> list of floats, in input order
 # ---------------------------------------------------------------------------
 
-def load_backend(name, spec):
+def pinned_or_current(name, spec, checkpoint_revision=None):
+    """The commit to load: a resumed checkpoint's own revision, else the revision
+    results/run_records.json records for this model's GPU run, else None (the
+    current Hugging Face revision) with a printed warning. --unpinned skips the pins."""
+    if checkpoint_revision:
+        return checkpoint_revision
+    if UNPINNED:
+        print(f"  {name}: --unpinned, resolving the current Hugging Face revision", flush=True)
+        return None
+    from run_records import pinned_revision
+    return pinned_revision(name, experiment="selfhost_check" if spec.get("selfhost") else "audit")
+
+
+UNPINNED = False
+
+
+def load_backend(name, spec, revision=None):
     import torch
     from huggingface_hub import snapshot_download
 
-    path = snapshot_download(name)
+    path = snapshot_download(name, revision=revision)
     revision = Path(path).name
     dtype = getattr(torch, spec["dtype"]) if spec["dtype"] not in (None, "auto") else None
 
@@ -278,10 +298,12 @@ def run_model(name, spec, groups, labels, worker, state, canary):
     import torch
     PARTIAL.mkdir(parents=True, exist_ok=True)
     ck = PARTIAL / f"{slug(name)}.jsonl"
-    done, rows = set(), []
+    done, rows, ck_revision = set(), [], None
     if ck.exists():
         for line in ck.read_text().splitlines():
             rec = json.loads(line)
+            if "_meta" in rec:
+                ck_revision = rec["_meta"].get("revision")
             if "query" in rec:
                 done.add(rec["query"])
                 rows += rec["rows"]
@@ -294,7 +316,9 @@ def run_model(name, spec, groups, labels, worker, state, canary):
         return
 
     t_load = time.time()
-    score, revision = load_backend(name, spec)
+    score, revision = load_backend(name, spec, pinned_or_current(name, spec, ck_revision))
+    if ck_revision and revision != ck_revision:
+        raise RuntimeError(f"{name}: loaded {revision}, checkpoint was scored at {ck_revision}")
     st["load_seconds"] = round(time.time() - t_load, 1)
 
     # ---- canary ----
@@ -412,6 +436,9 @@ def main():
     ap.add_argument("--status-name", help="name for this run's status file (default: the worker); "
                                           "lets an extra run share a worker's model list")
     ap.add_argument("--finalize", action="store_true")
+    ap.add_argument("--unpinned", action="store_true",
+                    help="ignore the revisions recorded in results/run_records.json and load "
+                         "each model's current Hugging Face revision")
     ap.add_argument("--smoke", type=int, default=0,
                     help="score only this many queries, into results/partial_smoke/ (a test run "
                          "that never touches the real checkpoints)")
@@ -420,6 +447,8 @@ def main():
         return finalize()
     if not args.worker:
         ap.error("--worker is required unless --finalize is given")
+    global UNPINNED
+    UNPINNED = args.unpinned
 
     groups, labels = work_units()
     canary = canary_set(groups, labels)       # always from the full set

@@ -165,7 +165,13 @@ of 2,483. The source corpus can be rebuilt using `data/PROVENANCE.md`.
 
 To rerun the companion experiment locally after obtaining the data and model
 weights: `venv/bin/python code/realistic_pool_experiment.py --rerankers bge-m3
-bge-base ms-marco jina --pools-per-query 8 --out results/realistic_pool_replication.json`.
+bge-base ms-marco jina --pools-per-query 8 --span-cache results/.span_cache_6000.json
+--out results/realistic_pool_replication.json` (add `--resume` to reuse models
+finished before a crash). Shortlist membership uses an exact-k rule: every
+scoring selects exactly k candidates, with score ties broken by a seeded
+per-(pool, résumé) key that is the same in both counterfactual forms
+(`script_version` in the JSON). Comparison-level rows, pool membership and
+filler scores are written to `results/realistic_pool_four_rerankers_rows.json.gz`.
 The banked run used cached name detections; a fresh detector/model run may differ.
 Sampling reconstruction reproduces membership and counts, not the model scores.
 The padding and same-sex placebo claims were removed because their supporting

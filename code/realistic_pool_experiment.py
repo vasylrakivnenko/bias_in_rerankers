@@ -53,6 +53,16 @@ RESULTS = ROOT / "results"
 
 DEFAULT_SEED = 20260822
 
+# Stamped into every output. Bump whenever a change can move a number.
+#   g3-2026-10-16-exact-k: shortlist membership is decided by an exact-k rule
+#     (each scoring of a pool selects exactly k candidates; score ties are broken
+#     by a seeded per-(pool, resume) key that is identical in the two
+#     counterfactual conditions). The earlier rule -- "in top-k iff average rank
+#     <= k" -- could select fewer or more than k candidates at a tied cutoff; its
+#     flip counts are still reported, as `legacy_average_rank_rule`, for
+#     comparison. Comparison-level rows go to a companion file.
+SCRIPT_VERSION = "g3-2026-10-16-exact-k"
+
 # Candidate locations for each input, tried in order. The data-acquisition agent
 # may land these under slightly different names; every one of them is also
 # overridable from the command line.
@@ -807,6 +817,41 @@ def average_ranks(scores: Sequence[float]) -> list[float]:
     return ranks
 
 
+def tiebreak_key(seed: int, pool_id: str, rid: str) -> float:
+    """Seeded tie-break key in [0, 1) for one member of one pool.
+
+    It depends only on (seed, pool, resume) -- never on the score, the form, or
+    the member's position in the pool -- so it is identical in the male-form and
+    female-form scorings of a comparison, and a tie cannot be resolved in favour
+    of whichever form happens to be scored or inserted first.
+    """
+    import hashlib
+    h = hashlib.sha256(f"{seed}|{pool_id}|{rid}".encode()).digest()
+    return int.from_bytes(h[:8], "big") / 2**64
+
+
+def ordinal_ranks(scores: Sequence[float], tiebreak: Sequence[float]) -> list[int]:
+    """Descending-score ranks 1..n, every rank used exactly once.
+
+    Equal scores are ordered by `tiebreak` (ascending). With this ranking,
+    "in top-k iff rank <= k" selects exactly k candidates from every scoring.
+    """
+    order = sorted(range(len(scores)), key=lambda i: (-scores[i], tiebreak[i]))
+    ranks = [0] * len(scores)
+    for pos, i in enumerate(order):
+        ranks[i] = pos + 1
+    return ranks
+
+
+def cutoff_tie(scores: Sequence[float], k: int) -> bool:
+    """True iff the k-th and (k+1)-th best scores are equal, i.e. the top-k set
+    is not determined by the scores alone (the case the exact-k rule settles)."""
+    if k >= len(scores):
+        return False
+    s = sorted(scores, reverse=True)
+    return s[k - 1] == s[k]
+
+
 # ---------------------------------------------------------------------------
 # Synthetic stand-in corpus (validation only)
 # ---------------------------------------------------------------------------
@@ -972,9 +1017,37 @@ def run_g3(args) -> dict:
     qtext = {q.qid: q.text for q in queries}
     qmeta = {q.qid: q for q in queries}
 
+    import hashlib
+    membership = [(p["qid"], r.rid) for p in pools for r in p["members"]]
+    pool_hash = hashlib.sha256(
+        json.dumps(membership, separators=(",", ":")).encode()).hexdigest()
+    tb = {p["pool_id"]: [tiebreak_key(args.seed, p["pool_id"], r.rid) for r in p["members"]]
+          for p in pools}
+    fingerprint = {"script_version": SCRIPT_VERSION, "pool_membership_sha256": pool_hash,
+                   "seed": args.seed, "K": args.k, "depths": list(args.depths),
+                   "max_length": args.max_length, "twin_mode": args.twin_mode}
+
+    # Per-model checkpoint, so a crash does not lose finished models.
+    ckpt_path: Path | None = getattr(args, "checkpoint", None)
+    ckpt = {"fingerprint": fingerprint, "models": {}, "rows": {}}
+    if ckpt_path and args.resume and ckpt_path.exists():
+        old = json.loads(ckpt_path.read_text())
+        if old.get("fingerprint") == fingerprint:
+            ckpt = old
+            print(f"[G3] resuming from {ckpt_path}: {sorted(ckpt['models'])} already done",
+                  flush=True)
+        else:
+            print(f"[G3] ignoring checkpoint {ckpt_path}: fingerprint differs", flush=True)
+
     out_models = {}
+    rows_by_model = {}
     for short in args.rerankers:
         model_name = RERANKERS[short]
+        if short in ckpt["models"]:
+            out_models[short] = ckpt["models"][short]
+            rows_by_model[short] = ckpt["rows"][short]
+            print(f"[G3] === {short}: taken from checkpoint ===", flush=True)
+            continue
         print(f"[G3] === {short} ({model_name}) ===", flush=True)
         scorer = Scorer(model_name, device=args.device, max_length=args.max_length,
                         batch_size=args.batch_size)
@@ -996,34 +1069,69 @@ def run_g3(args) -> dict:
         window_chars = args.max_length * 4
         in_window = {r.rid: (r.form("male")[:window_chars] != r.form("female")[:window_chars])
                      for pool in pools for r in pool["members"]}
+        # The character heuristic above is kept (its summary blocks are cited),
+        # but the exact test is on the model's own tokenisation of the
+        # (query, resume) pair, truncated as CrossEncoder.predict truncates it:
+        # the marker is in the scored window iff the two forms' token ids differ.
+        tok = scorer.model.tokenizer
+        tok_max = int(getattr(tok, "model_max_length", 0) or 0)
+        in_tok_window: dict[tuple, bool] = {}
+        for pool in pools:
+            qt = qtext[pool["qid"]]
+            for r in pool["members"]:
+                key = (pool["qid"], r.rid)
+                if key not in in_tok_window:
+                    enc = tok([[qt, r.form("male")], [qt, r.form("female")]], truncation=True)
+                    in_tok_window[key] = enc["input_ids"][0] != enc["input_ids"][1]
 
         rows = []
+        filler_scores = {}
         for pool in pools:
             q = qmeta[pool["qid"]]
             members = pool["members"]
+            keys_tb = tb[pool["pool_id"]]
             # Non-focal members keep their assigned filler form in BOTH conditions,
             # so the only thing that differs between the two scorings of the pool
             # is the focal candidate's gender markers.
             base = [scorer.cache[(q.qid, r.rid, r.default_form)] for r in members]
+            filler_scores[pool["pool_id"]] = base
             for idx, focal in enumerate(members):
                 s_m = list(base)
                 s_f = list(base)
                 s_m[idx] = scorer.cache[(q.qid, focal.rid, "male")]
                 s_f[idx] = scorer.cache[(q.qid, focal.rid, "female")]
-                r_m = average_ranks(s_m)[idx]
-                r_f = average_ranks(s_f)[idx]
+                avg_m, avg_f = average_ranks(s_m), average_ranks(s_f)
+                cut_tie, focal_tie, legacy_n = {}, {}, {}
+                for k in args.depths:
+                    pair = []
+                    for s in (s_m, s_f):
+                        srt = sorted(s, reverse=True)
+                        t = k < len(s) and srt[k - 1] == srt[k]
+                        pair.append((t, t and s[idx] == srt[k - 1]))
+                    cut_tie[str(k)] = [pair[0][0], pair[1][0]]
+                    focal_tie[str(k)] = [pair[0][1], pair[1][1]]
+                    legacy_n[str(k)] = [sum(a <= k for a in avg_m), sum(a <= k for a in avg_f)]
                 rows.append({
                     "pool_id": pool["pool_id"], "qid": q.qid, "category": q.category,
-                    "stereotype": q.stereotype, "focal_rid": focal.rid,
+                    "stereotype": q.stereotype, "focal_index": idx, "focal_rid": focal.rid,
                     "focal_category": focal.category,
                     "on_category": focal.category == q.category,
                     "mode": focal.mode, "carried_gender": focal.carried_gender,
                     "marker_in_scored_window": in_window[focal.rid],
+                    "marker_in_token_window": in_tok_window[(q.qid, focal.rid)],
                     "gender_source": focal.carried_source or focal.mode,
-                    "rank_male": r_m, "rank_female": r_f,
+                    # exact-k ordinal ranks (seeded tie-break), used for top-k
+                    "rank_male": ordinal_ranks(s_m, keys_tb)[idx],
+                    "rank_female": ordinal_ranks(s_f, keys_tb)[idx],
+                    # tie-neutral average ranks, used for mean ranks and the legacy rule
+                    "avg_rank_male": avg_m[idx], "avg_rank_female": avg_f[idx],
                     "score_male": s_m[idx], "score_female": s_f[idx],
                     "delta": s_m[idx] - s_f[idx],
+                    "cutoff_tie": cut_tie, "focal_in_cutoff_tie": focal_tie,
+                    "legacy_selected_n": legacy_n,
                 })
+        summary = summarise_flips(rows, args.depths)
+        n_out_tok = sum(not r["marker_in_token_window"] for r in rows)
         out_models[short] = {
             "model": model_name,
             "pairs_per_second": round(scorer.pairs_per_second, 2),
@@ -1031,13 +1139,65 @@ def run_g3(args) -> dict:
             "score_seconds": round(scorer.score_seconds, 1),
             "load_seconds": round(scorer.load_seconds, 1),
             "xlm_roberta_compat_shim_applied": scorer.shim_applied,
-            "summary": summarise_flips(rows, args.depths),
-            "rows": rows if args.dump_rows else None,
+            "summary": summary,
+            "legacy_average_rank_rule": {
+                "rule": "in top-k iff average rank <= k (can select != k at a tied cutoff)",
+                "overall": _flip_block(rows, args.depths, "avg_rank_male", "avg_rank_female"),
+            },
+            "cutoff_ties": cutoff_tie_stats(rows, args.depths),
+            "token_window": {
+                "tokenizer_model_max_length": tok_max,
+                "n_comparisons": len(rows),
+                "n_marker_outside_token_window": n_out_tok,
+                "n_marker_outside_token_window_by_mode": dict(Counter(
+                    r["mode"] for r in rows if not r["marker_in_token_window"])),
+                "n_distinct_query_resume_pairs_outside": sum(not v for v in in_tok_window.values()),
+            },
+            "rows": None,
+            "rows_file": None,  # filled in by main()
         }
+        rows_by_model[short] = {"filler_scores": filler_scores, "rows": rows}
         del scorer
+        if ckpt_path:
+            ckpt["models"][short] = out_models[short]
+            ckpt["rows"][short] = rows_by_model[short]
+            ckpt_path.parent.mkdir(parents=True, exist_ok=True)
+            tmp = ckpt_path.with_suffix(".tmp")
+            tmp.write_text(json.dumps(ckpt))
+            tmp.replace(ckpt_path)
+            print(f"[G3] checkpoint -> {ckpt_path}", flush=True)
+
+    rows_payload = {
+        "script_version": SCRIPT_VERSION,
+        "seed": args.seed,
+        "pool_membership_sha256": pool_hash,
+        "description": (
+            "Comparison-level rows of the G3 companion run. One row per (pool, focal "
+            "candidate): the focal candidate's score in its male and female form, with "
+            "every other pool member held at its filler form. `pools` gives each pool's "
+            "members in order, their filler form and seeded tie-break key; "
+            "`models.<m>.filler_scores` gives every member's filler-form score, so any "
+            "ranking rule can be recomputed. `resumes` gives each scored resume's "
+            "marker-construction mode and the names used."),
+        "pools": [{"pool_id": p["pool_id"], "qid": p["qid"],
+                   "member_rids": [r.rid for r in p["members"]],
+                   "member_filler_form": [r.default_form for r in p["members"]],
+                   "member_tiebreak_key": tb[p["pool_id"]]} for p in pools],
+        "resumes": {r.rid: {"category": r.category, "mode": r.mode,
+                            "male_given": r.injected[0] if r.injected else None,
+                            "female_given": r.injected[1] if r.injected else None,
+                            "surname": r.injected[2] if r.injected else None,
+                            "carried_gender": r.carried_gender,
+                            "carried_source": r.carried_source,
+                            "filler_form": r.default_form}
+                    for p in pools for r in p["members"]},
+        "models": rows_by_model,
+    }
 
     return {
         "experiment": "G3 flip rate at the margin",
+        "script_version": SCRIPT_VERSION,
+        "script_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "validation_only": bool(args.demo),
         "full_corpus": not (args.demo or corpus_prov.get("subsampled_to")
                             or args.max_queries),
@@ -1048,7 +1208,14 @@ def run_g3(args) -> dict:
             "relevant_per_pool": args.relevant_per_pool, "depths": args.depths,
             "max_length": args.max_length, "batch_size": args.batch_size,
             "device": args.device, "ner_model": None if args.no_ner else args.ner_model,
-            "tie_convention": "average ranks; in-top-k iff average rank <= k",
+            "tie_convention": (
+                "exact-k: each scoring of a pool selects exactly k candidates; members "
+                "are ordered by score, and equal scores by a seeded key "
+                "sha256(seed|pool_id|resume_id) that is identical in the male-form and "
+                "female-form scorings of a comparison; in-top-k iff ordinal rank <= k. "
+                "Mean ranks use average ranks. The earlier average-rank rule is "
+                "reported per model under legacy_average_rank_rule."),
+            "tie_break": "sha256(f'{seed}|{pool_id}|{resume_id}') -> first 8 bytes / 2**64, ascending",
         },
         "provenance": {
             "corpus": corpus_prov, "queries": qprov, "names": nprov,
@@ -1056,6 +1223,8 @@ def run_g3(args) -> dict:
                 "n_distinct_resumes_scored": len({r.rid for p in pools for r in p["members"]}),
                 "n_pools": len(pools),
                 "n_focal_comparisons": sum(len(p["members"]) for p in pools),
+                "n_distinct_query_resume_pairs": len(set(membership)),
+                "pool_membership_sha256": pool_hash,
             },
             "deid_module": "code/deid_transforms.py (not used by G3; the two forms "
                            "are gender counterfactuals, not de-identified text)",
@@ -1067,7 +1236,59 @@ def run_g3(args) -> dict:
         },
         "models": out_models,
         "wall_seconds": round(time.time() - t_start, 1),
+        "_rows_payload": rows_payload,
     }
+
+
+def _flip_block(sub: list[dict], depths: Sequence[int], fm: str, ff: str) -> dict:
+    """Top-k shortlist flips, deciding membership from rank fields fm / ff."""
+    n = len(sub)
+    d: dict = {"n": n}
+    for k in depths:
+        m_in = [r[fm] <= k for r in sub]
+        f_in = [r[ff] <= k for r in sub]
+        male_only = sum(a and not b for a, b in zip(m_in, f_in))
+        female_only = sum(b and not a for a, b in zip(m_in, f_in))
+        flips = male_only + female_only
+        d[f"top{k}"] = {
+            "flip_rate_pct": round(100 * flips / n, 3) if n else None,
+            "n_flips": flips,
+            "male_form_in_only": male_only,
+            "female_form_in_only": female_only,
+            "net_male_advantage": male_only - female_only,
+            "both_in": sum(a and b for a, b in zip(m_in, f_in)),
+            "both_out": sum((not a) and (not b) for a, b in zip(m_in, f_in)),
+        }
+    return d
+
+
+def cutoff_tie_stats(rows: list[dict], depths: Sequence[int]) -> dict:
+    """How often a score tie straddles the top-k cutoff, and what it changes."""
+    out = {}
+    n = len(rows)
+    for k in depths:
+        ks = str(k)
+        tie_scorings = sum(r["cutoff_tie"][ks][0] + r["cutoff_tie"][ks][1] for r in rows)
+        sizes = Counter(x for r in rows for x in r["legacy_selected_n"][ks])
+
+        def flipped(r, fm, ff):
+            return (r[fm] <= k) != (r[ff] <= k)
+        changed = sum(flipped(r, "rank_male", "rank_female")
+                      != flipped(r, "avg_rank_male", "avg_rank_female") for r in rows)
+        out[f"top{k}"] = {
+            "n_scorings": 2 * n,
+            "n_scorings_with_tie_at_cutoff": tie_scorings,
+            "pct_scorings_with_tie_at_cutoff": round(100 * tie_scorings / (2 * n), 3) if n else None,
+            "n_comparisons_with_tie_at_cutoff_in_either_form":
+                sum(any(r["cutoff_tie"][ks]) for r in rows),
+            "n_comparisons_focal_in_cutoff_tie_in_either_form":
+                sum(any(r["focal_in_cutoff_tie"][ks]) for r in rows),
+            "n_pools_with_any_cutoff_tie":
+                len({r["pool_id"] for r in rows if any(r["cutoff_tie"][ks])}),
+            "legacy_rule_shortlist_size_counts": {str(s): c for s, c in sorted(sizes.items())},
+            "n_comparisons_flip_status_differs_from_legacy": changed,
+        }
+    return out
 
 
 def summarise_flips(rows: list[dict], depths: Sequence[int]) -> dict:
@@ -1075,22 +1296,7 @@ def summarise_flips(rows: list[dict], depths: Sequence[int]) -> dict:
         n = len(sub)
         if not n:
             return {"n": 0}
-        d = {"n": n}
-        for k in depths:
-            m_in = [r["rank_male"] <= k for r in sub]
-            f_in = [r["rank_female"] <= k for r in sub]
-            male_only = sum(a and not b for a, b in zip(m_in, f_in))
-            female_only = sum(b and not a for a, b in zip(m_in, f_in))
-            flips = male_only + female_only
-            d[f"top{k}"] = {
-                "flip_rate_pct": round(100 * flips / n, 3),
-                "n_flips": flips,
-                "male_form_in_only": male_only,
-                "female_form_in_only": female_only,
-                "net_male_advantage": male_only - female_only,
-                "both_in": sum(a and b for a, b in zip(m_in, f_in)),
-                "both_out": sum((not a) and (not b) for a, b in zip(m_in, f_in)),
-            }
+        d = _flip_block(sub, depths, "rank_male", "rank_female")
         deltas = [r["delta"] for r in sub]
         ties = sum(d0 == 0 for d0 in deltas)
         d["score_gap"] = {
@@ -1101,8 +1307,9 @@ def summarise_flips(rows: list[dict], depths: Sequence[int]) -> dict:
             "pct_female_favored": round(100 * sum(x < 0 for x in deltas) / n, 2),
             "tie_aware_pct_male": round(100 * (sum(x > 0 for x in deltas) + 0.5 * ties) / n, 2),
         }
-        d["mean_rank_male"] = round(sum(r["rank_male"] for r in sub) / n, 4)
-        d["mean_rank_female"] = round(sum(r["rank_female"] for r in sub) / n, 4)
+        # Mean ranks are tie-neutral: average ranks, as before the exact-k change.
+        d["mean_rank_male"] = round(sum(r["avg_rank_male"] for r in sub) / n, 4)
+        d["mean_rank_female"] = round(sum(r["avg_rank_female"] for r in sub) / n, 4)
         return d
 
     out = {"overall": block(rows)}
@@ -1119,6 +1326,9 @@ def summarise_flips(rows: list[dict], depths: Sequence[int]) -> dict:
     out["marker_in_scored_window"] = block([r for r in rows if r["marker_in_scored_window"]])
     out["marker_outside_scored_window"] = block(
         [r for r in rows if not r["marker_in_scored_window"]])
+    out["marker_in_token_window"] = block([r for r in rows if r["marker_in_token_window"]])
+    out["marker_outside_token_window"] = block(
+        [r for r in rows if not r["marker_in_token_window"]])
     out["by_gender_source"] = {g: block([r for r in rows if r["gender_source"] == g])
                                for g in sorted({r["gender_source"] for r in rows if r["gender_source"]})}
     return out
@@ -1164,15 +1374,42 @@ def main(argv=None) -> int:
                     help="inject a given name only, no surname")
     ap.add_argument("--name-gender-only", action="store_true",
                     help="only use name-derived gender (no pronoun fallback)")
-    ap.add_argument("--dump-rows", action="store_true", help="write per-focal rows into the JSON")
+    ap.add_argument("--dump-rows", action="store_true",
+                    help="also write per-focal rows inline into the main JSON "
+                         "(they always go to the companion *_rows.json.gz file)")
     ap.add_argument("--out", type=Path, default=None)
+    ap.add_argument("--rows-out", type=Path, default=None,
+                    help="companion file for comparison-level rows "
+                         "(default: <out stem>_rows.json.gz next to --out)")
+    ap.add_argument("--checkpoint", type=Path, default=None,
+                    help="per-model checkpoint (default: results/partial/<out stem>.checkpoint.json)")
+    ap.add_argument("--resume", action="store_true",
+                    help="reuse finished models from a matching checkpoint")
     args = ap.parse_args(argv)
 
-    res = run_g3(args)
     RESULTS.mkdir(exist_ok=True)
     tag = "demo" if args.demo else "_".join(args.rerankers)
     out = args.out or RESULTS / f"realistic_pool_{tag}.json"
+    rows_out = args.rows_out or out.with_name(out.stem + "_rows.json.gz")
+    if args.checkpoint is None:
+        args.checkpoint = RESULTS / "partial" / f"{out.stem}.checkpoint.json"
+
+    res = run_g3(args)
+    rows_payload = res.pop("_rows_payload")
+    try:
+        rows_rel = str(rows_out.resolve().relative_to(ROOT))
+    except ValueError:
+        rows_rel = str(rows_out)
+    for short, m in res["models"].items():
+        m["rows_file"] = rows_rel
+        if args.dump_rows:
+            m["rows"] = rows_payload["models"][short]["rows"]
+    import gzip
+    rows_payload["main_results_file"] = out.name
+    with gzip.open(rows_out, "wt", encoding="utf-8") as fh:
+        json.dump(rows_payload, fh, separators=(",", ":"))
     out.write_text(json.dumps(res, indent=2))
+    print(f"[G3] wrote rows -> {rows_out}")
 
     print(f"\n[G3] wrote {out}")
     for short, m in res["models"].items():

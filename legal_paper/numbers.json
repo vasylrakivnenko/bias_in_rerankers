@@ -749,13 +749,13 @@
   },
   "N_EXCL_ZERO_BLS": {
     "file": "results/interval_sensitivity.json",
-    "path": "n_models_excluding_zero.bls_category",
+    "path": "n_models_above_zero.bls_category",
     "format": "d",
     "needs": "Reviewer item 5: models whose contrast interval excludes zero when BLS categories, not occupations, are resampled."
   },
   "N_EXCL_ZERO_TWOWAY": {
     "file": "results/interval_sensitivity.json",
-    "path": "n_models_excluding_zero.occupation_x_name",
+    "path": "n_models_above_zero.occupation_x_name",
     "format": "d",
     "needs": "Reviewer item 5: same, resampling occupations and name pairs together."
   },
@@ -837,7 +837,7 @@
   },
   "N_CONTRAST_CI_POS": {
     "file": "results/interval_sensitivity.json",
-    "path": "n_models_excluding_zero.occupation",
+    "path": "n_models_above_zero.occupation",
     "format": "d",
     "needs": "Models whose male-typed minus female-typed contrast has an occupation-clustered 95% interval entirely above zero."
   },
@@ -967,54 +967,6 @@
     "format": "d",
     "needs": "API models whose contrast moved under neither reversed nor shuffled layouts."
   },
-  "ORDER_R2_CHANGE": {
-    "file": "results/order_reversal_test.json",
-    "path": [
-      "models",
-      "rerank-2",
-      "comparisons",
-      "reversed_vs_same",
-      "contrast_change"
-    ],
-    "format": ".1f",
-    "needs": "rerank-2 contrast change under reversal."
-  },
-  "ORDER_R2_LO": {
-    "file": "results/order_reversal_test.json",
-    "path": [
-      "models",
-      "rerank-2",
-      "comparisons",
-      "reversed_vs_same",
-      "contrast_change_ci",
-      0
-    ],
-    "format": ".1f",
-    "needs": "Its interval, lower end."
-  },
-  "ORDER_R2_HI": {
-    "file": "results/order_reversal_test.json",
-    "path": [
-      "models",
-      "rerank-2",
-      "comparisons",
-      "reversed_vs_same",
-      "contrast_change_ci",
-      1
-    ],
-    "format": ".1f",
-    "needs": "Its interval, upper end."
-  },
-  "ORDER_R2_BASE": {
-    "file": "results/single_stage_summary.json",
-    "path": [
-      "stereotype_tracking_spread",
-      "per_model",
-      "rerank-2"
-    ],
-    "format": ".0f",
-    "needs": "rerank-2's full-audit contrast, for scale."
-  },
   "JINA3_REV_SAME_WINNER": {
     "file": "results/order_reversal_test.json",
     "path": [
@@ -1122,5 +1074,295 @@
     "path": "pipeline_spread.n_models",
     "format": "d",
     "needs": "Rerankers in the pipeline sweep (pointwise only; listwise models excluded)."
+  },
+  "TABLE_SINGLE_STAGE_LONG": {
+    "tex_file": "results/tex/single_stage_main_long.tex",
+    "needs": "Multi-page (longtable) version for the empirical paper; the legal paper uses the plain tabular."
+  },
+  "TABLE_MODELS_LONG": {
+    "tex_file": "results/tex/provenance_long.tex",
+    "needs": "Multi-page (longtable) version for the empirical paper; the legal paper uses the plain tabular."
+  },
+  "TABLE_ROBUST_NAMEPAIR_LONG": {
+    "tex_file": "results/tex/robustness_namepair_long.tex",
+    "needs": "Multi-page (longtable) version for the empirical paper; the legal paper uses the plain tabular."
+  },
+  "REPLAY_N_POOLS": {
+    "file": "results/pipeline_replay_check.json",
+    "path": "sample.n_pools",
+    "format": "d",
+    "needs": "Pools re-sent as actual 10-document requests in the replay check."
+  },
+  "REPLAY_N_MODELS": {
+    "file": "results/pipeline_replay_check.json",
+    "path": "models",
+    "len": true,
+    "format": "d",
+    "needs": "API rerankers re-queried in the replay check."
+  },
+  "REPLAY_N_SUPPORTED": {
+    "file": "results/pipeline_replay_check.json",
+    "path": "overview.models_replay_supported",
+    "len": true,
+    "format": "d",
+    "needs": "Models whose actual-minus-replayed shortlist share has a 95% interval including zero."
+  },
+  "REPLAY_COHEREPRO_DIFF": {
+    "file": "results/pipeline_replay_check.json",
+    "path": [
+      "models",
+      "Cohere-rerank-v4.0-pro",
+      "paired_diff_actual_minus_replay_pp"
+    ],
+    "format": ".1f",
+    "needs": "Cohere v4 pro: actual minus replayed top-3 male share, points."
+  },
+  "REPLAY_COHEREPRO_LO": {
+    "file": "results/pipeline_replay_check.json",
+    "path": [
+      "models",
+      "Cohere-rerank-v4.0-pro",
+      "paired_diff_ci",
+      0
+    ],
+    "format": ".1f",
+    "needs": "Its interval, lower end."
+  },
+  "REPLAY_COHEREPRO_HI": {
+    "file": "results/pipeline_replay_check.json",
+    "path": [
+      "models",
+      "Cohere-rerank-v4.0-pro",
+      "paired_diff_ci",
+      1
+    ],
+    "format": ".1f",
+    "needs": "Its interval, upper end."
+  },
+  "SWEEP_MAX_WITHOUT_GRANITE": {
+    "file": "results/pipeline_replay_check.json",
+    "path": "overview.sweep_span_validated_plus_local.max",
+    "format": ".0f",
+    "unit": "%",
+    "needs": "Largest sweep value among models validated by re-query or run locally (excludes the untested Granite API endpoint)."
+  },
+  "CONTRAST_B": {
+    "file": "results/interval_sensitivity.json",
+    "path": "bootstrap_B",
+    "format": ",d",
+    "needs": "Bootstrap draws behind the contrast intervals."
+  },
+  "GTE_TWOWAY_LO": {
+    "file": "results/interval_sensitivity.json",
+    "path": [
+      "models",
+      "Alibaba-NLP/gte-reranker-modernbert-base",
+      "schemes",
+      "occupation_x_name",
+      "ci",
+      0
+    ],
+    "format": ".1f",
+    "needs": "GTE interval when occupations and name pairs are resampled, lower end."
+  },
+  "GTE_TWOWAY_HI": {
+    "file": "results/interval_sensitivity.json",
+    "path": [
+      "models",
+      "Alibaba-NLP/gte-reranker-modernbert-base",
+      "schemes",
+      "occupation_x_name",
+      "ci",
+      1
+    ],
+    "format": ".1f",
+    "needs": "Same, upper end."
+  },
+  "N_API_TOTAL": {
+    "file": "results/order_reversal_test.json",
+    "path": "api_overview.coverage.n_api_models_in_audit",
+    "format": "d",
+    "needs": "Audited models accessed through an API."
+  },
+  "ORDER_N_MOVED_BEYOND_REPEAT": {
+    "file": "results/order_reversal_test.json",
+    "path": "api_overview.n_models_contrast_moved_beyond_repeat",
+    "format": "d",
+    "needs": "API models whose contrast moves beyond the identical repeat under reversal or shuffling."
+  },
+  "R2_REPEAT_CHANGE": {
+    "file": "results/order_reversal_test.json",
+    "path": [
+      "models",
+      "rerank-2",
+      "comparisons",
+      "repeat_vs_same",
+      "contrast_change"
+    ],
+    "format": ".1f",
+    "needs": "rerank-2: contrast change from re-sending the identical request."
+  },
+  "R2_REPEAT_LO": {
+    "file": "results/order_reversal_test.json",
+    "path": [
+      "models",
+      "rerank-2",
+      "comparisons",
+      "repeat_vs_same",
+      "contrast_change_ci",
+      0
+    ],
+    "format": ".1f",
+    "needs": "Its interval, lower end."
+  },
+  "R2_REPEAT_HI": {
+    "file": "results/order_reversal_test.json",
+    "path": [
+      "models",
+      "rerank-2",
+      "comparisons",
+      "repeat_vs_same",
+      "contrast_change_ci",
+      1
+    ],
+    "format": ".1f",
+    "needs": "Its interval, upper end."
+  },
+  "R2_REV_VS_REPEAT": {
+    "file": "results/order_reversal_test.json",
+    "path": [
+      "models",
+      "rerank-2",
+      "comparisons",
+      "reversed_vs_repeat",
+      "contrast_change"
+    ],
+    "format": ".1f",
+    "needs": "rerank-2: reversed vs repeat contrast change."
+  },
+  "R2_REV_VS_REPEAT_LO": {
+    "file": "results/order_reversal_test.json",
+    "path": [
+      "models",
+      "rerank-2",
+      "comparisons",
+      "reversed_vs_repeat",
+      "contrast_change_ci",
+      0
+    ],
+    "format": ".1f",
+    "needs": "Its interval, lower end."
+  },
+  "R2_REV_VS_REPEAT_HI": {
+    "file": "results/order_reversal_test.json",
+    "path": [
+      "models",
+      "rerank-2",
+      "comparisons",
+      "reversed_vs_repeat",
+      "contrast_change_ci",
+      1
+    ],
+    "format": ".1f",
+    "needs": "Its interval, upper end."
+  },
+  "J3_SHUF_CHANGE": {
+    "file": "results/order_reversal_test.json",
+    "path": [
+      "models",
+      "jinaai/jina-reranker-v3",
+      "comparisons",
+      "shuffled_vs_repeat",
+      "contrast_change"
+    ],
+    "format": ".1f",
+    "needs": "jina-v3: shuffled vs repeat contrast change."
+  },
+  "J3_SHUF_LO": {
+    "file": "results/order_reversal_test.json",
+    "path": [
+      "models",
+      "jinaai/jina-reranker-v3",
+      "comparisons",
+      "shuffled_vs_repeat",
+      "contrast_change_ci",
+      0
+    ],
+    "format": ".1f",
+    "needs": "Its interval, lower end."
+  },
+  "J3_SHUF_HI": {
+    "file": "results/order_reversal_test.json",
+    "path": [
+      "models",
+      "jinaai/jina-reranker-v3",
+      "comparisons",
+      "shuffled_vs_repeat",
+      "contrast_change_ci",
+      1
+    ],
+    "format": ".1f",
+    "needs": "Its interval, upper end."
+  },
+  "TABLE_CONTRAST_INTERVALS": {
+    "tex_file": "results/tex/contrast_intervals.tex",
+    "needs": "Per-model contrast with all three resampling intervals."
+  },
+  "COMP_N_QUERIES": {
+    "file": "results/realistic_pool_four_rerankers.json",
+    "path": "provenance.queries.n_queries",
+    "format": "d",
+    "needs": "Companion: job queries (one per corpus category)."
+  },
+  "COMP_POOLS_PER_QUERY": {
+    "file": "results/realistic_pool_four_rerankers.json",
+    "path": "config.pools_per_query",
+    "format": "d",
+    "needs": "Companion: pools drawn per query."
+  },
+  "COMP_POOL_SIZE": {
+    "file": "results/realistic_pool_four_rerankers.json",
+    "path": "config.K",
+    "format": "d",
+    "needs": "Companion: résumés per pool."
+  },
+  "COMP_RELEVANT": {
+    "file": "results/realistic_pool_four_rerankers.json",
+    "path": "config.relevant_per_pool",
+    "format": "d",
+    "needs": "Companion: résumés per pool from the query's own category."
+  },
+  "COMP_OTHER": {
+    "expr": "k - r",
+    "refs": {
+      "k": {
+        "file": "results/realistic_pool_four_rerankers.json",
+        "path": "config.K"
+      },
+      "r": {
+        "file": "results/realistic_pool_four_rerankers.json",
+        "path": "config.relevant_per_pool"
+      }
+    },
+    "format": "d",
+    "needs": "Companion: résumés per pool drawn from the whole corpus."
+  },
+  "COMP_N_POOLS": {
+    "file": "results/realistic_pool_sampling.json",
+    "path": "n_pools",
+    "format": "d",
+    "needs": "Companion: pools in total."
+  },
+  "COMP_N_SWAP": {
+    "file": "results/realistic_pool_four_rerankers.json",
+    "path": "provenance.counterfactual_construction.swap",
+    "format": "d",
+    "needs": "Companion: pairs built by swapping an existing marker."
+  },
+  "COMP_N_OUTSIDE_WINDOW": {
+    "file": "results/realistic_pool_four_rerankers.json",
+    "path": "models.bge-m3.token_window.n_marker_outside_token_window",
+    "format": "d",
+    "needs": "Companion: comparisons whose every marker falls beyond the 512-token window (worked reranker's tokenizer)."
   }
 }

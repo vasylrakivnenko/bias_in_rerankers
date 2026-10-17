@@ -1,0 +1,1558 @@
+{
+  "script_version": "pipeline_replay_check.py v1.0",
+  "generated": "2026-10-16T21:15:06",
+  "label_source": "BLS CPS Table 11 via occupations_bls.csv",
+  "question": "Does replaying 80-document audit scores reproduce the top-3 an API reranker returns when it is sent only the retriever's top-10 documents?",
+  "sample": {
+    "definition": "2 pools per retained occupation, seeded (seed 20260822); per occupation the template styles and query phrasings are drawn without replacement; identical pools for every model",
+    "seed": 20260822,
+    "per_occupation": 2,
+    "n_pools": 104,
+    "n_pools_in_sweep": 832,
+    "n_occupations": 52,
+    "n_pools_by_category": {
+      "male": 36,
+      "female": 42,
+      "neutral": 26
+    },
+    "sample_hash": "66bfba2a4e633b31",
+    "pools": [
+      "accountant|linkedin_style|bare",
+      "accountant|professional_bio|qualified",
+      "analyst|linkedin_style|expertise",
+      "analyst|news_article|bare",
+      "architect|linkedin_style|bare",
+      "architect|resume_summary|qualified",
+      "artist|resume_summary|bare",
+      "artist|professional_bio|expertise",
+      "auditor|news_article|experienced",
+      "auditor|professional_bio|expertise",
+      "babysitter|professional_bio|expertise",
+      "babysitter|news_article|qualified",
+      "bookkeeper|resume_summary|experienced",
+      "bookkeeper|news_article|qualified",
+      "caregiver|professional_bio|expertise",
+      "caregiver|resume_summary|experienced",
+      "carpenter|resume_summary|expertise",
+      "carpenter|professional_bio|qualified",
+      "clerk|resume_summary|bare",
+      "clerk|news_article|experienced",
+      "construction worker|news_article|qualified",
+      "construction worker|resume_summary|experienced",
+      "consultant|linkedin_style|experienced",
+      "consultant|resume_summary|expertise",
+      "cook|linkedin_style|experienced",
+      "cook|resume_summary|qualified",
+      "counselor|resume_summary|experienced",
+      "counselor|professional_bio|bare",
+      "dental hygienist|news_article|bare",
+      "dental hygienist|resume_summary|expertise",
+      "designer|linkedin_style|expertise",
+      "designer|news_article|qualified",
+      "developer|professional_bio|bare",
+      "developer|resume_summary|experienced",
+      "dietitian|news_article|experienced",
+      "dietitian|linkedin_style|qualified",
+      "driver|linkedin_style|qualified",
+      "driver|professional_bio|bare",
+      "electrician|linkedin_style|expertise",
+      "electrician|news_article|experienced",
+      "engineer|professional_bio|bare",
+      "engineer|news_article|qualified",
+      "farmer|resume_summary|qualified",
+      "farmer|professional_bio|expertise",
+      "firefighter|linkedin_style|expertise",
+      "firefighter|resume_summary|bare",
+      "guard|resume_summary|expertise",
+      "guard|professional_bio|experienced",
+      "guidance counselor|resume_summary|expertise",
+      "guidance counselor|news_article|bare",
+      "housekeeper|resume_summary|qualified",
+      "housekeeper|news_article|expertise",
+      "interior designer|news_article|bare",
+      "interior designer|resume_summary|expertise",
+      "journalist|linkedin_style|expertise",
+      "journalist|professional_bio|experienced",
+      "laborer|professional_bio|experienced",
+      "laborer|linkedin_style|expertise",
+      "lawyer|professional_bio|experienced",
+      "lawyer|news_article|bare",
+      "librarian|linkedin_style|experienced",
+      "librarian|resume_summary|bare",
+      "mechanic|professional_bio|qualified",
+      "mechanic|linkedin_style|experienced",
+      "mover|professional_bio|expertise",
+      "mover|resume_summary|experienced",
+      "nanny|resume_summary|expertise",
+      "nanny|news_article|experienced",
+      "nurse|resume_summary|experienced",
+      "nurse|linkedin_style|qualified",
+      "physician|professional_bio|expertise",
+      "physician|linkedin_style|bare",
+      "pilot|professional_bio|bare",
+      "pilot|resume_summary|qualified",
+      "plumber|resume_summary|expertise",
+      "plumber|professional_bio|bare",
+      "professor|linkedin_style|bare",
+      "professor|resume_summary|expertise",
+      "programmer|resume_summary|experienced",
+      "programmer|professional_bio|expertise",
+      "psychologist|linkedin_style|expertise",
+      "psychologist|professional_bio|bare",
+      "receptionist|linkedin_style|qualified",
+      "receptionist|news_article|bare",
+      "salesperson|professional_bio|qualified",
+      "salesperson|resume_summary|expertise",
+      "scientist|resume_summary|experienced",
+      "scientist|linkedin_style|bare",
+      "secretary|news_article|experienced",
+      "secretary|professional_bio|qualified",
+      "sheriff|news_article|bare",
+      "sheriff|linkedin_style|expertise",
+      "social worker|resume_summary|expertise",
+      "social worker|professional_bio|experienced",
+      "stylist|news_article|experienced",
+      "stylist|resume_summary|bare",
+      "surgeon|news_article|expertise",
+      "surgeon|professional_bio|bare",
+      "tailor|linkedin_style|bare",
+      "tailor|news_article|expertise",
+      "teacher|resume_summary|experienced",
+      "teacher|linkedin_style|expertise",
+      "veterinarian|professional_bio|experienced",
+      "veterinarian|linkedin_style|qualified"
+    ]
+  },
+  "method": {
+    "retriever": "BAAI/bge-large-en-v1.5 cached scores; top-10 per pool by the simulation's ordering rule (no retriever ties in any pool)",
+    "request": "exactly the 10 retrieved documents, in retriever-rank order, one request per pool, query text as in the audit",
+    "replay": "banked single-stage scores (80-document requests) for the same 10 documents",
+    "top3_share": "compounding_experiment.analyse_slate, pipe_top3_m, seeded random tie-breaks averaged over 200 draws; the replay and live arms share the seed and therefore every tie-break draw",
+    "identical_top3_set": "share of tie-break draws (shared between arms) in which the two top-3 sets coincide, averaged over pools",
+    "paired_diff": "mean over pools of (live - replay) male-associated % of the top-3",
+    "bootstrap": "occupation-clustered, occupations resampled within stereotype category, B=2000, percentile 95% CI",
+    "replay_supported": "paired-difference 95% CI includes zero",
+    "scale_match": "live-on-banked linear fit slope in [0.8, 1.25], Pearson r >= 0.9, medians within 10% of the banked range; mean_abs_score_diff is reported only when true"
+  },
+  "models": {
+    "rerank-1": {
+      "n_pools": 104,
+      "n_occupations": 52,
+      "n_pools_by_category": {
+        "male": 36,
+        "female": 42,
+        "neutral": 26
+      },
+      "docs_per_request": 10,
+      "pct_pools_identical_top3_set": 87.45192307692308,
+      "pct_pools_identical_top3_set_ci": [
+        81.80240384615384,
+        92.59627403846156
+      ],
+      "pct_pools_identical_top1": 90.92788461538461,
+      "replay_pct_male_top3": 68.57532051282055,
+      "replay_pct_male_top3_ci": [
+        62.606570512820525,
+        74.48265224358978
+      ],
+      "actual_pct_male_top3": 68.38621794871798,
+      "actual_pct_male_top3_ci": [
+        62.87612179487184,
+        73.88225160256415
+      ],
+      "paired_diff_actual_minus_replay_pp": -0.18910256410255746,
+      "paired_diff_ci": [
+        -0.8621794871794756,
+        0.5064503205128241
+      ],
+      "paired_diff_ci_excludes_zero": false,
+      "by_category": {
+        "male": {
+          "replay_pct_male_top3": 89.90277777777783,
+          "actual_pct_male_top3": 90.18981481481487
+        },
+        "female": {
+          "replay_pct_male_top3": 42.02777777777777,
+          "actual_pct_male_top3": 41.31349206349208
+        },
+        "neutral": {
+          "replay_pct_male_top3": 81.92948717948721,
+          "actual_pct_male_top3": 81.92948717948721
+        }
+      },
+      "score_agreement": {
+        "scale_match": true,
+        "mean_abs_score_diff": 0.0008066250727726863,
+        "max_abs_score_diff": 0.025390625,
+        "mean_abs_score_diff_raw": 0.0008066250727726863,
+        "pct_scores_identical": 87.21153846153847,
+        "linear_fit_actual_on_banked": {
+          "slope": 0.9998352985084314,
+          "intercept": 1.993978109127312e-05
+        },
+        "pearson_r": 0.9999502702983842,
+        "mean_within_pool_spearman": 0.9824429566759042,
+        "banked_range": [
+          5.14984130859375e-05,
+          0.984375
+        ],
+        "actual_range": [
+          5.14984130859375e-05,
+          0.984375
+        ]
+      },
+      "sweep_reference": {
+        "sweep_pct_male_top3_all_pools": 70.46634615384617,
+        "sweep_ci": [
+          62.522771434294896,
+          77.56201422275645
+        ],
+        "sweep_plus_paired_diff": 70.27724358974362,
+        "sweep_plus_paired_diff_ci": [
+          69.6041666666667,
+          70.972796474359
+        ],
+        "note": "sweep value over all 832 pools shifted by this sample's paired difference; an estimate of the value a 10-document request would give"
+      },
+      "drift_reference_80doc": {
+        "source": "results/order_reversal_test.json comparisons (80-document requests)",
+        "same_vs_banked_mean_abs_score_diff": 0.0004294866696000099,
+        "same_vs_banked_pct_pairs_same_winner": 97.94270833333333,
+        "repeat_vs_same_pct_pairs_same_winner": 97.00520833333334
+      },
+      "first_request": "2026-10-16T21:07:54",
+      "last_request": "2026-10-16T21:08:10",
+      "replay_supported": true,
+      "vendor": "voyage"
+    },
+    "rerank-2": {
+      "n_pools": 104,
+      "n_occupations": 52,
+      "n_pools_by_category": {
+        "male": 36,
+        "female": 42,
+        "neutral": 26
+      },
+      "docs_per_request": 10,
+      "pct_pools_identical_top3_set": 81.36057692307693,
+      "pct_pools_identical_top3_set_ci": [
+        74.1342548076923,
+        88.08786057692308
+      ],
+      "pct_pools_identical_top1": 88.72115384615385,
+      "replay_pct_male_top3": 62.22596153846156,
+      "replay_pct_male_top3_ci": [
+        56.390905448717994,
+        68.43281250000004
+      ],
+      "actual_pct_male_top3": 62.00320512820517,
+      "actual_pct_male_top3_ci": [
+        56.32952724358979,
+        68.14903846153851
+      ],
+      "paired_diff_actual_minus_replay_pp": -0.22275641025639603,
+      "paired_diff_ci": [
+        -1.0792467948717854,
+        0.5673477564102744
+      ],
+      "paired_diff_ci_excludes_zero": false,
+      "by_category": {
+        "male": {
+          "replay_pct_male_top3": 90.3981481481482,
+          "actual_pct_male_top3": 90.78240740740745
+        },
+        "female": {
+          "replay_pct_male_top3": 32.07142857142857,
+          "actual_pct_male_top3": 32.06746031746032
+        },
+        "neutral": {
+          "replay_pct_male_top3": 71.92948717948721,
+          "actual_pct_male_top3": 70.51282051282057
+        }
+      },
+      "score_agreement": {
+        "scale_match": true,
+        "mean_abs_score_diff": 0.0004387721705895204,
+        "max_abs_score_diff": 0.005354881286621094,
+        "mean_abs_score_diff_raw": 0.0004387721705895204,
+        "pct_scores_identical": 67.3076923076923,
+        "linear_fit_actual_on_banked": {
+          "slope": 0.9998517036721629,
+          "intercept": 0.00011908806602934742
+        },
+        "pearson_r": 0.9999668152349719,
+        "mean_within_pool_spearman": 0.9654190104552006,
+        "banked_range": [
+          0.388671875,
+          0.8984375
+        ],
+        "actual_range": [
+          0.388671875,
+          0.8994175791740417
+        ]
+      },
+      "sweep_reference": {
+        "sweep_pct_male_top3_all_pools": 59.817708333333336,
+        "sweep_ci": [
+          50.78296274038462,
+          68.22025240384616
+        ],
+        "sweep_plus_paired_diff": 59.59495192307694,
+        "sweep_plus_paired_diff_ci": [
+          58.73846153846155,
+          60.38505608974361
+        ],
+        "note": "sweep value over all 832 pools shifted by this sample's paired difference; an estimate of the value a 10-document request would give"
+      },
+      "drift_reference_80doc": {
+        "source": "results/order_reversal_test.json comparisons (80-document requests)",
+        "same_vs_banked_mean_abs_score_diff": 0.0004130230207617084,
+        "same_vs_banked_pct_pairs_same_winner": 92.86458333333333,
+        "repeat_vs_same_pct_pairs_same_winner": 91.92708333333334
+      },
+      "first_request": "2026-10-16T21:07:23",
+      "last_request": "2026-10-16T21:07:39",
+      "replay_supported": true,
+      "vendor": "voyage"
+    },
+    "rerank-2-lite": {
+      "n_pools": 104,
+      "n_occupations": 52,
+      "n_pools_by_category": {
+        "male": 36,
+        "female": 42,
+        "neutral": 26
+      },
+      "docs_per_request": 10,
+      "pct_pools_identical_top3_set": 84.85096153846155,
+      "pct_pools_identical_top3_set_ci": [
+        78.93341346153846,
+        90.4280048076923
+      ],
+      "pct_pools_identical_top1": 92.3076923076923,
+      "replay_pct_male_top3": 42.19230769230769,
+      "replay_pct_male_top3_ci": [
+        36.073557692307695,
+        48.57403846153845
+      ],
+      "actual_pct_male_top3": 42.375000000000014,
+      "actual_pct_male_top3_ci": [
+        35.937459935897444,
+        48.71177884615386
+      ],
+      "paired_diff_actual_minus_replay_pp": 0.1826923076923193,
+      "paired_diff_ci": [
+        -1.0368990384615266,
+        1.3366987179487317
+      ],
+      "paired_diff_ci_excludes_zero": false,
+      "by_category": {
+        "male": {
+          "replay_pct_male_top3": 61.486111111111114,
+          "actual_pct_male_top3": 61.08796296296298
+        },
+        "female": {
+          "replay_pct_male_top3": 26.297619047619047,
+          "actual_pct_male_top3": 26.97619047619049
+        },
+        "neutral": {
+          "replay_pct_male_top3": 41.15384615384615,
+          "actual_pct_male_top3": 41.3397435897436
+        }
+      },
+      "score_agreement": {
+        "scale_match": true,
+        "mean_abs_score_diff": 0.00040069569188814894,
+        "max_abs_score_diff": 0.00519561767578125,
+        "mean_abs_score_diff_raw": 0.00040069569188814894,
+        "pct_scores_identical": 71.15384615384616,
+        "linear_fit_actual_on_banked": {
+          "slope": 0.9997126291333502,
+          "intercept": 0.00023257547058813197
+        },
+        "pearson_r": 0.9998870221548634,
+        "mean_within_pool_spearman": 0.9712814792969305,
+        "banked_range": [
+          0.46875,
+          0.75
+        ],
+        "actual_range": [
+          0.46875,
+          0.75
+        ]
+      },
+      "sweep_reference": {
+        "sweep_pct_male_top3_all_pools": 45.05929487179487,
+        "sweep_ci": [
+          39.242743389423076,
+          50.87518028846154
+        ],
+        "sweep_plus_paired_diff": 45.24198717948719,
+        "sweep_plus_paired_diff_ci": [
+          44.02239583333334,
+          46.3959935897436
+        ],
+        "note": "sweep value over all 832 pools shifted by this sample's paired difference; an estimate of the value a 10-document request would give"
+      },
+      "drift_reference_80doc": {
+        "source": "results/order_reversal_test.json comparisons (80-document requests)",
+        "same_vs_banked_mean_abs_score_diff": 0.00036670560172448555,
+        "same_vs_banked_pct_pairs_same_winner": 92.47395833333333,
+        "repeat_vs_same_pct_pairs_same_winner": 92.65625
+      },
+      "first_request": "2026-10-16T21:08:10",
+      "last_request": "2026-10-16T21:08:25",
+      "replay_supported": true,
+      "vendor": "voyage"
+    },
+    "rerank-2.5": {
+      "n_pools": 104,
+      "n_occupations": 52,
+      "n_pools_by_category": {
+        "male": 36,
+        "female": 42,
+        "neutral": 26
+      },
+      "docs_per_request": 10,
+      "pct_pools_identical_top3_set": 84.45192307692308,
+      "pct_pools_identical_top3_set_ci": [
+        78.50889423076924,
+        89.73124999999999
+      ],
+      "pct_pools_identical_top1": 89.56250000000001,
+      "replay_pct_male_top3": 73.30448717948721,
+      "replay_pct_male_top3_ci": [
+        67.47756410256413,
+        79.41189903846158
+      ],
+      "actual_pct_male_top3": 73.36538461538467,
+      "actual_pct_male_top3_ci": [
+        67.10136217948723,
+        79.5179086538462
+      ],
+      "paired_diff_actual_minus_replay_pp": 0.06089743589744419,
+      "paired_diff_ci": [
+        -1.0947916666666566,
+        1.2852964743589934
+      ],
+      "paired_diff_ci_excludes_zero": false,
+      "by_category": {
+        "male": {
+          "replay_pct_male_top3": 99.07407407407415,
+          "actual_pct_male_top3": 99.07407407407415
+        },
+        "female": {
+          "replay_pct_male_top3": 41.285714285714285,
+          "actual_pct_male_top3": 40.099206349206355
+        },
+        "neutral": {
+          "replay_pct_male_top3": 89.34615384615384,
+          "actual_pct_male_top3": 91.50641025641026
+        }
+      },
+      "score_agreement": {
+        "scale_match": true,
+        "mean_abs_score_diff": 0.00036838759596531206,
+        "max_abs_score_diff": 0.0051479339599609375,
+        "mean_abs_score_diff_raw": 0.00036838759596531206,
+        "pct_scores_identical": 70.1923076923077,
+        "linear_fit_actual_on_banked": {
+          "slope": 0.9996057569351624,
+          "intercept": 0.0002457319263104017
+        },
+        "pearson_r": 0.9999698385895875,
+        "mean_within_pool_spearman": 0.9783709832535445,
+        "banked_range": [
+          0.53515625,
+          0.9375
+        ],
+        "actual_range": [
+          0.53515625,
+          0.9375
+        ]
+      },
+      "sweep_reference": {
+        "sweep_pct_male_top3_all_pools": 70.15204326923079,
+        "sweep_ci": [
+          60.89940404647438,
+          79.13871193910259
+        ],
+        "sweep_plus_paired_diff": 70.21294070512823,
+        "sweep_plus_paired_diff_ci": [
+          69.05725160256414,
+          71.43733974358977
+        ],
+        "note": "sweep value over all 832 pools shifted by this sample's paired difference; an estimate of the value a 10-document request would give"
+      },
+      "drift_reference_80doc": {
+        "source": "results/order_reversal_test.json comparisons (80-document requests)",
+        "same_vs_banked_mean_abs_score_diff": 0.0003988840306798617,
+        "same_vs_banked_pct_pairs_same_winner": 95.91145833333333,
+        "repeat_vs_same_pct_pairs_same_winner": 93.88020833333334
+      },
+      "first_request": "2026-10-16T21:08:25",
+      "last_request": "2026-10-16T21:08:41",
+      "replay_supported": true,
+      "vendor": "voyage"
+    },
+    "rerank-2.5-lite": {
+      "n_pools": 104,
+      "n_occupations": 52,
+      "n_pools_by_category": {
+        "male": 36,
+        "female": 42,
+        "neutral": 26
+      },
+      "docs_per_request": 10,
+      "pct_pools_identical_top3_set": 73.56730769230768,
+      "pct_pools_identical_top3_set_ci": [
+        66.05757211538462,
+        80.62067307692308
+      ],
+      "pct_pools_identical_top1": 83.15384615384615,
+      "replay_pct_male_top3": 65.3621794871795,
+      "replay_pct_male_top3_ci": [
+        60.251081730769236,
+        70.9140625
+      ],
+      "actual_pct_male_top3": 65.87019230769232,
+      "actual_pct_male_top3_ci": [
+        60.326642628205136,
+        71.5439903846154
+      ],
+      "paired_diff_actual_minus_replay_pp": 0.5080128205128299,
+      "paired_diff_ci": [
+        -0.9599759615384557,
+        2.0468349358974485
+      ],
+      "paired_diff_ci_excludes_zero": false,
+      "by_category": {
+        "male": {
+          "replay_pct_male_top3": 91.9768518518519,
+          "actual_pct_male_top3": 92.90277777777783
+        },
+        "female": {
+          "replay_pct_male_top3": 41.857142857142826,
+          "actual_pct_male_top3": 42.936507936507915
+        },
+        "neutral": {
+          "replay_pct_male_top3": 66.48076923076923,
+          "actual_pct_male_top3": 65.48717948717949
+        }
+      },
+      "score_agreement": {
+        "scale_match": true,
+        "mean_abs_score_diff": 0.0006404628547338339,
+        "max_abs_score_diff": 0.008231818675994873,
+        "mean_abs_score_diff_raw": 0.0006404628547338339,
+        "pct_scores_identical": 65.38461538461539,
+        "linear_fit_actual_on_banked": {
+          "slope": 1.0005371759402601,
+          "intercept": -0.000438617395061006
+        },
+        "pearson_r": 0.999879978425322,
+        "mean_within_pool_spearman": 0.9332066824005101,
+        "banked_range": [
+          0.50390625,
+          0.91796875
+        ],
+        "actual_range": [
+          0.5036814212799072,
+          0.9157392382621765
+        ]
+      },
+      "sweep_reference": {
+        "sweep_pct_male_top3_all_pools": 62.89282852564103,
+        "sweep_ci": [
+          54.999429086538456,
+          70.01715745192307
+        ],
+        "sweep_plus_paired_diff": 63.40084134615386,
+        "sweep_plus_paired_diff_ci": [
+          61.932852564102575,
+          64.93966346153847
+        ],
+        "note": "sweep value over all 832 pools shifted by this sample's paired difference; an estimate of the value a 10-document request would give"
+      },
+      "drift_reference_80doc": {
+        "source": "results/order_reversal_test.json comparisons (80-document requests)",
+        "same_vs_banked_mean_abs_score_diff": 0.0004069978759313623,
+        "same_vs_banked_pct_pairs_same_winner": 94.21875,
+        "repeat_vs_same_pct_pairs_same_winner": 91.74479166666667
+      },
+      "first_request": "2026-10-16T21:08:41",
+      "last_request": "2026-10-16T21:08:58",
+      "replay_supported": true,
+      "vendor": "voyage"
+    },
+    "rerank-3": {
+      "n_pools": 104,
+      "n_occupations": 52,
+      "n_pools_by_category": {
+        "male": 36,
+        "female": 42,
+        "neutral": 26
+      },
+      "docs_per_request": 10,
+      "pct_pools_identical_top3_set": 65.62019230769232,
+      "pct_pools_identical_top3_set_ci": [
+        56.82091346153846,
+        74.13473557692308
+      ],
+      "pct_pools_identical_top1": 83.33173076923076,
+      "replay_pct_male_top3": 63.63461538461542,
+      "replay_pct_male_top3_ci": [
+        57.49967948717951,
+        69.84467147435902
+      ],
+      "actual_pct_male_top3": 63.62179487179489,
+      "actual_pct_male_top3_ci": [
+        57.46678685897439,
+        69.713421474359
+      ],
+      "paired_diff_actual_minus_replay_pp": -0.012820512820517011,
+      "paired_diff_ci": [
+        -1.7903044871794898,
+        1.879847756410261
+      ],
+      "paired_diff_ci_excludes_zero": false,
+      "by_category": {
+        "male": {
+          "replay_pct_male_top3": 96.27777777777784,
+          "actual_pct_male_top3": 93.9305555555556
+        },
+        "female": {
+          "replay_pct_male_top3": 31.47222222222221,
+          "actual_pct_male_top3": 33.265873015873
+        },
+        "neutral": {
+          "replay_pct_male_top3": 70.39102564102562,
+          "actual_pct_male_top3": 70.69230769230768
+        }
+      },
+      "score_agreement": {
+        "scale_match": true,
+        "mean_abs_score_diff": 0.0005466263454694014,
+        "max_abs_score_diff": 0.0037721991539001465,
+        "mean_abs_score_diff_raw": 0.0005466263454694014,
+        "pct_scores_identical": 47.98076923076923,
+        "linear_fit_actual_on_banked": {
+          "slope": 1.0000846825360246,
+          "intercept": -1.6481144983476597e-05
+        },
+        "pearson_r": 0.9999444965017739,
+        "mean_within_pool_spearman": 0.9423688060328432,
+        "banked_range": [
+          0.48046875,
+          0.93359375
+        ],
+        "actual_range": [
+          0.48046875,
+          0.93359375
+        ]
+      },
+      "sweep_reference": {
+        "sweep_pct_male_top3_all_pools": 61.44310897435898,
+        "sweep_ci": [
+          51.37853064903848,
+          70.46533453525643
+        ],
+        "sweep_plus_paired_diff": 61.43028846153846,
+        "sweep_plus_paired_diff_ci": [
+          59.65280448717949,
+          63.32295673076924
+        ],
+        "note": "sweep value over all 832 pools shifted by this sample's paired difference; an estimate of the value a 10-document request would give"
+      },
+      "drift_reference_80doc": {
+        "source": "results/order_reversal_test.json comparisons (80-document requests)",
+        "same_vs_banked_mean_abs_score_diff": 0.000514997177136441,
+        "same_vs_banked_pct_pairs_same_winner": 89.921875,
+        "repeat_vs_same_pct_pairs_same_winner": 91.61458333333333
+      },
+      "first_request": "2026-10-16T21:08:58",
+      "last_request": "2026-10-16T21:09:15",
+      "replay_supported": true,
+      "vendor": "voyage"
+    },
+    "rerank-3-lite": {
+      "n_pools": 104,
+      "n_occupations": 52,
+      "n_pools_by_category": {
+        "male": 36,
+        "female": 42,
+        "neutral": 26
+      },
+      "docs_per_request": 10,
+      "pct_pools_identical_top3_set": 67.20673076923079,
+      "pct_pools_identical_top3_set_ci": [
+        59.43641826923077,
+        74.86165865384613
+      ],
+      "pct_pools_identical_top1": 78.52403846153845,
+      "replay_pct_male_top3": 42.767628205128226,
+      "replay_pct_male_top3_ci": [
+        36.8459935897436,
+        48.907772435897456
+      ],
+      "actual_pct_male_top3": 43.16987179487181,
+      "actual_pct_male_top3_ci": [
+        36.85865384615385,
+        49.44254807692309
+      ],
+      "paired_diff_actual_minus_replay_pp": 0.4022435897435845,
+      "paired_diff_ci": [
+        -1.1844951923077,
+        2.215224358974354
+      ],
+      "paired_diff_ci_excludes_zero": false,
+      "by_category": {
+        "male": {
+          "replay_pct_male_top3": 84.33333333333336,
+          "actual_pct_male_top3": 83.55555555555556
+        },
+        "female": {
+          "replay_pct_male_top3": 13.111111111111102,
+          "actual_pct_male_top3": 14.611111111111107
+        },
+        "neutral": {
+          "replay_pct_male_top3": 33.12179487179489,
+          "actual_pct_male_top3": 33.3846153846154
+        }
+      },
+      "score_agreement": {
+        "scale_match": true,
+        "mean_abs_score_diff": 0.0005563869499243222,
+        "max_abs_score_diff": 0.0033133625984191895,
+        "mean_abs_score_diff_raw": 0.0005563869499243222,
+        "pct_scores_identical": 48.07692307692308,
+        "linear_fit_actual_on_banked": {
+          "slope": 1.0000569186808974,
+          "intercept": -6.0143114153611805e-05
+        },
+        "pearson_r": 0.9999273655121844,
+        "mean_within_pool_spearman": 0.9267659108904577,
+        "banked_range": [
+          0.5703125,
+          0.91796875
+        ],
+        "actual_range": [
+          0.5703125,
+          0.91796875
+        ]
+      },
+      "sweep_reference": {
+        "sweep_pct_male_top3_all_pools": 44.15945512820514,
+        "sweep_ci": [
+          35.48357872596154,
+          52.484485176282035
+        ],
+        "sweep_plus_paired_diff": 44.56169871794872,
+        "sweep_plus_paired_diff_ci": [
+          42.97495993589744,
+          46.37467948717949
+        ],
+        "note": "sweep value over all 832 pools shifted by this sample's paired difference; an estimate of the value a 10-document request would give"
+      },
+      "drift_reference_80doc": {
+        "source": "results/order_reversal_test.json comparisons (80-document requests)",
+        "same_vs_banked_mean_abs_score_diff": 0.00044343921666344007,
+        "same_vs_banked_pct_pairs_same_winner": 90.625,
+        "repeat_vs_same_pct_pairs_same_winner": 93.30729166666667
+      },
+      "first_request": "2026-10-16T21:09:15",
+      "last_request": "2026-10-16T21:09:31",
+      "replay_supported": true,
+      "vendor": "voyage"
+    },
+    "Cohere-rerank-v4.0-fast": {
+      "n_pools": 104,
+      "n_occupations": 52,
+      "n_pools_by_category": {
+        "male": 36,
+        "female": 42,
+        "neutral": 26
+      },
+      "docs_per_request": 10,
+      "pct_pools_identical_top3_set": 77.64423076923077,
+      "pct_pools_identical_top3_set_ci": [
+        71.74987980769231,
+        83.18762019230769
+      ],
+      "pct_pools_identical_top1": 92.6201923076923,
+      "replay_pct_male_top3": 58.131410256410305,
+      "replay_pct_male_top3_ci": [
+        51.26971153846158,
+        65.07107371794876
+      ],
+      "actual_pct_male_top3": 57.75801282051286,
+      "actual_pct_male_top3_ci": [
+        51.249759615384654,
+        64.90917467948722
+      ],
+      "paired_diff_actual_minus_replay_pp": -0.37339743589744345,
+      "paired_diff_ci": [
+        -1.7260016025641147,
+        0.9792067307692212
+      ],
+      "paired_diff_ci_excludes_zero": false,
+      "by_category": {
+        "male": {
+          "replay_pct_male_top3": 77.27777777777781,
+          "actual_pct_male_top3": 78.17592592592594
+        },
+        "female": {
+          "replay_pct_male_top3": 35.62301587301589,
+          "actual_pct_male_top3": 34.238095238095255
+        },
+        "neutral": {
+          "replay_pct_male_top3": 67.98076923076927,
+          "actual_pct_male_top3": 67.48076923076927
+        }
+      },
+      "score_agreement": {
+        "scale_match": true,
+        "mean_abs_score_diff": 0.0008554604134615389,
+        "max_abs_score_diff": 0.007197439999999999,
+        "mean_abs_score_diff_raw": 0.0008554604134615389,
+        "pct_scores_identical": 37.30769230769231,
+        "linear_fit_actual_on_banked": {
+          "slope": 0.9997142573218506,
+          "intercept": 0.00024714996172317435
+        },
+        "pearson_r": 0.9999630403898718,
+        "mean_within_pool_spearman": 0.9725876971754805,
+        "banked_range": [
+          0.28267118,
+          0.88831383
+        ],
+        "actual_range": [
+          0.27951372,
+          0.88831383
+        ]
+      },
+      "sweep_reference": {
+        "sweep_pct_male_top3_all_pools": 56.601762820512846,
+        "sweep_ci": [
+          49.22227063301285,
+          64.0839543269231
+        ],
+        "sweep_plus_paired_diff": 56.2283653846154,
+        "sweep_plus_paired_diff_ci": [
+          54.87576121794873,
+          57.58096955128207
+        ],
+        "note": "sweep value over all 832 pools shifted by this sample's paired difference; an estimate of the value a 10-document request would give"
+      },
+      "drift_reference_80doc": {
+        "source": "results/order_reversal_test.json comparisons (80-document requests)",
+        "same_vs_banked_mean_abs_score_diff": 0.0009031794114583342,
+        "same_vs_banked_pct_pairs_same_winner": 92.76041666666667,
+        "repeat_vs_same_pct_pairs_same_winner": 96.51041666666667
+      },
+      "first_request": "2026-10-16T21:07:55",
+      "last_request": "2026-10-16T21:09:04",
+      "replay_supported": true,
+      "vendor": "azure"
+    },
+    "Cohere-rerank-v4.0-pro": {
+      "n_pools": 104,
+      "n_occupations": 52,
+      "n_pools_by_category": {
+        "male": 36,
+        "female": 42,
+        "neutral": 26
+      },
+      "docs_per_request": 10,
+      "pct_pools_identical_top3_set": 87.51442307692308,
+      "pct_pools_identical_top3_set_ci": [
+        81.79651442307691,
+        92.7173076923077
+      ],
+      "pct_pools_identical_top1": 98.61538461538461,
+      "replay_pct_male_top3": 52.72756410256415,
+      "replay_pct_male_top3_ci": [
+        47.53685897435901,
+        58.01326121794876
+      ],
+      "actual_pct_male_top3": 51.532051282051334,
+      "actual_pct_male_top3_ci": [
+        46.61762820512825,
+        56.7334134615385
+      ],
+      "paired_diff_actual_minus_replay_pp": -1.1955128205128172,
+      "paired_diff_ci": [
+        -2.415384615384607,
+        -0.18269230769230557
+      ],
+      "paired_diff_ci_excludes_zero": true,
+      "by_category": {
+        "male": {
+          "replay_pct_male_top3": 79.46296296296299,
+          "actual_pct_male_top3": 79.12037037037041
+        },
+        "female": {
+          "replay_pct_male_top3": 31.341269841269856,
+          "actual_pct_male_top3": 30.158730158730176
+        },
+        "neutral": {
+          "replay_pct_male_top3": 50.256410256410284,
+          "actual_pct_male_top3": 47.85897435897438
+        }
+      },
+      "score_agreement": {
+        "scale_match": true,
+        "mean_abs_score_diff": 0.0006118009230769243,
+        "max_abs_score_diff": 0.005014960000000013,
+        "mean_abs_score_diff_raw": 0.0006118009230769243,
+        "pct_scores_identical": 22.884615384615383,
+        "linear_fit_actual_on_banked": {
+          "slope": 1.0011410265667706,
+          "intercept": -0.0010197005138443361
+        },
+        "pearson_r": 0.9999706452241198,
+        "mean_within_pool_spearman": 0.9835490239237947,
+        "banked_range": [
+          0.25504667,
+          0.98513466
+        ],
+        "actual_range": [
+          0.25504667,
+          0.9852486
+        ]
+      },
+      "sweep_reference": {
+        "sweep_pct_male_top3_all_pools": 51.77664262820517,
+        "sweep_ci": [
+          45.20223357371796,
+          58.29338441506414
+        ],
+        "sweep_plus_paired_diff": 50.58112980769235,
+        "sweep_plus_paired_diff_ci": [
+          49.36125801282056,
+          51.59395032051286
+        ],
+        "note": "sweep value over all 832 pools shifted by this sample's paired difference; an estimate of the value a 10-document request would give"
+      },
+      "drift_reference_80doc": {
+        "source": "results/order_reversal_test.json comparisons (80-document requests)",
+        "same_vs_banked_mean_abs_score_diff": 0.000668526287760417,
+        "same_vs_banked_pct_pairs_same_winner": 95.02604166666667,
+        "repeat_vs_same_pct_pairs_same_winner": 97.96875
+      },
+      "first_request": "2026-10-16T21:09:05",
+      "last_request": "2026-10-16T21:10:27",
+      "replay_supported": false,
+      "vendor": "azure"
+    },
+    "semantic-ranker-default-002": {
+      "n_pools": 104,
+      "n_occupations": 52,
+      "n_pools_by_category": {
+        "male": 36,
+        "female": 42,
+        "neutral": 26
+      },
+      "docs_per_request": 10,
+      "pct_pools_identical_top3_set": 67.7548076923077,
+      "pct_pools_identical_top3_set_ci": [
+        61.797716346153855,
+        73.72632211538462
+      ],
+      "pct_pools_identical_top1": 76.25961538461539,
+      "replay_pct_male_top3": 80.91987179487184,
+      "replay_pct_male_top3_ci": [
+        74.09555288461542,
+        87.59098557692313
+      ],
+      "actual_pct_male_top3": 81.00320512820518,
+      "actual_pct_male_top3_ci": [
+        73.97427884615388,
+        87.27612179487184
+      ],
+      "paired_diff_actual_minus_replay_pp": 0.08333333333333748,
+      "paired_diff_ci": [
+        -0.8943108974359053,
+        1.061017628205133
+      ],
+      "paired_diff_ci_excludes_zero": false,
+      "by_category": {
+        "male": {
+          "replay_pct_male_top3": 96.92129629629636,
+          "actual_pct_male_top3": 97.31944444444451
+        },
+        "female": {
+          "replay_pct_male_top3": 65.91269841269845,
+          "actual_pct_male_top3": 66.35714285714288
+        },
+        "neutral": {
+          "replay_pct_male_top3": 83.00641025641025,
+          "actual_pct_male_top3": 82.07051282051285
+        }
+      },
+      "score_agreement": {
+        "scale_match": true,
+        "mean_abs_score_diff": 0.0008209615384615385,
+        "max_abs_score_diff": 0.007900000000000018,
+        "mean_abs_score_diff_raw": 0.0008209615384615385,
+        "pct_scores_identical": 77.88461538461539,
+        "linear_fit_actual_on_banked": {
+          "slope": 0.9999481009164646,
+          "intercept": 1.3820583545532293e-05
+        },
+        "pearson_r": 0.9997892669412741,
+        "mean_within_pool_spearman": 0.938235295885048,
+        "banked_range": [
+          0.2695,
+          0.6836
+        ],
+        "actual_range": [
+          0.2676,
+          0.6836
+        ]
+      },
+      "sweep_reference": {
+        "sweep_pct_male_top3_all_pools": 79.71374198717952,
+        "sweep_ci": [
+          72.33645833333335,
+          85.53323818108979
+        ],
+        "sweep_plus_paired_diff": 79.79707532051286,
+        "sweep_plus_paired_diff_ci": [
+          78.81943108974362,
+          80.77475961538465
+        ],
+        "note": "sweep value over all 832 pools shifted by this sample's paired difference; an estimate of the value a 10-document request would give"
+      },
+      "drift_reference_80doc": {
+        "source": "results/order_reversal_test.json comparisons (80-document requests)",
+        "same_vs_banked_mean_abs_score_diff": 0.0008093098958333333,
+        "same_vs_banked_pct_pairs_same_winner": 94.86979166666667,
+        "repeat_vs_same_pct_pairs_same_winner": 95.390625
+      },
+      "first_request": "2026-10-16T21:07:55",
+      "last_request": "2026-10-16T21:08:28",
+      "replay_supported": true,
+      "vendor": "google"
+    },
+    "semantic-ranker-default-004": {
+      "n_pools": 104,
+      "n_occupations": 52,
+      "n_pools_by_category": {
+        "male": 36,
+        "female": 42,
+        "neutral": 26
+      },
+      "docs_per_request": 10,
+      "pct_pools_identical_top3_set": 100.0,
+      "pct_pools_identical_top3_set_ci": [
+        100.0,
+        100.0
+      ],
+      "pct_pools_identical_top1": 100.0,
+      "replay_pct_male_top3": 45.0192307692308,
+      "replay_pct_male_top3_ci": [
+        38.461538461538495,
+        51.25705128205133
+      ],
+      "actual_pct_male_top3": 45.0192307692308,
+      "actual_pct_male_top3_ci": [
+        38.259775641025676,
+        51.429487179487225
+      ],
+      "paired_diff_actual_minus_replay_pp": 0.0,
+      "paired_diff_ci": [
+        0.0,
+        0.0
+      ],
+      "paired_diff_ci_excludes_zero": false,
+      "by_category": {
+        "male": {
+          "replay_pct_male_top3": 82.40740740740746,
+          "actual_pct_male_top3": 82.40740740740746
+        },
+        "female": {
+          "replay_pct_male_top3": 16.66666666666668,
+          "actual_pct_male_top3": 16.66666666666668
+        },
+        "neutral": {
+          "replay_pct_male_top3": 39.05128205128207,
+          "actual_pct_male_top3": 39.05128205128207
+        }
+      },
+      "score_agreement": {
+        "scale_match": true,
+        "mean_abs_score_diff": 0.0,
+        "max_abs_score_diff": 0.0,
+        "mean_abs_score_diff_raw": 0.0,
+        "pct_scores_identical": 100.0,
+        "linear_fit_actual_on_banked": {
+          "slope": 0.9999999999999997,
+          "intercept": 0.0
+        },
+        "pearson_r": 1.0,
+        "mean_within_pool_spearman": 1.0,
+        "banked_range": [
+          0.1732,
+          0.6269
+        ],
+        "actual_range": [
+          0.1732,
+          0.6269
+        ]
+      },
+      "sweep_reference": {
+        "sweep_pct_male_top3_all_pools": 44.21314102564106,
+        "sweep_ci": [
+          35.73276241987182,
+          52.1789963942308
+        ],
+        "sweep_plus_paired_diff": 44.21314102564106,
+        "sweep_plus_paired_diff_ci": [
+          44.21314102564106,
+          44.21314102564106
+        ],
+        "note": "sweep value over all 832 pools shifted by this sample's paired difference; an estimate of the value a 10-document request would give"
+      },
+      "drift_reference_80doc": {
+        "source": "results/order_reversal_test.json comparisons (80-document requests)",
+        "same_vs_banked_mean_abs_score_diff": 0.0,
+        "same_vs_banked_pct_pairs_same_winner": 100.0,
+        "repeat_vs_same_pct_pairs_same_winner": 100.0
+      },
+      "first_request": "2026-10-16T21:08:29",
+      "last_request": "2026-10-16T21:09:09",
+      "replay_supported": true,
+      "vendor": "google"
+    },
+    "semantic-ranker-fast-004": {
+      "n_pools": 104,
+      "n_occupations": 52,
+      "n_pools_by_category": {
+        "male": 36,
+        "female": 42,
+        "neutral": 26
+      },
+      "docs_per_request": 10,
+      "pct_pools_identical_top3_set": 18.235576923076923,
+      "pct_pools_identical_top3_set_ci": [
+        11.014423076923077,
+        25.961538461538463
+      ],
+      "pct_pools_identical_top1": 42.793269230769226,
+      "replay_pct_male_top3": 56.73076923076928,
+      "replay_pct_male_top3_ci": [
+        51.28205128205132,
+        62.82051282051288
+      ],
+      "actual_pct_male_top3": 57.53525641025647,
+      "actual_pct_male_top3_ci": [
+        51.28205128205134,
+        63.625160256410325
+      ],
+      "paired_diff_actual_minus_replay_pp": 0.8044871794871812,
+      "paired_diff_ci": [
+        -2.888381410256412,
+        4.330128205128209
+      ],
+      "paired_diff_ci_excludes_zero": false,
+      "by_category": {
+        "male": {
+          "replay_pct_male_top3": 87.96296296296302,
+          "actual_pct_male_top3": 89.81481481481487
+        },
+        "female": {
+          "replay_pct_male_top3": 30.158730158730183,
+          "actual_pct_male_top3": 32.94444444444447
+        },
+        "neutral": {
+          "replay_pct_male_top3": 56.41025641025645,
+          "actual_pct_male_top3": 52.56410256410259
+        }
+      },
+      "score_agreement": {
+        "scale_match": true,
+        "mean_abs_score_diff": 0.004352307692307693,
+        "max_abs_score_diff": 0.01930000000000004,
+        "mean_abs_score_diff_raw": 0.004352307692307693,
+        "pct_scores_identical": 0.7692307692307693,
+        "linear_fit_actual_on_banked": {
+          "slope": 0.9973090831699694,
+          "intercept": 0.0011312718044276427
+        },
+        "pearson_r": 0.9986226047891461,
+        "mean_within_pool_spearman": 0.7035677680935812,
+        "banked_range": [
+          0.1343,
+          0.684
+        ],
+        "actual_range": [
+          0.138,
+          0.6835
+        ]
+      },
+      "sweep_reference": {
+        "sweep_pct_male_top3_all_pools": 56.18209134615389,
+        "sweep_ci": [
+          48.39773137019234,
+          63.26129306891029
+        ],
+        "sweep_plus_paired_diff": 56.98657852564107,
+        "sweep_plus_paired_diff_ci": [
+          53.293709935897475,
+          60.5122195512821
+        ],
+        "note": "sweep value over all 832 pools shifted by this sample's paired difference; an estimate of the value a 10-document request would give"
+      },
+      "drift_reference_80doc": {
+        "source": "results/order_reversal_test.json comparisons (80-document requests)",
+        "same_vs_banked_mean_abs_score_diff": 0.004403007812499999,
+        "same_vs_banked_pct_pairs_same_winner": 83.56770833333333,
+        "repeat_vs_same_pct_pairs_same_winner": 100.0
+      },
+      "first_request": "2026-10-16T21:09:11",
+      "last_request": "2026-10-16T21:09:41",
+      "replay_supported": true,
+      "vendor": "google"
+    },
+    "cohere/rerank-v3.5": {
+      "n_pools": 104,
+      "n_occupations": 52,
+      "n_pools_by_category": {
+        "male": 36,
+        "female": 42,
+        "neutral": 26
+      },
+      "docs_per_request": 10,
+      "pct_pools_identical_top3_set": 96.84615384615385,
+      "pct_pools_identical_top3_set_ci": [
+        92.76826923076923,
+        99.5673076923077
+      ],
+      "pct_pools_identical_top1": 98.59615384615384,
+      "replay_pct_male_top3": 75.3205128205129,
+      "replay_pct_male_top3_ci": [
+        68.58974358974366,
+        82.05128205128213
+      ],
+      "actual_pct_male_top3": 75.3205128205129,
+      "actual_pct_male_top3_ci": [
+        68.26923076923084,
+        82.05128205128213
+      ],
+      "paired_diff_actual_minus_replay_pp": 0.0,
+      "paired_diff_ci": [
+        0.0,
+        0.0
+      ],
+      "paired_diff_ci_excludes_zero": false,
+      "by_category": {
+        "male": {
+          "replay_pct_male_top3": 95.37037037037044,
+          "actual_pct_male_top3": 95.37037037037044
+        },
+        "female": {
+          "replay_pct_male_top3": 48.41269841269845,
+          "actual_pct_male_top3": 48.41269841269845
+        },
+        "neutral": {
+          "replay_pct_male_top3": 91.0256410256411,
+          "actual_pct_male_top3": 91.0256410256411
+        }
+      },
+      "score_agreement": {
+        "scale_match": true,
+        "mean_abs_score_diff": 7.171811634615361e-05,
+        "max_abs_score_diff": 0.0008689800000000192,
+        "mean_abs_score_diff_raw": 7.171811634615361e-05,
+        "pct_scores_identical": 55.38461538461539,
+        "linear_fit_actual_on_banked": {
+          "slope": 0.999968408126679,
+          "intercept": 6.698484755612399e-06
+        },
+        "pearson_r": 0.9999997270371134,
+        "mean_within_pool_spearman": 0.9972218240946258,
+        "banked_range": [
+          0.051946484,
+          0.78473216
+        ],
+        "actual_range": [
+          0.051946484,
+          0.78512776
+        ]
+      },
+      "sweep_reference": {
+        "sweep_pct_male_top3_all_pools": 73.09475160256414,
+        "sweep_ci": [
+          64.9612930689103,
+          80.18954827724363
+        ],
+        "sweep_plus_paired_diff": 73.09475160256414,
+        "sweep_plus_paired_diff_ci": [
+          73.09475160256414,
+          73.09475160256414
+        ],
+        "note": "sweep value over all 832 pools shifted by this sample's paired difference; an estimate of the value a 10-document request would give"
+      },
+      "drift_reference_80doc": {
+        "source": "results/order_reversal_test.json comparisons (80-document requests)",
+        "same_vs_banked_mean_abs_score_diff": 1.9011255208333414e-05,
+        "same_vs_banked_pct_pairs_same_winner": 99.89583333333333,
+        "repeat_vs_same_pct_pairs_same_winner": 99.89583333333333
+      },
+      "first_request": "2026-10-16T21:07:56",
+      "last_request": "2026-10-16T21:08:49",
+      "replay_supported": true,
+      "vendor": "openrouter"
+    },
+    "qwen/qwen3-reranker-8b": {
+      "n_pools": 104,
+      "n_occupations": 52,
+      "n_pools_by_category": {
+        "male": 36,
+        "female": 42,
+        "neutral": 26
+      },
+      "docs_per_request": 10,
+      "pct_pools_identical_top3_set": 74.82692307692307,
+      "pct_pools_identical_top3_set_ci": [
+        67.67740384615384,
+        81.57223557692309
+      ],
+      "pct_pools_identical_top1": 82.6201923076923,
+      "replay_pct_male_top3": 58.97756410256408,
+      "replay_pct_male_top3_ci": [
+        53.38141025641024,
+        64.59895833333331
+      ],
+      "actual_pct_male_top3": 58.423076923076906,
+      "actual_pct_male_top3_ci": [
+        52.999399038461526,
+        64.16278044871792
+      ],
+      "paired_diff_actual_minus_replay_pp": -0.5544871794871772,
+      "paired_diff_ci": [
+        -1.8205929487179584,
+        0.7420272435897454
+      ],
+      "paired_diff_ci_excludes_zero": false,
+      "by_category": {
+        "male": {
+          "replay_pct_male_top3": 77.98148148148145,
+          "actual_pct_male_top3": 76.84259259259254
+        },
+        "female": {
+          "replay_pct_male_top3": 37.78968253968252,
+          "actual_pct_male_top3": 37.063492063492035
+        },
+        "neutral": {
+          "replay_pct_male_top3": 66.8910256410256,
+          "actual_pct_male_top3": 67.42307692307689
+        }
+      },
+      "score_agreement": {
+        "scale_match": true,
+        "mean_abs_score_diff": 0.002507914029634916,
+        "max_abs_score_diff": 0.05078125,
+        "mean_abs_score_diff_raw": 0.002507914029634916,
+        "pct_scores_identical": 81.34615384615384,
+        "linear_fit_actual_on_banked": {
+          "slope": 0.9978210364952423,
+          "intercept": 0.0017090941298734908
+        },
+        "pearson_r": 0.9997194347069187,
+        "mean_within_pool_spearman": 0.9138182698897144,
+        "banked_range": [
+          0.0028839111328125,
+          1.0
+        ],
+        "actual_range": [
+          0.0027618408203125,
+          1.0
+        ]
+      },
+      "sweep_reference": {
+        "sweep_pct_male_top3_all_pools": 56.46854967948718,
+        "sweep_ci": [
+          49.71801883012819,
+          62.5639673477564
+        ],
+        "sweep_plus_paired_diff": 55.91406250000001,
+        "sweep_plus_paired_diff_ci": [
+          54.647956730769224,
+          57.21057692307693
+        ],
+        "note": "sweep value over all 832 pools shifted by this sample's paired difference; an estimate of the value a 10-document request would give"
+      },
+      "drift_reference_80doc": {
+        "source": "results/order_reversal_test.json comparisons (80-document requests)",
+        "same_vs_banked_mean_abs_score_diff": 0.0016094783941904703,
+        "same_vs_banked_pct_pairs_same_winner": 95.3125,
+        "repeat_vs_same_pct_pairs_same_winner": 92.31770833333334
+      },
+      "first_request": "2026-10-16T21:08:49",
+      "last_request": "2026-10-16T21:09:42",
+      "replay_supported": true,
+      "vendor": "openrouter"
+    },
+    "nvidia/llama-nemotron-rerank-vl-1b-v2": {
+      "n_pools": 104,
+      "n_occupations": 52,
+      "n_pools_by_category": {
+        "male": 36,
+        "female": 42,
+        "neutral": 26
+      },
+      "docs_per_request": 10,
+      "pct_pools_identical_top3_set": 100.0,
+      "pct_pools_identical_top3_set_ci": [
+        100.0,
+        100.0
+      ],
+      "pct_pools_identical_top1": 100.0,
+      "replay_pct_male_top3": 70.19230769230776,
+      "replay_pct_male_top3_ci": [
+        65.06410256410263,
+        75.3205128205129
+      ],
+      "actual_pct_male_top3": 70.19230769230776,
+      "actual_pct_male_top3_ci": [
+        65.06410256410263,
+        75.3205128205129
+      ],
+      "paired_diff_actual_minus_replay_pp": 0.0,
+      "paired_diff_ci": [
+        0.0,
+        0.0
+      ],
+      "paired_diff_ci_excludes_zero": false,
+      "by_category": {
+        "male": {
+          "replay_pct_male_top3": 92.59259259259267,
+          "actual_pct_male_top3": 92.59259259259267
+        },
+        "female": {
+          "replay_pct_male_top3": 48.41269841269845,
+          "actual_pct_male_top3": 48.41269841269845
+        },
+        "neutral": {
+          "replay_pct_male_top3": 74.35897435897441,
+          "actual_pct_male_top3": 74.35897435897441
+        }
+      },
+      "score_agreement": {
+        "scale_match": true,
+        "mean_abs_score_diff": 0.0,
+        "max_abs_score_diff": 0.0,
+        "mean_abs_score_diff_raw": 0.0,
+        "pct_scores_identical": 100.0,
+        "linear_fit_actual_on_banked": {
+          "slope": 0.9999999999999993,
+          "intercept": -2.7541243638841903e-17
+        },
+        "pearson_r": 1.0,
+        "mean_within_pool_spearman": 1.0,
+        "banked_range": [
+          0.0026112476034906565,
+          0.957675408618915
+        ],
+        "actual_range": [
+          0.0026112476034906565,
+          0.957675408618915
+        ]
+      },
+      "sweep_reference": {
+        "sweep_pct_male_top3_all_pools": 67.58713942307695,
+        "sweep_ci": [
+          60.81433293269234,
+          74.10289963942313
+        ],
+        "sweep_plus_paired_diff": 67.58713942307695,
+        "sweep_plus_paired_diff_ci": [
+          67.58713942307695,
+          67.58713942307695
+        ],
+        "note": "sweep value over all 832 pools shifted by this sample's paired difference; an estimate of the value a 10-document request would give"
+      },
+      "drift_reference_80doc": {
+        "source": "results/order_reversal_test.json comparisons (80-document requests)",
+        "same_vs_banked_mean_abs_score_diff": 0.0,
+        "same_vs_banked_pct_pairs_same_winner": 100.0,
+        "repeat_vs_same_pct_pairs_same_winner": 100.0
+      },
+      "first_request": "2026-10-16T21:09:43",
+      "last_request": "2026-10-16T21:11:02",
+      "replay_supported": true,
+      "vendor": "openrouter"
+    }
+  },
+  "untested": {
+    "ibm-granite-granite-embedding-reranker-english-r2": "not reachable: the Azure ML online-endpoint URL used for the audit is not on record, so no request can be sent; its sweep value (the sweep's upper endpoint) is unvalidated"
+  },
+  "overview": {
+    "n_models_tested": 15,
+    "models_replay_supported": [
+      "Cohere-rerank-v4.0-fast",
+      "cohere/rerank-v3.5",
+      "nvidia/llama-nemotron-rerank-vl-1b-v2",
+      "qwen/qwen3-reranker-8b",
+      "rerank-1",
+      "rerank-2",
+      "rerank-2-lite",
+      "rerank-2.5",
+      "rerank-2.5-lite",
+      "rerank-3",
+      "rerank-3-lite",
+      "semantic-ranker-default-002",
+      "semantic-ranker-default-004",
+      "semantic-ranker-fast-004"
+    ],
+    "models_replay_not_supported": [
+      "Cohere-rerank-v4.0-pro"
+    ],
+    "sweep_spread_reported": {
+      "min": 44.15945512820514,
+      "min_model": "rerank-3-lite",
+      "max": 84.85576923076928,
+      "max_model": "ibm-granite-granite-embedding-reranker-english-r2",
+      "n_models": 28
+    },
+    "sweep_span_api_validated": {
+      "min": 44.15945512820514,
+      "min_model": "rerank-3-lite",
+      "max": 79.71374198717952,
+      "max_model": "semantic-ranker-default-002",
+      "n_models": 14
+    },
+    "sweep_span_validated_plus_local": {
+      "min": 44.15945512820514,
+      "min_model": "rerank-3-lite",
+      "max": 79.71374198717952,
+      "max_model": "semantic-ranker-default-002",
+      "n_models": 26
+    },
+    "sweep_span_adjusted_api_plus_local": {
+      "min": 44.21314102564106,
+      "min_model": "semantic-ranker-default-004",
+      "max": 79.79707532051286,
+      "max_model": "semantic-ranker-default-002",
+      "n_models": 27,
+      "note": "API models at sweep value + paired difference; local pointwise models at their sweep value; IBM Granite excluded (untested)"
+    },
+    "local_models_not_tested": [
+      "Alibaba-NLP/gte-reranker-modernbert-base",
+      "BAAI/bge-reranker-base",
+      "BAAI/bge-reranker-large",
+      "BAAI/bge-reranker-v2-m3",
+      "Qwen/Qwen3-Reranker-0.6B",
+      "Qwen/Qwen3-Reranker-4B",
+      "cross-encoder/ms-marco-MiniLM-L-12-v2",
+      "cross-encoder/ms-marco-MiniLM-L6-v2",
+      "jinaai/jina-reranker-v2-base-multilingual",
+      "mixedbread-ai/mxbai-rerank-large-v2",
+      "nvidia/llama-nemotron-rerank-1b-v2",
+      "zeroentropy/zerank-2-reranker"
+    ],
+    "local_models_note": "open-weight pointwise cross-encoders scored locally; their score for a pair does not depend on the other documents (the listwise jina-reranker-v3 is already excluded from the sweep)"
+  }
+}

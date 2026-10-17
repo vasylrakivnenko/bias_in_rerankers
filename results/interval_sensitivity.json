@@ -1,14 +1,34 @@
 {
-  "script_version": "interval_sensitivity.py v1.0",
-  "generated": "2026-10-16T18:39:17",
+  "script_version": "interval_sensitivity.py v1.1",
+  "generated": "2026-10-16T21:06:00",
   "label_source": "BLS CPS Table 11 via occupations_bls.csv",
-  "bootstrap_B": 2000,
+  "bootstrap_B": 50000,
   "definition": "tie-aware % male-favored, male-typed minus female-typed occupations",
   "n_occupations": 39,
   "n_bls_categories": 37,
-  "n_models_excluding_zero": {
+  "n_models": 29,
+  "n_models_above_zero": {
     "occupation": 27,
     "bls_category": 27,
+    "occupation_x_name": 27
+  },
+  "n_models_below_zero": {
+    "occupation": 1,
+    "bls_category": 1,
+    "occupation_x_name": 0
+  },
+  "models_below_zero": {
+    "occupation": [
+      "Alibaba-NLP/gte-reranker-modernbert-base"
+    ],
+    "bls_category": [
+      "Alibaba-NLP/gte-reranker-modernbert-base"
+    ],
+    "occupation_x_name": []
+  },
+  "n_models_excluding_zero": {
+    "occupation": 28,
+    "bls_category": 28,
     "occupation_x_name": 27
   },
   "models": {
@@ -17,23 +37,29 @@
       "schemes": {
         "occupation": {
           "ci": [
-            -12.754092261904754,
-            0.06448412698411961
+            -12.693452380952372,
+            -0.28757440476188934
           ],
-          "excludes_zero": false
+          "above_zero": false,
+          "below_zero": true,
+          "excludes_zero": true
         },
         "bls_category": {
           "ci": [
-            -12.687591911764713,
-            -0.06181665601023365
+            -12.777777777777779,
+            -0.4631758764111722
           ],
-          "excludes_zero": false
+          "above_zero": false,
+          "below_zero": true,
+          "excludes_zero": true
         },
         "occupation_x_name": {
           "ci": [
-            -13.923983134920631,
-            0.6649305555555455
+            -13.938492063492063,
+            0.4761904761904816
           ],
+          "above_zero": false,
+          "below_zero": false,
           "excludes_zero": false
         }
       }
@@ -43,23 +69,29 @@
       "schemes": {
         "occupation": {
           "ci": [
-            8.873759920634921,
-            30.461805555555557
+            8.933531746031747,
+            30.575520833333343
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "bls_category": {
           "ci": [
-            8.918167162698417,
-            31.294382241532976
+            8.038103070175437,
+            31.16882768732493
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "occupation_x_name": {
           "ci": [
-            8.893229166666663,
-            31.018229166666664
+            8.268725198412694,
+            30.92261904761905
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         }
       }
@@ -69,23 +101,29 @@
       "schemes": {
         "occupation": {
           "ci": [
-            14.434523809523817,
-            25.615203373015866
+            14.20634920634921,
+            25.550595238095234
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "bls_category": {
           "ci": [
-            13.750000000000007,
-            25.6729797979798
+            13.78125,
+            25.94307379201681
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "occupation_x_name": {
           "ci": [
-            12.623759920634921,
-            27.29191468253968
+            12.757936507936513,
+            27.361111111111107
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         }
       }
@@ -95,23 +133,29 @@
       "schemes": {
         "occupation": {
           "ci": [
-            6.686383928571415,
-            24.742311507936517
+            6.4533730158730265,
+            25.595238095238088
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "bls_category": {
           "ci": [
-            5.315538194444437,
-            25.59715806159419
+            5.43010110294117,
+            25.922460466660127
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "occupation_x_name": {
           "ci": [
-            5.7682291666666625,
-            25.76884920634921
+            5.734126984126988,
+            25.96230158730158
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         }
       }
@@ -121,23 +165,29 @@
       "schemes": {
         "occupation": {
           "ci": [
-            23.272817460317455,
-            39.84678819444445
+            22.876860119047628,
+            39.789186507936506
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "bls_category": {
           "ci": [
-            22.02919660762032,
-            40.197323902387026
+            22.272016841275992,
+            40.235643734168306
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "occupation_x_name": {
           "ci": [
-            22.178075396825392,
-            40.201450892857146
+            22.105592757936513,
+            40.36954365079365
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         }
       }
@@ -147,23 +197,29 @@
       "schemes": {
         "occupation": {
           "ci": [
-            33.4594494047619,
-            48.40829613095238
+            33.541604662698404,
+            48.27387152777779
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "bls_category": {
           "ci": [
-            32.942328285480855,
-            48.55368755086027
+            32.9190312062325,
+            48.63668592436974
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "occupation_x_name": {
           "ci": [
-            29.062375992063487,
-            52.97662450396825
+            29.1468253968254,
+            53.020833333333336
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         }
       }
@@ -173,23 +229,29 @@
       "schemes": {
         "occupation": {
           "ci": [
-            17.216579861111118,
-            37.48611111111109
+            16.99150545634921,
+            37.750620039682545
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "bls_category": {
           "ci": [
-            16.388277679492848,
-            37.980852714727185
+            16.525420321637426,
+            37.93402877097635
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "occupation_x_name": {
           "ci": [
-            16.25390625,
-            38.1259300595238
+            16.49801587301588,
+            38.32837301587302
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         }
       }
@@ -199,23 +261,29 @@
       "schemes": {
         "occupation": {
           "ci": [
-            14.825024801587306,
-            28.5579117063492
+            14.722160218253968,
+            28.613653273809522
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "bls_category": {
           "ci": [
-            14.112730508870214,
-            28.751519097222207
+            14.124925595238096,
+            29.092613288213016
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "occupation_x_name": {
           "ci": [
-            13.962673611111105,
-            29.097408234126984
+            13.859126984126988,
+            29.22377232142858
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         }
       }
@@ -225,23 +293,29 @@
       "schemes": {
         "occupation": {
           "ci": [
-            26.172867063492067,
-            48.044952876984105
+            26.302083333333336,
+            48.36811755952382
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "bls_category": {
           "ci": [
-            24.51539884868421,
-            49.63178893716575
+            25.05951597744361,
+            49.67716991687979
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "occupation_x_name": {
           "ci": [
-            25.67677331349206,
-            49.22724454365079
+            25.617559523809533,
+            49.33537946428572
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         }
       }
@@ -251,23 +325,29 @@
       "schemes": {
         "occupation": {
           "ci": [
-            12.822296626984125,
-            40.90910218253967
+            12.772693452380947,
+            39.98524305555556
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "bls_category": {
           "ci": [
-            11.516493055555559,
-            40.06045940258253
+            12.0625,
+            39.93059895833334
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "occupation_x_name": {
           "ci": [
-            12.598462301587308,
-            39.435515873015866
+            12.375868055555555,
+            40.387028769841265
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         }
       }
@@ -277,23 +357,29 @@
       "schemes": {
         "occupation": {
           "ci": [
-            12.869667658730172,
-            36.95498511904762
+            13.16951884920634,
+            37.4108382936508
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "bls_category": {
           "ci": [
-            11.695793942577028,
-            36.27899236934562
+            12.548577556022412,
+            37.25483868288145
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "occupation_x_name": {
           "ci": [
-            13.456845238095234,
-            37.39707341269838
+            12.782738095238102,
+            37.738095238095234
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         }
       }
@@ -303,23 +389,29 @@
       "schemes": {
         "occupation": {
           "ci": [
-            9.477926587301592,
-            22.045262896825392
+            9.340277777777771,
+            21.820560515873034
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "bls_category": {
           "ci": [
-            8.974238445378147,
-            22.14982117167519
+            8.864583333333329,
+            21.903409090909093
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "occupation_x_name": {
           "ci": [
-            8.10962301587302,
-            24.028025793650787
+            7.7480158730158735,
+            24.131944444444443
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         }
       }
@@ -329,23 +421,29 @@
       "schemes": {
         "occupation": {
           "ci": [
-            5.467633928571429,
-            22.898995535714278
+            5.736607142857139,
+            22.658730158730158
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "bls_category": {
           "ci": [
-            6.044658175770305,
-            22.514376613883186
+            5.6919394841269835,
+            22.4397510026738
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "occupation_x_name": {
           "ci": [
-            5.268105158730155,
-            23.039000496031743
+            4.677517361111113,
+            23.377976190476193
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         }
       }
@@ -355,23 +453,29 @@
       "schemes": {
         "occupation": {
           "ci": [
-            -1.6418650793650826,
-            3.6161954365079376
+            -1.8650793650793673,
+            3.4771825396825413
           ],
+          "above_zero": false,
+          "below_zero": false,
           "excludes_zero": false
         },
         "bls_category": {
           "ci": [
-            -1.859737540849674,
-            3.4922020315042963
+            -1.8055555555555536,
+            3.420889567948392
           ],
+          "above_zero": false,
+          "below_zero": false,
           "excludes_zero": false
         },
         "occupation_x_name": {
           "ci": [
-            -3.2193700396825395,
-            4.980282738095238
+            -3.0456349206349245,
+            4.851190476190482
           ],
+          "above_zero": false,
+          "below_zero": false,
           "excludes_zero": false
         }
       }
@@ -381,23 +485,29 @@
       "schemes": {
         "occupation": {
           "ci": [
-            14.344928075396833,
-            27.291852678571423
+            14.327876984126988,
+            27.37605406746032
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "bls_category": {
           "ci": [
-            14.615749737394955,
-            27.2176967254293
+            14.017801339285718,
+            27.254016069385425
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "occupation_x_name": {
           "ci": [
-            12.817274305555555,
-            28.58940972222222
+            12.96875,
+            28.74007936507936
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         }
       }
@@ -407,23 +517,29 @@
       "schemes": {
         "occupation": {
           "ci": [
-            33.06417410714284,
-            53.11036706349207
+            32.938988095238095,
+            53.333333333333336
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "bls_category": {
           "ci": [
-            32.67961380724539,
-            52.8198271780303
+            32.90992647058824,
+            53.32529931006494
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "occupation_x_name": {
           "ci": [
-            31.856274801587297,
-            55.01674107142856
+            32.09573412698413,
+            54.30307539682539
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         }
       }
@@ -433,23 +549,29 @@
       "schemes": {
         "occupation": {
           "ci": [
-            24.525731646825392,
-            39.427145337301575
+            24.650297619047628,
+            39.53125
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "bls_category": {
           "ci": [
-            24.27253370098039,
-            39.609224033816425
+            24.296792935924376,
+            39.58159309919621
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "occupation_x_name": {
           "ci": [
-            23.67051091269841,
-            39.7250744047619
+            24.012834821428577,
+            40.17857142857142
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         }
       }
@@ -459,23 +581,29 @@
       "schemes": {
         "occupation": {
           "ci": [
-            25.959387400793652,
-            37.371217757936506
+            25.900235615079353,
+            37.41821676587302
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "bls_category": {
           "ci": [
-            25.37230282738095,
-            37.86530748663102
+            25.34592633928571,
+            37.817126921791456
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "occupation_x_name": {
           "ci": [
-            24.590525793650794,
-            38.84554811507935
+            24.424603174603178,
+            38.901289682539684
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         }
       }
@@ -485,23 +613,29 @@
       "schemes": {
         "occupation": {
           "ci": [
-            22.01866319444444,
-            41.65600198412697
+            21.651723710317462,
+            41.60968501984128
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "bls_category": {
           "ci": [
-            20.952821180555567,
-            41.9071369263285
+            20.75183568218954,
+            42.200306234153736
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "occupation_x_name": {
           "ci": [
-            19.928075396825406,
-            42.86607142857142
+            20.31001984126985,
+            43.050595238095234
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         }
       }
@@ -511,23 +645,29 @@
       "schemes": {
         "occupation": {
           "ci": [
-            46.64899553571428,
-            67.47805059523807
+            46.651661706349195,
+            67.43309771825398
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "bls_category": {
           "ci": [
-            46.14388786764706,
-            67.79605263157892
+            46.09281665791317,
+            67.70630300174992
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "occupation_x_name": {
           "ci": [
-            46.95405505952382,
-            67.35174851190474
+            46.180431547619044,
+            67.67379712301589
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         }
       }
@@ -537,23 +677,29 @@
       "schemes": {
         "occupation": {
           "ci": [
-            12.392857142857139,
-            25.637524801587293
+            12.147817460317462,
+            25.82347470238096
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "bls_category": {
           "ci": [
-            12.262680640437996,
-            25.748219709079283
+            12.26189912518038,
+            25.865593998015875
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "occupation_x_name": {
           "ci": [
-            10.87797619047619,
-            27.009238591269845
+            11.140873015873016,
+            26.974206349206344
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         }
       }
@@ -563,23 +709,29 @@
       "schemes": {
         "occupation": {
           "ci": [
-            48.14608134920635,
-            68.00186011904762
+            47.77771577380952,
+            67.39093501984127
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "bls_category": {
           "ci": [
-            47.37404513888889,
-            67.33882854278073
+            47.20680147058823,
+            67.32286920823951
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "occupation_x_name": {
           "ci": [
-            45.6742931547619,
-            69.05766369047618
+            45.60509672619048,
+            69.01295882936508
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         }
       }
@@ -589,23 +741,29 @@
       "schemes": {
         "occupation": {
           "ci": [
-            27.463603670634928,
-            42.364025297619044
+            27.713231646825392,
+            42.50992063492063
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "bls_category": {
           "ci": [
-            27.233675986842105,
-            43.79944435160427
+            26.98138640873016,
+            43.41657913165267
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "occupation_x_name": {
           "ci": [
-            27.10522073412698,
-            42.88014632936508
+            27.113033234126988,
+            43.18954613095239
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         }
       }
@@ -615,23 +773,29 @@
       "schemes": {
         "occupation": {
           "ci": [
-            50.337239583333336,
-            70.84951636904762
+            50.26283482142857,
+            71.02926587301587
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "bls_category": {
           "ci": [
-            49.214039522058826,
-            70.703125
+            49.47148182189542,
+            71.35781528520498
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "occupation_x_name": {
           "ci": [
-            49.554811507936506,
-            71.99187748015872
+            49.51128472222222,
+            71.4484126984127
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         }
       }
@@ -641,23 +805,29 @@
       "schemes": {
         "occupation": {
           "ci": [
-            42.575892857142854,
-            56.15339781746031
+            42.529761904761905,
+            56.45089285714286
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "bls_category": {
           "ci": [
-            42.45637400793651,
-            56.369963089402425
+            42.499205619747904,
+            56.46475422555386
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "occupation_x_name": {
           "ci": [
-            41.214719742063494,
-            58.24410962301587
+            41.29464285714286,
+            57.92162698412698
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         }
       }
@@ -667,23 +837,29 @@
       "schemes": {
         "occupation": {
           "ci": [
-            12.940538194444443,
-            37.47557043650793
+            12.889322916666671,
+            37.581969246031754
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "bls_category": {
           "ci": [
-            11.817892156862744,
-            37.26765873015873
+            11.94199382878151,
+            37.94213736631016
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "occupation_x_name": {
           "ci": [
-            12.899119543650782,
-            38.20473710317457
+            12.504960317460316,
+            38.17212301587301
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         }
       }
@@ -693,23 +869,29 @@
       "schemes": {
         "occupation": {
           "ci": [
-            33.78652033730159,
-            52.071924603174594
+            34.48164682539682,
+            52.01140873015873
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "bls_category": {
           "ci": [
-            34.50618106617647,
-            51.71779680023923
+            34.08627249419505,
+            52.00802593837402
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "occupation_x_name": {
           "ci": [
-            33.432539682539684,
-            53.22581845238095
+            33.81944444444444,
+            52.86706349206349
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         }
       }
@@ -719,23 +901,29 @@
       "schemes": {
         "occupation": {
           "ci": [
-            29.685019841269835,
-            46.396949404761905
+            29.823846726190474,
+            46.569940476190474
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "bls_category": {
           "ci": [
-            29.656597222222224,
-            46.61497961956521
+            29.559205957602344,
+            46.686624419504646
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "occupation_x_name": {
           "ci": [
-            29.367559523809526,
-            47.57694692460318
+            29.089781746031747,
+            47.616629464285715
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         }
       }
@@ -745,23 +933,29 @@
       "schemes": {
         "occupation": {
           "ci": [
-            53.30338541666668,
-            76.21812996031746
+            52.886842757936506,
+            76.23766121031746
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "bls_category": {
           "ci": [
-            52.4072730654762,
-            75.81641719187675
+            52.767844742063495,
+            76.17555256477591
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         },
         "occupation_x_name": {
           "ci": [
-            53.066716269841265,
-            76.66220238095238
+            52.27672371031746,
+            76.8204365079365
           ],
+          "above_zero": true,
+          "below_zero": false,
           "excludes_zero": true
         }
       }
