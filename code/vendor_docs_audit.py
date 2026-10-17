@@ -80,6 +80,19 @@ def load() -> tuple[dict, dict]:
     return audit, summary
 
 
+def scoped(audit: dict, summary: dict) -> dict:
+    """The scored models this documentation audit covers.
+
+    The audit documents the vendors of the models scored on one date
+    (`population_scored_date`). Rerankers added to the empirical paper later are
+    outside it until their vendors' documentation is audited too, so they are
+    left out here rather than silently treated as audited.
+    """
+    date = audit["population_scored_date"]
+    models = {m: e for m, e in summary["models"].items() if e["date_scored"] == date}
+    return {**summary, "models": models, "n_models": len(models)}
+
+
 def check_population(audit: dict, summary: dict) -> dict[str, list[str]]:
     """Join the audit to the scored models, failing loudly on any mismatch.
 
@@ -87,6 +100,7 @@ def check_population(audit: dict, summary: dict) -> dict[str, list[str]]:
     the audit cannot drift out of step with the model set: adding a re-ranker to
     the paper without auditing its vendor breaks this run.
     """
+    summary = scoped(audit, summary)
     audited = set(audit["vendors"])
     by_vendor: dict[str, list[str]] = defaultdict(list)
     for name, entry in summary["models"].items():
@@ -131,6 +145,7 @@ def tally(audit: dict, by_vendor: dict[str, list[str]]) -> dict:
 
 def main() -> None:
     audit, summary = load()
+    summary = scoped(audit, summary)
     by_vendor = check_population(audit, summary)
     counts = tally(audit, by_vendor)
 

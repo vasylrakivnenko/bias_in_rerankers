@@ -1,6 +1,6 @@
 {
-  "script_version": "deidentification_experiment.py v3.0 (REVIEW_ROUND2 A1/A3/A7)",
-  "generated": "2026-09-04T16:49:42",
+  "script_version": "deidentification_experiment.py v3.1 (same-run baseline on failed determinism; pair-level release)",
+  "generated": "2026-10-16T18:42:32",
   "label_source": "BLS CPS Table 11 via occupations_bls.csv",
   "seed": 20260822,
   "bootstrap_B": 1000,
@@ -18,15 +18,25 @@
     "BAAI/bge-reranker-v2-m3": {
       "reranker": "BAAI/bge-reranker-v2-m3",
       "device": "mps",
+      "model_revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+      "runtime": {
+        "torch": "2.10.0",
+        "transformers": "5.2.0",
+        "sentence_transformers": "5.2.3",
+        "max_length": 512,
+        "batch_size": 64,
+        "date": "2026-10-16"
+      },
       "baseline_source": "banked raw scores (bge-reranker-v2-m3_full_raw.json)",
       "name_placeholder": "the candidate",
       "n_triples": 8320,
       "determinism_check": {
+        "status": "checked",
+        "baseline_source": "banked raw scores (bge-reranker-v2-m3_full_raw.json)",
         "max_abs_score_diff": 2.2858381271362305e-05,
         "mean_abs_score_diff": 2.886081067397474e-07,
         "passed": true,
-        "status": "checked",
-        "baseline_source": "banked raw scores (bge-reranker-v2-m3_full_raw.json)"
+        "note": null
       },
       "conditions": {
         "original": {
@@ -1640,8 +1650,8 @@
           "top1_pct_delta_vs_original": 0.360576923076934
         }
       },
-      "script_version": "deidentification_experiment.py v3.0 (REVIEW_ROUND2 A1/A3/A7)",
-      "generated": "2026-08-22T18:37:30",
+      "script_version": "deidentification_experiment.py v3.1 (same-run baseline on failed determinism; pair-level release)",
+      "generated": "2026-10-16T17:12:27",
       "label_source": "BLS CPS Table 11 via occupations_bls.csv",
       "seed": 20260822,
       "bootstrap_B": 1000,
@@ -1659,16 +1669,25 @@
     "BAAI/bge-reranker-base": {
       "reranker": "BAAI/bge-reranker-base",
       "device": "mps",
+      "model_revision": "2cfc18c9415c912f9d8155881c133215df768a70",
+      "runtime": {
+        "torch": "2.10.0",
+        "transformers": "5.2.0",
+        "sentence_transformers": "5.2.3",
+        "max_length": 512,
+        "batch_size": 64,
+        "date": "2026-10-16"
+      },
       "baseline_source": "scored locally in this run (variant `none`, no lowercasing)",
       "name_placeholder": "the candidate",
       "n_triples": 8320,
       "determinism_check": {
+        "status": "skipped",
+        "baseline_source": "scored locally in this run (variant `none`, no lowercasing)",
         "max_abs_score_diff": null,
         "mean_abs_score_diff": null,
         "passed": null,
-        "status": "skipped",
-        "baseline_source": "scored locally in this run (variant `none`, no lowercasing)",
-        "note": "No banked baseline exists for this model, so `original` was scored locally in this run. A self-comparison always yields 0.0 and is not evidence of cross-run reproducibility."
+        "note": "No banked baseline exists for this model, so `original` was scored locally in this run. Comparing it against a second local scoring of the same strings is self-referential and always yields 0.0; it is NOT evidence of cross-run reproducibility, so no verdict is reported."
       },
       "conditions": {
         "original": {
@@ -3282,8 +3301,8 @@
           "top1_pct_delta_vs_original": 0.3605769230769198
         }
       },
-      "script_version": "deidentification_experiment.py v3.0 (REVIEW_ROUND2 A1/A3/A7)",
-      "generated": "2026-08-22T18:37:30",
+      "script_version": "deidentification_experiment.py v3.1 (same-run baseline on failed determinism; pair-level release)",
+      "generated": "2026-10-16T17:12:27",
       "label_source": "BLS CPS Table 11 via occupations_bls.csv",
       "seed": 20260822,
       "bootstrap_B": 1000,
@@ -3301,15 +3320,25 @@
     "cross-encoder/ms-marco-MiniLM-L-12-v2": {
       "reranker": "cross-encoder/ms-marco-MiniLM-L-12-v2",
       "device": "mps",
+      "model_revision": "7b0235231ca2674cb8ca8f022859a6eba2b1c968",
+      "runtime": {
+        "torch": "2.10.0",
+        "transformers": "5.2.0",
+        "sentence_transformers": "5.2.3",
+        "max_length": 512,
+        "batch_size": 64,
+        "date": "2026-10-16"
+      },
       "baseline_source": "banked raw scores (ms-marco-MiniLM-L-12-v2_full_raw.json)",
       "name_placeholder": "the candidate",
       "n_triples": 8320,
       "determinism_check": {
+        "status": "checked",
+        "baseline_source": "banked raw scores (ms-marco-MiniLM-L-12-v2_full_raw.json)",
         "max_abs_score_diff": 7.033348083496094e-06,
         "mean_abs_score_diff": 1.000321488111065e-06,
         "passed": true,
-        "status": "checked",
-        "baseline_source": "banked raw scores (ms-marco-MiniLM-L-12-v2_full_raw.json)"
+        "note": null
       },
       "conditions": {
         "original": {
@@ -4923,8 +4952,8 @@
           "top1_pct_delta_vs_original": 0.12019230769229239
         }
       },
-      "script_version": "deidentification_experiment.py v3.0 (REVIEW_ROUND2 A1/A3/A7)",
-      "generated": "2026-08-22T18:37:30",
+      "script_version": "deidentification_experiment.py v3.1 (same-run baseline on failed determinism; pair-level release)",
+      "generated": "2026-10-16T17:12:27",
       "label_source": "BLS CPS Table 11 via occupations_bls.csv",
       "seed": 20260822,
       "bootstrap_B": 1000,
@@ -4942,62 +4971,73 @@
     "jinaai/jina-reranker-v2-base-multilingual": {
       "reranker": "jinaai/jina-reranker-v2-base-multilingual",
       "device": "mps",
-      "baseline_source": "banked raw scores (jina-reranker-v2-base-multilingual_full_raw.json)",
+      "model_revision": "9cfeff2df7d40d1b78e75e5e9cebec92a99813c9",
+      "runtime": {
+        "torch": "2.10.0",
+        "transformers": "5.2.0",
+        "sentence_transformers": "5.2.3",
+        "max_length": 512,
+        "batch_size": 64,
+        "date": "2026-10-16"
+      },
+      "baseline_source": "scored locally in this run (variant `none`, no lowercasing); the banked baseline failed the determinism check",
       "name_placeholder": "the candidate",
       "n_triples": 8320,
       "determinism_check": {
+        "status": "checked",
+        "baseline_source": "banked raw scores (jina-reranker-v2-base-multilingual_full_raw.json)",
         "max_abs_score_diff": 0.01171875,
         "mean_abs_score_diff": 0.0004444415752704327,
         "passed": false,
-        "status": "checked",
-        "baseline_source": "banked raw scores (jina-reranker-v2-base-multilingual_full_raw.json)"
+        "note": null,
+        "baseline_replaced": true
       },
       "conditions": {
         "original": {
           "overall": {
             "n": 8320,
             "n_occupations": 52,
-            "pct_male": 38.52163461538461,
-            "pct_tie": 6.766826923076923,
-            "pct_female": 54.71153846153846,
-            "tie_aware_pct_male": 41.90504807692308,
+            "pct_male": 38.54567307692308,
+            "pct_tie": 6.670673076923077,
+            "pct_female": 54.78365384615385,
+            "tie_aware_pct_male": 41.88100961538461,
             "n_stereotyped": 6240,
-            "stereotype_match_rate": 54.407051282051285,
-            "tie_aware_stereotype_match_rate": 57.732371794871796,
+            "stereotype_match_rate": 54.61538461538461,
+            "tie_aware_stereotype_match_rate": 57.94871794871795,
             "pct_male_ci": [
-              34.16947115384616,
-              42.43990384615385
+              34.25450721153846,
+              42.40384615384615
             ],
             "pct_tie_ci": [
-              6.009615384615385,
+              5.817007211538462,
               7.572415865384616
             ],
             "pct_female_ci": [
-              50.76893028846153,
-              59.13461538461539
+              50.84014423076923,
+              59.31520432692308
             ],
             "tie_aware_pct_male_ci": [
-              37.55994591346154,
-              45.79402043269231
+              37.45748197115385,
+              45.72761418269231
             ],
             "stereotype_match_rate_ci": [
-              49.21511801861703,
-              60.03928786057692
+              49.325781250000006,
+              60.29248046875
             ],
             "tie_aware_stereotype_match_rate_ci": [
-              52.62317316729324,
-              63.08631310096154
+              52.85924136513158,
+              63.3400236430921
             ],
-            "mean_abs_delta": 0.018619009164663462,
+            "mean_abs_delta": 0.01860668475811298,
             "mean_abs_delta_ci": [
-              0.017190516545222353,
-              0.02028225531944862
+              0.017181786757249098,
+              0.020259557870718148
             ]
           },
-          "mean_abs_delta": 0.018619009164663462,
+          "mean_abs_delta": 0.01860668475811298,
           "mean_abs_delta_ci": [
-            0.017190516545222353,
-            0.02028225531944862
+            0.017181786757249098,
+            0.020259557870718148
           ],
           "pct_pairs_identical_text": 0.0,
           "pct_pairs_with_residue": 100.0,
@@ -5014,126 +5054,126 @@
               "n": 2880,
               "n_occupations": 18,
               "pct_male": 45.90277777777778,
-              "pct_tie": 6.840277777777778,
-              "pct_female": 47.25694444444444,
-              "tie_aware_pct_male": 49.322916666666664,
+              "pct_tie": 7.326388888888889,
+              "pct_female": 46.770833333333336,
+              "tie_aware_pct_male": 49.56597222222222,
               "n_stereotyped": 2880,
               "stereotype_match_rate": 45.90277777777778,
-              "tie_aware_stereotype_match_rate": 49.322916666666664,
+              "tie_aware_stereotype_match_rate": 49.56597222222222,
               "pct_male_ci": [
-                40.10329861111111,
-                51.5625
+                40.10243055555555,
+                51.73784722222222
               ],
               "pct_tie_ci": [
-                5.763888888888889,
-                7.952256944444444
+                5.9375,
+                8.784722222222221
               ],
               "pct_female_ci": [
-                41.388888888888886,
-                53.33680555555556
+                40.97222222222222,
+                52.815104166666664
               ],
               "tie_aware_pct_male_ci": [
-                43.41927083333333,
-                55.03645833333333
+                43.765625,
+                55.34765625
               ],
               "stereotype_match_rate_ci": [
-                40.10329861111111,
-                51.5625
+                40.10243055555555,
+                51.73784722222222
               ],
               "tie_aware_stereotype_match_rate_ci": [
-                43.41927083333333,
-                55.03645833333333
+                43.765625,
+                55.34765625
               ],
-              "mean_abs_delta": 0.017898898654513887,
+              "mean_abs_delta": 0.017837863498263887,
               "mean_abs_delta_ci": [
-                0.016756379869249133,
-                0.019157647026909724
+                0.016712765163845483,
+                0.019073554144965275
               ]
             },
             "female": {
               "n": 3360,
               "n_occupations": 21,
               "pct_male": 31.81547619047619,
-              "pct_tie": 6.488095238095238,
-              "pct_female": 61.69642857142857,
-              "tie_aware_pct_male": 35.05952380952381,
+              "pct_tie": 6.101190476190476,
+              "pct_female": 62.083333333333336,
+              "tie_aware_pct_male": 34.86607142857143,
               "n_stereotyped": 3360,
-              "stereotype_match_rate": 61.69642857142857,
-              "tie_aware_stereotype_match_rate": 64.94047619047619,
+              "stereotype_match_rate": 62.083333333333336,
+              "tie_aware_stereotype_match_rate": 65.13392857142857,
               "pct_male_ci": [
-                26.071428571428573,
-                37.263392857142854
+                26.189732142857142,
+                37.114583333333336
               ],
               "pct_tie_ci": [
-                5.089285714285714,
-                8.303571428571429
+                4.613095238095238,
+                7.7976190476190474
               ],
               "pct_female_ci": [
-                55.80282738095238,
-                67.85863095238095
+                56.248511904761905,
+                68.36532738095238
               ],
               "tie_aware_pct_male_ci": [
-                29.16592261904762,
-                40.6703869047619
+                28.94345238095238,
+                40.40215773809524
               ],
               "stereotype_match_rate_ci": [
-                55.80282738095238,
-                67.85863095238095
+                56.248511904761905,
+                68.36532738095238
               ],
               "tie_aware_stereotype_match_rate_ci": [
-                59.329613095238095,
-                70.83407738095238
+                59.59784226190476,
+                71.05654761904762
               ],
-              "mean_abs_delta": 0.01924467540922619,
+              "mean_abs_delta": 0.019271123976934524,
               "mean_abs_delta_ci": [
-                0.016025928315662203,
-                0.023209155854724703
+                0.016051577613467264,
+                0.02322809128534226
               ]
             },
             "neutral": {
               "n": 2080,
               "n_occupations": 13,
-              "pct_male": 39.13461538461539,
-              "pct_tie": 7.115384615384615,
-              "pct_female": 53.75,
-              "tie_aware_pct_male": 42.69230769230769,
+              "pct_male": 39.23076923076923,
+              "pct_tie": 6.6826923076923075,
+              "pct_female": 54.08653846153846,
+              "tie_aware_pct_male": 42.57211538461539,
               "pct_male_ci": [
-                30.47716346153846,
-                48.22355769230769
+                30.478365384615383,
+                48.41586538461539
               ],
               "pct_tie_ci": [
-                5.961538461538462,
-                8.413461538461538
+                5.528846153846154,
+                8.076923076923077
               ],
               "pct_female_ci": [
-                44.99879807692308,
-                62.16346153846154
+                45.71875,
+                62.26201923076923
               ],
               "tie_aware_pct_male_ci": [
-                34.37259615384615,
-                51.58834134615384
+                34.32151442307693,
+                51.44230769230769
               ],
-              "mean_abs_delta": 0.018605393629807693,
+              "mean_abs_delta": 0.018597881610576922,
               "mean_abs_delta_ci": [
-                0.017317152756911057,
-                0.019894186166616586
+                0.01731701190655048,
+                0.019890042818509614
               ]
             }
           },
-          "tie_rate": 0.06766826923076924,
+          "tie_rate": 0.06670673076923077,
           "pct_male": {
             "male": 0.4590277777777778,
             "female": 0.3181547619047619,
-            "neutral": 0.39134615384615384
+            "neutral": 0.39230769230769236
           },
           "bdi_male": 0.4590277777777778,
-          "bdi_female": 0.6169642857142857,
+          "bdi_female": 0.6208333333333333,
           "residue_only": {
             "n_pct_of_pairs": 100.0,
-            "pct_male": 38.52163461538461,
-            "pct_tie": 6.766826923076923,
-            "pct_female": 54.71153846153846,
-            "tie_aware_pct_male": 41.90504807692307
+            "pct_male": 38.54567307692308,
+            "pct_tie": 6.670673076923077,
+            "pct_female": 54.78365384615385,
+            "tie_aware_pct_male": 41.88100961538462
           }
         },
         "lowercase_only": {
@@ -6564,8 +6604,8 @@
           "top1_pct_delta_vs_original": 0.6009615384615472
         }
       },
-      "script_version": "deidentification_experiment.py v3.0 (REVIEW_ROUND2 A1/A3/A7)",
-      "generated": "2026-08-22T18:37:30",
+      "script_version": "deidentification_experiment.py v3.1 (same-run baseline on failed determinism; pair-level release)",
+      "generated": "2026-10-16T17:12:27",
       "label_source": "BLS CPS Table 11 via occupations_bls.csv",
       "seed": 20260822,
       "bootstrap_B": 1000,

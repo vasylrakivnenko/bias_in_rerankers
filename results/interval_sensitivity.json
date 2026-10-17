@@ -1,0 +1,770 @@
+{
+  "script_version": "interval_sensitivity.py v1.0",
+  "generated": "2026-10-16T18:39:17",
+  "label_source": "BLS CPS Table 11 via occupations_bls.csv",
+  "bootstrap_B": 2000,
+  "definition": "tie-aware % male-favored, male-typed minus female-typed occupations",
+  "n_occupations": 39,
+  "n_bls_categories": 37,
+  "n_models_excluding_zero": {
+    "occupation": 27,
+    "bls_category": 27,
+    "occupation_x_name": 27
+  },
+  "models": {
+    "Alibaba-NLP/gte-reranker-modernbert-base": {
+      "contrast": -6.731150793650798,
+      "schemes": {
+        "occupation": {
+          "ci": [
+            -12.754092261904754,
+            0.06448412698411961
+          ],
+          "excludes_zero": false
+        },
+        "bls_category": {
+          "ci": [
+            -12.687591911764713,
+            -0.06181665601023365
+          ],
+          "excludes_zero": false
+        },
+        "occupation_x_name": {
+          "ci": [
+            -13.923983134920631,
+            0.6649305555555455
+          ],
+          "excludes_zero": false
+        }
+      }
+    },
+    "BAAI/bge-reranker-base": {
+      "contrast": 19.781746031746025,
+      "schemes": {
+        "occupation": {
+          "ci": [
+            8.873759920634921,
+            30.461805555555557
+          ],
+          "excludes_zero": true
+        },
+        "bls_category": {
+          "ci": [
+            8.918167162698417,
+            31.294382241532976
+          ],
+          "excludes_zero": true
+        },
+        "occupation_x_name": {
+          "ci": [
+            8.893229166666663,
+            31.018229166666664
+          ],
+          "excludes_zero": true
+        }
+      }
+    },
+    "BAAI/bge-reranker-large": {
+      "contrast": 19.766865079365083,
+      "schemes": {
+        "occupation": {
+          "ci": [
+            14.434523809523817,
+            25.615203373015866
+          ],
+          "excludes_zero": true
+        },
+        "bls_category": {
+          "ci": [
+            13.750000000000007,
+            25.6729797979798
+          ],
+          "excludes_zero": true
+        },
+        "occupation_x_name": {
+          "ci": [
+            12.623759920634921,
+            27.29191468253968
+          ],
+          "excludes_zero": true
+        }
+      }
+    },
+    "BAAI/bge-reranker-v2-m3": {
+      "contrast": 15.114087301587304,
+      "schemes": {
+        "occupation": {
+          "ci": [
+            6.686383928571415,
+            24.742311507936517
+          ],
+          "excludes_zero": true
+        },
+        "bls_category": {
+          "ci": [
+            5.315538194444437,
+            25.59715806159419
+          ],
+          "excludes_zero": true
+        },
+        "occupation_x_name": {
+          "ci": [
+            5.7682291666666625,
+            25.76884920634921
+          ],
+          "excludes_zero": true
+        }
+      }
+    },
+    "Cohere-rerank-v4.0-fast": {
+      "contrast": 31.44097222222222,
+      "schemes": {
+        "occupation": {
+          "ci": [
+            23.272817460317455,
+            39.84678819444445
+          ],
+          "excludes_zero": true
+        },
+        "bls_category": {
+          "ci": [
+            22.02919660762032,
+            40.197323902387026
+          ],
+          "excludes_zero": true
+        },
+        "occupation_x_name": {
+          "ci": [
+            22.178075396825392,
+            40.201450892857146
+          ],
+          "excludes_zero": true
+        }
+      }
+    },
+    "Cohere-rerank-v4.0-pro": {
+      "contrast": 41.073908730158735,
+      "schemes": {
+        "occupation": {
+          "ci": [
+            33.4594494047619,
+            48.40829613095238
+          ],
+          "excludes_zero": true
+        },
+        "bls_category": {
+          "ci": [
+            32.942328285480855,
+            48.55368755086027
+          ],
+          "excludes_zero": true
+        },
+        "occupation_x_name": {
+          "ci": [
+            29.062375992063487,
+            52.97662450396825
+          ],
+          "excludes_zero": true
+        }
+      }
+    },
+    "Qwen/Qwen3-Reranker-0.6B": {
+      "contrast": 27.467757936507937,
+      "schemes": {
+        "occupation": {
+          "ci": [
+            17.216579861111118,
+            37.48611111111109
+          ],
+          "excludes_zero": true
+        },
+        "bls_category": {
+          "ci": [
+            16.388277679492848,
+            37.980852714727185
+          ],
+          "excludes_zero": true
+        },
+        "occupation_x_name": {
+          "ci": [
+            16.25390625,
+            38.1259300595238
+          ],
+          "excludes_zero": true
+        }
+      }
+    },
+    "Qwen/Qwen3-Reranker-4B": {
+      "contrast": 21.579861111111107,
+      "schemes": {
+        "occupation": {
+          "ci": [
+            14.825024801587306,
+            28.5579117063492
+          ],
+          "excludes_zero": true
+        },
+        "bls_category": {
+          "ci": [
+            14.112730508870214,
+            28.751519097222207
+          ],
+          "excludes_zero": true
+        },
+        "occupation_x_name": {
+          "ci": [
+            13.962673611111105,
+            29.097408234126984
+          ],
+          "excludes_zero": true
+        }
+      }
+    },
+    "cohere/rerank-v3.5": {
+      "contrast": 37.207341269841265,
+      "schemes": {
+        "occupation": {
+          "ci": [
+            26.172867063492067,
+            48.044952876984105
+          ],
+          "excludes_zero": true
+        },
+        "bls_category": {
+          "ci": [
+            24.51539884868421,
+            49.63178893716575
+          ],
+          "excludes_zero": true
+        },
+        "occupation_x_name": {
+          "ci": [
+            25.67677331349206,
+            49.22724454365079
+          ],
+          "excludes_zero": true
+        }
+      }
+    },
+    "cross-encoder/ms-marco-MiniLM-L-12-v2": {
+      "contrast": 26.006944444444443,
+      "schemes": {
+        "occupation": {
+          "ci": [
+            12.822296626984125,
+            40.90910218253967
+          ],
+          "excludes_zero": true
+        },
+        "bls_category": {
+          "ci": [
+            11.516493055555559,
+            40.06045940258253
+          ],
+          "excludes_zero": true
+        },
+        "occupation_x_name": {
+          "ci": [
+            12.598462301587308,
+            39.435515873015866
+          ],
+          "excludes_zero": true
+        }
+      }
+    },
+    "cross-encoder/ms-marco-MiniLM-L6-v2": {
+      "contrast": 25.049603174603178,
+      "schemes": {
+        "occupation": {
+          "ci": [
+            12.869667658730172,
+            36.95498511904762
+          ],
+          "excludes_zero": true
+        },
+        "bls_category": {
+          "ci": [
+            11.695793942577028,
+            36.27899236934562
+          ],
+          "excludes_zero": true
+        },
+        "occupation_x_name": {
+          "ci": [
+            13.456845238095234,
+            37.39707341269838
+          ],
+          "excludes_zero": true
+        }
+      }
+    },
+    "ibm-granite-granite-embedding-reranker-english-r2": {
+      "contrast": 15.302579365079382,
+      "schemes": {
+        "occupation": {
+          "ci": [
+            9.477926587301592,
+            22.045262896825392
+          ],
+          "excludes_zero": true
+        },
+        "bls_category": {
+          "ci": [
+            8.974238445378147,
+            22.14982117167519
+          ],
+          "excludes_zero": true
+        },
+        "occupation_x_name": {
+          "ci": [
+            8.10962301587302,
+            24.028025793650787
+          ],
+          "excludes_zero": true
+        }
+      }
+    },
+    "jinaai/jina-reranker-v2-base-multilingual": {
+      "contrast": 14.263392857142854,
+      "schemes": {
+        "occupation": {
+          "ci": [
+            5.467633928571429,
+            22.898995535714278
+          ],
+          "excludes_zero": true
+        },
+        "bls_category": {
+          "ci": [
+            6.044658175770305,
+            22.514376613883186
+          ],
+          "excludes_zero": true
+        },
+        "occupation_x_name": {
+          "ci": [
+            5.268105158730155,
+            23.039000496031743
+          ],
+          "excludes_zero": true
+        }
+      }
+    },
+    "jinaai/jina-reranker-v3": {
+      "contrast": 0.7837301587301582,
+      "schemes": {
+        "occupation": {
+          "ci": [
+            -1.6418650793650826,
+            3.6161954365079376
+          ],
+          "excludes_zero": false
+        },
+        "bls_category": {
+          "ci": [
+            -1.859737540849674,
+            3.4922020315042963
+          ],
+          "excludes_zero": false
+        },
+        "occupation_x_name": {
+          "ci": [
+            -3.2193700396825395,
+            4.980282738095238
+          ],
+          "excludes_zero": false
+        }
+      }
+    },
+    "mixedbread-ai/mxbai-rerank-large-v2": {
+      "contrast": 20.776289682539684,
+      "schemes": {
+        "occupation": {
+          "ci": [
+            14.344928075396833,
+            27.291852678571423
+          ],
+          "excludes_zero": true
+        },
+        "bls_category": {
+          "ci": [
+            14.615749737394955,
+            27.2176967254293
+          ],
+          "excludes_zero": true
+        },
+        "occupation_x_name": {
+          "ci": [
+            12.817274305555555,
+            28.58940972222222
+          ],
+          "excludes_zero": true
+        }
+      }
+    },
+    "nvidia/llama-nemotron-rerank-1b-v2": {
+      "contrast": 43.44494047619048,
+      "schemes": {
+        "occupation": {
+          "ci": [
+            33.06417410714284,
+            53.11036706349207
+          ],
+          "excludes_zero": true
+        },
+        "bls_category": {
+          "ci": [
+            32.67961380724539,
+            52.8198271780303
+          ],
+          "excludes_zero": true
+        },
+        "occupation_x_name": {
+          "ci": [
+            31.856274801587297,
+            55.01674107142856
+          ],
+          "excludes_zero": true
+        }
+      }
+    },
+    "nvidia/llama-nemotron-rerank-vl-1b-v2": {
+      "contrast": 32.214781746031754,
+      "schemes": {
+        "occupation": {
+          "ci": [
+            24.525731646825392,
+            39.427145337301575
+          ],
+          "excludes_zero": true
+        },
+        "bls_category": {
+          "ci": [
+            24.27253370098039,
+            39.609224033816425
+          ],
+          "excludes_zero": true
+        },
+        "occupation_x_name": {
+          "ci": [
+            23.67051091269841,
+            39.7250744047619
+          ],
+          "excludes_zero": true
+        }
+      }
+    },
+    "qwen/qwen3-reranker-8b": {
+      "contrast": 31.639384920634917,
+      "schemes": {
+        "occupation": {
+          "ci": [
+            25.959387400793652,
+            37.371217757936506
+          ],
+          "excludes_zero": true
+        },
+        "bls_category": {
+          "ci": [
+            25.37230282738095,
+            37.86530748663102
+          ],
+          "excludes_zero": true
+        },
+        "occupation_x_name": {
+          "ci": [
+            24.590525793650794,
+            38.84554811507935
+          ],
+          "excludes_zero": true
+        }
+      }
+    },
+    "rerank-1": {
+      "contrast": 31.696428571428577,
+      "schemes": {
+        "occupation": {
+          "ci": [
+            22.01866319444444,
+            41.65600198412697
+          ],
+          "excludes_zero": true
+        },
+        "bls_category": {
+          "ci": [
+            20.952821180555567,
+            41.9071369263285
+          ],
+          "excludes_zero": true
+        },
+        "occupation_x_name": {
+          "ci": [
+            19.928075396825406,
+            42.86607142857142
+          ],
+          "excludes_zero": true
+        }
+      }
+    },
+    "rerank-2": {
+      "contrast": 57.27926587301587,
+      "schemes": {
+        "occupation": {
+          "ci": [
+            46.64899553571428,
+            67.47805059523807
+          ],
+          "excludes_zero": true
+        },
+        "bls_category": {
+          "ci": [
+            46.14388786764706,
+            67.79605263157892
+          ],
+          "excludes_zero": true
+        },
+        "occupation_x_name": {
+          "ci": [
+            46.95405505952382,
+            67.35174851190474
+          ],
+          "excludes_zero": true
+        }
+      }
+    },
+    "rerank-2-lite": {
+      "contrast": 19.164186507936506,
+      "schemes": {
+        "occupation": {
+          "ci": [
+            12.392857142857139,
+            25.637524801587293
+          ],
+          "excludes_zero": true
+        },
+        "bls_category": {
+          "ci": [
+            12.262680640437996,
+            25.748219709079283
+          ],
+          "excludes_zero": true
+        },
+        "occupation_x_name": {
+          "ci": [
+            10.87797619047619,
+            27.009238591269845
+          ],
+          "excludes_zero": true
+        }
+      }
+    },
+    "rerank-2.5": {
+      "contrast": 57.71081349206349,
+      "schemes": {
+        "occupation": {
+          "ci": [
+            48.14608134920635,
+            68.00186011904762
+          ],
+          "excludes_zero": true
+        },
+        "bls_category": {
+          "ci": [
+            47.37404513888889,
+            67.33882854278073
+          ],
+          "excludes_zero": true
+        },
+        "occupation_x_name": {
+          "ci": [
+            45.6742931547619,
+            69.05766369047618
+          ],
+          "excludes_zero": true
+        }
+      }
+    },
+    "rerank-2.5-lite": {
+      "contrast": 35.181051587301596,
+      "schemes": {
+        "occupation": {
+          "ci": [
+            27.463603670634928,
+            42.364025297619044
+          ],
+          "excludes_zero": true
+        },
+        "bls_category": {
+          "ci": [
+            27.233675986842105,
+            43.79944435160427
+          ],
+          "excludes_zero": true
+        },
+        "occupation_x_name": {
+          "ci": [
+            27.10522073412698,
+            42.88014632936508
+          ],
+          "excludes_zero": true
+        }
+      }
+    },
+    "rerank-3": {
+      "contrast": 60.89037698412699,
+      "schemes": {
+        "occupation": {
+          "ci": [
+            50.337239583333336,
+            70.84951636904762
+          ],
+          "excludes_zero": true
+        },
+        "bls_category": {
+          "ci": [
+            49.214039522058826,
+            70.703125
+          ],
+          "excludes_zero": true
+        },
+        "occupation_x_name": {
+          "ci": [
+            49.554811507936506,
+            71.99187748015872
+          ],
+          "excludes_zero": true
+        }
+      }
+    },
+    "rerank-3-lite": {
+      "contrast": 49.605654761904766,
+      "schemes": {
+        "occupation": {
+          "ci": [
+            42.575892857142854,
+            56.15339781746031
+          ],
+          "excludes_zero": true
+        },
+        "bls_category": {
+          "ci": [
+            42.45637400793651,
+            56.369963089402425
+          ],
+          "excludes_zero": true
+        },
+        "occupation_x_name": {
+          "ci": [
+            41.214719742063494,
+            58.24410962301587
+          ],
+          "excludes_zero": true
+        }
+      }
+    },
+    "semantic-ranker-default-002": {
+      "contrast": 24.809027777777786,
+      "schemes": {
+        "occupation": {
+          "ci": [
+            12.940538194444443,
+            37.47557043650793
+          ],
+          "excludes_zero": true
+        },
+        "bls_category": {
+          "ci": [
+            11.817892156862744,
+            37.26765873015873
+          ],
+          "excludes_zero": true
+        },
+        "occupation_x_name": {
+          "ci": [
+            12.899119543650782,
+            38.20473710317457
+          ],
+          "excludes_zero": true
+        }
+      }
+    },
+    "semantic-ranker-default-004": {
+      "contrast": 43.56150793650794,
+      "schemes": {
+        "occupation": {
+          "ci": [
+            33.78652033730159,
+            52.071924603174594
+          ],
+          "excludes_zero": true
+        },
+        "bls_category": {
+          "ci": [
+            34.50618106617647,
+            51.71779680023923
+          ],
+          "excludes_zero": true
+        },
+        "occupation_x_name": {
+          "ci": [
+            33.432539682539684,
+            53.22581845238095
+          ],
+          "excludes_zero": true
+        }
+      }
+    },
+    "semantic-ranker-fast-004": {
+      "contrast": 38.678075396825406,
+      "schemes": {
+        "occupation": {
+          "ci": [
+            29.685019841269835,
+            46.396949404761905
+          ],
+          "excludes_zero": true
+        },
+        "bls_category": {
+          "ci": [
+            29.656597222222224,
+            46.61497961956521
+          ],
+          "excludes_zero": true
+        },
+        "occupation_x_name": {
+          "ci": [
+            29.367559523809526,
+            47.57694692460318
+          ],
+          "excludes_zero": true
+        }
+      }
+    },
+    "zeroentropy/zerank-2-reranker": {
+      "contrast": 65.27529761904762,
+      "schemes": {
+        "occupation": {
+          "ci": [
+            53.30338541666668,
+            76.21812996031746
+          ],
+          "excludes_zero": true
+        },
+        "bls_category": {
+          "ci": [
+            52.4072730654762,
+            75.81641719187675
+          ],
+          "excludes_zero": true
+        },
+        "occupation_x_name": {
+          "ci": [
+            53.066716269841265,
+            76.66220238095238
+          ],
+          "excludes_zero": true
+        }
+      }
+    }
+  }
+}

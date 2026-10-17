@@ -79,6 +79,8 @@ Outputs (never touches any *_full_raw.json):
     results/tex/deidentification.tex
     results/tex/deid_conditions.tex
     results/tex/deidentification_notes.tex
+    results/deid_pairs/<model-slug>.json           per-pair scores for every condition
+                                                   and per-event utility outcomes
 
 Run:  venv/bin/python code/deidentification_experiment.py            # all 4 models
       venv/bin/python code/deidentification_experiment.py --model BAAI/bge-reranker-base
@@ -102,11 +104,13 @@ sys.path.insert(0, str(CODE_DIR))
 from analyze_single_stage import ClusterStat, stable_seed  # noqa: E402
 from deid_transforms import CONDITION_LABELS, DEFAULT_PLACEHOLDER, deidentify  # noqa: E402
 from labels import load_labels  # noqa: E402
+from model_labels import model_label  # noqa: E402
 from synthetic_dataset import NAME_PAIRS, QUERY_TYPES, generate_dataset  # noqa: E402
 
-SCRIPT_VERSION = "deidentification_experiment.py v3.0 (REVIEW_ROUND2 A1/A3/A7)"
+SCRIPT_VERSION = "deidentification_experiment.py v3.1 (same-run baseline on failed determinism; pair-level release)"
 RESULTS = ROOT / "results"
 TEX_DIR = RESULTS / "tex"
+PAIRS_DIR = RESULTS / "deid_pairs"
 SEED = 20260822
 
 LOCAL_RERANKERS = [
@@ -244,6 +248,13 @@ def _patch_transformers_for_jina():
         return incremental.long() + padding_idx
 
     _xlm.create_position_ids_from_input_ids = create_position_ids_from_input_ids
+
+
+def model_revision(model_name):
+    """The Hugging Face commit the local cache resolves `model_name` to."""
+    ref = (Path.home() / ".cache" / "huggingface" / "hub"
+           / f"models--{model_name.replace('/', '--')}" / "refs" / "main")
+    return ref.read_text().strip() if ref.exists() else None
 
 
 def get_model(model_name, device):
@@ -425,6 +436,18 @@ def run_model(model_name, triples, labels, args, device):
             "the same strings is self-referential and always yields 0.0; it is NOT "
             "evidence of cross-run reproducibility, so no verdict is reported."),
     }
+    # Reviewer item 3: a model that fails the check cannot compare its banked
+    # `original` with transformed conditions scored months later, so its
+    # `original` becomes the untransformed text scored in this same run.
+    if is_banked and not determinism_check["passed"]:
+        base = {key(rec["t"].occupation, rec["t"].query_type, rec["t"].name_pair,
+                    rec["t"].template_style):
+                (scores[(rec["orig_resc"][0], rec["orig_resc"][1])],
+                 scores[(rec["orig_resc"][0], rec["orig_resc"][2])])
+                for rec in rows}
+        base_src = ("scored locally in this run (variant `none`, no lowercasing); the banked "
+                    "baseline failed the determinism check")
+        determinism_check["baseline_replaced"] = True
     if determinism_check["status"] == "checked":
         print(f"  determinism check (original_rescored vs banked original [{base_src}]): "
               f"max|diff|={determinism_check['max_abs_score_diff']:.6f}  "
@@ -443,6 +466,7 @@ def run_model(model_name, triples, labels, args, device):
                 "residue_examples": []}
             for c in ALL_CONDITIONS}
 
+    pair_rows = []
     for rec in rows:
         t, cat = rec["t"], rec["cat"]
         pairs_for_cond = {"original": base[key(t.occupation, t.query_type,
@@ -450,6 +474,9 @@ def run_model(model_name, triples, labels, args, device):
         for cond in SCORED_CONDITIONS:
             q, dm, df = rec["cond"][cond]
             pairs_for_cond[cond] = (scores[(q, dm)], scores[(q, df)])
+        pair_rows.append({"key": key(t.occupation, t.query_type, t.name_pair, t.template_style),
+                          "category": cat,
+                          **{c: [float(v) for v in sm_sf] for c, sm_sf in pairs_for_cond.items()}})
 
         for cond, (sm, sf) in pairs_for_cond.items():
             C = stat[cond]
@@ -474,7 +501,15 @@ def run_model(model_name, triples, labels, args, device):
 
     # ---- summarise ----
     B = args.bootstrap
+    import torch
+    import transformers
+    import sentence_transformers
     out = {"reranker": model_name, "device": device,
+           "model_revision": model_revision(model_name),
+           "runtime": {"torch": torch.__version__, "transformers": transformers.__version__,
+                       "sentence_transformers": sentence_transformers.__version__,
+                       "max_length": 512, "batch_size": 64,
+                       "date": _dt.date.today().isoformat()},
            "baseline_source": base_src, "name_placeholder": DEFAULT_PLACEHOLDER,
            "n_triples": len(rows), "determinism_check": determinism_check,
            "conditions": {}}
@@ -508,9 +543,22 @@ def run_model(model_name, triples, labels, args, device):
                 e["by_category"][c] = d
         out["conditions"][cond] = e
 
+    hits = {}
     if not args.no_utility:
         out["utility"] = utility_test(model_name, TRIPLES_FOR_UTILITY, labels, device,
-                                      args.utility_query_types, UTILITY_CONDITIONS)
+                                      args.utility_query_types, UTILITY_CONDITIONS,
+                                      return_hits=True)
+        for cond in UTILITY_CONDITIONS:
+            hits[cond] = [{"template": tm, "query_type": qt, "occupation": qo, "rank": rk}
+                          for tm, qt, qo, rk in out["utility"][cond].pop("hits")]
+
+    # Reviewer item 4: release the pair-level scores and per-event utility
+    # outcomes so paired statistics can be recomputed without inference.
+    PAIRS_DIR.mkdir(parents=True, exist_ok=True)
+    (PAIRS_DIR / f"{slug(model_name)}.json").write_text(json.dumps(
+        {"reranker": model_name, "model_revision": out["model_revision"],
+         "baseline_source": base_src, "score_pair_order": ["male", "female"],
+         "pairs": pair_rows, "utility_events": hits}, separators=(",", ":")) + "\n")
 
     # ---- back-compat keys expected by older readers / figure code ----
     for e in out["conditions"].values():
@@ -732,7 +780,7 @@ def main():
     lines = ["% Generated by code/deidentification_experiment.py -- do not edit by hand.",
              r"\begin{tabular}{l" + "rr" * len(models) + "}", r"\toprule",
              r"Condition & " + " & ".join(
-                 rf"\multicolumn{{2}}{{c}}{{{esc(m.split('/')[-1])}}}" for m in models) + r" \\",
+                 rf"\multicolumn{{2}}{{c}}{{{esc(model_label(m))}}}" for m in models) + r" \\",
              r" & " + " & ".join([r"tie-aware \%\,M & mean $|$gap$|$"] * len(models)) + r" \\",
              r"\midrule"]
     for cond in ALL_CONDITIONS:
@@ -756,22 +804,29 @@ def main():
              r"tie rate is an identity of the design, not a measurement."]
     for m in models:
         dc = allres[m].get("determinism_check") or {}
-        short = esc(m.split("/")[-1])
+        short = esc(model_label(m))
         if dc.get("status") == "checked" and dc.get("passed") is False:
-            row_gap = allres[m]["conditions"]["original"]["mean_abs_delta"]
-            notes.append(
-                f"For {short}, the original row is the earlier banked run, which a local "
-                f"re-score of the same text did not reproduce (maximum absolute score "
-                f"difference {dc['max_abs_score_diff']:.4f}, mean "
-                f"{dc['mean_abs_score_diff']:.5f}, against a row mean $|$gap$|$ of "
-                f"{row_gap:.4f}). Its transformed rows were scored together in one later "
-                f"run and are comparable with each other, but not safely with its "
-                f"original row.")
+            if dc.get("baseline_replaced"):
+                notes.append(
+                    f"For {short}, a local re-score did not reproduce the banked "
+                    f"untransformed scores (maximum absolute score difference "
+                    f"{dc['max_abs_score_diff']:.4f}), so its original row was re-scored in "
+                    f"the same run as its transformed rows and differs slightly from the "
+                    f"single-stage audit.")
+            else:
+                row_gap = allres[m]["conditions"]["original"]["mean_abs_delta"]
+                notes.append(
+                    f"For {short}, the original row is the earlier banked run, which a local "
+                    f"re-score of the same text did not reproduce (maximum absolute score "
+                    f"difference {dc['max_abs_score_diff']:.4f}, mean "
+                    f"{dc['mean_abs_score_diff']:.5f}, against a row mean $|$gap$|$ of "
+                    f"{row_gap:.4f}). Its transformed rows were scored together in one later "
+                    f"run and are comparable with each other, but not safely with its "
+                    f"original row.")
         elif dc.get("status") == "skipped":
             notes.append(
-                f"For {short}, no banked run exists, so the original row was scored in the "
-                f"same run as the transformed rows and no cross-run reproducibility "
-                f"verdict is available.")
+                f"For {short}, the original row was scored in the same run as the "
+                f"transformed rows.")
     (TEX_DIR / "deidentification_notes.tex").write_text(
         "% Generated by code/deidentification_experiment.py -- do not edit by hand.\n"
         + r"\par\smallskip{\footnotesize\raggedright " + " ".join(notes) + "\\par}\n")

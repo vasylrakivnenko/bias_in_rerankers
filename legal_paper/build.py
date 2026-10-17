@@ -79,6 +79,7 @@ PREAMBLE = r"""\documentclass[11pt]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage[utf8]{inputenc}
 \usepackage{booktabs}
+\usepackage{longtable}
 \usepackage{array}
 \usepackage{graphicx}
 \usepackage{amsmath}
@@ -91,6 +92,16 @@ PREAMBLE = r"""\documentclass[11pt]{article}
 \usepackage{microtype}
 \usepackage[hidelinks]{hyperref}
 \usepackage{xcolor}
+%% Never leave a section heading stranded at the foot of a page, away from the
+%% table that follows it: start a new page unless a fifth of a page remains.
+%% (The needspace package's macro, inlined because it is not always installed.)
+\makeatletter
+\newcommand{\keepspace}[1]{\par\penalty-100\begingroup\setlength{\dimen@}{#1}%%
+  \dimen@ii\pagegoal\advance\dimen@ii-\pagetotal
+  \ifdim\dimen@>\dimen@ii\ifdim\dimen@ii>\z@\vfil\fi\break\fi\endgroup}
+\makeatother
+\let\plainsection\section
+\renewcommand{\section}{\keepspace{0.2\textheight}\plainsection}
 
 \setlength{\parskip}{0.35em}
 \setlength{\parindent}{0pt}
@@ -361,6 +372,9 @@ def convert_inline(s):
     # protect {{PLACEHOLDER}} tokens so the underscores in their names survive
     # the LaTeX escaping below; they are substituted after conversion.
     s = PLACEHOLDER_RE.sub(lambda m: stash(m.group(0)), s)
+
+    # a backslash-escaped asterisk is a literal "*" (e.g. O\*NET), not emphasis
+    s = s.replace("\\*", stash("*"))
 
     # protect $math$ (verbatim) and `code` (-> \texttt, escaped)
     s = re.sub(r"\$([^$]+)\$", lambda m: stash(f"${m.group(1)}$"), s)

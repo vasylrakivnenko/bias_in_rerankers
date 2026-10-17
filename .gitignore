@@ -98,3 +98,7 @@ REVIEW_ROUND2.md
 
 # Third internal review: factuality / reproducibility audit (not part of the release)
 FACTCHECK_ROUND3.md
+
+# Per-query GPU checkpoints (redundant with the finalized results/*_full_raw.json)
+results/partial/
+results/partial_smoke/

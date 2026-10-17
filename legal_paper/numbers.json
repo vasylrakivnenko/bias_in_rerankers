@@ -715,5 +715,406 @@
   "TABLE_DEID_ALLMODELS_NOTES": {
     "tex_file": "results/tex/deidentification_notes.tex",
     "needs": "S9: rendered notes for Table A8 (dagger rule and per-model reproducibility caveats), derived from the run."
+  },
+  "UTILITY_IMPROVED": {
+    "file": "results/deid_statistics_bge.json",
+    "path": "utility.discordant_wrong_before_right_after",
+    "format": "d",
+    "needs": "Reviewer item 2: ranking events wrong before and right after the full rule."
+  },
+  "UTILITY_WORSENED": {
+    "file": "results/deid_statistics_bge.json",
+    "path": "utility.discordant_right_before_wrong_after",
+    "format": "d",
+    "needs": "Reviewer item 2: ranking events right before and wrong after."
+  },
+  "UTILITY_DELTA_PTS": {
+    "expr": "(a - b) / n * 100",
+    "refs": {
+      "a": {
+        "file": "results/deid_statistics_bge.json",
+        "path": "utility.top1_correct_full"
+      },
+      "b": {
+        "file": "results/deid_statistics_bge.json",
+        "path": "utility.top1_correct_original"
+      },
+      "n": {
+        "file": "results/deid_statistics_bge.json",
+        "path": "utility.n_ranking_events"
+      }
+    },
+    "format": ".2f",
+    "needs": "Reviewer item 2: observed change in top-1 accuracy, percentage points."
+  },
+  "N_EXCL_ZERO_BLS": {
+    "file": "results/interval_sensitivity.json",
+    "path": "n_models_excluding_zero.bls_category",
+    "format": "d",
+    "needs": "Reviewer item 5: models whose contrast interval excludes zero when BLS categories, not occupations, are resampled."
+  },
+  "N_EXCL_ZERO_TWOWAY": {
+    "file": "results/interval_sensitivity.json",
+    "path": "n_models_excluding_zero.occupation_x_name",
+    "format": "d",
+    "needs": "Reviewer item 5: same, resampling occupations and name pairs together."
+  },
+  "BOOTSTRAP_B": {
+    "file": "results/single_stage_summary.json",
+    "path": "bootstrap_B",
+    "format": ",d",
+    "needs": "Reviewer item 8: bootstrap replications behind the single-stage intervals."
+  },
+  "SEED": {
+    "file": "results/single_stage_summary.json",
+    "path": "seed",
+    "format": "d",
+    "needs": "Reviewer item 8: master seed."
+  },
+  "N_SLATES": {
+    "file": "results/compounding_bge_pipeline.json",
+    "path": "slate.ALL.n_slates",
+    "format": "d",
+    "needs": "Reviewer item 8: synthetic pools in the pipeline simulation."
+  },
+  "TIEBREAK_REPEATS": {
+    "file": "results/compounding_all_rerankers.json",
+    "path": "tiebreak_repeats",
+    "format": "d",
+    "needs": "Reviewer item 8: random tie-break draws averaged per pool."
+  },
+  "N_COMPANION_COMPARISONS": {
+    "file": "results/realistic_pool_four_rerankers.json",
+    "path": "models.bge-m3.summary.overall.n",
+    "format": ",d",
+    "needs": "Reviewer item 6: scored comparisons per model in the companion run."
+  },
+  "N_COMPANION_INJECTED_SCORED": {
+    "file": "results/realistic_pool_four_rerankers.json",
+    "path": "models.bge-m3.summary.by_mode.inject.n",
+    "format": ",d",
+    "needs": "Reviewer item 6: scored comparisons built by inserting a name (vs swapping an existing marker)."
+  },
+  "COMPANION_BGE_PCT_MALE": {
+    "file": "results/realistic_pool_four_rerankers.json",
+    "path": "models.bge-m3.summary.overall.score_gap.tie_aware_pct_male",
+    "format": ".0f",
+    "unit": "%",
+    "needs": "Reviewer item 6: worked reranker's overall tie-aware male-favored share in the companion run."
+  },
+  "SYNTH_BGE_PCT_MALE": {
+    "file": "results/deidentification_bge.json",
+    "path": "conditions.original.overall.tie_aware_pct_male",
+    "format": ".0f",
+    "unit": "%",
+    "needs": "Worked reranker's overall tie-aware male-favored share in the synthetic audit, for comparison with the companion run."
+  },
+  "TABLE_COMPANION": {
+    "tex_file": "results/tex/companion_table.tex",
+    "needs": "Reviewer item 6: companion results by reranker and occupation group."
+  },
+  "SCORED_DATE_1": {
+    "file": "results/single_stage_summary.json",
+    "path": "scored_dates.0.date",
+    "needs": "Earliest scoring date (the February 2026 audit)."
+  },
+  "N_SCORED_DATE_1": {
+    "file": "results/single_stage_summary.json",
+    "path": "scored_dates.0.n_models",
+    "format": "d",
+    "needs": "Models scored on the earliest date."
+  },
+  "SCORED_DATE_2": {
+    "file": "results/single_stage_summary.json",
+    "path": "scored_dates.1.date",
+    "needs": "Date the newer rerankers were added."
+  },
+  "N_SCORED_DATE_2": {
+    "file": "results/single_stage_summary.json",
+    "path": "scored_dates.1.n_models",
+    "format": "d",
+    "needs": "Models added on that date."
+  },
+  "N_CONTRAST_CI_POS": {
+    "file": "results/interval_sensitivity.json",
+    "path": "n_models_excluding_zero.occupation",
+    "format": "d",
+    "needs": "Models whose male-typed minus female-typed contrast has an occupation-clustered 95% interval entirely above zero."
+  },
+  "GTE_CONTRAST": {
+    "file": "results/interval_sensitivity.json",
+    "path": [
+      "models",
+      "Alibaba-NLP/gte-reranker-modernbert-base",
+      "contrast"
+    ],
+    "format": ".1f",
+    "needs": "GTE-ModernBERT's contrast, points."
+  },
+  "GTE_CI_LO": {
+    "file": "results/interval_sensitivity.json",
+    "path": [
+      "models",
+      "Alibaba-NLP/gte-reranker-modernbert-base",
+      "schemes",
+      "occupation",
+      "ci",
+      0
+    ],
+    "format": ".1f",
+    "needs": "Its interval, lower end."
+  },
+  "GTE_CI_HI": {
+    "file": "results/interval_sensitivity.json",
+    "path": [
+      "models",
+      "Alibaba-NLP/gte-reranker-modernbert-base",
+      "schemes",
+      "occupation",
+      "ci",
+      1
+    ],
+    "format": ".1f",
+    "needs": "Its interval, upper end."
+  },
+  "JINA3_CONTRAST": {
+    "file": "results/interval_sensitivity.json",
+    "path": [
+      "models",
+      "jinaai/jina-reranker-v3",
+      "contrast"
+    ],
+    "format": ".1f",
+    "needs": "jina-reranker-v3's contrast, points."
+  },
+  "JINA3_CI_LO": {
+    "file": "results/interval_sensitivity.json",
+    "path": [
+      "models",
+      "jinaai/jina-reranker-v3",
+      "schemes",
+      "occupation",
+      "ci",
+      0
+    ],
+    "format": ".1f",
+    "needs": "Its interval, lower end."
+  },
+  "JINA3_CI_HI": {
+    "file": "results/interval_sensitivity.json",
+    "path": [
+      "models",
+      "jinaai/jina-reranker-v3",
+      "schemes",
+      "occupation",
+      "ci",
+      1
+    ],
+    "format": ".1f",
+    "needs": "Its interval, upper end."
+  },
+  "ZERANK_CONTRAST": {
+    "file": "results/single_stage_summary.json",
+    "path": [
+      "stereotype_tracking_spread",
+      "per_model",
+      "zeroentropy/zerank-2-reranker"
+    ],
+    "format": ".0f",
+    "needs": "Contrast of zerank-2 (largest)."
+  },
+  "VOYAGE3_CONTRAST": {
+    "file": "results/single_stage_summary.json",
+    "path": [
+      "stereotype_tracking_spread",
+      "per_model",
+      "rerank-3"
+    ],
+    "format": ".0f",
+    "needs": "Contrast of Voyage rerank-3."
+  },
+  "LATER_N": {
+    "file": "results/single_stage_summary.json",
+    "path": "later_scoring.n_models",
+    "format": "d",
+    "needs": "Models scored after the original audit."
+  },
+  "LATER_FIRST": {
+    "file": "results/single_stage_summary.json",
+    "path": "later_scoring.first",
+    "needs": "First later scoring date."
+  },
+  "LATER_LAST": {
+    "file": "results/single_stage_summary.json",
+    "path": "later_scoring.last",
+    "needs": "Last later scoring date (the RunPod run's clock is UTC)."
+  },
+  "ORDER_N_API": {
+    "file": "results/order_reversal_test.json",
+    "path": "api_overview.n_models",
+    "format": "d",
+    "needs": "API rerankers re-scored in the order test."
+  },
+  "ORDER_N_PAIRS": {
+    "file": "results/order_reversal_test.json",
+    "path": "api_overview.n_pairs_per_model.0",
+    "format": ",d",
+    "needs": "Pairs per model in the order test."
+  },
+  "ORDER_N_UNMOVED": {
+    "file": "results/order_reversal_test.json",
+    "path": "api_overview.n_models_unmoved",
+    "format": "d",
+    "needs": "API models whose contrast moved under neither reversed nor shuffled layouts."
+  },
+  "ORDER_R2_CHANGE": {
+    "file": "results/order_reversal_test.json",
+    "path": [
+      "models",
+      "rerank-2",
+      "comparisons",
+      "reversed_vs_same",
+      "contrast_change"
+    ],
+    "format": ".1f",
+    "needs": "rerank-2 contrast change under reversal."
+  },
+  "ORDER_R2_LO": {
+    "file": "results/order_reversal_test.json",
+    "path": [
+      "models",
+      "rerank-2",
+      "comparisons",
+      "reversed_vs_same",
+      "contrast_change_ci",
+      0
+    ],
+    "format": ".1f",
+    "needs": "Its interval, lower end."
+  },
+  "ORDER_R2_HI": {
+    "file": "results/order_reversal_test.json",
+    "path": [
+      "models",
+      "rerank-2",
+      "comparisons",
+      "reversed_vs_same",
+      "contrast_change_ci",
+      1
+    ],
+    "format": ".1f",
+    "needs": "Its interval, upper end."
+  },
+  "ORDER_R2_BASE": {
+    "file": "results/single_stage_summary.json",
+    "path": [
+      "stereotype_tracking_spread",
+      "per_model",
+      "rerank-2"
+    ],
+    "format": ".0f",
+    "needs": "rerank-2's full-audit contrast, for scale."
+  },
+  "JINA3_REV_SAME_WINNER": {
+    "file": "results/order_reversal_test.json",
+    "path": [
+      "models",
+      "jinaai/jina-reranker-v3",
+      "comparisons",
+      "reversed_vs_same",
+      "pct_pairs_same_winner"
+    ],
+    "format": ".0f",
+    "needs": "jina-v3: share of pairs keeping their winner when each pair is reversed.",
+    "unit": "%"
+  },
+  "JINA3_PCT_MALE_SAME": {
+    "file": "results/order_reversal_test.json",
+    "path": [
+      "models",
+      "jinaai/jina-reranker-v3",
+      "arms",
+      "same",
+      "tie_aware_pct_male"
+    ],
+    "format": ".0f",
+    "needs": "jina-v3 male-favored share, male version first.",
+    "unit": "%"
+  },
+  "JINA3_PCT_MALE_REV": {
+    "file": "results/order_reversal_test.json",
+    "path": [
+      "models",
+      "jinaai/jina-reranker-v3",
+      "arms",
+      "reversed",
+      "tie_aware_pct_male"
+    ],
+    "format": ".0f",
+    "needs": "jina-v3 male-favored share, female version first.",
+    "unit": "%"
+  },
+  "XHW_SAME_WINNER": {
+    "file": "results/reproducibility_checks.json",
+    "path": [
+      "cross_hardware",
+      "BAAI/bge-reranker-base",
+      "pct_same_winner"
+    ],
+    "format": ".0f",
+    "needs": "Cross-hardware: pairs with the same winner on CUDA and MPS.",
+    "unit": "%"
+  },
+  "XHW_MAX_DIFF": {
+    "file": "results/reproducibility_checks.json",
+    "path": [
+      "cross_hardware",
+      "BAAI/bge-reranker-base",
+      "max_abs_score_diff"
+    ],
+    "format": ".7f",
+    "needs": "Cross-hardware: largest absolute score difference."
+  },
+  "SELF_GRANITE_SAME_WINNER": {
+    "file": "results/reproducibility_checks.json",
+    "path": [
+      "selfhost_vs_api",
+      "ibm-granite/granite-embedding-reranker-english-r2",
+      "pct_same_winner"
+    ],
+    "format": ".1f",
+    "needs": "Granite self-hosted vs Azure API: same winner.",
+    "unit": "%"
+  },
+  "SELF_QWEN_SAME_WINNER": {
+    "file": "results/reproducibility_checks.json",
+    "path": [
+      "selfhost_vs_api",
+      "Qwen/Qwen3-Reranker-8B",
+      "pct_same_winner"
+    ],
+    "format": ".0f",
+    "needs": "Qwen3-8B self-hosted vs hosted API: same winner.",
+    "unit": "%"
+  },
+  "SELF_QWEN_CONTRAST_SELF": {
+    "file": "results/reproducibility_checks.json",
+    "path": [
+      "selfhost_vs_api",
+      "Qwen/Qwen3-Reranker-8B",
+      "contrast_a"
+    ],
+    "format": ".0f",
+    "needs": "Qwen3-8B self-hosted contrast."
+  },
+  "SELF_QWEN_CONTRAST_API": {
+    "file": "results/reproducibility_checks.json",
+    "path": [
+      "selfhost_vs_api",
+      "Qwen/Qwen3-Reranker-8B",
+      "contrast_b"
+    ],
+    "format": ".0f",
+    "needs": "Qwen3-8B hosted-API contrast."
   }
 }

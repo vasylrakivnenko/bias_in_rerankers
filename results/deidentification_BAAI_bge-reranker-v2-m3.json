@@ -1,15 +1,25 @@
 {
   "reranker": "BAAI/bge-reranker-v2-m3",
   "device": "mps",
+  "model_revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+  "runtime": {
+    "torch": "2.10.0",
+    "transformers": "5.2.0",
+    "sentence_transformers": "5.2.3",
+    "max_length": 512,
+    "batch_size": 64,
+    "date": "2026-10-16"
+  },
   "baseline_source": "banked raw scores (bge-reranker-v2-m3_full_raw.json)",
   "name_placeholder": "the candidate",
   "n_triples": 8320,
   "determinism_check": {
+    "status": "checked",
+    "baseline_source": "banked raw scores (bge-reranker-v2-m3_full_raw.json)",
     "max_abs_score_diff": 2.2858381271362305e-05,
     "mean_abs_score_diff": 2.886081067397474e-07,
     "passed": true,
-    "status": "checked",
-    "baseline_source": "banked raw scores (bge-reranker-v2-m3_full_raw.json)"
+    "note": null
   },
   "conditions": {
     "original": {
@@ -1623,8 +1633,8 @@
       "top1_pct_delta_vs_original": 0.360576923076934
     }
   },
-  "script_version": "deidentification_experiment.py v3.0 (REVIEW_ROUND2 A1/A3/A7)",
-  "generated": "2026-08-22T18:37:30",
+  "script_version": "deidentification_experiment.py v3.1 (same-run baseline on failed determinism; pair-level release)",
+  "generated": "2026-10-16T17:12:27",
   "label_source": "BLS CPS Table 11 via occupations_bls.csv",
   "seed": 20260822,
   "bootstrap_B": 1000,

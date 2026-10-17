@@ -7,20 +7,35 @@
 \toprule
 Model & Christopher/Margaret & Daniel/Susan & David/Linda & James/Sarah & John/Maria \\
 \midrule
-rerank-2.5 & 83.8 & 66.6 & 82.2 & 50.5 & 72.5 \\
-semantic-ranker-default-002 & 87.1 & 82.5 & 74.0 & 63.2 & 81.0 \\
-ibm-granite-granite-embedding-reranker-english-r2 & 74.9 & 69.1 & 94.8 & 62.4 & 97.7 \\
-BAAI/bge-reranker-v2-m3 & 59.5 & 91.8 & 90.5 & 79.4 & 63.3 \\
-rerank-2 & 51.8 & 66.5 & 67.4 & 40.2 & 65.8 \\
-cross-encoder/ms-marco-MiniLM-L-12-v2 & 78.5 & 61.5 & 90.6 & 70.2 & 89.2 \\
-rerank-2.5-lite & 63.9 & 67.8 & 69.7 & 43.6 & 49.3 \\
-rerank-1 & 59.3 & 52.6 & 85.2 & 40.6 & 88.5 \\
-Cohere-rerank-v4.0-pro & 42.0 & 37.1 & 76.0 & 4.4 & 70.1 \\
-semantic-ranker-fast-004 & 57.6 & 50.8 & 55.8 & 37.7 & 29.3 \\
-Cohere-rerank-v4.0-fast & 58.5 & 49.6 & 70.0 & 32.0 & 62.7 \\
-semantic-ranker-default-004 & 31.4 & 34.4 & 29.9 & 43.9 & 28.7 \\
-jinaai/jina-reranker-v2-base-multilingual & 76.5 & 77.6 & 30.0 & 58.0 & 18.9 \\
-rerank-2-lite & 33.4 & 19.8 & 59.6 & 22.5 & 70.4 \\
+Voyage: rerank-2.5 & 83.8 & 66.6 & 82.2 & 50.5 & 72.5 \\
+ZeroEntropy: zerank-2 & 70.4 & 68.8 & 64.7 & 54.9 & 60.8 \\
+Google: default-002 & 87.1 & 82.5 & 74.0 & 63.2 & 81.0 \\
+IBM: Granite r2 & 74.9 & 69.1 & 94.8 & 62.4 & 97.7 \\
+Voyage: rerank-3 & 74.6 & 56.9 & 71.2 & 44.4 & 70.6 \\
+BAAI: BGE v2-m3 & 59.5 & 91.8 & 90.5 & 79.4 & 63.3 \\
+Open: MiniLM-L6-v2 & 79.1 & 63.8 & 89.1 & 77.9 & 88.8 \\
+NVIDIA: Nemotron 1B & 68.9 & 64.8 & 68.1 & 65.1 & 75.8 \\
+Voyage: rerank-2 & 51.8 & 66.5 & 67.4 & 40.2 & 65.8 \\
+Cohere: v3.5 & 89.5 & 83.0 & 70.0 & 68.0 & 69.5 \\
+Open: MiniLM-L12-v2 & 78.5 & 61.5 & 90.6 & 70.2 & 89.2 \\
+Voyage: rerank-2.5-lite & 63.9 & 67.8 & 69.7 & 43.6 & 49.3 \\
+NVIDIA: Nemotron VL 1B & 65.4 & 64.6 & 62.3 & 63.3 & 73.4 \\
+Voyage: rerank-1 & 59.3 & 52.6 & 85.2 & 40.6 & 88.5 \\
+Mixedbread: large v2 & 70.4 & 43.9 & 75.4 & 71.2 & 72.1 \\
+Cohere: v4 pro & 42.0 & 37.1 & 76.0 & 4.4 & 70.1 \\
+Qwen: Qwen3 0.6B & 64.0 & 65.0 & 52.1 & 46.6 & 69.2 \\
+Google: fast-004 & 57.6 & 50.8 & 55.8 & 37.7 & 29.3 \\
+Cohere: v4 fast & 58.5 & 49.6 & 70.0 & 32.0 & 62.7 \\
+Qwen: Qwen3 8B & 50.1 & 61.4 & 51.4 & 44.2 & 43.8 \\
+Alibaba: GTE ModernBERT & 72.5 & 75.7 & 87.3 & 54.9 & 73.0 \\
+Voyage: rerank-3-lite & 52.6 & 35.0 & 37.4 & 24.8 & 55.5 \\
+Google: default-004 & 31.4 & 34.4 & 29.9 & 43.9 & 28.7 \\
+Qwen: Qwen3 4B & 61.4 & 45.9 & 49.9 & 21.1 & 58.4 \\
+BAAI: BGE large & 50.7 & 87.5 & 28.8 & 47.0 & 28.8 \\
+BAAI: BGE base & 50.7 & 33.7 & 60.2 & 55.0 & 39.1 \\
+Jina: reranker v2 & 76.5 & 77.6 & 30.0 & 58.0 & 18.9 \\
+Voyage: rerank-2-lite & 33.4 & 19.8 & 59.6 & 22.5 & 70.4 \\
+Jina: reranker v3 & 80.0 & 9.1 & 10.9 & 5.4 & 33.2 \\
 \bottomrule
 \end{tabular}
 }
@@ -32,20 +47,35 @@ rerank-2-lite & 33.4 & 19.8 & 59.6 & 22.5 & 70.4 \\
 \toprule
 Model & Michael/Jessica & Richard/Patricia & Robert/Jennifer & Thomas/Barbara & William/Elizabeth \\
 \midrule
-rerank-2.5 & 63.8 & 63.6 & 73.6 & 73.6 & 63.5 \\
-semantic-ranker-default-002 & 76.4 & 88.5 & 85.0 & 76.9 & 67.4 \\
-ibm-granite-granite-embedding-reranker-english-r2 & 94.1 & 77.0 & 91.5 & 85.0 & 95.9 \\
-BAAI/bge-reranker-v2-m3 & 88.8 & 78.6 & 88.1 & 60.3 & 79.8 \\
-rerank-2 & 49.9 & 56.4 & 60.3 & 50.4 & 56.7 \\
-cross-encoder/ms-marco-MiniLM-L-12-v2 & 82.9 & 71.9 & 80.9 & 61.5 & 59.4 \\
-rerank-2.5-lite & 54.3 & 63.8 & 59.8 & 75.1 & 58.5 \\
-rerank-1 & 66.4 & 79.6 & 77.3 & 38.0 & 59.7 \\
-Cohere-rerank-v4.0-pro & 58.2 & 58.7 & 45.9 & 66.5 & 43.0 \\
-semantic-ranker-fast-004 & 50.6 & 49.0 & 30.0 & 52.0 & 58.1 \\
-Cohere-rerank-v4.0-fast & 56.3 & 72.2 & 35.9 & 60.6 & 41.8 \\
-semantic-ranker-default-004 & 35.6 & 43.0 & 42.1 & 31.4 & 29.7 \\
-jinaai/jina-reranker-v2-base-multilingual & 48.3 & 37.1 & 28.7 & 30.4 & 13.6 \\
-rerank-2-lite & 31.3 & 39.7 & 18.4 & 45.9 & 18.4 \\
+Voyage: rerank-2.5 & 63.8 & 63.6 & 73.6 & 73.6 & 63.5 \\
+ZeroEntropy: zerank-2 & 60.3 & 61.2 & 49.7 & 61.6 & 49.5 \\
+Google: default-002 & 76.4 & 88.5 & 85.0 & 76.9 & 67.4 \\
+IBM: Granite r2 & 94.1 & 77.0 & 91.5 & 85.0 & 95.9 \\
+Voyage: rerank-3 & 53.4 & 72.2 & 55.1 & 49.8 & 58.2 \\
+BAAI: BGE v2-m3 & 88.8 & 78.6 & 88.1 & 60.3 & 79.8 \\
+Open: MiniLM-L6-v2 & 53.4 & 84.1 & 74.5 & 86.3 & 79.7 \\
+NVIDIA: Nemotron 1B & 65.1 & 40.2 & 59.1 & 66.3 & 71.3 \\
+Voyage: rerank-2 & 49.9 & 56.4 & 60.3 & 50.4 & 56.7 \\
+Cohere: v3.5 & 61.1 & 60.6 & 54.8 & 68.1 & 67.9 \\
+Open: MiniLM-L12-v2 & 82.9 & 71.9 & 80.9 & 61.5 & 59.4 \\
+Voyage: rerank-2.5-lite & 54.3 & 63.8 & 59.8 & 75.1 & 58.5 \\
+NVIDIA: Nemotron VL 1B & 64.2 & 43.9 & 54.5 & 70.1 & 70.8 \\
+Voyage: rerank-1 & 66.4 & 79.6 & 77.3 & 38.0 & 59.7 \\
+Mixedbread: large v2 & 71.2 & 56.6 & 66.3 & 63.0 & 64.8 \\
+Cohere: v4 pro & 58.2 & 58.7 & 45.9 & 66.5 & 43.0 \\
+Qwen: Qwen3 0.6B & 59.5 & 76.7 & 44.8 & 53.4 & 35.0 \\
+Google: fast-004 & 50.6 & 49.0 & 30.0 & 52.0 & 58.1 \\
+Cohere: v4 fast & 56.3 & 72.2 & 35.9 & 60.6 & 41.8 \\
+Qwen: Qwen3 8B & 42.5 & 65.6 & 41.2 & 56.7 & 48.5 \\
+Alibaba: GTE ModernBERT & 62.4 & 78.8 & 61.9 & 53.5 & 34.4 \\
+Voyage: rerank-3-lite & 36.1 & 36.8 & 23.4 & 17.7 & 24.2 \\
+Google: default-004 & 35.6 & 43.0 & 42.1 & 31.4 & 29.7 \\
+Qwen: Qwen3 4B & 48.1 & 53.8 & 40.7 & 61.2 & 42.8 \\
+BAAI: BGE large & 62.6 & 50.8 & 64.2 & 15.7 & 15.6 \\
+BAAI: BGE base & 72.7 & 24.2 & 50.6 & 48.1 & 36.3 \\
+Jina: reranker v2 & 48.3 & 37.1 & 28.7 & 30.4 & 13.6 \\
+Voyage: rerank-2-lite & 31.3 & 39.7 & 18.4 & 45.9 & 18.4 \\
+Jina: reranker v3 & 63.3 & 17.8 & 48.0 & 5.6 & 57.8 \\
 \bottomrule
 \end{tabular}
 }

@@ -53,6 +53,7 @@ from matplotlib.patches import Patch
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "code"))
 from deid_transforms import CONDITION_LABELS  # noqa: E402  (shared with Tables A7-A8)
+from model_labels import MODEL_LABELS  # noqa: E402  (shared with the appendix tables)
 RESULTS = str(REPO_ROOT / "results")
 FIGDIR = str(REPO_ROOT / "legal_paper" / "figures")
 os.makedirs(FIGDIR, exist_ok=True)
@@ -109,22 +110,6 @@ def _load(name):
 # female-typed and male-typed occupations?
 # ---------------------------------------------------------------------------
 
-MODEL_LABELS = {
-    "BAAI/bge-reranker-v2-m3": "BAAI: BGE v2-m3",
-    "Cohere-rerank-v4.0-fast": "Cohere: v4 fast",
-    "Cohere-rerank-v4.0-pro": "Cohere: v4 pro",
-    "cross-encoder/ms-marco-MiniLM-L-12-v2": "Open: MiniLM-L12-v2",
-    "ibm-granite-granite-embedding-reranker-english-r2": "IBM: Granite r2",
-    "jinaai/jina-reranker-v2-base-multilingual": "Jina: reranker v2",
-    "rerank-1": "Voyage: rerank-1",
-    "rerank-2": "Voyage: rerank-2",
-    "rerank-2-lite": "Voyage: rerank-2-lite",
-    "rerank-2.5": "Voyage: rerank-2.5",
-    "rerank-2.5-lite": "Voyage: rerank-2.5-lite",
-    "semantic-ranker-default-002": "Google: default-002",
-    "semantic-ranker-default-004": "Google: default-004",
-    "semantic-ranker-fast-004": "Google: fast-004",
-}
 
 
 def fig_single_stage():
@@ -150,17 +135,20 @@ def fig_single_stage():
             "female_jobs": fem["tie_aware_pct_male"],
         })
 
-    # Largest shift first. Every difference is positive; sorting makes both the
-    # shared direction and the variation in its size visible immediately.
+    # Largest shift first, so both the common direction and the exceptions at
+    # the bottom are visible immediately.
     rows.sort(key=lambda r: r["male_jobs"] - r["female_jobs"], reverse=True)
 
     # Keep the artwork compact and strongly horizontal. The paper's prose and
     # caption carry the takeaway, so the figure itself needs only the key,
     # directly labelled rows, and the measurement axis.
+    # Height grows with the number of rerankers so rows keep a fixed pitch;
+    # the bottom (axis + key) and top (note) margins stay fixed in inches.
     fig_w = W_FIG
-    fig_h = 3.00
+    row_in, bottom_in, top_in = 0.155, 0.95, 0.30
+    fig_h = bottom_in + top_in + row_in * len(rows)
     fig = plt.figure(figsize=(fig_w, fig_h))
-    ax_box = [0.32, 0.31, 0.66, 0.55]
+    ax_box = [0.32, bottom_in / fig_h, 0.66, (row_in * len(rows)) / fig_h]
     ax = fig.add_axes(ax_box)
     ax.axvline(50, color=REFERENCE, lw=0.9, ls="--", zorder=1)
 
@@ -193,7 +181,7 @@ def fig_single_stage():
                color=FEMALE, markeredgecolor="white", markeredgewidth=0.5,
                label="female-typed occupations"),
     ]
-    fig.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, 0.012),
+    fig.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, 0.04 / fig_h),
                frameon=False, fontsize=FONT_LEGEND, ncol=2, handletextpad=0.4,
                columnspacing=1.4)
     # Place this directly over x=50; tying it to ax_box avoids the misleading

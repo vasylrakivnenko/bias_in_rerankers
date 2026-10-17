@@ -49,11 +49,18 @@ third-party Python packages are needed.
 ## Empirical backbone (all reproducible from `../code` + `../results`)
 | Claim | Script | Output |
 |---|---|---|
-| Single-stage re-ranker bias, 14 models (Tables A1–A2) | `../code/analyze_single_stage.py`, over the banked `../code/run_experiment.py` scores | `../results/single_stage_summary.json` |
-| Pipeline shortlist, one pair and swept over all 14 re-rankers (Figure 2, Table A6) | `../code/compounding_experiment.py` | `../results/compounding_bge_pipeline.json`, `../results/compounding_all_rerankers.json` |
-| De-identification mitigation, one model and all four local re-rankers (Figure 3, Tables A7–A8) | `../code/deidentification_experiment.py` | `../results/deidentification_bge.json`, `../results/deidentification_summary.json` |
+| Single-stage re-ranker bias, 29 models (Tables A1–A3) | `../code/analyze_single_stage.py`, over the banked `../code/run_experiment.py` scores | `../results/single_stage_summary.json` |
+| Pipeline shortlist, one pair and swept over all 14 re-rankers (Figure 2, Table A7) | `../code/compounding_experiment.py` | `../results/compounding_bge_pipeline.json`, `../results/compounding_all_rerankers.json` |
+| De-identification mitigation, one model and all four local re-rankers (Figure 3, Tables A8–A9) | `../code/deidentification_experiment.py` | `../results/deidentification_bge.json`, `../results/deidentification_summary.json` |
 | The documents, query forms, name pairs, and full occupation list (Appendix A; the occupation list is released, not printed) | `../code/generate_appendix_tables.py` | `../results/tex/documents_appendix.tex`, `../results/tex/occupations_table.tex` |
 | Vendor documentation and public weight availability | `../code/vendor_docs_audit.py` | `../results/vendor_docs_audit_summary.json` |
+| Open-weight rerankers scored on a rented GPU (checkpointed, canary-gated) | `../code/score_open_models.py` | `../results/*_full_raw.json`, `../results/selfhost/` |
+| Request-order test for API rerankers and listwise order arms | `../code/order_reversal_test.py` | `../results/order_reversal_test.json`, `../results/order_test/` |
+| Cross-hardware and self-hosted vs API reproducibility | `../code/reproducibility_checks.py` | `../results/reproducibility_checks.json` |
+| Interval sensitivity (BLS-category and occupation × name resampling) | `../code/interval_sensitivity.py` | `../results/interval_sensitivity.json` |
+| Paired de-identification statistics | `../code/deid_statistics.py` | `../results/deid_statistics_bge.json` |
+| Pinned local model revisions and runtime | `../code/model_manifest.py` | `../results/model_manifest.json` |
+| Companion results table (Appendix F) | `../code/companion_table.py` | `../results/tex/companion_table.tex` |
 | Real-résumé companion run and sampled population | `../code/realistic_pool_experiment.py`, `../code/reconstruct_realistic_sampling.py` | `../results/realistic_pool_four_rerankers.json`, `../results/realistic_pool_sampling.json` |
 
 All inputs for `python3 build.py` are included in the release; building the PDF

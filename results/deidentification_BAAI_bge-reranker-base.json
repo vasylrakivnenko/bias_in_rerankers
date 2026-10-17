@@ -1,16 +1,25 @@
 {
   "reranker": "BAAI/bge-reranker-base",
   "device": "mps",
+  "model_revision": "2cfc18c9415c912f9d8155881c133215df768a70",
+  "runtime": {
+    "torch": "2.10.0",
+    "transformers": "5.2.0",
+    "sentence_transformers": "5.2.3",
+    "max_length": 512,
+    "batch_size": 64,
+    "date": "2026-10-16"
+  },
   "baseline_source": "scored locally in this run (variant `none`, no lowercasing)",
   "name_placeholder": "the candidate",
   "n_triples": 8320,
   "determinism_check": {
+    "status": "skipped",
+    "baseline_source": "scored locally in this run (variant `none`, no lowercasing)",
     "max_abs_score_diff": null,
     "mean_abs_score_diff": null,
     "passed": null,
-    "status": "skipped",
-    "baseline_source": "scored locally in this run (variant `none`, no lowercasing)",
-    "note": "No banked baseline exists for this model, so `original` was scored locally in this run. A self-comparison always yields 0.0 and is not evidence of cross-run reproducibility."
+    "note": "No banked baseline exists for this model, so `original` was scored locally in this run. Comparing it against a second local scoring of the same strings is self-referential and always yields 0.0; it is NOT evidence of cross-run reproducibility, so no verdict is reported."
   },
   "conditions": {
     "original": {
@@ -1624,8 +1633,8 @@
       "top1_pct_delta_vs_original": 0.3605769230769198
     }
   },
-  "script_version": "deidentification_experiment.py v3.0 (REVIEW_ROUND2 A1/A3/A7)",
-  "generated": "2026-08-22T18:37:30",
+  "script_version": "deidentification_experiment.py v3.1 (same-run baseline on failed determinism; pair-level release)",
+  "generated": "2026-10-16T17:12:27",
   "label_source": "BLS CPS Table 11 via occupations_bls.csv",
   "seed": 20260822,
   "bootstrap_B": 1000,

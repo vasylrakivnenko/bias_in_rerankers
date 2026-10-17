@@ -43,7 +43,7 @@ class ReviewCorrections(unittest.TestCase):
     def test_missing_weight_evidence_fails(self):
         evidence, summary = audit.load()
         evidence = copy.deepcopy(evidence)
-        evidence["weight_availability"].pop(next(iter(summary["models"])))
+        evidence["weight_availability"].pop(next(iter(audit.scoped(evidence, summary)["models"])))
         with self.assertRaises(ValueError):
             audit.check_population(evidence, summary)
 

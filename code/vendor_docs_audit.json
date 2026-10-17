@@ -29,6 +29,7 @@
   ],
   "accessed": "2026-09-03 to 2026-09-04",
   "audit_version": 2,
+  "population_scored_date": "2026-02-24",
   "vendors": {
     "BAAI (open weights)": {
       "models_doc_name": "BAAI/bge-reranker-v2-m3",

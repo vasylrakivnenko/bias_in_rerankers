@@ -12,7 +12,10 @@ see code/occupations_bls.csv and REVIEW_TODO.md A8).  Run
 The banked `results/*_full_raw.json` files were scored in Feb 2026 with
 perturbation=names_and_pronouns and all four query types, over the pre-BLS
 82-occupation list -> 13,120 pairs per model.  Those files are a historical
-record and are never regenerated.
+record and are never regenerated.  Models added in Oct 2026 (Voyage rerank-3 and
+rerank-3-lite, and three rerankers via OpenRouter) were scored on the 52-occupation
+BLS list -> 8,320 pairs, with the same per-query request layout; their raw files
+carry a `scored_at` date and, for OpenRouter, the backend that served them.
 
 Caveats for anything that reads the metrics below:
   * The Wilcoxon / t / OLS / Kruskal-Wallis tests treat the pairs as independent.
@@ -71,10 +74,18 @@ DEFAULT_MODEL = "cross-encoder/ms-marco-MiniLM-L-12-v2"
 BATCH_SIZE = 64
 
 # Known API-based models (not local CrossEncoders)
-VOYAGE_MODELS = {"rerank-1", "rerank-2", "rerank-2-lite", "rerank-2.5", "rerank-2.5-lite"}
+VOYAGE_MODELS = {"rerank-1", "rerank-2", "rerank-2-lite", "rerank-2.5", "rerank-2.5-lite",
+                 "rerank-3", "rerank-3-lite"}
 AZURE_MODELS = {"ibm-granite-granite-embedding-reranker-english-r2"}
 COHERE_MODELS = {"Cohere-rerank-v4.0-pro", "Cohere-rerank-v4.0-fast"}
 GCP_MODELS = {"semantic-ranker-default-004", "semantic-ranker-default-003", "semantic-ranker-fast-004", "semantic-ranker-default-002"}
+# Model name used in this project -> OpenRouter model id (free variants carry a suffix).
+OPENROUTER_MODELS = {
+    "cohere/rerank-v3.5": "cohere/rerank-v3.5",
+    "qwen/qwen3-reranker-8b": "qwen/qwen3-reranker-8b",
+    "nvidia/llama-nemotron-rerank-vl-1b-v2": "nvidia/llama-nemotron-rerank-vl-1b-v2:free",
+}
+OPENROUTER_ENDPOINT = "https://openrouter.ai/api/v1/rerank"
 
 
 # ---------------------------------------------------------------------------
@@ -362,6 +373,79 @@ def score_triples_cohere(
             }
 
     return results
+
+
+# ---------------------------------------------------------------------------
+# Scoring — OpenRouter rerank endpoint
+# ---------------------------------------------------------------------------
+
+def score_triples_openrouter(
+    triples: list[Triple], model_name: str, api_key: str,
+) -> tuple[list[dict], list[str]]:
+    """Score triples via OpenRouter's rerank endpoint, grouped by query.
+
+    Uses the same request layout as every other API path (male version first in
+    each pair, one request per query). OpenRouter may route a model to different
+    backends, so the backend named in each response is returned for the record.
+    """
+    import requests
+
+    headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
+    from collections import OrderedDict
+    query_groups: OrderedDict[str, list[tuple[int, Triple]]] = OrderedDict()
+    for i, t in enumerate(triples):
+        query_groups.setdefault(t.query, []).append((i, t))
+
+    results: list[dict | None] = [None] * len(triples)
+    served_by: list[str] = []
+    for query, group in tqdm(query_groups.items(), desc=f"Scoring ({model_name})", unit="query"):
+        documents, positions = [], []
+        for idx, t in group:
+            male_pos = len(documents)
+            documents.append(t.doc_male)
+            female_pos = len(documents)
+            documents.append(t.doc_female)
+            positions.append((idx, male_pos, female_pos))
+
+        payload = {"model": OPENROUTER_MODELS[model_name], "query": query,
+                   "documents": documents, "top_n": len(documents)}
+        max_retries = 6
+        for attempt in range(max_retries):
+            try:
+                resp = requests.post(OPENROUTER_ENDPOINT, json=payload, headers=headers, timeout=120)
+                resp.raise_for_status()
+                data = resp.json()
+                if len(data["results"]) != len(documents):
+                    raise ValueError(f"{len(data['results'])} of {len(documents)} documents scored")
+                break
+            except (requests.exceptions.RequestException, ValueError, KeyError) as e:
+                wait = 5 * 2 ** attempt
+                tqdm.write(f"  error: {str(e)[:150]}, retrying in {wait}s "
+                           f"(attempt {attempt + 1}/{max_retries})")
+                time.sleep(wait)
+        else:
+            raise RuntimeError(f"Failed after {max_retries} retries for query: {query!r}")
+        served_by.append(data.get("model", ""))
+
+        score_map = {r["index"]: r["relevance_score"] for r in data["results"]}
+        for idx, male_pos, female_pos in positions:
+            sm = float(score_map[male_pos])
+            sf = float(score_map[female_pos])
+            t = triples[idx]
+            results[idx] = {
+                "query": t.query,
+                "query_type": t.query_type,
+                "occupation": t.occupation,
+                "stereotype": t.stereotype,
+                "name_pair": t.name_pair,
+                "template_style": t.template_style,
+                "perturbation": t.perturbation,
+                "score_male": sm,
+                "score_female": sf,
+                "delta": sm - sf,
+            }
+
+    return results, served_by
 
 
 # ---------------------------------------------------------------------------
@@ -1243,11 +1327,22 @@ def main():
                              "Also reads GCP_PROJECT env var.")
     args = parser.parse_args()
 
+    # Keys may live in the repository's git-ignored .env file.
+    import os
+    env_file = Path(__file__).resolve().parent.parent / ".env"
+    if env_file.exists():
+        for line in env_file.read_text().splitlines():
+            if "=" in line and not line.lstrip().startswith("#"):
+                k, v = line.split("=", 1)
+                os.environ.setdefault(k.strip(), v.strip())
+
     batch_size = args.batch_size
+    served_by = None
     is_voyage = args.model in VOYAGE_MODELS
     is_azure = args.model in AZURE_MODELS
     is_cohere = args.model in COHERE_MODELS
     is_gcp = args.model in GCP_MODELS
+    is_openrouter = args.model in OPENROUTER_MODELS
 
     if args.quick:
         perturbation_levels = ["names_and_pronouns"]
@@ -1327,6 +1422,18 @@ def main():
         results = score_triples_gcp(triples, args.model, gcp_project)
         elapsed = time.time() - t0
         print(f"Scoring complete: {elapsed:.1f}s ({len(triples) / elapsed:.0f} triples/sec)")
+    elif is_openrouter:
+        api_key = os.environ.get("OPENROUTER_API_KEY")
+        if not api_key:
+            print("ERROR: OpenRouter model requires the OPENROUTER_API_KEY env var.")
+            return
+        unique_queries = len(set(t.query for t in triples))
+        print(f"Scoring {len(triples):,} triples via OpenRouter ({unique_queries} API calls)...")
+        t0 = time.time()
+        results, served = score_triples_openrouter(triples, args.model, api_key)
+        served_by = sorted(set(served))
+        elapsed = time.time() - t0
+        print(f"Scoring complete: {elapsed:.1f}s; served by {served_by}")
     else:
         # Load local CrossEncoder model
         print("Loading model...")
@@ -1357,6 +1464,8 @@ def main():
             "perturbation_levels": perturbation_levels,
             "query_types": query_types_list,
             "elapsed_seconds": elapsed,
+            "scored_at": datetime.now().date().isoformat(),
+            "served_by": served_by,
             "metrics": metrics,
             "results": results,
         }, f, indent=2)
