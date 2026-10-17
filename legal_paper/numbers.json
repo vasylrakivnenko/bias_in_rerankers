@@ -1116,5 +1116,11 @@
     ],
     "format": ".0f",
     "needs": "Qwen3-8B hosted-API contrast."
+  },
+  "N_SWEEP": {
+    "file": "results/compounding_all_rerankers.json",
+    "path": "pipeline_spread.n_models",
+    "format": "d",
+    "needs": "Rerankers in the pipeline sweep (pointwise only; listwise models excluded)."
   }
 }

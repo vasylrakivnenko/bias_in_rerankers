@@ -73,6 +73,7 @@ RESULTS = ROOT / "results"
 TEX_DIR = RESULTS / "tex"
 OUT_MAIN = RESULTS / "compounding_bge_pipeline.json"
 OUT_SWEEP = RESULTS / "compounding_all_rerankers.json"
+LISTWISE_MODELS = {"jinaai/jina-reranker-v3"}
 EMB_CACHE = RESULTS / "compounding_emb_cache.json"
 
 EMBEDDER_NAME = "BAAI/bge-large-en-v1.5"
@@ -432,6 +433,15 @@ def main():
         del raw[d]
     print(f"Re-rankers after A1 de-duplication: {len(raw)}")
 
+    # Listwise rerankers score a document relative to the others in the same
+    # request, so replaying their 80-document audit scores inside a 20-document
+    # pool is not valid; they are left out of the pipeline simulation.
+    listwise = sorted(m for m in raw if m in LISTWISE_MODELS)
+    for m in listwise:
+        del raw[m]
+    if listwise:
+        print(f"Excluded from the pipeline simulation (listwise): {listwise}")
+
     rr_maps = {
         name: {key(r["occupation"], r["query_type"], r["name_pair"], r["template_style"]):
                (r["score_male"], r["score_female"]) for r in meta["rows"]}
@@ -446,6 +456,7 @@ def main():
         "tiebreak": "average ranks for rank gaps; seeded random tie-breaks for top-k "
                     "selection, averaged over `tiebreak_repeats` draws (fixes C1)",
         "excluded_models": dropped,
+        "excluded_listwise": listwise,
     }
 
     # ---------------- main worked example ----------------

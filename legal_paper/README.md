@@ -50,7 +50,7 @@ third-party Python packages are needed.
 | Claim | Script | Output |
 |---|---|---|
 | Single-stage re-ranker bias, 29 models (Tables A1–A3) | `../code/analyze_single_stage.py`, over the banked `../code/run_experiment.py` scores | `../results/single_stage_summary.json` |
-| Pipeline shortlist, one pair and swept over all 14 re-rankers (Figure 2, Table A7) | `../code/compounding_experiment.py` | `../results/compounding_bge_pipeline.json`, `../results/compounding_all_rerankers.json` |
+| Pipeline shortlist, one pair and swept over the 28 pointwise re-rankers (Figure 2, Table A7) | `../code/compounding_experiment.py` | `../results/compounding_bge_pipeline.json`, `../results/compounding_all_rerankers.json` |
 | De-identification mitigation, one model and all four local re-rankers (Figure 3, Tables A8–A9) | `../code/deidentification_experiment.py` | `../results/deidentification_bge.json`, `../results/deidentification_summary.json` |
 | The documents, query forms, name pairs, and full occupation list (Appendix A; the occupation list is released, not printed) | `../code/generate_appendix_tables.py` | `../results/tex/documents_appendix.tex`, `../results/tex/occupations_table.tex` |
 | Vendor documentation and public weight availability | `../code/vendor_docs_audit.py` | `../results/vendor_docs_audit_summary.json` |
@@ -84,22 +84,25 @@ open-weight rerankers run locally for free.)
 `{{PLACEHOLDER}}` resolved from `../results/*.json` via `numbers.json`, and the build fails
 on any unresolved one. These are a sanity check for a human reader only.
 
-- **14 of 14 models** favor the man more often on male-typed than on
-  female-typed jobs (tie-aware, median spread 31.6 pts). 13 of 14 order all
-  three categories male > neutral > female; the one exception (ms-marco)
-  favors male-typed jobs over neutral ones, but neutral over female-typed.
+- **27 of 29 rerankers** favor the man more often on male-typed than on
+  female-typed jobs, with an occupation-clustered interval above zero (tie-aware;
+  median within-model spread 31.4 pts). The exceptions are jina-reranker-v3
+  (listwise, +0.8) and gte-reranker-modernbert-base (−6.7, interval touching zero).
+  The largest gaps come from zerank-2 (+65) and Voyage rerank-3 (+61).
 - **The default lean on evenly split occupations is model-specific and not
-  small.** Tie-aware median 63.0% favor-male, but only because 10 of 14 lean
-  male and 4 lean female — the range runs 32.8% to 87.8%. A buyer cannot tell
-  which way a given product leans without testing it.
-- **Ties are counted as ties** (up to 20.6% of pairs for some APIs) and split
-  evenly (half a win each side) wherever a single share is reported, matching
-  Figure 1 / Table A2 / the body text. The old `delta > 0` arithmetic silently
-  gave every tie to the woman.
+  small.** Tie-aware median 64% favor-male, but 21 of 29 lean male and 8 lean
+  female, from 31% to 91%. A buyer cannot tell which way a given product leans
+  without testing it.
+- **Ties are counted as ties** (up to 28.5% of pairs for the hosted Qwen3-8B) and
+  split evenly (half a win each side) wherever a single share is reported.
 - Full-pipeline top-3 shortlist: **79% male overall, 77% on evenly split
-  roles.** Across all 14 re-rankers sharing the same retriever it spans 44%
-  (semantic-ranker-default-004) to 85% (ibm-granite-…-r2) — the shortlist is
-  a property of the re-ranker, not of two-stage pipelines as such.
+  roles.** Across the 28 pointwise rerankers sharing the same retriever it spans
+  44% (rerank-3-lite) to 85% (ibm-granite-…-r2); 11 of 28 push the shortlist below
+  retrieval alone. The listwise jina-reranker-v3 is excluded, because its scores
+  depend on the other documents in a request.
+- **Request order** was tested on all 15 API rerankers: 14 unmoved, rerank-2 +2.3
+  pts on a 57-pt contrast. Listwise jina-reranker-v3 flips its winner in 35% of
+  pairs when each pair is reversed.
 - **De-identification, run correctly (case preserved).** Deleting names but
   leaving pronouns does *not* shrink the average score gap — it is slightly
   *larger* (0.0358 → 0.0380) — while pushing the direction to near-total
