@@ -56,6 +56,15 @@ the male-typed minus female-typed contrast with an occupation-clustered
 percentile bootstrap (interval_sensitivity.contrast_draws, 50,000 draws, seeded
 with the seed that file uses, so the change from the original contrast is a
 paired comparison); the original contrast from results/interval_sensitivity.json.
+The pronoun-only design makes one comparison per cell (occupation x query
+phrasing x template) where the original audit makes ten, one per name pair, so
+the original scores are also compared with each cell's ten names averaged
+(`original_name_averaged`, same seed, so that change is paired too). Re-run
+checks say how far the original side moves on the machine that scored the
+pronoun-only texts: the drift check of the re-run models and, for the four
+de-identification-run models, that run's own re-score of the original
+documents (`deid_rerun_checks`); the overview repeats the comparison without
+the models whose check did not reproduce every banked winner.
 
 Outputs
     results/pronoun_channel/partial/       checkpoints, request ledgers, status
@@ -89,6 +98,7 @@ import threading
 import time
 import traceback
 from collections import OrderedDict
+from fractions import Fraction
 from pathlib import Path
 
 import numpy as np
@@ -1003,6 +1013,174 @@ def split(rows):
     return out
 
 
+def contrast_of(by):
+    return by["male"]["tie_aware_pct_male"] - by["female"]["tie_aware_pct_male"]
+
+
+def cell_key(r):
+    return r["occupation"], r["query_type"], r["template_style"]
+
+
+def name_averaged(raw_rows, labels):
+    """(pair rows, cell rows) of a banked original file, labelled occupations only.
+
+    The pronoun-only design makes one comparison per cell (occupation x query
+    phrasing x template), because the ten name pairs collapse into one; the
+    original audit makes ten, and each of them also carries its name pair's own
+    preferences, which pull a share towards 50%. Comparing the mean of a cell's
+    ten male-version scores with the mean of its ten female-version scores gives
+    the original audit the same one comparison per cell, so that the two
+    contrasts differ in the documents and not in how each cell is counted. The
+    means are compared exactly, on each score's shortest decimal form: Google's
+    four-decimal scores, for instance, give equal decimal means whose binary sums
+    differ by 1e-16. A cell row stores the two means as floats, which are
+    asserted to order the same way as the exact means.
+    """
+    names = [f"{m}/{f}" for m, f in NAME_PAIRS]
+    pair_rows, cells = [], OrderedDict()
+    for r in raw_rows:
+        cat = labels.get(r["occupation"])
+        if cat is None:
+            continue
+        row = {"occupation": r["occupation"], "category": cat, "query_type": r["query_type"],
+               "template_style": r["template_style"], "name_pair": r["name_pair"],
+               "score_male": r["score_male"], "score_female": r["score_female"]}
+        pair_rows.append(row)
+        cell = cells.setdefault(cell_key(row), {})
+        if row["name_pair"] in cell:
+            raise SystemExit(f"two rows for name pair {row['name_pair']!r} in cell {cell_key(row)}")
+        cell[row["name_pair"]] = row
+    cell_rows = []
+    for (occ, qt, tmpl), cell in cells.items():
+        if sorted(cell) != sorted(names):
+            raise SystemExit(f"cell {(occ, qt, tmpl)} does not hold each of the ten name pairs once")
+        exact = [sum(Fraction(repr(cell[n][k])) for n in names) / len(names)
+                 for k in ("score_male", "score_female")]
+        sm, sf = float(exact[0]), float(exact[1])
+        if (sm > sf) - (sm < sf) != (exact[0] > exact[1]) - (exact[0] < exact[1]):
+            raise SystemExit(f"cell {(occ, qt, tmpl)}: the float means do not order as the exact ones")
+        cell_rows.append({"occupation": occ, "category": labels[occ], "query_type": qt,
+                          "template_style": tmpl, "score_male": sm, "score_female": sf,
+                          "n_name_pairs": len(names)})
+    return pair_rows, cell_rows
+
+
+def deid_rerun_check(model, labels, banked_path, drift_queries, original_contrast):
+    """The de-identification run's own scoring of the ORIGINAL documents against the
+    banked original scores: for the four models read from that run, the
+    counterpart of the re-run models' drift check.
+
+    That run scored all 8,320 untransformed pairs in the same session, on the same
+    machine, as its `names_only` texts. It kept those re-scores, as `original` in
+    results/deid_pairs/, where no bank existed (BGE base) or the bank failed its
+    determinism check (jina-reranker-v2); winners are then compared pair by pair,
+    as in drift_check (a tie is its own outcome). Where the bank passed and was
+    kept as `original`, the run recorded only the largest score difference d: a
+    pair's winner can change only if its banked gap is at most 2d, so those pairs
+    are undetermined, the agreement is a lower bound (exactly 100% when no pair is
+    that close), and the contrast can move by at most one tie-aware win per
+    undetermined pair. The pairs of the drift check's two queries are also
+    reported on their own, beside the re-run models' figure for the same pairs.
+    """
+    s = model.replace("/", "_")
+    pairs_path, run_path = DEID_PAIRS / f"{s}.json", RESULTS / f"deidentification_{s}.json"
+    d, run = json.loads(pairs_path.read_text()), json.loads(run_path.read_text())
+    raw = json.loads(banked_path.read_text())
+    assert d["reranker"] == model == raw["model"] and d["score_pair_order"] == ["male", "female"]
+    bank = {(r["occupation"], r["query_type"], r["name_pair"], r["template_style"]): r
+            for r in raw["results"]}
+    saved = not d["baseline_source"].startswith("banked")
+    dc = run["determinism_check"]
+    bound = None if saved else dc["max_abs_score_diff"]
+    tally = {"all": [0, 0, 0], "drift": [0, 0, 0]}      # pairs, same winner, undetermined
+    changes = {"reversed": 0, "tie_to_winner": 0, "winner_to_tie": 0}
+    undetermined = {c: 0 for c in CATEGORIES}
+    diffs, banked_rows, rescored_rows = [], [], []
+    for p in d["pairs"]:
+        occ, qt, pair, tmpl = p["key"].split("|")
+        b, cat = bank[(occ, qt, pair, tmpl)], labels[occ]
+        assert p["category"] == cat, f"{pairs_path.name}: category of {p['key']!r}"
+        bm, bf = b["score_male"], b["score_female"]
+        rm, rf = p["original"]
+        banked_rows.append({"category": cat, "score_male": bm, "score_female": bf})
+        if saved:
+            rescored_rows.append({"category": cat, "score_male": rm, "score_female": rf})
+            diffs += [abs(rm - bm), abs(rf - bf)]
+            sb, sr = np.sign(bm - bf), np.sign(rm - rf)
+            same, und = int(sb == sr), 0
+            if not same:
+                changes["tie_to_winner" if sb == 0 else "winner_to_tie" if sr == 0
+                        else "reversed"] += 1
+        else:
+            if (rm, rf) != (bm, bf):
+                raise SystemExit(f"{pairs_path.name}: `original` should be the bank, "
+                                 f"{banked_path.name}, but differs at {p['key']!r}")
+            und = int(abs(bm - bf) <= 2 * bound)
+            same = 1 - und
+            undetermined[cat] += und
+        for g in ("all", "drift") if b["query"] in drift_queries else ("all",):
+            tally[g] = [tally[g][0] + 1, tally[g][1] + same, tally[g][2] + und]
+
+    def agreement(n, same, und):
+        return {"n_pairs": n, "pct_pairs_same_winner": None if und else 100.0 * same / n,
+                "pct_pairs_same_winner_at_least": 100.0 * same / n, "n_pairs_undetermined": und}
+
+    banked_contrast = contrast_of(split(banked_rows))
+    if abs(banked_contrast - original_contrast) > 1e-9:
+        raise SystemExit(f"{model}: the banked pairs of {pairs_path.name} do not reproduce the "
+                         f"original contrast")
+    n, same, und = tally["all"]
+    rescored = contrast_of(split(rescored_rows)) if saved else None
+    n_cat = {c: sum(r["category"] == c for r in banked_rows) for c in ("male", "female")}
+    return {
+        "source": f"{rel(pairs_path)} (`original`); {rel(run_path)} (determinism_check)",
+        "rerun": {"device": run["device"], "script_version": run["script_version"],
+                  **run["runtime"]},
+        "banked_file": rel(banked_path), "banked_scored_at": raw.get("scored_at"),
+        "banked_hardware": (raw.get("self_hosted") or {}).get("gpu"),
+        "baseline_source": d["baseline_source"],
+        "rescored_originals_saved": saved,
+        "method": ("pair by pair: the run's re-scores of the original documents are saved"
+                   if saved else
+                   "bound: only the bank was kept, with the run's largest score difference; a "
+                   "pair whose banked gap is at most twice that is undetermined"),
+        "max_abs_score_diff": float(max(diffs)) if saved else bound,
+        "mean_abs_score_diff": float(np.mean(diffs)) if saved else dc["mean_abs_score_diff"],
+        **agreement(n, same, und),
+        "winner_changes": changes if saved else None,
+        "drift_check_pairs": ({"queries": list(drift_queries), **agreement(*tally["drift"])}
+                              if drift_queries else None),
+        "all_winners_reproduced": None if und else same == n,
+        "banked_original_contrast": banked_contrast,
+        "rescored_original_contrast": rescored,
+        "contrast_change": None if rescored is None else rescored - banked_contrast,
+        "abs_contrast_change_bound": None if saved else
+        100.0 * sum(undetermined[c] / n_cat[c] for c in ("male", "female")),
+    }
+
+
+def set_statistics(models, ms):
+    """Medians and counts over the models `ms`: the pronoun-only contrast against the
+    original one and against the name-averaged original (point estimates), and the
+    paired change from the name-averaged original."""
+    def med(v):
+        return statistics.median(v) if v else None
+
+    orig = [models[m]["original"]["contrast"] for m in ms]
+    pron = [models[m]["contrast"] for m in ms]
+    avg = [models[m]["original_name_averaged"]["contrast"] for m in ms]
+    ch = [models[m]["change_vs_original_name_averaged"] for m in ms]
+    return {"n_models_tested": len(ms),
+            "median_original_contrast": med(orig),
+            "median_contrast": med(pron),
+            "median_original_name_averaged_contrast": med(avg),
+            "n_contrast_above_original": sum(p > o for p, o in zip(pron, orig)),
+            "n_contrast_above_original_name_averaged": sum(p > a for p, a in zip(pron, avg)),
+            "median_change_vs_original_name_averaged": med([c["change"] for c in ch]),
+            "n_change_vs_original_name_averaged_above_zero": sum(c["above_zero"] for c in ch),
+            "n_change_vs_original_name_averaged_below_zero": sum(c["below_zero"] for c in ch)}
+
+
 class ContrastFrame:
     """interval_sensitivity's cell tables and draws, over the male/female occupations."""
 
@@ -1062,6 +1240,29 @@ def analyse(args, labels, label_source, design):
                              f"interval_sensitivity.json")
         change = draws - d0
         by = split(rows)
+        # The original audit with each cell's ten names averaged, one comparison per
+        # cell as in the pronoun-only design: from the audited model's banked file
+        # (the `original` column, IBM Granite's API scores), checked at pair level
+        # against interval_sensitivity.json; the paired change is taken against
+        # the same original scores as change_vs_original.
+        audit_raw = RESULTS / audit[audit_key]["raw_file"]
+        pair_rows, avg_rows = name_averaged(json.loads(audit_raw.read_text())["results"], labels)
+        pair_point = contrast_of(split(pair_rows))
+        if abs(pair_point - orig_iv["contrast"]) > 1e-9:
+            raise SystemExit(f"{m}: the pair-level contrast of {audit_raw.name} does not reproduce "
+                             f"interval_sensitivity.json")
+        if sorted(map(cell_key, avg_rows)) != sorted(map(cell_key, rows)):
+            raise SystemExit(f"{m}: the name-averaged cells are not the pronoun-only comparisons")
+        pa, da = frame.point_and_draws(avg_rows, seed)
+        by_avg = split(avg_rows)
+        if abs(pa - contrast_of(by_avg)) > 1e-9:
+            raise SystemExit(f"{m}: the two name-averaged contrasts disagree")
+        lo_a, hi_a = ci(da)
+        if m in SELFHOST_OF:
+            pa0, da0 = frame.point_and_draws(name_averaged(raw_rows, labels)[1], seed)
+        else:
+            pa0, da0 = pa, da
+        change_avg = draws - da0
         # How far the original side itself moves between runs, for reading `change`:
         # API models -- the order test's re-query of the original layout vs the bank;
         # local models -- this run's drift check (MPS here vs the banked hardware).
@@ -1102,6 +1303,15 @@ def analyse(args, labels, label_source, design):
                          "ci": orig_iv["schemes"]["occupation"]["ci"],
                          "above_zero": orig_iv["schemes"]["occupation"]["above_zero"],
                          "source": f"results/interval_sensitivity.json models[{audit_key!r}]"},
+            "original_name_averaged": {
+                "contrast": pa, "ci": [lo_a, hi_a],
+                "above_zero": lo_a > 0, "below_zero": hi_a < 0, "includes_zero": lo_a <= 0 <= hi_a,
+                "n_comparisons": len(avg_rows),
+                "n_ties": sum(r["score_male"] == r["score_female"] for r in avg_rows),
+                "by_category": {c: by_avg[c] for c in CATEGORIES},
+                "pair_level_contrast": pair_point,
+                "pair_level_reproduces_original": True,
+                "source": rel(audit_raw)},
             "change_vs_original": {
                 "against": rel(raw_path) + (" (the self-hosted copy's own original scores)"
                                             if m in SELFHOST_OF else ""),
@@ -1111,10 +1321,17 @@ def analyse(args, labels, label_source, design):
                 "change": point - p0, "ci": ci(change),
                 "above_zero": ci(change)[0] > 0, "below_zero": ci(change)[1] < 0,
                 "original_side_drift_reference": drift_ref},
+            "change_vs_original_name_averaged": {
+                "against": rel(raw_path) + (" (the self-hosted copy's own original scores)"
+                                            if m in SELFHOST_OF else ""),
+                "original_name_averaged_contrast": pa0, "original_name_averaged_ci": ci(da0),
+                "change": point - pa0, "ci": ci(change_avg),
+                "above_zero": ci(change_avg)[0] > 0, "below_zero": ci(change_avg)[1] < 0},
             "scoring": info,
         }
-        print(f"{m:<52} original {orig_iv['contrast']:6.1f}   pronouns only {point:6.1f} "
-              f"[{lo:6.1f}, {hi:6.1f}]   change {point - p0:+6.1f}", flush=True)
+        print(f"{m:<52} original {orig_iv['contrast']:6.1f}   name-averaged {pa:6.1f}   "
+              f"pronouns only {point:6.1f} [{lo:6.1f}, {hi:6.1f}]   change {point - p0:+6.1f}",
+              flush=True)
 
     order = sorted(models, key=lambda k: -models[k]["original"]["contrast"])
     tested = order
@@ -1154,6 +1371,74 @@ def analyse(args, labels, label_source, design):
     overview["drift_min_pct_same_winner"] = min(drift) if drift else None
     overview["drift_max_pct_same_winner"] = max(drift) if drift else None
     overview["n_drift_below_100"] = sum(v < 100 for v in drift)
+    by_drift = {m: models[m]["scoring"]["drift_check"]["pct_pairs_same_winner"] for m in tested
+                if models[m]["scoring"].get("drift_check")}
+    overview["n_drift_100"] = sum(v == 100 for v in by_drift.values())
+    overview["models_drift_100"] = {m: v for m, v in by_drift.items() if v == 100}
+    overview["models_drift_below_100"] = {m: v for m, v in by_drift.items() if v < 100}
+
+    # The same question for the de-identification-run models, from that run's own
+    # re-score of the original documents (on all pairs, and on the drift check's
+    # two queries); Table A3 prints one agreement per re-run model.
+    queries = {tuple(models[m]["scoring"]["drift_check"]["queries"]) for m in by_drift}
+    if len(queries) > 1:
+        raise SystemExit(f"the drift checks did not all use the same queries: {sorted(queries)}")
+    queries = queries.pop() if queries else ()
+    deid_checks = {m: deid_rerun_check(m, labels, RESULTS / audit[m]["raw_file"], queries,
+                                       models[m]["original"]["contrast"])
+                   for m in tested if m in DEID_MODELS}
+    for m in tested:
+        if m in by_drift:
+            models[m]["rerun_agreement"] = {
+                "pct_pairs_same_winner": by_drift[m], "lower_bound": False,
+                "n_pairs": models[m]["scoring"]["drift_check"]["n_pairs"],
+                "pairs": "the original documents of the drift check's two sampled queries",
+                "source": "drift_checks"}
+        elif m in deid_checks:
+            c = deid_checks[m]
+            models[m]["rerun_agreement"] = {
+                "pct_pairs_same_winner": c["pct_pairs_same_winner_at_least"],
+                "lower_bound": c["pct_pairs_same_winner"] is None,
+                "n_pairs": c["n_pairs"],
+                "pairs": "every pair, from the de-identification run's re-score of the original "
+                         "documents",
+                "source": "deid_rerun_checks"}
+        else:
+            models[m]["rerun_agreement"] = None
+    overview["n_deid_rerun_checked"] = len(deid_checks)
+    overview["models_deid_rerun_100"] = {m: c["pct_pairs_same_winner"] for m, c in deid_checks.items()
+                                         if c["all_winners_reproduced"] is True}
+    overview["models_deid_rerun_below_100"] = {m: c["pct_pairs_same_winner"]
+                                               for m, c in deid_checks.items()
+                                               if c["all_winners_reproduced"] is False}
+    overview["models_deid_rerun_undetermined"] = {m: c["pct_pairs_same_winner_at_least"]
+                                                  for m, c in deid_checks.items()
+                                                  if c["all_winners_reproduced"] is None}
+
+    # The pronoun-only contrast against the original and the name-averaged original,
+    # over every tested model (where the overview already holds a statistic, the two
+    # must agree) and without the models whose re-run did not reproduce every banked
+    # winner, so that a hardware difference cannot drive the comparison.
+    stats_all = set_statistics(models, tested)
+    if any(overview[k] != v for k, v in stats_all.items() if k in overview):
+        raise SystemExit("set_statistics disagrees with the overview")
+    overview.update(stats_all)
+    drop = overview["models_drift_below_100"]
+    overview["excluding_drift_below_100"] = {
+        "rule": "without the re-run open-weight models whose drift check (the original documents "
+                "of two sampled queries, re-scored on the machine that scored the pronoun-only "
+                "texts) did not reproduce every banked winner",
+        "models_dropped": drop,
+        **set_statistics(models, [m for m in tested if m not in drop])}
+    if overview["models_deid_rerun_below_100"]:
+        drop2 = {**drop, **overview["models_deid_rerun_below_100"]}
+        overview["excluding_drift_below_100_and_deid_rerun_below_100"] = {
+            "rule": "also without the de-identification-run models whose re-score of all their "
+                    "original pairs did not reproduce every banked winner; a model whose "
+                    "agreement is only bounded (models_undetermined_kept) stays in",
+            "models_dropped": drop2,
+            "models_undetermined_kept": overview["models_deid_rerun_undetermined"],
+            **set_statistics(models, [m for m in tested if m not in drop2])}
 
     def window(kind):
         ms = [models[m]["scoring"] for m in tested
@@ -1194,6 +1479,13 @@ def analyse(args, labels, label_source, design):
                               "(code/deid_transforms.py variant names_only)"},
         "definition": "contrast = tie-aware % male-favored on male-typed occupations minus the "
                       "same on female-typed occupations (ties count half); points",
+        "definition_original_name_averaged": (
+            "the contrast of the audited model's banked original scores with each cell "
+            "(occupation x query phrasing x template) as one comparison: the mean of its ten "
+            "male-version scores against the mean of its ten female-version scores, compared "
+            "exactly on the scores' decimal forms (equal means count half), so that every cell "
+            "weighs the same, as in the pronoun-only design; same seed and draws as the "
+            "pronoun-only contrast, so change_vs_original_name_averaged is a paired interval"),
         "design": design,
         "bootstrap": {"B": args.bootstrap, "method": "percentile",
                       "resampling": "occupations with replacement within category "
@@ -1212,6 +1504,7 @@ def analyse(args, labels, label_source, design):
         "overview": overview,
         "drift_checks": {m: models[m]["scoring"]["drift_check"] for m in tested
                          if models[m]["scoring"].get("drift_check")},
+        "deid_rerun_checks": deid_checks,
         "requests": {"per_model": requests_,
                      "failed_models": failed_requests,
                      "total_completed_models": sum(r["n_requests"] for r in requests_.values()),
@@ -1246,19 +1539,48 @@ def write_tex(out, B):
     def esc(s):
         return str(s).replace("_", r"\_").replace("&", r"\&").replace("%", r"\%")
 
+    def agreement(a):
+        """The re-run's same-winner share (%); a lower bound is rounded down, and the
+        mark takes no width, so that the numbers stay aligned."""
+        if a is None:
+            return "--"
+        v = a["pct_pairs_same_winner"]
+        txt = r"$\geq$" + f"{math.floor(v * 10) / 10:.1f}" if a["lower_bound"] else f"{v:.1f}"
+        return txt + (r"\rlap{$^{\ddagger}$}" if a["source"] == "deid_rerun_checks" else "")
+
     lines = [f"% Generated by code/pronoun_channel_experiment.py (B = {B:,} occupation-clustered "
              "draws) -- do not edit by hand.",
-             r"\begin{tabular}{lrrl}", r"\toprule",
-             r" & & \multicolumn{2}{c}{Pronouns only} \\",
-             r"\cmidrule(l){3-4}",
-             r"Model & Original & Contrast & 95\% interval \\",
+             r"\begin{tabular}{lrrrlr}", r"\toprule",
+             r" & \multicolumn{2}{c}{Names and pronouns} & \multicolumn{2}{c}{Pronouns only} "
+             r"& Re-run \\",
+             r"\cmidrule(lr){2-3}\cmidrule(lr){4-5}",
+             r"Model & Original & Name-avg. & Contrast & 95\% interval & agreement (\%) \\",
              r"\midrule"]
     for m, v in out["models"].items():   # already sorted by original contrast, descending
         lo, hi = v["ci"]
         dag = r"$^{\dagger}$" if v["dagger"] else ""
         lines.append(f"{esc(v['table_label'])}{dag} & {num(v['original']['contrast'])} & "
-                     f"{num(v['contrast'])} & [{num(lo)}, {num(hi)}] \\\\")
-    lines += [r"\bottomrule", r"\end{tabular}"]
+                     f"{num(v['original_name_averaged']['contrast'])} & "
+                     f"{num(v['contrast'])} & [{num(lo)}, {num(hi)}] & "
+                     f"{agreement(v['rerun_agreement'])} \\\\")
+    agree = [v["rerun_agreement"] for v in out["models"].values() if v["rerun_agreement"]]
+    n_drift = sorted({a["n_pairs"] for a in agree if a["source"] == "drift_checks"})
+    n_deid = sorted({a["n_pairs"] for a in agree if a["source"] == "deid_rerun_checks"})
+    note = (r"Name-avg.: the original scores with each cell's ten male-version and ten "
+            r"female-version scores averaged before the comparison, so that each occupation, "
+            r"template, and query phrasing gives one comparison, as in the pronoun-only design. "
+            r"Re-run agreement: share of original pairs whose winner is reproduced when their "
+            r"documents are re-scored on the machine that scored the pronoun-only texts"
+            + (f": the {' or '.join(f'{n:,}' for n in n_drift)} pairs of two sampled queries"
+               if n_drift else ""))
+    if n_deid:
+        note += (r", or $^{\ddagger}$all " + " or ".join(f"{n:,}" for n in n_deid)
+                 + " pairs, re-scored by the de-identification run"
+                 + (r" ($\geq$: a lower bound, as that run kept only its largest score difference)"
+                    if any(a["lower_bound"] for a in agree) else ""))
+    note += r". --: API model, not re-run."
+    lines += [r"\bottomrule", r"\end{tabular}",
+              r"\par\smallskip{\footnotesize\raggedright " + note + r"\par}"]
     TEX.parent.mkdir(parents=True, exist_ok=True)
     TEX.write_text("\n".join(lines) + "\n")
 

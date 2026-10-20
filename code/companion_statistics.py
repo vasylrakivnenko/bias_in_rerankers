@@ -21,6 +21,15 @@ nothing is rescored and the résumé corpus is not read:
      focal comparisons per pool, and a résumé can sit in several pools), so the
      flips are not independent draws and the p is descriptive only.
   5. which of the 24 job categories fall in each occupation group.
+  6. by construction: n, ties, tie-aware male-favored share, mean
+     |score_male - score_female| (and the synthetic audit's over it) and top-3
+     flips by the form they favor, for the three ways a comparison's pair was
+     built: a frequency-matched given name prepended (mode inject); an existing
+     name or pronouns swapped, with a marker inside the 512-token window; and
+     swapped, with every marker beyond it (two identical inputs, so a tie). The
+     prepended and the swapped comparisons must reproduce the summary's by_mode
+     blocks; code/companion_table.py prints the groups as
+     results/tex/companion_by_construction.tex.
 
 Reads:  results/realistic_pool_four_rerankers.json        (Table A6's source)
         results/realistic_pool_four_rerankers_rows.json.gz (comparison-level rows)
@@ -59,12 +68,52 @@ GROUP_LABELS = {"male": "male-typed", "female": "female-typed", "neutral": "even
                 "unknown": "unlabeled"}
 CELLS = ("overall",) + GROUPS
 DEPTH = 3
+# How a comparison's pair was built, in the order companion_by_construction.tex prints them
+CONSTRUCTIONS = ("prepended", "swap_in_window", "swap_truncated")
+CONSTRUCTION_LABELS = {
+    "prepended": "a frequency-matched given name prepended (mode inject)",
+    "swap_in_window": "an existing name or pronouns swapped, a marker inside the token window",
+    "swap_truncated": "an existing name or pronouns swapped, every marker beyond the token window"}
 
 
 def tie_aware(deltas):
     """Tie-aware % male-favored, computed as realistic_pool_experiment does."""
     n = len(deltas)
     return 100 * (sum(d > 0 for d in deltas) + 0.5 * sum(d == 0 for d in deltas)) / n
+
+
+def flip(r):
+    """'male' or 'female' if only that form of the comparison makes the top DEPTH, else
+    None. Membership comes from the exact-k ranks: every scoring selects exactly DEPTH
+    members, breaking score ties with the seeded key."""
+    m_in, f_in = r["rank_male"] <= DEPTH, r["rank_female"] <= DEPTH
+    return "male" if m_in and not f_in else "female" if f_in and not m_in else None
+
+
+def construction(r):
+    """Which of CONSTRUCTIONS built the comparison's pair."""
+    if r["mode"] == "inject":
+        return "prepended"
+    if r["mode"] == "swap":
+        return "swap_in_window" if r["marker_in_token_window"] else "swap_truncated"
+    raise AssertionError(f"unknown construction mode {r['mode']!r}")
+
+
+def construction_stats(rows, syn_abs):
+    """Section 6's statistics for one construction group."""
+    deltas = [r["delta"] for r in rows]
+    flips = [flip(r) for r in rows]
+    mean_abs = float(np.mean([abs(d) for d in deltas]))
+    n_flips = flips.count("male") + flips.count("female")
+    return {"n": len(rows),
+            "n_ties": sum(d == 0 for d in deltas),
+            "tie_aware_pct_male": tie_aware(deltas),
+            "mean_abs_delta": mean_abs,
+            "ratio_synthetic_to_companion": syn_abs / mean_abs if mean_abs else None,
+            f"top{DEPTH}": {"n_flips": n_flips,
+                            "flip_rate_pct": 100 * n_flips / len(rows),
+                            "male_form_only": flips.count("male"),
+                            "female_form_only": flips.count("female")}}
 
 
 def shares(rows):
@@ -121,14 +170,30 @@ def analyse(short, entry, rows, audit, labels):
     comp_scores = [x for r in rows for x in (r["score_male"], r["score_female"])]
 
     # 4. top-3 flips, recomputed from the exact-k ranks and checked against the summary
-    m_in = [r["rank_male"] <= DEPTH for r in rows]
-    f_in = [r["rank_female"] <= DEPTH for r in rows]
-    male_only = sum(a and not b for a, b in zip(m_in, f_in))
-    female_only = sum(b and not a for a, b in zip(m_in, f_in))
+    flips = [flip(r) for r in rows]
+    male_only, female_only = flips.count("male"), flips.count("female")
     top = s["overall"][f"top{DEPTH}"]
     if (male_only, female_only) != (top["male_form_in_only"], top["female_form_in_only"]):
         raise AssertionError(f"{short}: recomputed top-{DEPTH} flips disagree with the summary")
-    flip_pools = {r["pool_id"] for r, a, b in zip(rows, m_in, f_in) if a != b}
+    flip_pools = {r["pool_id"] for r, f in zip(rows, flips) if f}
+
+    # 6. by construction; each mode's comparisons (prepended = inject; swap = the two swap
+    # groups) must reproduce the summary's by_mode block, and the truncated swaps must be
+    # exactly the outside-window rows
+    for mode, banked in s["by_mode"].items():
+        got = construction_stats([r for r in rows if r["mode"] == mode], syn_abs)
+        if ((got["n"], round(got["tie_aware_pct_male"], 2), round(got["mean_abs_delta"], 6),
+             got[f"top{DEPTH}"]["male_form_only"], got[f"top{DEPTH}"]["female_form_only"])
+                != (banked["n"], banked["score_gap"]["tie_aware_pct_male"],
+                    banked["score_gap"]["mean_abs_delta"],
+                    banked[f"top{DEPTH}"]["male_form_in_only"],
+                    banked[f"top{DEPTH}"]["female_form_in_only"])):
+            raise AssertionError(f"{short}: the {mode} comparisons do not reproduce the "
+                                 "summary's by_mode block")
+    groups = {c: [r for r in rows if construction(r) == c] for c in CONSTRUCTIONS}
+    if groups["swap_truncated"] != outside or not all(groups.values()):
+        raise AssertionError(f"{short}: the truncated swaps are not exactly the outside-window "
+                             "comparisons, or a construction group is empty")
 
     return {
         "model": model,
@@ -158,6 +223,7 @@ def analyse(short, entry, rows, audit, labels):
             "binomial_p_two_sided": float(binomtest(female_only, male_only + female_only,
                                                     0.5).pvalue),
             "n_pools_with_a_flip": len(flip_pools)},
+        "by_construction": {c: construction_stats(groups[c], syn_abs) for c in CONSTRUCTIONS},
     }
 
 
@@ -193,6 +259,24 @@ def main():
               for k, v in models.items()}
     worst = max(models, key=lambda k: models[k]["max_abs_change"])
     sampling = data["provenance"]["sampling"]
+
+    # 6. by construction: every model scored the same prepended and swapped comparisons;
+    # only the in-window / truncated split of the swaps depends on the tokenizer
+    cons = {k: v["by_construction"] for k, v in models.items()}
+    n_prepended = {c["prepended"]["n"] for c in cons.values()}
+    n_swap = {c["swap_in_window"]["n"] + c["swap_truncated"]["n"] for c in cons.values()}
+    # prepended although the document carried a detected given name: swapping changed
+    # nothing (no opposite-gender partner for the name, no pronoun to swap)
+    carried = {sum(r["mode"] == "inject" and r["gender_source"] != "inject"
+                   for r in rows_file["models"][short]["rows"]) for short in data["models"]}
+    if len(n_prepended) != 1 or len(n_swap) != 1 or len(carried) != 1:
+        raise AssertionError("the models were not scored on the same prepended and swapped "
+                             "comparisons")
+    abs_ratio = {k: c["prepended"]["mean_abs_delta"] / c["swap_in_window"]["mean_abs_delta"]
+                 for k, c in cons.items()}
+    share_diff = {k: c["prepended"]["tie_aware_pct_male"]
+                  - c["swap_in_window"]["tie_aware_pct_male"] for k, c in cons.items()}
+    widest = max(share_diff, key=lambda k: abs(share_diff[k]))
     out = {
         "script_version": SCRIPT_VERSION,
         "generated": _dt.datetime.now().isoformat(timespec="seconds"),
@@ -226,6 +310,24 @@ def main():
         "n_job_categories_evenly_split": len(by_group["neutral"]),
         "n_job_categories_unlabeled": len(by_group["unknown"]),
         "job_categories_by_group": by_group,
+        "by_construction": {
+            "groups": CONSTRUCTION_LABELS,
+            "n_prepended": n_prepended.pop(),
+            "n_prepended_document_carried_a_name": carried.pop(),
+            "n_swap": n_swap.pop(),
+            "n_swap_in_window": {k: c["swap_in_window"]["n"] for k, c in cons.items()},
+            "n_swap_truncated": {k: c["swap_truncated"]["n"] for k, c in cons.items()},
+            "n_models_mean_abs_delta_prepended_above_swap_in_window":
+                sum(x > 1 for x in abs_ratio.values()),
+            "mean_abs_delta_ratio_prepended_to_swap_in_window": abs_ratio,
+            "mean_abs_delta_ratio_prepended_to_swap_in_window_min": min(abs_ratio.values()),
+            "mean_abs_delta_ratio_prepended_to_swap_in_window_max": max(abs_ratio.values()),
+            "share_prepended_minus_swap_in_window": share_diff,
+            "n_models_share_prepended_above_swap_in_window":
+                sum(x > 0 for x in share_diff.values()),
+            "max_abs_share_prepended_minus_swap_in_window": abs(share_diff[widest]),
+            "max_abs_share_prepended_minus_swap_in_window_model": widest,
+        },
         "notes": {
             "window": "outside-window comparisons are rows with marker_in_token_window false: "
                       "every gender marker lies beyond the model's tokenizer window "
@@ -250,6 +352,19 @@ def main():
                      f"comparisons that share their other members, and "
                      f"{sampling['n_distinct_resumes_scored']:,} distinct résumés fill "
                      "them, so flips are not independent",
+            "by_construction": "prepended = mode inject: a frequency-matched male or female "
+                               "given name, with one surname shared by both forms, prepended and "
+                               "any pronouns made to agree with it; swap_in_window / "
+                               "swap_truncated = mode swap with marker_in_token_window true / "
+                               "false. Every prepended comparison has its marker in the window, "
+                               "so prepended plus swap_in_window are the in-window comparisons "
+                               "and swap_truncated the outside-window ties. "
+                               "n_prepended_document_carried_a_name counts prepended comparisons "
+                               "whose document carried a detected given name that swapping could "
+                               "not change, so that name stays in both forms. "
+                               "ratio_synthetic_to_companion is the model's synthetic mean "
+                               "|score_male - score_female| over the group's (null when the "
+                               "group's is 0). Shares, gaps and flips are defined as above",
         },
         "models": models,
     }
@@ -266,6 +381,11 @@ def main():
               f"|delta| ratio {v['mean_abs_delta']['ratio_synthetic_to_companion_in_window']:.1f}  "
               f"top-3 net female {t['net_female_form']:+d} of {t['n_flips']} "
               f"(p = {t['binomial_p_two_sided']:.3g})")
+    for short, v in models.items():
+        print(f"{short:<9} " + "  ".join(
+            f"{c} n {g['n']} {g['tie_aware_pct_male']:.1f}% |delta| {g['mean_abs_delta']:.3g} "
+            f"flips M/F {g[f'top{DEPTH}']['male_form_only']}/{g[f'top{DEPTH}']['female_form_only']}"
+            for c, g in v["by_construction"].items()))
     print("job categories:", {g: len(c) for g, c in by_group.items()})
     print(f"Saved -> {OUT}")
 

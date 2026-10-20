@@ -233,14 +233,20 @@ def tabular_paged(colspec: str, header: list[str], rows: list[list[str]],
 # {slot} -> bracketed plain-English placeholder, applied via the templates'
 # own str.format() so the rendering is mechanically tied to TEMPLATES itself
 # (a template using an unknown slot would raise KeyError here, not drift
-# silently).
+# silently). Pronoun slots are spelled from sd.PRONOUNS, so the appendix shows
+# the scored capitalization: the subject pronoun is "He"/"She" in every
+# document.
+def _pronoun_slot(form: str) -> str:
+    return f"[{sd.PRONOUNS['male'][form]}/{sd.PRONOUNS['female'][form]}]"
+
+
 SLOT_PLACEHOLDERS = {
     "name": "[name]",
     "occupation": "[occupation]",
     "occupation_title": "[Occupation]",
-    "pronoun_subject": "[he/she]",
-    "pronoun_object": "[him/her]",
-    "pronoun_possessive": "[his/her]",
+    "pronoun_subject": _pronoun_slot("subject"),
+    "pronoun_object": _pronoun_slot("object"),
+    "pronoun_possessive": _pronoun_slot("possessive"),
 }
 
 TEMPLATE_LABELS = {
@@ -292,6 +298,9 @@ def build_documents_appendix() -> str:
 
     # --- 2. The four query forms -------------------------------------------------
     parts.append("\\bigskip")
+    # Each heading shares a minipage with its table so a page break cannot
+    # strand the heading at the foot of a page.
+    parts.append("\\noindent\\begin{minipage}{\\linewidth}")
     parts.append("\\textbf{Query phrasings}\\\\[4pt]")
     qf_header = ["Label", "Example"]
     qf_rows = []
@@ -305,10 +314,12 @@ def build_documents_appendix() -> str:
         example = esc(pattern.format(occupation=EXAMPLE_OCCUPATION))
         qf_rows.append([label, example])
     parts.append(tabular("ll", qf_header, qf_rows))
+    parts.append("\\end{minipage}")
     parts.append("")
 
     # --- 3. The ten name pairs ---------------------------------------------------
     parts.append("\\bigskip")
+    parts.append("\\noindent\\begin{minipage}{\\linewidth}")
     parts.append("\\textbf{Name pairs}\\\\[4pt]")
     name_pct = load_name_gender(NAME_GENDER_CSV)
     missing: list[str] = []
@@ -329,6 +340,7 @@ def build_documents_appendix() -> str:
     parts.append(f"\\par\\smallskip{{\\footnotesize Female shares are computed from SSA "
                  f"national birth-name records \\cite{{ssa2026}}, restricted to births "
                  f"{YEAR_MIN}--{YEAR_MAX} (approximately the current working-age cohort).}}")
+    parts.append("\\end{minipage}")
     parts.append("")
 
     if missing:

@@ -1,6 +1,6 @@
 {
   "script_version": "pronoun_channel_experiment.py v1.0",
-  "generated": "2026-10-16T23:44:12",
+  "generated": "2026-10-17T15:42:28",
   "label_source": "BLS CPS Table 11 via occupations_bls.csv",
   "condition": {
     "name": "names_only",
@@ -11,6 +11,7 @@
     "texts_built_by": "code/deidentification_experiment.py build_texts() (code/deid_transforms.py variant names_only)"
   },
   "definition": "contrast = tie-aware % male-favored on male-typed occupations minus the same on female-typed occupations (ties count half); points",
+  "definition_original_name_averaged": "the contrast of the audited model's banked original scores with each cell (occupation x query phrasing x template) as one comparison: the mean of its ten male-version scores against the mean of its ten female-version scores, compared exactly on the scores' decimal forms (equal means count half), so that every cell weighs the same, as in the pronoun-only design; same seed and draws as the pronoun-only contrast, so change_vs_original_name_averaged is a paired interval",
   "design": {
     "label_source": "BLS CPS Table 11 via occupations_bls.csv",
     "n_triples_in": 8320,
@@ -122,6 +123,79 @@
     "drift_min_pct_same_winner": 58.75,
     "drift_max_pct_same_winner": 100.0,
     "n_drift_below_100": 5,
+    "n_drift_100": 4,
+    "models_drift_100": {
+      "cross-encoder/ms-marco-MiniLM-L6-v2": 100.0,
+      "BAAI/bge-reranker-large": 100.0,
+      "ibm-granite/granite-embedding-reranker-english-r2": 100.0,
+      "Alibaba-NLP/gte-reranker-modernbert-base": 100.0
+    },
+    "models_drift_below_100": {
+      "zeroentropy/zerank-2-reranker": 98.75,
+      "nvidia/llama-nemotron-rerank-1b-v2": 88.75,
+      "Qwen/Qwen3-Reranker-0.6B": 72.5,
+      "Qwen/Qwen3-Reranker-4B": 87.5,
+      "mixedbread-ai/mxbai-rerank-large-v2": 58.75
+    },
+    "n_deid_rerun_checked": 4,
+    "models_deid_rerun_100": {
+      "cross-encoder/ms-marco-MiniLM-L-12-v2": 100.0,
+      "BAAI/bge-reranker-base": 100.0
+    },
+    "models_deid_rerun_below_100": {
+      "jinaai/jina-reranker-v2-base-multilingual": 97.00721153846153
+    },
+    "models_deid_rerun_undetermined": {
+      "BAAI/bge-reranker-v2-m3": 99.6514423076923
+    },
+    "median_original_name_averaged_contrast": 37.45039682539682,
+    "n_contrast_above_original": 20,
+    "n_contrast_above_original_name_averaged": 17,
+    "median_change_vs_original_name_averaged": 2.0337301587301475,
+    "n_change_vs_original_name_averaged_above_zero": 8,
+    "n_change_vs_original_name_averaged_below_zero": 5,
+    "excluding_drift_below_100": {
+      "rule": "without the re-run open-weight models whose drift check (the original documents of two sampled queries, re-scored on the machine that scored the pronoun-only texts) did not reproduce every banked winner",
+      "models_dropped": {
+        "zeroentropy/zerank-2-reranker": 98.75,
+        "nvidia/llama-nemotron-rerank-1b-v2": 88.75,
+        "Qwen/Qwen3-Reranker-0.6B": 72.5,
+        "Qwen/Qwen3-Reranker-4B": 87.5,
+        "mixedbread-ai/mxbai-rerank-large-v2": 58.75
+      },
+      "n_models_tested": 23,
+      "median_original_contrast": 31.639384920634917,
+      "median_contrast": 38.19444444444444,
+      "median_original_name_averaged_contrast": 37.00396825396825,
+      "n_contrast_above_original": 15,
+      "n_contrast_above_original_name_averaged": 12,
+      "median_change_vs_original_name_averaged": 0.6696428571428541,
+      "n_change_vs_original_name_averaged_above_zero": 5,
+      "n_change_vs_original_name_averaged_below_zero": 5
+    },
+    "excluding_drift_below_100_and_deid_rerun_below_100": {
+      "rule": "also without the de-identification-run models whose re-score of all their original pairs did not reproduce every banked winner; a model whose agreement is only bounded (models_undetermined_kept) stays in",
+      "models_dropped": {
+        "zeroentropy/zerank-2-reranker": 98.75,
+        "nvidia/llama-nemotron-rerank-1b-v2": 88.75,
+        "Qwen/Qwen3-Reranker-0.6B": 72.5,
+        "Qwen/Qwen3-Reranker-4B": 87.5,
+        "mixedbread-ai/mxbai-rerank-large-v2": 58.75,
+        "jinaai/jina-reranker-v2-base-multilingual": 97.00721153846153
+      },
+      "models_undetermined_kept": {
+        "BAAI/bge-reranker-v2-m3": 99.6514423076923
+      },
+      "n_models_tested": 22,
+      "median_original_contrast": 31.667906746031747,
+      "median_contrast": 37.351190476190474,
+      "median_original_name_averaged_contrast": 37.45039682539682,
+      "n_contrast_above_original": 14,
+      "n_contrast_above_original_name_averaged": 11,
+      "median_change_vs_original_name_averaged": 0.2604166666666714,
+      "n_change_vs_original_name_averaged_above_zero": 4,
+      "n_change_vs_original_name_averaged_below_zero": 5
+    },
     "scoring_dates": [
       "2026-10-16"
     ]
@@ -288,6 +362,180 @@
       "n_ties_now": 0,
       "banked_mean_abs_pair_gap": 0.0029095068573951723,
       "layout": "audit layout: the query's 40 pairs in one call, male version first"
+    }
+  },
+  "deid_rerun_checks": {
+    "cross-encoder/ms-marco-MiniLM-L-12-v2": {
+      "source": "results/deid_pairs/cross-encoder_ms-marco-MiniLM-L-12-v2.json (`original`); results/deidentification_cross-encoder_ms-marco-MiniLM-L-12-v2.json (determinism_check)",
+      "rerun": {
+        "device": "mps",
+        "script_version": "deidentification_experiment.py v3.1 (same-run baseline on failed determinism; pair-level release)",
+        "torch": "2.10.0",
+        "transformers": "5.2.0",
+        "sentence_transformers": "5.2.3",
+        "max_length": 512,
+        "batch_size": 64,
+        "date": "2026-10-16"
+      },
+      "banked_file": "results/ms-marco-MiniLM-L-12-v2_full_raw.json",
+      "banked_scored_at": null,
+      "banked_hardware": null,
+      "baseline_source": "banked raw scores (ms-marco-MiniLM-L-12-v2_full_raw.json)",
+      "rescored_originals_saved": false,
+      "method": "bound: only the bank was kept, with the run's largest score difference; a pair whose banked gap is at most twice that is undetermined",
+      "max_abs_score_diff": 7.033348083496094e-06,
+      "mean_abs_score_diff": 1.000321488111065e-06,
+      "n_pairs": 8320,
+      "pct_pairs_same_winner": 100.0,
+      "pct_pairs_same_winner_at_least": 100.0,
+      "n_pairs_undetermined": 0,
+      "winner_changes": null,
+      "drift_check_pairs": {
+        "queries": [
+          "sheriff with expertise",
+          "experienced receptionist"
+        ],
+        "n_pairs": 80,
+        "pct_pairs_same_winner": 100.0,
+        "pct_pairs_same_winner_at_least": 100.0,
+        "n_pairs_undetermined": 0
+      },
+      "all_winners_reproduced": true,
+      "banked_original_contrast": 26.006944444444443,
+      "rescored_original_contrast": null,
+      "contrast_change": null,
+      "abs_contrast_change_bound": 0.0
+    },
+    "BAAI/bge-reranker-base": {
+      "source": "results/deid_pairs/BAAI_bge-reranker-base.json (`original`); results/deidentification_BAAI_bge-reranker-base.json (determinism_check)",
+      "rerun": {
+        "device": "mps",
+        "script_version": "deidentification_experiment.py v3.1 (same-run baseline on failed determinism; pair-level release)",
+        "torch": "2.10.0",
+        "transformers": "5.2.0",
+        "sentence_transformers": "5.2.3",
+        "max_length": 512,
+        "batch_size": 64,
+        "date": "2026-10-16"
+      },
+      "banked_file": "results/bge-reranker-base_full_raw.json",
+      "banked_scored_at": "2026-10-17",
+      "banked_hardware": "NVIDIA GeForce RTX 4090",
+      "baseline_source": "scored locally in this run (variant `none`, no lowercasing)",
+      "rescored_originals_saved": true,
+      "method": "pair by pair: the run's re-scores of the original documents are saved",
+      "max_abs_score_diff": 5.424022674560547e-06,
+      "mean_abs_score_diff": 3.8530399531457356e-07,
+      "n_pairs": 8320,
+      "pct_pairs_same_winner": 100.0,
+      "pct_pairs_same_winner_at_least": 100.0,
+      "n_pairs_undetermined": 0,
+      "winner_changes": {
+        "reversed": 0,
+        "tie_to_winner": 0,
+        "winner_to_tie": 0
+      },
+      "drift_check_pairs": {
+        "queries": [
+          "sheriff with expertise",
+          "experienced receptionist"
+        ],
+        "n_pairs": 80,
+        "pct_pairs_same_winner": 100.0,
+        "pct_pairs_same_winner_at_least": 100.0,
+        "n_pairs_undetermined": 0
+      },
+      "all_winners_reproduced": true,
+      "banked_original_contrast": 19.78174603174603,
+      "rescored_original_contrast": 19.78174603174603,
+      "contrast_change": 0.0,
+      "abs_contrast_change_bound": null
+    },
+    "BAAI/bge-reranker-v2-m3": {
+      "source": "results/deid_pairs/BAAI_bge-reranker-v2-m3.json (`original`); results/deidentification_BAAI_bge-reranker-v2-m3.json (determinism_check)",
+      "rerun": {
+        "device": "mps",
+        "script_version": "deidentification_experiment.py v3.1 (same-run baseline on failed determinism; pair-level release)",
+        "torch": "2.10.0",
+        "transformers": "5.2.0",
+        "sentence_transformers": "5.2.3",
+        "max_length": 512,
+        "batch_size": 64,
+        "date": "2026-10-16"
+      },
+      "banked_file": "results/bge-reranker-v2-m3_full_raw.json",
+      "banked_scored_at": null,
+      "banked_hardware": null,
+      "baseline_source": "banked raw scores (bge-reranker-v2-m3_full_raw.json)",
+      "rescored_originals_saved": false,
+      "method": "bound: only the bank was kept, with the run's largest score difference; a pair whose banked gap is at most twice that is undetermined",
+      "max_abs_score_diff": 2.2858381271362305e-05,
+      "mean_abs_score_diff": 2.886081067397474e-07,
+      "n_pairs": 8320,
+      "pct_pairs_same_winner": null,
+      "pct_pairs_same_winner_at_least": 99.6514423076923,
+      "n_pairs_undetermined": 29,
+      "winner_changes": null,
+      "drift_check_pairs": {
+        "queries": [
+          "sheriff with expertise",
+          "experienced receptionist"
+        ],
+        "n_pairs": 80,
+        "pct_pairs_same_winner": 100.0,
+        "pct_pairs_same_winner_at_least": 100.0,
+        "n_pairs_undetermined": 0
+      },
+      "all_winners_reproduced": null,
+      "banked_original_contrast": 15.114087301587304,
+      "rescored_original_contrast": null,
+      "contrast_change": null,
+      "abs_contrast_change_bound": 0.7886904761904762
+    },
+    "jinaai/jina-reranker-v2-base-multilingual": {
+      "source": "results/deid_pairs/jinaai_jina-reranker-v2-base-multilingual.json (`original`); results/deidentification_jinaai_jina-reranker-v2-base-multilingual.json (determinism_check)",
+      "rerun": {
+        "device": "mps",
+        "script_version": "deidentification_experiment.py v3.1 (same-run baseline on failed determinism; pair-level release)",
+        "torch": "2.10.0",
+        "transformers": "5.2.0",
+        "sentence_transformers": "5.2.3",
+        "max_length": 512,
+        "batch_size": 64,
+        "date": "2026-10-16"
+      },
+      "banked_file": "results/jina-reranker-v2-base-multilingual_full_raw.json",
+      "banked_scored_at": null,
+      "banked_hardware": null,
+      "baseline_source": "scored locally in this run (variant `none`, no lowercasing); the banked baseline failed the determinism check",
+      "rescored_originals_saved": true,
+      "method": "pair by pair: the run's re-scores of the original documents are saved",
+      "max_abs_score_diff": 0.01171875,
+      "mean_abs_score_diff": 0.0004444415752704327,
+      "n_pairs": 8320,
+      "pct_pairs_same_winner": 97.00721153846153,
+      "pct_pairs_same_winner_at_least": 97.00721153846153,
+      "n_pairs_undetermined": 0,
+      "winner_changes": {
+        "reversed": 17,
+        "tie_to_winner": 120,
+        "winner_to_tie": 112
+      },
+      "drift_check_pairs": {
+        "queries": [
+          "sheriff with expertise",
+          "experienced receptionist"
+        ],
+        "n_pairs": 80,
+        "pct_pairs_same_winner": 100.0,
+        "pct_pairs_same_winner_at_least": 100.0,
+        "n_pairs_undetermined": 0
+      },
+      "all_winners_reproduced": false,
+      "banked_original_contrast": 14.263392857142854,
+      "rescored_original_contrast": 14.69990079365079,
+      "contrast_change": 0.43650793650793673,
+      "abs_contrast_change_bound": null
     }
   },
   "requests": {
@@ -474,6 +722,44 @@
         "above_zero": true,
         "source": "results/interval_sensitivity.json models['zeroentropy/zerank-2-reranker']"
       },
+      "original_name_averaged": {
+        "contrast": 67.9563492063492,
+        "ci": [
+          54.21626984126983,
+          80.05952380952382
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "includes_zero": false,
+        "n_comparisons": 832,
+        "n_ties": 2,
+        "by_category": {
+          "male": {
+            "n": 288,
+            "pct_male": 94.44444444444444,
+            "pct_tie": 0.0,
+            "pct_female": 5.555555555555555,
+            "tie_aware_pct_male": 94.44444444444444
+          },
+          "female": {
+            "n": 336,
+            "pct_male": 26.19047619047619,
+            "pct_tie": 0.5952380952380952,
+            "pct_female": 73.21428571428571,
+            "tie_aware_pct_male": 26.488095238095237
+          },
+          "neutral": {
+            "n": 208,
+            "pct_male": 72.11538461538461,
+            "pct_tie": 0.0,
+            "pct_female": 27.884615384615383,
+            "tie_aware_pct_male": 72.11538461538461
+          }
+        },
+        "pair_level_contrast": 65.27529761904762,
+        "pair_level_reproduces_original": true,
+        "source": "results/zerank-2-reranker_full_raw.json"
+      },
       "change_vs_original": {
         "against": "results/zerank-2-reranker_full_raw.json",
         "original_contrast": 65.27529761904762,
@@ -495,6 +781,21 @@
           "max_abs_score_diff": 0.3125,
           "n_pairs": 80
         }
+      },
+      "change_vs_original_name_averaged": {
+        "against": "results/zerank-2-reranker_full_raw.json",
+        "original_name_averaged_contrast": 67.9563492063492,
+        "original_name_averaged_ci": [
+          54.21626984126983,
+          80.05952380952382
+        ],
+        "change": 6.696428571428569,
+        "ci": [
+          1.5624999999999998,
+          11.75595238095238
+        ],
+        "above_zero": true,
+        "below_zero": false
       },
       "scoring": {
         "access": "local",
@@ -542,6 +843,13 @@
           "backend": "crossencoder"
         },
         "source": "scored by this script"
+      },
+      "rerun_agreement": {
+        "pct_pairs_same_winner": 98.75,
+        "lower_bound": false,
+        "n_pairs": 80,
+        "pairs": "the original documents of the drift check's two sampled queries",
+        "source": "drift_checks"
       }
     },
     "rerank-3": {
@@ -599,6 +907,44 @@
         "above_zero": true,
         "source": "results/interval_sensitivity.json models['rerank-3']"
       },
+      "original_name_averaged": {
+        "contrast": 71.32936507936508,
+        "ci": [
+          58.40773809523809,
+          83.33333333333333
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "includes_zero": false,
+        "n_comparisons": 832,
+        "n_ties": 23,
+        "by_category": {
+          "male": {
+            "n": 288,
+            "pct_male": 95.83333333333333,
+            "pct_tie": 0.6944444444444444,
+            "pct_female": 3.4722222222222223,
+            "tie_aware_pct_male": 96.18055555555556
+          },
+          "female": {
+            "n": 336,
+            "pct_male": 22.321428571428573,
+            "pct_tie": 5.059523809523809,
+            "pct_female": 72.61904761904762,
+            "tie_aware_pct_male": 24.851190476190474
+          },
+          "neutral": {
+            "n": 208,
+            "pct_male": 73.5576923076923,
+            "pct_tie": 1.9230769230769231,
+            "pct_female": 24.51923076923077,
+            "tie_aware_pct_male": 74.51923076923077
+          }
+        },
+        "pair_level_contrast": 60.89037698412699,
+        "pair_level_reproduces_original": true,
+        "source": "results/rerank-3_full_raw.json"
+      },
       "change_vs_original": {
         "against": "results/rerank-3_full_raw.json",
         "original_contrast": 60.89037698412699,
@@ -626,6 +972,21 @@
           ],
           "pct_pairs_same_winner": 89.921875
         }
+      },
+      "change_vs_original_name_averaged": {
+        "against": "results/rerank-3_full_raw.json",
+        "original_name_averaged_contrast": 71.32936507936508,
+        "original_name_averaged_ci": [
+          58.40773809523809,
+          83.33333333333333
+        ],
+        "change": -4.513888888888886,
+        "ci": [
+          -9.82142857142857,
+          0.7694692460317916
+        ],
+        "above_zero": false,
+        "below_zero": false
       },
       "scoring": {
         "access": "API",
@@ -657,7 +1018,8 @@
         "hardware": null,
         "runtime": null,
         "source": "scored by this script"
-      }
+      },
+      "rerun_agreement": null
     },
     "rerank-2.5": {
       "label": "Voyage: rerank-2.5",
@@ -714,6 +1076,44 @@
         "above_zero": true,
         "source": "results/interval_sensitivity.json models['rerank-2.5']"
       },
+      "original_name_averaged": {
+        "contrast": 65.74900793650792,
+        "ci": [
+          52.504960317460316,
+          78.22420634920636
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "includes_zero": false,
+        "n_comparisons": 832,
+        "n_ties": 6,
+        "by_category": {
+          "male": {
+            "n": 288,
+            "pct_male": 99.65277777777777,
+            "pct_tie": 0.3472222222222222,
+            "pct_female": 0.0,
+            "tie_aware_pct_male": 99.82638888888889
+          },
+          "female": {
+            "n": 336,
+            "pct_male": 33.333333333333336,
+            "pct_tie": 1.4880952380952381,
+            "pct_female": 65.17857142857143,
+            "tie_aware_pct_male": 34.07738095238095
+          },
+          "neutral": {
+            "n": 208,
+            "pct_male": 92.78846153846153,
+            "pct_tie": 0.0,
+            "pct_female": 7.211538461538462,
+            "tie_aware_pct_male": 92.78846153846153
+          }
+        },
+        "pair_level_contrast": 57.71081349206349,
+        "pair_level_reproduces_original": true,
+        "source": "results/rerank-2.5_full_raw.json"
+      },
       "change_vs_original": {
         "against": "results/rerank-2.5_full_raw.json",
         "original_contrast": 57.71081349206349,
@@ -741,6 +1141,21 @@
           ],
           "pct_pairs_same_winner": 95.91145833333333
         }
+      },
+      "change_vs_original_name_averaged": {
+        "against": "results/rerank-2.5_full_raw.json",
+        "original_name_averaged_contrast": 65.74900793650792,
+        "original_name_averaged_ci": [
+          52.504960317460316,
+          78.22420634920636
+        ],
+        "change": 2.4057539682539755,
+        "ci": [
+          -2.3561507936507837,
+          7.738095238095241
+        ],
+        "above_zero": false,
+        "below_zero": false
       },
       "scoring": {
         "access": "API",
@@ -772,7 +1187,8 @@
         "hardware": null,
         "runtime": null,
         "source": "scored by this script"
-      }
+      },
+      "rerun_agreement": null
     },
     "rerank-2": {
       "label": "Voyage: rerank-2",
@@ -829,6 +1245,44 @@
         "above_zero": true,
         "source": "results/interval_sensitivity.json models['rerank-2']"
       },
+      "original_name_averaged": {
+        "contrast": 66.7906746031746,
+        "ci": [
+          54.31547619047619,
+          78.5218253968254
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "includes_zero": false,
+        "n_comparisons": 832,
+        "n_ties": 19,
+        "by_category": {
+          "male": {
+            "n": 288,
+            "pct_male": 92.36111111111111,
+            "pct_tie": 0.3472222222222222,
+            "pct_female": 7.291666666666667,
+            "tie_aware_pct_male": 92.53472222222223
+          },
+          "female": {
+            "n": 336,
+            "pct_male": 24.404761904761905,
+            "pct_tie": 2.6785714285714284,
+            "pct_female": 72.91666666666667,
+            "tie_aware_pct_male": 25.74404761904762
+          },
+          "neutral": {
+            "n": 208,
+            "pct_male": 68.75,
+            "pct_tie": 4.326923076923077,
+            "pct_female": 26.923076923076923,
+            "tie_aware_pct_male": 70.91346153846153
+          }
+        },
+        "pair_level_contrast": 57.27926587301587,
+        "pair_level_reproduces_original": true,
+        "source": "results/rerank-2_full_raw.json"
+      },
       "change_vs_original": {
         "against": "results/rerank-2_full_raw.json",
         "original_contrast": 57.27926587301587,
@@ -856,6 +1310,21 @@
           ],
           "pct_pairs_same_winner": 92.86458333333333
         }
+      },
+      "change_vs_original_name_averaged": {
+        "against": "results/rerank-2_full_raw.json",
+        "original_name_averaged_contrast": 66.7906746031746,
+        "original_name_averaged_ci": [
+          54.31547619047619,
+          78.5218253968254
+        ],
+        "change": -10.243055555555543,
+        "ci": [
+          -19.246031746031747,
+          -1.4880952380952266
+        ],
+        "above_zero": false,
+        "below_zero": true
       },
       "scoring": {
         "access": "API",
@@ -887,7 +1356,8 @@
         "hardware": null,
         "runtime": null,
         "source": "scored by this script"
-      }
+      },
+      "rerun_agreement": null
     },
     "rerank-3-lite": {
       "label": "Voyage: rerank-3-lite",
@@ -944,6 +1414,44 @@
         "above_zero": true,
         "source": "results/interval_sensitivity.json models['rerank-3-lite']"
       },
+      "original_name_averaged": {
+        "contrast": 58.9781746031746,
+        "ci": [
+          51.41369047619048,
+          66.17063492063492
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "includes_zero": false,
+        "n_comparisons": 832,
+        "n_ties": 10,
+        "by_category": {
+          "male": {
+            "n": 288,
+            "pct_male": 63.19444444444444,
+            "pct_tie": 1.3888888888888888,
+            "pct_female": 35.416666666666664,
+            "tie_aware_pct_male": 63.888888888888886
+          },
+          "female": {
+            "n": 336,
+            "pct_male": 4.166666666666667,
+            "pct_tie": 1.4880952380952381,
+            "pct_female": 94.3452380952381,
+            "tie_aware_pct_male": 4.910714285714286
+          },
+          "neutral": {
+            "n": 208,
+            "pct_male": 24.03846153846154,
+            "pct_tie": 0.4807692307692308,
+            "pct_female": 75.48076923076923,
+            "tie_aware_pct_male": 24.278846153846153
+          }
+        },
+        "pair_level_contrast": 49.60565476190476,
+        "pair_level_reproduces_original": true,
+        "source": "results/rerank-3-lite_full_raw.json"
+      },
       "change_vs_original": {
         "against": "results/rerank-3-lite_full_raw.json",
         "original_contrast": 49.605654761904766,
@@ -971,6 +1479,21 @@
           ],
           "pct_pairs_same_winner": 90.625
         }
+      },
+      "change_vs_original_name_averaged": {
+        "against": "results/rerank-3-lite_full_raw.json",
+        "original_name_averaged_contrast": 58.9781746031746,
+        "original_name_averaged_ci": [
+          51.41369047619048,
+          66.17063492063492
+        ],
+        "change": -9.672619047619044,
+        "ci": [
+          -16.021825396825392,
+          -3.422619047619044
+        ],
+        "above_zero": false,
+        "below_zero": true
       },
       "scoring": {
         "access": "API",
@@ -1002,7 +1525,8 @@
         "hardware": null,
         "runtime": null,
         "source": "scored by this script"
-      }
+      },
+      "rerun_agreement": null
     },
     "semantic-ranker-default-004": {
       "label": "Google: default-004",
@@ -1059,6 +1583,44 @@
         "above_zero": true,
         "source": "results/interval_sensitivity.json models['semantic-ranker-default-004']"
       },
+      "original_name_averaged": {
+        "contrast": 48.06547619047619,
+        "ci": [
+          38.14484126984127,
+          57.142857142857146
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "includes_zero": false,
+        "n_comparisons": 832,
+        "n_ties": 0,
+        "by_category": {
+          "male": {
+            "n": 288,
+            "pct_male": 59.375,
+            "pct_tie": 0.0,
+            "pct_female": 40.625,
+            "tie_aware_pct_male": 59.375
+          },
+          "female": {
+            "n": 336,
+            "pct_male": 11.30952380952381,
+            "pct_tie": 0.0,
+            "pct_female": 88.69047619047619,
+            "tie_aware_pct_male": 11.30952380952381
+          },
+          "neutral": {
+            "n": 208,
+            "pct_male": 27.403846153846153,
+            "pct_tie": 0.0,
+            "pct_female": 72.59615384615384,
+            "tie_aware_pct_male": 27.403846153846153
+          }
+        },
+        "pair_level_contrast": 43.56150793650794,
+        "pair_level_reproduces_original": true,
+        "source": "results/semantic-ranker-default-004_full_raw.json"
+      },
       "change_vs_original": {
         "against": "results/semantic-ranker-default-004_full_raw.json",
         "original_contrast": 43.56150793650794,
@@ -1086,6 +1648,21 @@
           ],
           "pct_pairs_same_winner": 100.0
         }
+      },
+      "change_vs_original_name_averaged": {
+        "against": "results/semantic-ranker-default-004_full_raw.json",
+        "original_name_averaged_contrast": 48.06547619047619,
+        "original_name_averaged_ci": [
+          38.14484126984127,
+          57.142857142857146
+        ],
+        "change": 6.101190476190482,
+        "ci": [
+          -0.4464285714285694,
+          12.698412698412696
+        ],
+        "above_zero": false,
+        "below_zero": false
       },
       "scoring": {
         "access": "API",
@@ -1117,7 +1694,8 @@
         "hardware": null,
         "runtime": null,
         "source": "scored by this script"
-      }
+      },
+      "rerun_agreement": null
     },
     "nvidia/llama-nemotron-rerank-1b-v2": {
       "label": "NVIDIA: Nemotron 1B",
@@ -1174,6 +1752,44 @@
         "above_zero": true,
         "source": "results/interval_sensitivity.json models['nvidia/llama-nemotron-rerank-1b-v2']"
       },
+      "original_name_averaged": {
+        "contrast": 50.04960317460317,
+        "ci": [
+          36.80555555555555,
+          62.45039682539683
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "includes_zero": false,
+        "n_comparisons": 832,
+        "n_ties": 1,
+        "by_category": {
+          "male": {
+            "n": 288,
+            "pct_male": 90.97222222222223,
+            "pct_tie": 0.0,
+            "pct_female": 9.027777777777779,
+            "tie_aware_pct_male": 90.97222222222223
+          },
+          "female": {
+            "n": 336,
+            "pct_male": 40.773809523809526,
+            "pct_tie": 0.2976190476190476,
+            "pct_female": 58.92857142857143,
+            "tie_aware_pct_male": 40.92261904761905
+          },
+          "neutral": {
+            "n": 208,
+            "pct_male": 75.96153846153847,
+            "pct_tie": 0.0,
+            "pct_female": 24.03846153846154,
+            "tie_aware_pct_male": 75.96153846153847
+          }
+        },
+        "pair_level_contrast": 43.444940476190474,
+        "pair_level_reproduces_original": true,
+        "source": "results/llama-nemotron-rerank-1b-v2_full_raw.json"
+      },
       "change_vs_original": {
         "against": "results/llama-nemotron-rerank-1b-v2_full_raw.json",
         "original_contrast": 43.44494047619048,
@@ -1195,6 +1811,21 @@
           "max_abs_score_diff": 0.3125,
           "n_pairs": 80
         }
+      },
+      "change_vs_original_name_averaged": {
+        "against": "results/llama-nemotron-rerank-1b-v2_full_raw.json",
+        "original_name_averaged_contrast": 50.04960317460317,
+        "original_name_averaged_ci": [
+          36.80555555555555,
+          62.45039682539683
+        ],
+        "change": 4.538690476190482,
+        "ci": [
+          -1.9841269841269806,
+          10.912698412698411
+        ],
+        "above_zero": false,
+        "below_zero": false
       },
       "scoring": {
         "access": "local",
@@ -1242,6 +1873,13 @@
           "backend": "nemotron"
         },
         "source": "scored by this script"
+      },
+      "rerun_agreement": {
+        "pct_pairs_same_winner": 88.75,
+        "lower_bound": false,
+        "n_pairs": 80,
+        "pairs": "the original documents of the drift check's two sampled queries",
+        "source": "drift_checks"
       }
     },
     "Cohere-rerank-v4.0-pro": {
@@ -1299,6 +1937,44 @@
         "above_zero": true,
         "source": "results/interval_sensitivity.json models['Cohere-rerank-v4.0-pro']"
       },
+      "original_name_averaged": {
+        "contrast": 54.06746031746031,
+        "ci": [
+          43.05555555555554,
+          64.58333333333334
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "includes_zero": false,
+        "n_comparisons": 832,
+        "n_ties": 0,
+        "by_category": {
+          "male": {
+            "n": 288,
+            "pct_male": 78.47222222222223,
+            "pct_tie": 0.0,
+            "pct_female": 21.52777777777778,
+            "tie_aware_pct_male": 78.47222222222223
+          },
+          "female": {
+            "n": 336,
+            "pct_male": 24.404761904761905,
+            "pct_tie": 0.0,
+            "pct_female": 75.5952380952381,
+            "tie_aware_pct_male": 24.404761904761905
+          },
+          "neutral": {
+            "n": 208,
+            "pct_male": 50.0,
+            "pct_tie": 0.0,
+            "pct_female": 50.0,
+            "tie_aware_pct_male": 50.0
+          }
+        },
+        "pair_level_contrast": 41.073908730158735,
+        "pair_level_reproduces_original": true,
+        "source": "results/Cohere-rerank-v4.0-pro_full_raw.json"
+      },
       "change_vs_original": {
         "against": "results/Cohere-rerank-v4.0-pro_full_raw.json",
         "original_contrast": 41.073908730158735,
@@ -1326,6 +2002,21 @@
           ],
           "pct_pairs_same_winner": 95.02604166666667
         }
+      },
+      "change_vs_original_name_averaged": {
+        "against": "results/Cohere-rerank-v4.0-pro_full_raw.json",
+        "original_name_averaged_contrast": 54.06746031746031,
+        "original_name_averaged_ci": [
+          43.05555555555554,
+          64.58333333333334
+        ],
+        "change": -0.1488095238095113,
+        "ci": [
+          -8.779761904761912,
+          8.779761904761912
+        ],
+        "above_zero": false,
+        "below_zero": false
       },
       "scoring": {
         "access": "API",
@@ -1358,7 +2049,8 @@
         "hardware": null,
         "runtime": null,
         "source": "scored by this script"
-      }
+      },
+      "rerun_agreement": null
     },
     "semantic-ranker-fast-004": {
       "label": "Google: fast-004",
@@ -1415,6 +2107,44 @@
         "above_zero": true,
         "source": "results/interval_sensitivity.json models['semantic-ranker-fast-004']"
       },
+      "original_name_averaged": {
+        "contrast": 46.57738095238094,
+        "ci": [
+          35.81349206349206,
+          55.902777777777786
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "includes_zero": false,
+        "n_comparisons": 832,
+        "n_ties": 0,
+        "by_category": {
+          "male": {
+            "n": 288,
+            "pct_male": 69.79166666666667,
+            "pct_tie": 0.0,
+            "pct_female": 30.208333333333332,
+            "tie_aware_pct_male": 69.79166666666667
+          },
+          "female": {
+            "n": 336,
+            "pct_male": 23.214285714285715,
+            "pct_tie": 0.0,
+            "pct_female": 76.78571428571429,
+            "tie_aware_pct_male": 23.214285714285715
+          },
+          "neutral": {
+            "n": 208,
+            "pct_male": 43.26923076923077,
+            "pct_tie": 0.0,
+            "pct_female": 56.73076923076923,
+            "tie_aware_pct_male": 43.26923076923077
+          }
+        },
+        "pair_level_contrast": 38.6780753968254,
+        "pair_level_reproduces_original": true,
+        "source": "results/semantic-ranker-fast-004_full_raw.json"
+      },
       "change_vs_original": {
         "against": "results/semantic-ranker-fast-004_full_raw.json",
         "original_contrast": 38.678075396825406,
@@ -1442,6 +2172,21 @@
           ],
           "pct_pairs_same_winner": 83.56770833333333
         }
+      },
+      "change_vs_original_name_averaged": {
+        "against": "results/semantic-ranker-fast-004_full_raw.json",
+        "original_name_averaged_contrast": 46.57738095238094,
+        "original_name_averaged_ci": [
+          35.81349206349206,
+          55.902777777777786
+        ],
+        "change": -12.400793650793645,
+        "ci": [
+          -21.37896825396826,
+          -4.067460317460316
+        ],
+        "above_zero": false,
+        "below_zero": true
       },
       "scoring": {
         "access": "API",
@@ -1473,7 +2218,8 @@
         "hardware": null,
         "runtime": null,
         "source": "scored by this script"
-      }
+      },
+      "rerun_agreement": null
     },
     "cohere/rerank-v3.5": {
       "label": "Cohere: v3.5",
@@ -1530,6 +2276,44 @@
         "above_zero": true,
         "source": "results/interval_sensitivity.json models['cohere/rerank-v3.5']"
       },
+      "original_name_averaged": {
+        "contrast": 37.8968253968254,
+        "ci": [
+          25.643601190476186,
+          50.14880952380953
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "includes_zero": false,
+        "n_comparisons": 832,
+        "n_ties": 0,
+        "by_category": {
+          "male": {
+            "n": 288,
+            "pct_male": 86.11111111111111,
+            "pct_tie": 0.0,
+            "pct_female": 13.88888888888889,
+            "tie_aware_pct_male": 86.11111111111111
+          },
+          "female": {
+            "n": 336,
+            "pct_male": 48.214285714285715,
+            "pct_tie": 0.0,
+            "pct_female": 51.785714285714285,
+            "tie_aware_pct_male": 48.214285714285715
+          },
+          "neutral": {
+            "n": 208,
+            "pct_male": 83.65384615384616,
+            "pct_tie": 0.0,
+            "pct_female": 16.346153846153847,
+            "tie_aware_pct_male": 83.65384615384616
+          }
+        },
+        "pair_level_contrast": 37.207341269841265,
+        "pair_level_reproduces_original": true,
+        "source": "results/rerank-v3.5_full_raw.json"
+      },
       "change_vs_original": {
         "against": "results/rerank-v3.5_full_raw.json",
         "original_contrast": 37.207341269841265,
@@ -1557,6 +2341,21 @@
           ],
           "pct_pairs_same_winner": 99.89583333333333
         }
+      },
+      "change_vs_original_name_averaged": {
+        "against": "results/rerank-v3.5_full_raw.json",
+        "original_name_averaged_contrast": 37.8968253968254,
+        "original_name_averaged_ci": [
+          25.643601190476186,
+          50.14880952380953
+        ],
+        "change": -15.376984126984134,
+        "ci": [
+          -23.462301587301567,
+          -6.894841269841272
+        ],
+        "above_zero": false,
+        "below_zero": true
       },
       "scoring": {
         "access": "API",
@@ -1590,7 +2389,8 @@
         "hardware": null,
         "runtime": null,
         "source": "scored by this script"
-      }
+      },
+      "rerun_agreement": null
     },
     "rerank-2.5-lite": {
       "label": "Voyage: rerank-2.5-lite",
@@ -1647,6 +2447,44 @@
         "above_zero": true,
         "source": "results/interval_sensitivity.json models['rerank-2.5-lite']"
       },
+      "original_name_averaged": {
+        "contrast": 44.9156746031746,
+        "ci": [
+          35.29265873015874,
+          54.21626984126984
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "includes_zero": false,
+        "n_comparisons": 832,
+        "n_ties": 14,
+        "by_category": {
+          "male": {
+            "n": 288,
+            "pct_male": 87.5,
+            "pct_tie": 1.7361111111111112,
+            "pct_female": 10.76388888888889,
+            "tie_aware_pct_male": 88.36805555555556
+          },
+          "female": {
+            "n": 336,
+            "pct_male": 42.55952380952381,
+            "pct_tie": 1.7857142857142858,
+            "pct_female": 55.654761904761905,
+            "tie_aware_pct_male": 43.45238095238095
+          },
+          "neutral": {
+            "n": 208,
+            "pct_male": 63.46153846153846,
+            "pct_tie": 1.4423076923076923,
+            "pct_female": 35.09615384615385,
+            "tie_aware_pct_male": 64.1826923076923
+          }
+        },
+        "pair_level_contrast": 35.18105158730159,
+        "pair_level_reproduces_original": true,
+        "source": "results/rerank-2.5-lite_full_raw.json"
+      },
       "change_vs_original": {
         "against": "results/rerank-2.5-lite_full_raw.json",
         "original_contrast": 35.181051587301596,
@@ -1674,6 +2512,21 @@
           ],
           "pct_pairs_same_winner": 94.21875
         }
+      },
+      "change_vs_original_name_averaged": {
+        "against": "results/rerank-2.5-lite_full_raw.json",
+        "original_name_averaged_contrast": 44.9156746031746,
+        "original_name_averaged_ci": [
+          35.29265873015874,
+          54.21626984126984
+        ],
+        "change": 8.010912698412703,
+        "ci": [
+          1.364087301587304,
+          14.68253968253967
+        ],
+        "above_zero": true,
+        "below_zero": false
       },
       "scoring": {
         "access": "API",
@@ -1705,7 +2558,8 @@
         "hardware": null,
         "runtime": null,
         "source": "scored by this script"
-      }
+      },
+      "rerun_agreement": null
     },
     "nvidia/llama-nemotron-rerank-vl-1b-v2": {
       "label": "NVIDIA: Nemotron VL 1B",
@@ -1762,6 +2616,44 @@
         "above_zero": true,
         "source": "results/interval_sensitivity.json models['nvidia/llama-nemotron-rerank-vl-1b-v2']"
       },
+      "original_name_averaged": {
+        "contrast": 42.65873015873017,
+        "ci": [
+          30.902777777777786,
+          54.01909722222231
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "includes_zero": false,
+        "n_comparisons": 832,
+        "n_ties": 0,
+        "by_category": {
+          "male": {
+            "n": 288,
+            "pct_male": 90.27777777777777,
+            "pct_tie": 0.0,
+            "pct_female": 9.722222222222221,
+            "tie_aware_pct_male": 90.27777777777777
+          },
+          "female": {
+            "n": 336,
+            "pct_male": 47.61904761904762,
+            "pct_tie": 0.0,
+            "pct_female": 52.38095238095238,
+            "tie_aware_pct_male": 47.61904761904762
+          },
+          "neutral": {
+            "n": 208,
+            "pct_male": 78.84615384615384,
+            "pct_tie": 0.0,
+            "pct_female": 21.153846153846153,
+            "tie_aware_pct_male": 78.84615384615384
+          }
+        },
+        "pair_level_contrast": 32.214781746031754,
+        "pair_level_reproduces_original": true,
+        "source": "results/llama-nemotron-rerank-vl-1b-v2_full_raw.json"
+      },
       "change_vs_original": {
         "against": "results/llama-nemotron-rerank-vl-1b-v2_full_raw.json",
         "original_contrast": 32.214781746031754,
@@ -1789,6 +2681,21 @@
           ],
           "pct_pairs_same_winner": 100.0
         }
+      },
+      "change_vs_original_name_averaged": {
+        "against": "results/llama-nemotron-rerank-vl-1b-v2_full_raw.json",
+        "original_name_averaged_contrast": 42.65873015873017,
+        "original_name_averaged_ci": [
+          30.902777777777786,
+          54.01909722222231
+        ],
+        "change": -2.4305555555555713,
+        "ci": [
+          -12.847222222222214,
+          7.589285714285715
+        ],
+        "above_zero": false,
+        "below_zero": false
       },
       "scoring": {
         "access": "API",
@@ -1822,7 +2729,8 @@
         "hardware": null,
         "runtime": null,
         "source": "scored by this script"
-      }
+      },
+      "rerun_agreement": null
     },
     "rerank-1": {
       "label": "Voyage: rerank-1",
@@ -1879,6 +2787,44 @@
         "above_zero": true,
         "source": "results/interval_sensitivity.json models['rerank-1']"
       },
+      "original_name_averaged": {
+        "contrast": 33.03571428571429,
+        "ci": [
+          20.08804563492063,
+          46.13095238095239
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "includes_zero": false,
+        "n_comparisons": 832,
+        "n_ties": 2,
+        "by_category": {
+          "male": {
+            "n": 288,
+            "pct_male": 84.375,
+            "pct_tie": 0.0,
+            "pct_female": 15.625,
+            "tie_aware_pct_male": 84.375
+          },
+          "female": {
+            "n": 336,
+            "pct_male": 51.19047619047619,
+            "pct_tie": 0.2976190476190476,
+            "pct_female": 48.51190476190476,
+            "tie_aware_pct_male": 51.339285714285715
+          },
+          "neutral": {
+            "n": 208,
+            "pct_male": 87.5,
+            "pct_tie": 0.4807692307692308,
+            "pct_female": 12.01923076923077,
+            "tie_aware_pct_male": 87.74038461538461
+          }
+        },
+        "pair_level_contrast": 31.696428571428577,
+        "pair_level_reproduces_original": true,
+        "source": "results/rerank-1_full_raw.json"
+      },
       "change_vs_original": {
         "against": "results/rerank-1_full_raw.json",
         "original_contrast": 31.696428571428577,
@@ -1906,6 +2852,21 @@
           ],
           "pct_pairs_same_winner": 97.94270833333333
         }
+      },
+      "change_vs_original_name_averaged": {
+        "against": "results/rerank-1_full_raw.json",
+        "original_name_averaged_contrast": 33.03571428571429,
+        "original_name_averaged_ci": [
+          20.08804563492063,
+          46.13095238095239
+        ],
+        "change": 1.7857142857142705,
+        "ci": [
+          -5.183531746031747,
+          8.531746031746039
+        ],
+        "above_zero": false,
+        "below_zero": false
       },
       "scoring": {
         "access": "API",
@@ -1937,7 +2898,8 @@
         "hardware": null,
         "runtime": null,
         "source": "scored by this script"
-      }
+      },
+      "rerun_agreement": null
     },
     "qwen/qwen3-reranker-8b": {
       "label": "Qwen: Qwen3 8B",
@@ -1994,6 +2956,44 @@
         "above_zero": true,
         "source": "results/interval_sensitivity.json models['qwen/qwen3-reranker-8b']"
       },
+      "original_name_averaged": {
+        "contrast": 40.004960317460316,
+        "ci": [
+          32.44047619047618,
+          47.271825396825406
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "includes_zero": false,
+        "n_comparisons": 832,
+        "n_ties": 106,
+        "by_category": {
+          "male": {
+            "n": 288,
+            "pct_male": 64.58333333333333,
+            "pct_tie": 14.23611111111111,
+            "pct_female": 21.180555555555557,
+            "tie_aware_pct_male": 71.70138888888889
+          },
+          "female": {
+            "n": 336,
+            "pct_male": 26.785714285714285,
+            "pct_tie": 9.821428571428571,
+            "pct_female": 63.392857142857146,
+            "tie_aware_pct_male": 31.696428571428573
+          },
+          "neutral": {
+            "n": 208,
+            "pct_male": 45.19230769230769,
+            "pct_tie": 15.384615384615385,
+            "pct_female": 39.42307692307692,
+            "tie_aware_pct_male": 52.88461538461539
+          }
+        },
+        "pair_level_contrast": 31.639384920634917,
+        "pair_level_reproduces_original": true,
+        "source": "results/qwen3-reranker-8b_full_raw.json"
+      },
       "change_vs_original": {
         "against": "results/qwen3-reranker-8b_full_raw.json",
         "original_contrast": 31.639384920634917,
@@ -2021,6 +3021,21 @@
           ],
           "pct_pairs_same_winner": 95.3125
         }
+      },
+      "change_vs_original_name_averaged": {
+        "against": "results/qwen3-reranker-8b_full_raw.json",
+        "original_name_averaged_contrast": 40.004960317460316,
+        "original_name_averaged_ci": [
+          32.44047619047618,
+          47.271825396825406
+        ],
+        "change": 0.6696428571428541,
+        "ci": [
+          -6.25,
+          7.936507936507915
+        ],
+        "above_zero": false,
+        "below_zero": false
       },
       "scoring": {
         "access": "API",
@@ -2055,7 +3070,8 @@
         "hardware": null,
         "runtime": null,
         "source": "scored by this script"
-      }
+      },
+      "rerun_agreement": null
     },
     "Cohere-rerank-v4.0-fast": {
       "label": "Cohere: v4 fast",
@@ -2112,6 +3128,44 @@
         "above_zero": true,
         "source": "results/interval_sensitivity.json models['Cohere-rerank-v4.0-fast']"
       },
+      "original_name_averaged": {
+        "contrast": 37.00396825396825,
+        "ci": [
+          25.942460317460316,
+          47.91666666666668
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "includes_zero": false,
+        "n_comparisons": 832,
+        "n_ties": 0,
+        "by_category": {
+          "male": {
+            "n": 288,
+            "pct_male": 69.44444444444444,
+            "pct_tie": 0.0,
+            "pct_female": 30.555555555555557,
+            "tie_aware_pct_male": 69.44444444444444
+          },
+          "female": {
+            "n": 336,
+            "pct_male": 32.44047619047619,
+            "pct_tie": 0.0,
+            "pct_female": 67.55952380952381,
+            "tie_aware_pct_male": 32.44047619047619
+          },
+          "neutral": {
+            "n": 208,
+            "pct_male": 64.90384615384616,
+            "pct_tie": 0.0,
+            "pct_female": 35.09615384615385,
+            "tie_aware_pct_male": 64.90384615384616
+          }
+        },
+        "pair_level_contrast": 31.44097222222222,
+        "pair_level_reproduces_original": true,
+        "source": "results/Cohere-rerank-v4.0-fast_full_raw.json"
+      },
       "change_vs_original": {
         "against": "results/Cohere-rerank-v4.0-fast_full_raw.json",
         "original_contrast": 31.44097222222222,
@@ -2139,6 +3193,21 @@
           ],
           "pct_pairs_same_winner": 92.76041666666667
         }
+      },
+      "change_vs_original_name_averaged": {
+        "against": "results/Cohere-rerank-v4.0-fast_full_raw.json",
+        "original_name_averaged_contrast": 37.00396825396825,
+        "original_name_averaged_ci": [
+          25.942460317460316,
+          47.91666666666668
+        ],
+        "change": 1.1904761904761898,
+        "ci": [
+          -7.465277777777764,
+          10.044642857142861
+        ],
+        "above_zero": false,
+        "below_zero": false
       },
       "scoring": {
         "access": "API",
@@ -2170,7 +3239,8 @@
         "hardware": null,
         "runtime": null,
         "source": "scored by this script"
-      }
+      },
+      "rerun_agreement": null
     },
     "Qwen/Qwen3-Reranker-0.6B": {
       "label": "Qwen: Qwen3 0.6B",
@@ -2227,6 +3297,44 @@
         "above_zero": true,
         "source": "results/interval_sensitivity.json models['Qwen/Qwen3-Reranker-0.6B']"
       },
+      "original_name_averaged": {
+        "contrast": 39.16170634920635,
+        "ci": [
+          24.255952380952387,
+          53.57142857142857
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "includes_zero": false,
+        "n_comparisons": 832,
+        "n_ties": 1,
+        "by_category": {
+          "male": {
+            "n": 288,
+            "pct_male": 77.08333333333333,
+            "pct_tie": 0.3472222222222222,
+            "pct_female": 22.569444444444443,
+            "tie_aware_pct_male": 77.25694444444444
+          },
+          "female": {
+            "n": 336,
+            "pct_male": 38.095238095238095,
+            "pct_tie": 0.0,
+            "pct_female": 61.904761904761905,
+            "tie_aware_pct_male": 38.095238095238095
+          },
+          "neutral": {
+            "n": 208,
+            "pct_male": 74.03846153846153,
+            "pct_tie": 0.0,
+            "pct_female": 25.96153846153846,
+            "tie_aware_pct_male": 74.03846153846153
+          }
+        },
+        "pair_level_contrast": 27.467757936507937,
+        "pair_level_reproduces_original": true,
+        "source": "results/Qwen3-Reranker-0.6B_full_raw.json"
+      },
       "change_vs_original": {
         "against": "results/Qwen3-Reranker-0.6B_full_raw.json",
         "original_contrast": 27.467757936507937,
@@ -2248,6 +3356,21 @@
           "max_abs_score_diff": 0.001210331916809082,
           "n_pairs": 80
         }
+      },
+      "change_vs_original_name_averaged": {
+        "against": "results/Qwen3-Reranker-0.6B_full_raw.json",
+        "original_name_averaged_contrast": 39.16170634920635,
+        "original_name_averaged_ci": [
+          24.255952380952387,
+          53.57142857142857
+        ],
+        "change": 12.425595238095248,
+        "ci": [
+          2.1081349206349103,
+          23.51190476190476
+        ],
+        "above_zero": true,
+        "below_zero": false
       },
       "scoring": {
         "access": "local",
@@ -2295,6 +3418,13 @@
           "backend": "qwen3_yesno"
         },
         "source": "scored by this script"
+      },
+      "rerun_agreement": {
+        "pct_pairs_same_winner": 72.5,
+        "lower_bound": false,
+        "n_pairs": 80,
+        "pairs": "the original documents of the drift check's two sampled queries",
+        "source": "drift_checks"
       }
     },
     "cross-encoder/ms-marco-MiniLM-L-12-v2": {
@@ -2352,6 +3482,44 @@
         "above_zero": true,
         "source": "results/interval_sensitivity.json models['cross-encoder/ms-marco-MiniLM-L-12-v2']"
       },
+      "original_name_averaged": {
+        "contrast": 25.843253968253975,
+        "ci": [
+          11.111111111111114,
+          41.46825396825397
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "includes_zero": false,
+        "n_comparisons": 832,
+        "n_ties": 0,
+        "by_category": {
+          "male": {
+            "n": 288,
+            "pct_male": 87.15277777777777,
+            "pct_tie": 0.0,
+            "pct_female": 12.847222222222221,
+            "tie_aware_pct_male": 87.15277777777777
+          },
+          "female": {
+            "n": 336,
+            "pct_male": 61.30952380952381,
+            "pct_tie": 0.0,
+            "pct_female": 38.69047619047619,
+            "tie_aware_pct_male": 61.30952380952381
+          },
+          "neutral": {
+            "n": 208,
+            "pct_male": 89.90384615384616,
+            "pct_tie": 0.0,
+            "pct_female": 10.096153846153847,
+            "tie_aware_pct_male": 89.90384615384616
+          }
+        },
+        "pair_level_contrast": 26.006944444444443,
+        "pair_level_reproduces_original": true,
+        "source": "results/ms-marco-MiniLM-L-12-v2_full_raw.json"
+      },
       "change_vs_original": {
         "against": "results/ms-marco-MiniLM-L-12-v2_full_raw.json",
         "original_contrast": 26.006944444444443,
@@ -2377,6 +3545,21 @@
           "note": null
         }
       },
+      "change_vs_original_name_averaged": {
+        "against": "results/ms-marco-MiniLM-L-12-v2_full_raw.json",
+        "original_name_averaged_contrast": 25.843253968253975,
+        "original_name_averaged_ci": [
+          11.111111111111114,
+          41.46825396825397
+        ],
+        "change": 10.66468253968253,
+        "ci": [
+          4.265873015873019,
+          17.708333333333336
+        ],
+        "above_zero": true,
+        "below_zero": false
+      },
       "scoring": {
         "access": "local",
         "source_file": "results/deid_pairs/cross-encoder_ms-marco-MiniLM-L-12-v2.json",
@@ -2401,6 +3584,13 @@
           "note": null
         },
         "source": "de-identification run (names_only), not re-scored"
+      },
+      "rerun_agreement": {
+        "pct_pairs_same_winner": 100.0,
+        "lower_bound": false,
+        "n_pairs": 8320,
+        "pairs": "every pair, from the de-identification run's re-score of the original documents",
+        "source": "deid_rerun_checks"
       }
     },
     "cross-encoder/ms-marco-MiniLM-L6-v2": {
@@ -2458,6 +3648,44 @@
         "above_zero": true,
         "source": "results/interval_sensitivity.json models['cross-encoder/ms-marco-MiniLM-L6-v2']"
       },
+      "original_name_averaged": {
+        "contrast": 30.803571428571423,
+        "ci": [
+          17.509920634920647,
+          44.295634920634924
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "includes_zero": false,
+        "n_comparisons": 832,
+        "n_ties": 0,
+        "by_category": {
+          "male": {
+            "n": 288,
+            "pct_male": 94.79166666666667,
+            "pct_tie": 0.0,
+            "pct_female": 5.208333333333333,
+            "tie_aware_pct_male": 94.79166666666667
+          },
+          "female": {
+            "n": 336,
+            "pct_male": 63.98809523809524,
+            "pct_tie": 0.0,
+            "pct_female": 36.01190476190476,
+            "tie_aware_pct_male": 63.98809523809524
+          },
+          "neutral": {
+            "n": 208,
+            "pct_male": 98.07692307692308,
+            "pct_tie": 0.0,
+            "pct_female": 1.9230769230769231,
+            "tie_aware_pct_male": 98.07692307692308
+          }
+        },
+        "pair_level_contrast": 25.049603174603178,
+        "pair_level_reproduces_original": true,
+        "source": "results/ms-marco-MiniLM-L6-v2_full_raw.json"
+      },
       "change_vs_original": {
         "against": "results/ms-marco-MiniLM-L6-v2_full_raw.json",
         "original_contrast": 25.049603174603178,
@@ -2479,6 +3707,21 @@
           "max_abs_score_diff": 6.4373016357421875e-06,
           "n_pairs": 80
         }
+      },
+      "change_vs_original_name_averaged": {
+        "against": "results/ms-marco-MiniLM-L6-v2_full_raw.json",
+        "original_name_averaged_contrast": 30.803571428571423,
+        "original_name_averaged_ci": [
+          17.509920634920647,
+          44.295634920634924
+        ],
+        "change": 2.2817460317460245,
+        "ci": [
+          -3.0257936507936734,
+          7.937748015873108
+        ],
+        "above_zero": false,
+        "below_zero": false
       },
       "scoring": {
         "access": "local",
@@ -2526,6 +3769,13 @@
           "backend": "crossencoder"
         },
         "source": "scored by this script"
+      },
+      "rerun_agreement": {
+        "pct_pairs_same_winner": 100.0,
+        "lower_bound": false,
+        "n_pairs": 80,
+        "pairs": "the original documents of the drift check's two sampled queries",
+        "source": "drift_checks"
       }
     },
     "semantic-ranker-default-002": {
@@ -2583,6 +3833,44 @@
         "above_zero": true,
         "source": "results/interval_sensitivity.json models['semantic-ranker-default-002']"
       },
+      "original_name_averaged": {
+        "contrast": 26.240079365079367,
+        "ci": [
+          12.103174603174594,
+          41.36904761904761
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "includes_zero": false,
+        "n_comparisons": 832,
+        "n_ties": 2,
+        "by_category": {
+          "male": {
+            "n": 288,
+            "pct_male": 96.18055555555556,
+            "pct_tie": 0.0,
+            "pct_female": 3.8194444444444446,
+            "tie_aware_pct_male": 96.18055555555556
+          },
+          "female": {
+            "n": 336,
+            "pct_male": 69.64285714285714,
+            "pct_tie": 0.5952380952380952,
+            "pct_female": 29.761904761904763,
+            "tie_aware_pct_male": 69.94047619047619
+          },
+          "neutral": {
+            "n": 208,
+            "pct_male": 84.61538461538461,
+            "pct_tie": 0.0,
+            "pct_female": 15.384615384615385,
+            "tie_aware_pct_male": 84.61538461538461
+          }
+        },
+        "pair_level_contrast": 24.80902777777777,
+        "pair_level_reproduces_original": true,
+        "source": "results/semantic-ranker-default-002_full_raw.json"
+      },
       "change_vs_original": {
         "against": "results/semantic-ranker-default-002_full_raw.json",
         "original_contrast": 24.809027777777786,
@@ -2610,6 +3898,21 @@
           ],
           "pct_pairs_same_winner": 94.86979166666667
         }
+      },
+      "change_vs_original_name_averaged": {
+        "against": "results/semantic-ranker-default-002_full_raw.json",
+        "original_name_averaged_contrast": 26.240079365079367,
+        "original_name_averaged_ci": [
+          12.103174603174594,
+          41.36904761904761
+        ],
+        "change": -7.564484126984112,
+        "ci": [
+          -12.375992063492042,
+          -3.0505952380952266
+        ],
+        "above_zero": false,
+        "below_zero": true
       },
       "scoring": {
         "access": "API",
@@ -2641,7 +3944,8 @@
         "hardware": null,
         "runtime": null,
         "source": "scored by this script"
-      }
+      },
+      "rerun_agreement": null
     },
     "Qwen/Qwen3-Reranker-4B": {
       "label": "Qwen: Qwen3 4B",
@@ -2698,6 +4002,44 @@
         "above_zero": true,
         "source": "results/interval_sensitivity.json models['Qwen/Qwen3-Reranker-4B']"
       },
+      "original_name_averaged": {
+        "contrast": 24.65277777777777,
+        "ci": [
+          15.426587301587297,
+          34.27579365079365
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "includes_zero": false,
+        "n_comparisons": 832,
+        "n_ties": 0,
+        "by_category": {
+          "male": {
+            "n": 288,
+            "pct_male": 60.06944444444444,
+            "pct_tie": 0.0,
+            "pct_female": 39.93055555555556,
+            "tie_aware_pct_male": 60.06944444444444
+          },
+          "female": {
+            "n": 336,
+            "pct_male": 35.416666666666664,
+            "pct_tie": 0.0,
+            "pct_female": 64.58333333333333,
+            "tie_aware_pct_male": 35.416666666666664
+          },
+          "neutral": {
+            "n": 208,
+            "pct_male": 54.80769230769231,
+            "pct_tie": 0.0,
+            "pct_female": 45.19230769230769,
+            "tie_aware_pct_male": 54.80769230769231
+          }
+        },
+        "pair_level_contrast": 21.579861111111114,
+        "pair_level_reproduces_original": true,
+        "source": "results/Qwen3-Reranker-4B_full_raw.json"
+      },
       "change_vs_original": {
         "against": "results/Qwen3-Reranker-4B_full_raw.json",
         "original_contrast": 21.579861111111107,
@@ -2719,6 +4061,21 @@
           "max_abs_score_diff": 0.04624146223068237,
           "n_pairs": 80
         }
+      },
+      "change_vs_original_name_averaged": {
+        "against": "results/Qwen3-Reranker-4B_full_raw.json",
+        "original_name_averaged_contrast": 24.65277777777777,
+        "original_name_averaged_ci": [
+          15.426587301587297,
+          34.27579365079365
+        ],
+        "change": 3.0257936507936662,
+        "ci": [
+          -6.498635912698437,
+          12.82242063492064
+        ],
+        "above_zero": false,
+        "below_zero": false
       },
       "scoring": {
         "access": "local",
@@ -2766,6 +4123,13 @@
           "backend": "qwen3_yesno"
         },
         "source": "scored by this script"
+      },
+      "rerun_agreement": {
+        "pct_pairs_same_winner": 87.5,
+        "lower_bound": false,
+        "n_pairs": 80,
+        "pairs": "the original documents of the drift check's two sampled queries",
+        "source": "drift_checks"
       }
     },
     "mixedbread-ai/mxbai-rerank-large-v2": {
@@ -2823,6 +4187,44 @@
         "above_zero": true,
         "source": "results/interval_sensitivity.json models['mixedbread-ai/mxbai-rerank-large-v2']"
       },
+      "original_name_averaged": {
+        "contrast": 20.634920634920633,
+        "ci": [
+          10.664682539682545,
+          31.101190476190467
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "includes_zero": false,
+        "n_comparisons": 832,
+        "n_ties": 6,
+        "by_category": {
+          "male": {
+            "n": 288,
+            "pct_male": 81.94444444444444,
+            "pct_tie": 0.0,
+            "pct_female": 18.055555555555557,
+            "tie_aware_pct_male": 81.94444444444444
+          },
+          "female": {
+            "n": 336,
+            "pct_male": 60.416666666666664,
+            "pct_tie": 1.7857142857142858,
+            "pct_female": 37.79761904761905,
+            "tie_aware_pct_male": 61.30952380952381
+          },
+          "neutral": {
+            "n": 208,
+            "pct_male": 82.21153846153847,
+            "pct_tie": 0.0,
+            "pct_female": 17.78846153846154,
+            "tie_aware_pct_male": 82.21153846153847
+          }
+        },
+        "pair_level_contrast": 20.776289682539684,
+        "pair_level_reproduces_original": true,
+        "source": "results/mxbai-rerank-large-v2_full_raw.json"
+      },
       "change_vs_original": {
         "against": "results/mxbai-rerank-large-v2_full_raw.json",
         "original_contrast": 20.776289682539684,
@@ -2844,6 +4246,21 @@
           "max_abs_score_diff": 2.5272369384765625e-05,
           "n_pairs": 80
         }
+      },
+      "change_vs_original_name_averaged": {
+        "against": "results/mxbai-rerank-large-v2_full_raw.json",
+        "original_name_averaged_contrast": 20.634920634920633,
+        "original_name_averaged_ci": [
+          10.664682539682545,
+          31.101190476190467
+        ],
+        "change": 19.667658730158728,
+        "ci": [
+          13.467261904761912,
+          25.66964285714287
+        ],
+        "above_zero": true,
+        "below_zero": false
       },
       "scoring": {
         "access": "local",
@@ -2891,6 +4308,13 @@
           "backend": "crossencoder"
         },
         "source": "scored by this script"
+      },
+      "rerun_agreement": {
+        "pct_pairs_same_winner": 58.75,
+        "lower_bound": false,
+        "n_pairs": 80,
+        "pairs": "the original documents of the drift check's two sampled queries",
+        "source": "drift_checks"
       }
     },
     "BAAI/bge-reranker-base": {
@@ -2948,6 +4372,44 @@
         "above_zero": true,
         "source": "results/interval_sensitivity.json models['BAAI/bge-reranker-base']"
       },
+      "original_name_averaged": {
+        "contrast": 24.355158730158728,
+        "ci": [
+          9.573412698412703,
+          38.591269841269835
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "includes_zero": false,
+        "n_comparisons": 832,
+        "n_ties": 0,
+        "by_category": {
+          "male": {
+            "n": 288,
+            "pct_male": 60.06944444444444,
+            "pct_tie": 0.0,
+            "pct_female": 39.93055555555556,
+            "tie_aware_pct_male": 60.06944444444444
+          },
+          "female": {
+            "n": 336,
+            "pct_male": 35.714285714285715,
+            "pct_tie": 0.0,
+            "pct_female": 64.28571428571429,
+            "tie_aware_pct_male": 35.714285714285715
+          },
+          "neutral": {
+            "n": 208,
+            "pct_male": 47.11538461538461,
+            "pct_tie": 0.0,
+            "pct_female": 52.88461538461539,
+            "tie_aware_pct_male": 47.11538461538461
+          }
+        },
+        "pair_level_contrast": 19.78174603174603,
+        "pair_level_reproduces_original": true,
+        "source": "results/bge-reranker-base_full_raw.json"
+      },
       "change_vs_original": {
         "against": "results/bge-reranker-base_full_raw.json",
         "original_contrast": 19.781746031746025,
@@ -2973,6 +4435,21 @@
           "note": "No banked baseline exists for this model, so `original` was scored locally in this run. Comparing it against a second local scoring of the same strings is self-referential and always yields 0.0; it is NOT evidence of cross-run reproducibility, so no verdict is reported."
         }
       },
+      "change_vs_original_name_averaged": {
+        "against": "results/bge-reranker-base_full_raw.json",
+        "original_name_averaged_contrast": 24.355158730158728,
+        "original_name_averaged_ci": [
+          9.573412698412703,
+          38.591269841269835
+        ],
+        "change": -8.184523809523803,
+        "ci": [
+          -19.29563492063491,
+          2.43055555555555
+        ],
+        "above_zero": false,
+        "below_zero": false
+      },
       "scoring": {
         "access": "local",
         "source_file": "results/deid_pairs/BAAI_bge-reranker-base.json",
@@ -2997,6 +4474,13 @@
           "note": "No banked baseline exists for this model, so `original` was scored locally in this run. Comparing it against a second local scoring of the same strings is self-referential and always yields 0.0; it is NOT evidence of cross-run reproducibility, so no verdict is reported."
         },
         "source": "de-identification run (names_only), not re-scored"
+      },
+      "rerun_agreement": {
+        "pct_pairs_same_winner": 100.0,
+        "lower_bound": false,
+        "n_pairs": 8320,
+        "pairs": "every pair, from the de-identification run's re-score of the original documents",
+        "source": "deid_rerun_checks"
       }
     },
     "BAAI/bge-reranker-large": {
@@ -3054,6 +4538,44 @@
         "above_zero": true,
         "source": "results/interval_sensitivity.json models['BAAI/bge-reranker-large']"
       },
+      "original_name_averaged": {
+        "contrast": 25.3968253968254,
+        "ci": [
+          16.716269841269835,
+          34.374999999999986
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "includes_zero": false,
+        "n_comparisons": 832,
+        "n_ties": 0,
+        "by_category": {
+          "male": {
+            "n": 288,
+            "pct_male": 65.27777777777777,
+            "pct_tie": 0.0,
+            "pct_female": 34.72222222222222,
+            "tie_aware_pct_male": 65.27777777777777
+          },
+          "female": {
+            "n": 336,
+            "pct_male": 39.88095238095238,
+            "pct_tie": 0.0,
+            "pct_female": 60.11904761904762,
+            "tie_aware_pct_male": 39.88095238095238
+          },
+          "neutral": {
+            "n": 208,
+            "pct_male": 42.78846153846154,
+            "pct_tie": 0.0,
+            "pct_female": 57.21153846153846,
+            "tie_aware_pct_male": 42.78846153846154
+          }
+        },
+        "pair_level_contrast": 19.766865079365083,
+        "pair_level_reproduces_original": true,
+        "source": "results/bge-reranker-large_full_raw.json"
+      },
       "change_vs_original": {
         "against": "results/bge-reranker-large_full_raw.json",
         "original_contrast": 19.766865079365083,
@@ -3075,6 +4597,21 @@
           "max_abs_score_diff": 5.245208740234375e-06,
           "n_pairs": 80
         }
+      },
+      "change_vs_original_name_averaged": {
+        "against": "results/bge-reranker-large_full_raw.json",
+        "original_name_averaged_contrast": 25.3968253968254,
+        "original_name_averaged_ci": [
+          16.716269841269835,
+          34.374999999999986
+        ],
+        "change": -1.785714285714299,
+        "ci": [
+          -8.978174603174615,
+          5.555555555555543
+        ],
+        "above_zero": false,
+        "below_zero": false
       },
       "scoring": {
         "access": "local",
@@ -3122,6 +4659,13 @@
           "backend": "crossencoder"
         },
         "source": "scored by this script"
+      },
+      "rerun_agreement": {
+        "pct_pairs_same_winner": 100.0,
+        "lower_bound": false,
+        "n_pairs": 80,
+        "pairs": "the original documents of the drift check's two sampled queries",
+        "source": "drift_checks"
       }
     },
     "rerank-2-lite": {
@@ -3179,6 +4723,44 @@
         "above_zero": true,
         "source": "results/interval_sensitivity.json models['rerank-2-lite']"
       },
+      "original_name_averaged": {
+        "contrast": 23.75992063492063,
+        "ci": [
+          13.268849206349202,
+          33.63095238095238
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "includes_zero": false,
+        "n_comparisons": 832,
+        "n_ties": 20,
+        "by_category": {
+          "male": {
+            "n": 288,
+            "pct_male": 40.97222222222222,
+            "pct_tie": 2.7777777777777777,
+            "pct_female": 56.25,
+            "tie_aware_pct_male": 42.361111111111114
+          },
+          "female": {
+            "n": 336,
+            "pct_male": 17.857142857142858,
+            "pct_tie": 1.4880952380952381,
+            "pct_female": 80.6547619047619,
+            "tie_aware_pct_male": 18.601190476190474
+          },
+          "neutral": {
+            "n": 208,
+            "pct_male": 26.442307692307693,
+            "pct_tie": 3.3653846153846154,
+            "pct_female": 70.1923076923077,
+            "tie_aware_pct_male": 28.125
+          }
+        },
+        "pair_level_contrast": 19.164186507936506,
+        "pair_level_reproduces_original": true,
+        "source": "results/rerank-2-lite_full_raw.json"
+      },
       "change_vs_original": {
         "against": "results/rerank-2-lite_full_raw.json",
         "original_contrast": 19.164186507936506,
@@ -3206,6 +4788,21 @@
           ],
           "pct_pairs_same_winner": 92.47395833333333
         }
+      },
+      "change_vs_original_name_averaged": {
+        "against": "results/rerank-2-lite_full_raw.json",
+        "original_name_averaged_contrast": 23.75992063492063,
+        "original_name_averaged_ci": [
+          13.268849206349202,
+          33.63095238095238
+        ],
+        "change": 31.0515873015873,
+        "ci": [
+          17.583705357142858,
+          44.64285714285714
+        ],
+        "above_zero": true,
+        "below_zero": false
       },
       "scoring": {
         "access": "API",
@@ -3237,7 +4834,8 @@
         "hardware": null,
         "runtime": null,
         "source": "scored by this script"
-      }
+      },
+      "rerun_agreement": null
     },
     "ibm-granite/granite-embedding-reranker-english-r2": {
       "label": "IBM: Granite r2 (self-hosted copy)",
@@ -3294,6 +4892,44 @@
         "above_zero": true,
         "source": "results/interval_sensitivity.json models['ibm-granite-granite-embedding-reranker-english-r2']"
       },
+      "original_name_averaged": {
+        "contrast": 14.682539682539684,
+        "ci": [
+          7.738095238095227,
+          22.222222222222214
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "includes_zero": false,
+        "n_comparisons": 832,
+        "n_ties": 0,
+        "by_category": {
+          "male": {
+            "n": 288,
+            "pct_male": 98.61111111111111,
+            "pct_tie": 0.0,
+            "pct_female": 1.3888888888888888,
+            "tie_aware_pct_male": 98.61111111111111
+          },
+          "female": {
+            "n": 336,
+            "pct_male": 83.92857142857143,
+            "pct_tie": 0.0,
+            "pct_female": 16.071428571428573,
+            "tie_aware_pct_male": 83.92857142857143
+          },
+          "neutral": {
+            "n": 208,
+            "pct_male": 97.59615384615384,
+            "pct_tie": 0.0,
+            "pct_female": 2.4038461538461537,
+            "tie_aware_pct_male": 97.59615384615384
+          }
+        },
+        "pair_level_contrast": 15.302579365079367,
+        "pair_level_reproduces_original": true,
+        "source": "results/ibm-granite-granite-embedding-reranker-english-r2_full_raw.json"
+      },
       "change_vs_original": {
         "against": "results/selfhost/granite-embedding-reranker-english-r2_full_raw.json (the self-hosted copy's own original scores)",
         "original_contrast": 15.183531746031761,
@@ -3315,6 +4951,21 @@
           "max_abs_score_diff": 1.7881393432617188e-07,
           "n_pairs": 80
         }
+      },
+      "change_vs_original_name_averaged": {
+        "against": "results/selfhost/granite-embedding-reranker-english-r2_full_raw.json (the self-hosted copy's own original scores)",
+        "original_name_averaged_contrast": 14.682539682539684,
+        "original_name_averaged_ci": [
+          7.738095238095227,
+          22.222222222222214
+        ],
+        "change": 9.970238095238102,
+        "ci": [
+          5.654761904761941,
+          14.28695436507947
+        ],
+        "above_zero": true,
+        "below_zero": false
       },
       "scoring": {
         "access": "self-hosted copy (local)",
@@ -3362,6 +5013,13 @@
           "backend": "crossencoder"
         },
         "source": "scored by this script"
+      },
+      "rerun_agreement": {
+        "pct_pairs_same_winner": 100.0,
+        "lower_bound": false,
+        "n_pairs": 80,
+        "pairs": "the original documents of the drift check's two sampled queries",
+        "source": "drift_checks"
       }
     },
     "BAAI/bge-reranker-v2-m3": {
@@ -3419,6 +5077,44 @@
         "above_zero": true,
         "source": "results/interval_sensitivity.json models['BAAI/bge-reranker-v2-m3']"
       },
+      "original_name_averaged": {
+        "contrast": 14.732142857142861,
+        "ci": [
+          4.365079365079367,
+          27.480158730158735
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "includes_zero": false,
+        "n_comparisons": 832,
+        "n_ties": 0,
+        "by_category": {
+          "male": {
+            "n": 288,
+            "pct_male": 92.70833333333333,
+            "pct_tie": 0.0,
+            "pct_female": 7.291666666666667,
+            "tie_aware_pct_male": 92.70833333333333
+          },
+          "female": {
+            "n": 336,
+            "pct_male": 77.97619047619048,
+            "pct_tie": 0.0,
+            "pct_female": 22.023809523809526,
+            "tie_aware_pct_male": 77.97619047619048
+          },
+          "neutral": {
+            "n": 208,
+            "pct_male": 84.13461538461539,
+            "pct_tie": 0.0,
+            "pct_female": 15.865384615384615,
+            "tie_aware_pct_male": 84.13461538461539
+          }
+        },
+        "pair_level_contrast": 15.114087301587304,
+        "pair_level_reproduces_original": true,
+        "source": "results/bge-reranker-v2-m3_full_raw.json"
+      },
       "change_vs_original": {
         "against": "results/bge-reranker-v2-m3_full_raw.json",
         "original_contrast": 15.114087301587304,
@@ -3444,6 +5140,21 @@
           "note": null
         }
       },
+      "change_vs_original_name_averaged": {
+        "against": "results/bge-reranker-v2-m3_full_raw.json",
+        "original_name_averaged_contrast": 14.732142857142861,
+        "original_name_averaged_ci": [
+          4.365079365079367,
+          27.480158730158735
+        ],
+        "change": -3.621031746031747,
+        "ci": [
+          -8.978174603174608,
+          0.5952380952380878
+        ],
+        "above_zero": false,
+        "below_zero": false
+      },
       "scoring": {
         "access": "local",
         "source_file": "results/deid_pairs/BAAI_bge-reranker-v2-m3.json",
@@ -3468,6 +5179,13 @@
           "note": null
         },
         "source": "de-identification run (names_only), not re-scored"
+      },
+      "rerun_agreement": {
+        "pct_pairs_same_winner": 99.6514423076923,
+        "lower_bound": true,
+        "n_pairs": 8320,
+        "pairs": "every pair, from the de-identification run's re-score of the original documents",
+        "source": "deid_rerun_checks"
       }
     },
     "jinaai/jina-reranker-v2-base-multilingual": {
@@ -3525,6 +5243,44 @@
         "above_zero": true,
         "source": "results/interval_sensitivity.json models['jinaai/jina-reranker-v2-base-multilingual']"
       },
+      "original_name_averaged": {
+        "contrast": 19.221230158730158,
+        "ci": [
+          7.490079365079367,
+          30.580357142857142
+        ],
+        "above_zero": true,
+        "below_zero": false,
+        "includes_zero": false,
+        "n_comparisons": 832,
+        "n_ties": 7,
+        "by_category": {
+          "male": {
+            "n": 288,
+            "pct_male": 45.486111111111114,
+            "pct_tie": 1.0416666666666667,
+            "pct_female": 53.47222222222222,
+            "tie_aware_pct_male": 46.00694444444444
+          },
+          "female": {
+            "n": 336,
+            "pct_male": 26.19047619047619,
+            "pct_tie": 1.1904761904761905,
+            "pct_female": 72.61904761904762,
+            "tie_aware_pct_male": 26.785714285714285
+          },
+          "neutral": {
+            "n": 208,
+            "pct_male": 39.42307692307692,
+            "pct_tie": 0.0,
+            "pct_female": 60.57692307692308,
+            "tie_aware_pct_male": 39.42307692307692
+          }
+        },
+        "pair_level_contrast": 14.263392857142854,
+        "pair_level_reproduces_original": true,
+        "source": "results/jina-reranker-v2-base-multilingual_full_raw.json"
+      },
       "change_vs_original": {
         "against": "results/jina-reranker-v2-base-multilingual_full_raw.json",
         "original_contrast": 14.263392857142854,
@@ -3551,6 +5307,21 @@
           "baseline_replaced": true
         }
       },
+      "change_vs_original_name_averaged": {
+        "against": "results/jina-reranker-v2-base-multilingual_full_raw.json",
+        "original_name_averaged_contrast": 19.221230158730158,
+        "original_name_averaged_ci": [
+          7.490079365079367,
+          30.580357142857142
+        ],
+        "change": 19.51884920634921,
+        "ci": [
+          8.903769841269845,
+          29.365079365079353
+        ],
+        "above_zero": true,
+        "below_zero": false
+      },
       "scoring": {
         "access": "local",
         "source_file": "results/deid_pairs/jinaai_jina-reranker-v2-base-multilingual.json",
@@ -3576,6 +5347,13 @@
           "baseline_replaced": true
         },
         "source": "de-identification run (names_only), not re-scored"
+      },
+      "rerun_agreement": {
+        "pct_pairs_same_winner": 97.00721153846153,
+        "lower_bound": false,
+        "n_pairs": 8320,
+        "pairs": "every pair, from the de-identification run's re-score of the original documents",
+        "source": "deid_rerun_checks"
       }
     },
     "Alibaba-NLP/gte-reranker-modernbert-base": {
@@ -3633,6 +5411,44 @@
         "above_zero": false,
         "source": "results/interval_sensitivity.json models['Alibaba-NLP/gte-reranker-modernbert-base']"
       },
+      "original_name_averaged": {
+        "contrast": -13.839285714285708,
+        "ci": [
+          -23.16468253968253,
+          -3.621031746031747
+        ],
+        "above_zero": false,
+        "below_zero": true,
+        "includes_zero": false,
+        "n_comparisons": 832,
+        "n_ties": 0,
+        "by_category": {
+          "male": {
+            "n": 288,
+            "pct_male": 67.70833333333333,
+            "pct_tie": 0.0,
+            "pct_female": 32.291666666666664,
+            "tie_aware_pct_male": 67.70833333333333
+          },
+          "female": {
+            "n": 336,
+            "pct_male": 81.54761904761905,
+            "pct_tie": 0.0,
+            "pct_female": 18.452380952380953,
+            "tie_aware_pct_male": 81.54761904761905
+          },
+          "neutral": {
+            "n": 208,
+            "pct_male": 72.11538461538461,
+            "pct_tie": 0.0,
+            "pct_female": 27.884615384615383,
+            "tie_aware_pct_male": 72.11538461538461
+          }
+        },
+        "pair_level_contrast": -6.731150793650791,
+        "pair_level_reproduces_original": true,
+        "source": "results/gte-reranker-modernbert-base_full_raw.json"
+      },
       "change_vs_original": {
         "against": "results/gte-reranker-modernbert-base_full_raw.json",
         "original_contrast": -6.731150793650798,
@@ -3654,6 +5470,21 @@
           "max_abs_score_diff": 4.76837158203125e-07,
           "n_pairs": 80
         }
+      },
+      "change_vs_original_name_averaged": {
+        "against": "results/gte-reranker-modernbert-base_full_raw.json",
+        "original_name_averaged_contrast": -13.839285714285708,
+        "original_name_averaged_ci": [
+          -23.16468253968253,
+          -3.621031746031747
+        ],
+        "change": 5.208333333333329,
+        "ci": [
+          -1.58730158730161,
+          11.855158730158735
+        ],
+        "above_zero": false,
+        "below_zero": false
       },
       "scoring": {
         "access": "local",
@@ -3701,6 +5532,13 @@
           "backend": "crossencoder"
         },
         "source": "scored by this script"
+      },
+      "rerun_agreement": {
+        "pct_pairs_same_winner": 100.0,
+        "lower_bound": false,
+        "n_pairs": 80,
+        "pairs": "the original documents of the drift check's two sampled queries",
+        "source": "drift_checks"
       }
     }
   }

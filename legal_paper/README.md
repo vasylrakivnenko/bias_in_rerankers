@@ -50,20 +50,23 @@ third-party Python packages are needed.
 | Claim | Script | Output |
 |---|---|---|
 | Single-stage re-ranker bias, 29 models (Figure 1, Tables A1–A2) | `../code/analyze_single_stage.py`, over the banked `../code/run_experiment.py` scores | `../results/single_stage_summary.json` |
-| Pipeline shortlist, one pair and swept over the 28 pointwise re-rankers (Figure 2, Table A4) | `../code/compounding_experiment.py` | `../results/compounding_bge_pipeline.json`, `../results/compounding_all_rerankers.json` |
-| De-identification mitigation, one model and all four local re-rankers (Figure 3, Tables A5–A6) | `../code/deidentification_experiment.py` | `../results/deidentification_bge.json`, `../results/deidentification_summary.json` |
+| Pipeline shortlist, one pair and swept over the 28 pointwise re-rankers (Figure 2, Table A6) | `../code/compounding_experiment.py` | `../results/compounding_bge_pipeline.json`, `../results/compounding_all_rerankers.json` |
+| De-identification mitigation, one model and all four local re-rankers (Figure 3, Tables A7–A8) | `../code/deidentification_experiment.py` | `../results/deidentification_bge.json`, `../results/deidentification_summary.json` |
 | The documents, query forms, name pairs, and full occupation list (Appendix A; the occupation list is released, not printed) | `../code/generate_appendix_tables.py` | `../results/tex/documents_appendix.tex`, `../results/tex/occupations_table.tex` |
 | Vendor documentation and public weight availability | `../code/vendor_docs_audit.py` | `../results/vendor_docs_audit_summary.json` |
 | Open-weight rerankers scored on a rented GPU (checkpointed, canary-gated) | `../code/score_open_models.py` | `../results/*_full_raw.json`, `../results/selfhost/` |
 | Request-order test for API rerankers and listwise order arms | `../code/order_reversal_test.py` | `../results/order_reversal_test.json`, `../results/order_test/` |
 | Cross-hardware, self-hosted vs API, and API re-query vs banked scores (vendor drift) | `../code/reproducibility_checks.py` | `../results/reproducibility_checks.json` |
-| Interval sensitivity (BLS-category and occupation × name resampling), evenly split intervals, label-permutation test with Holm adjustment, full name cross, within-template and within-phrasing contrasts (Table A2) | `../code/interval_sensitivity.py` | `../results/interval_sensitivity.json` |
+| Interval sensitivity (BLS-category and occupation × name resampling), evenly split intervals, label-permutation test with Holm adjustment, full name cross, within-template and within-phrasing contrasts; Table A2 also prints the male-typed and female-typed shares plotted in Figure 1 | `../code/interval_sensitivity.py` (`--tables-only` rebuilds Table A2 from the saved JSON) | `../results/interval_sensitivity.json`, `../results/tex/contrast_intervals.tex` |
+| Continuous check of the occupation labels: Spearman ρ of the occupation-level share against the BLS share of women with a Holm-adjusted permutation p, OLS slope, and the contrast at 25/75 and 35/65 cut-points (Table A4) | `../code/continuous_bls_check.py` | `../results/continuous_bls_check.json`, `../results/tex/continuous_bls_check.tex` |
+| Same-gender name swaps from the banked scores: cross- vs same-gender mean absolute gap and ratio, exceedance, single-ordering and matched-design placebo contrasts and levels, pronoun-only gap comparison (Table A5) | `../code/same_gender_name_swap.py` | `../results/same_gender_name_swap.json`, `../results/tex/same_gender_name_swap.tex` |
+| Pipeline name sensitivity for the worked pair, offline from the banked scores and embedding cache: per-name top-3 occupancy, leave-one-pair-out, name-pair and joint bootstrap intervals, and the retriever-alone and order-neutral rank-gap baselines behind Table A6's caption | `../code/pipeline_name_sensitivity.py` | `../results/pipeline_name_sensitivity.json` |
 | Paired de-identification statistics | `../code/deid_statistics.py` | `../results/deid_statistics_bge.json` |
 | Pinned local model revisions and runtime | `../code/model_manifest.py` | `../results/model_manifest.json` |
-| Companion results table (Appendix E, Table A7) | `../code/companion_table.py` | `../results/tex/companion_table.tex` |
+| Companion results tables (Appendix E, Tables A9–A10); run `companion_statistics.py` first, since the tables read its output | `../code/companion_table.py` | `../results/tex/companion_table.tex`, `../results/tex/companion_by_construction.tex` |
 | Real-résumé companion run and sampled population | `../code/realistic_pool_experiment.py`, `../code/reconstruct_realistic_sampling.py` | `../results/realistic_pool_four_rerankers.json`, `../results/realistic_pool_sampling.json` |
-| Pronoun-only comparison: names replaced by one placeholder, every audited model except the listwise jina-reranker-v3 (Table A3; checkpointed, canary-gated, request-capped) | `../code/pronoun_channel_experiment.py` (`--tables-only` regenerates without scoring) | `../results/pronoun_channel_summary.json`, `../results/pronoun_channel/`, `../results/tex/pronoun_channel.tex` |
-| Companion statistics: in-window shares, male-typed minus female-typed difference, synthetic/companion score-gap ratio, net top-3 flips, job-category groups | `../code/companion_statistics.py` | `../results/companion_statistics.json` |
+| Pronoun-only comparison: names replaced by one placeholder, every audited model except the listwise jina-reranker-v3 (Table A3, with the name-averaged original contrast and each re-run's agreement with the saved winners; checkpointed, canary-gated, request-capped) | `../code/pronoun_channel_experiment.py` (`--tables-only` regenerates without scoring) | `../results/pronoun_channel_summary.json`, `../results/pronoun_channel/`, `../results/tex/pronoun_channel.tex` |
+| Companion statistics: in-window shares, male-typed minus female-typed difference, synthetic/companion score-gap ratio, net top-3 flips, job-category groups, and the split by how each pair was built (prepended name, swap in window, swap truncated) | `../code/companion_statistics.py` | `../results/companion_statistics.json` |
 
 All inputs for `python3 build.py` are included in the release; building the PDF
 needs neither downloaded résumés nor model weights. Reconstructing the companion
@@ -123,7 +126,7 @@ on any unresolved one. These are a sanity check for a human reader only.
   see `code/deidentification_experiment.py`'s module docstring for the fix.
   Neutralising pronouns but keeping names does the opposite: gap down to
   0.0236. Which channel dominates is **not the same on every re-ranker** —
-  see Table A5 in the paper.
+  see Table A8 in the paper.
 - **Full de-id → 100% ties by construction** (a check on the symmetry
   argument, not a finding). The following-word heuristic also equalises the
   tested templates. It is not a POS tagger, fails on ordinary sentences and
@@ -139,7 +142,7 @@ on any unresolved one. These are a sanity check for a human reader only.
 - One of the four locally-run re-rankers (jina-reranker-v2) did not exactly
   reproduce its own banked scores on a plain local re-run six months later
   (max score difference 0.012 on its own ~0.15–0.84 range) — flagged in the
-  rendered note under Table A5, not hidden.
+  rendered note under Table A8, not hidden.
 
 
 ## References

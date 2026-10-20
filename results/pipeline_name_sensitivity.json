@@ -1,0 +1,2331 @@
+{
+  "script_version": "pipeline_name_sensitivity.py v1.0 (review round 5, N1/N2)",
+  "generated": "2026-10-17T13:39:27",
+  "label_source": "BLS CPS Table 11 via occupations_bls.csv",
+  "seed": 20260822,
+  "bootstrap_B": 1000,
+  "tiebreak_repeats": 200,
+  "embedder": "BAAI/bge-large-en-v1.5",
+  "reranker": "BAAI/bge-reranker-v2-m3",
+  "topk": 10,
+  "shortlist": 3,
+  "n_slates": 832,
+  "n_occupations": 52,
+  "n_name_pairs": 10,
+  "slate_size": 20,
+  "n_slates_by_category": {
+    "male": 288,
+    "female": 336,
+    "neutral": 208
+  },
+  "tiebreak": "the K=10 tie-break permutations of compounding_experiment.run_model, replayed from the same seeded generator (stable_seed(reranker, 'slates')), so every statistic uses the same draws as compounding_bge_pipeline.json",
+  "offline": {
+    "HF_HUB_OFFLINE": "1",
+    "torch_imported": false,
+    "embedder_scores_from_cache": true,
+    "reranker_scores_from": "results/bge-reranker-v2-m3_full_raw.json"
+  },
+  "runtime_seconds": 538.799809217453,
+  "validation": {
+    "replay_vs_compounding_bge_pipeline": {
+      "male": {
+        "pipe_top3_m": {
+          "replayed": 95.02314814814815,
+          "banked": 95.0231481481482,
+          "abs_diff": 4.263256414560601e-14
+        },
+        "rr_top3_m": {
+          "replayed": 90.16203703703704,
+          "banked": 90.16203703703708,
+          "abs_diff": 4.263256414560601e-14
+        },
+        "emb_top3_m": {
+          "replayed": 75.92592592592592,
+          "banked": 75.92592592592595,
+          "abs_diff": 2.842170943040401e-14
+        },
+        "retrieved_m": {
+          "replayed": 72.53472222222223,
+          "banked": 72.53472222222226,
+          "abs_diff": 2.842170943040401e-14
+        },
+        "pipe_gap": {
+          "replayed": 6.570833333333334,
+          "banked": 6.57083333333333,
+          "abs_diff": 3.552713678800501e-15
+        },
+        "emb_gap": {
+          "replayed": 5.4111111111111105,
+          "banked": 5.4111111111111105,
+          "abs_diff": 0.0
+        },
+        "rr_gap": {
+          "replayed": 7.6000000000000005,
+          "banked": 7.599999999999999,
+          "abs_diff": 1.7763568394002505e-15
+        }
+      },
+      "female": {
+        "pipe_top3_m": {
+          "replayed": 67.26190476190476,
+          "banked": 67.2619047619048,
+          "abs_diff": 4.263256414560601e-14
+        },
+        "rr_top3_m": {
+          "replayed": 70.23809523809524,
+          "banked": 70.23809523809528,
+          "abs_diff": 4.263256414560601e-14
+        },
+        "emb_top3_m": {
+          "replayed": 44.742063492063494,
+          "banked": 44.74206349206352,
+          "abs_diff": 2.842170943040401e-14
+        },
+        "retrieved_m": {
+          "replayed": 47.61904761904762,
+          "banked": 47.61904761904766,
+          "abs_diff": 4.263256414560601e-14
+        },
+        "pipe_gap": {
+          "replayed": 0.4916666666666658,
+          "banked": 0.4916666666666655,
+          "abs_diff": 3.3306690738754696e-16
+        },
+        "emb_gap": {
+          "replayed": -0.6202380952380954,
+          "banked": -0.6202380952380953,
+          "abs_diff": 1.1102230246251565e-16
+        },
+        "rr_gap": {
+          "replayed": 4.407738095238095,
+          "banked": 4.407738095238096,
+          "abs_diff": 8.881784197001252e-16
+        }
+      },
+      "neutral": {
+        "pipe_top3_m": {
+          "replayed": 76.92307692307692,
+          "banked": 76.92307692307696,
+          "abs_diff": 4.263256414560601e-14
+        },
+        "rr_top3_m": {
+          "replayed": 75.96153846153847,
+          "banked": 75.9615384615385,
+          "abs_diff": 2.842170943040401e-14
+        },
+        "emb_top3_m": {
+          "replayed": 60.8974358974359,
+          "banked": 60.89743589743592,
+          "abs_diff": 2.1316282072803006e-14
+        },
+        "retrieved_m": {
+          "replayed": 61.15384615384615,
+          "banked": 61.15384615384621,
+          "abs_diff": 5.684341886080802e-14
+        },
+        "pipe_gap": {
+          "replayed": 3.7423076923076923,
+          "banked": 3.7423076923076883,
+          "abs_diff": 3.9968028886505635e-15
+        },
+        "emb_gap": {
+          "replayed": 2.8288461538461545,
+          "banked": 2.8288461538461536,
+          "abs_diff": 8.881784197001252e-16
+        },
+        "rr_gap": {
+          "replayed": 5.3336538461538465,
+          "banked": 5.3336538461538465,
+          "abs_diff": 0.0
+        }
+      },
+      "ALL": {
+        "pipe_top3_m": {
+          "replayed": 79.28685897435898,
+          "banked": 79.28685897435903,
+          "abs_diff": 5.684341886080802e-14
+        },
+        "rr_top3_m": {
+          "replayed": 78.56570512820512,
+          "banked": 78.56570512820518,
+          "abs_diff": 5.684341886080802e-14
+        },
+        "emb_top3_m": {
+          "replayed": 59.57532051282051,
+          "banked": 59.575320512820554,
+          "abs_diff": 4.263256414560601e-14
+        },
+        "retrieved_m": {
+          "replayed": 59.62740384615385,
+          "banked": 59.62740384615388,
+          "abs_diff": 3.552713678800501e-14
+        },
+        "pipe_gap": {
+          "replayed": 3.4086538461538463,
+          "banked": 3.408653846153844,
+          "abs_diff": 2.220446049250313e-15
+        },
+        "emb_gap": {
+          "replayed": 2.3298076923076922,
+          "banked": 2.3298076923076922,
+          "abs_diff": 0.0
+        },
+        "rr_gap": {
+          "replayed": 5.74423076923077,
+          "banked": 5.744230769230769,
+          "abs_diff": 8.881784197001252e-16
+        }
+      }
+    },
+    "replay_max_abs_difference": 5.684341886080802e-14,
+    "per_pool_vs_analyse_slate": {
+      "n_pools_checked": 832,
+      "max_abs_difference": 5.950795411990839e-14
+    },
+    "occupation_bootstrap_ci": {
+      "banked": [
+        73.63782051282057,
+        84.89683493589749
+      ],
+      "recomputed": [
+        73.63782051282051,
+        84.89683493589743
+      ]
+    }
+  },
+  "name_occupancy": {
+    "definition": "Share (%) of the slots at each stage taken by each of the 20 names, over the 832 pools and the 200 tie-break draws: pipeline top-3 (retriever keeps 10, re-ranker shortlists 3), re-ranker-alone top-3, retriever top-10. Under no name effect every name would hold 5%. `effective_n_names` is 1 / sum(share^2).",
+    "names": [
+      "John",
+      "Maria",
+      "James",
+      "Sarah",
+      "Robert",
+      "Jennifer",
+      "Michael",
+      "Jessica",
+      "William",
+      "Elizabeth",
+      "David",
+      "Linda",
+      "Richard",
+      "Patricia",
+      "Thomas",
+      "Barbara",
+      "Daniel",
+      "Susan",
+      "Christopher",
+      "Margaret"
+    ],
+    "name_pairs": [
+      "John/Maria",
+      "James/Sarah",
+      "Robert/Jennifer",
+      "Michael/Jessica",
+      "William/Elizabeth",
+      "David/Linda",
+      "Richard/Patricia",
+      "Thomas/Barbara",
+      "Daniel/Susan",
+      "Christopher/Margaret"
+    ],
+    "pipeline_top3": {
+      "share_pct": {
+        "John": 6.089743589743589,
+        "Maria": 6.490384615384616,
+        "James": 5.8493589743589745,
+        "Sarah": 2.123397435897436,
+        "Robert": 11.378205128205128,
+        "Jennifer": 0.1201923076923077,
+        "Michael": 10.416666666666668,
+        "Jessica": 0.28044871794871795,
+        "William": 6.770833333333333,
+        "Elizabeth": 0.5208333333333333,
+        "David": 13.381410256410255,
+        "Linda": 0.1201923076923077,
+        "Richard": 9.455128205128204,
+        "Patricia": 2.604166666666667,
+        "Thomas": 2.363782051282051,
+        "Barbara": 3.886217948717949,
+        "Daniel": 6.610576923076923,
+        "Susan": 0.2403846153846154,
+        "Christopher": 6.971153846153847,
+        "Margaret": 4.326923076923077
+      },
+      "ranked": [
+        [
+          "David",
+          13.381410256410255
+        ],
+        [
+          "Robert",
+          11.378205128205128
+        ],
+        [
+          "Michael",
+          10.416666666666668
+        ],
+        [
+          "Richard",
+          9.455128205128204
+        ],
+        [
+          "Christopher",
+          6.971153846153847
+        ],
+        [
+          "William",
+          6.770833333333333
+        ],
+        [
+          "Daniel",
+          6.610576923076923
+        ],
+        [
+          "Maria",
+          6.490384615384616
+        ],
+        [
+          "John",
+          6.089743589743589
+        ],
+        [
+          "James",
+          5.8493589743589745
+        ],
+        [
+          "Margaret",
+          4.326923076923077
+        ],
+        [
+          "Barbara",
+          3.886217948717949
+        ],
+        [
+          "Patricia",
+          2.604166666666667
+        ],
+        [
+          "Thomas",
+          2.363782051282051
+        ],
+        [
+          "Sarah",
+          2.123397435897436
+        ],
+        [
+          "Elizabeth",
+          0.5208333333333333
+        ],
+        [
+          "Jessica",
+          0.28044871794871795
+        ],
+        [
+          "Susan",
+          0.2403846153846154
+        ],
+        [
+          "Jennifer",
+          0.1201923076923077
+        ],
+        [
+          "Linda",
+          0.1201923076923077
+        ]
+      ],
+      "top3_names": [
+        "David",
+        "Robert",
+        "Michael"
+      ],
+      "top3_names_share_pct": 35.17628205128205,
+      "max_name": "David",
+      "max_share_pct": 13.381410256410255,
+      "min_name": "Linda",
+      "min_share_pct": 0.1201923076923077,
+      "effective_n_names": 12.358837835800466,
+      "male_names_share_pct": 79.28685897435898,
+      "uniform_share_pct": 5.0
+    },
+    "reranker_top3": {
+      "share_pct": {
+        "John": 10.216346153846153,
+        "Maria": 5.208333333333334,
+        "James": 7.251602564102565,
+        "Sarah": 0.7612179487179487,
+        "Robert": 8.29326923076923,
+        "Jennifer": 0.2403846153846154,
+        "Michael": 5.889423076923077,
+        "Jessica": 0.08012820512820512,
+        "William": 3.565705128205128,
+        "Elizabeth": 0.28044871794871795,
+        "David": 16.266025641025642,
+        "Linda": 1.001602564102564,
+        "Richard": 13.421474358974358,
+        "Patricia": 4.246794871794872,
+        "Thomas": 0.4807692307692308,
+        "Barbara": 6.41025641025641,
+        "Daniel": 8.493589743589745,
+        "Susan": 0.2403846153846154,
+        "Christopher": 4.6875,
+        "Margaret": 2.9647435897435894
+      },
+      "ranked": [
+        [
+          "David",
+          16.266025641025642
+        ],
+        [
+          "Richard",
+          13.421474358974358
+        ],
+        [
+          "John",
+          10.216346153846153
+        ],
+        [
+          "Daniel",
+          8.493589743589745
+        ],
+        [
+          "Robert",
+          8.29326923076923
+        ],
+        [
+          "James",
+          7.251602564102565
+        ],
+        [
+          "Barbara",
+          6.41025641025641
+        ],
+        [
+          "Michael",
+          5.889423076923077
+        ],
+        [
+          "Maria",
+          5.208333333333334
+        ],
+        [
+          "Christopher",
+          4.6875
+        ],
+        [
+          "Patricia",
+          4.246794871794872
+        ],
+        [
+          "William",
+          3.565705128205128
+        ],
+        [
+          "Margaret",
+          2.9647435897435894
+        ],
+        [
+          "Linda",
+          1.001602564102564
+        ],
+        [
+          "Sarah",
+          0.7612179487179487
+        ],
+        [
+          "Thomas",
+          0.4807692307692308
+        ],
+        [
+          "Elizabeth",
+          0.28044871794871795
+        ],
+        [
+          "Jennifer",
+          0.2403846153846154
+        ],
+        [
+          "Susan",
+          0.2403846153846154
+        ],
+        [
+          "Jessica",
+          0.08012820512820512
+        ]
+      ],
+      "top3_names": [
+        "David",
+        "Richard",
+        "John"
+      ],
+      "top3_names_share_pct": 39.90384615384615,
+      "max_name": "David",
+      "max_share_pct": 16.266025641025642,
+      "min_name": "Jessica",
+      "min_share_pct": 0.08012820512820512,
+      "effective_n_names": 11.000759279990675,
+      "male_names_share_pct": 78.56570512820514,
+      "uniform_share_pct": 5.0
+    },
+    "retriever_top10": {
+      "share_pct": {
+        "John": 5.1201923076923075,
+        "Maria": 5.9014423076923075,
+        "James": 4.951923076923077,
+        "Sarah": 6.2139423076923075,
+        "Robert": 7.836538461538462,
+        "Jennifer": 2.175480769230769,
+        "Michael": 7.139423076923077,
+        "Jessica": 1.189903846153846,
+        "William": 8.016826923076923,
+        "Elizabeth": 2.8846153846153846,
+        "David": 5.516826923076923,
+        "Linda": 4.230769230769231,
+        "Richard": 4.194711538461538,
+        "Patricia": 5.15625,
+        "Thomas": 4.891826923076923,
+        "Barbara": 3.1009615384615383,
+        "Daniel": 4.855769230769231,
+        "Susan": 2.7644230769230766,
+        "Christopher": 7.103365384615384,
+        "Margaret": 6.754807692307692
+      },
+      "ranked": [
+        [
+          "William",
+          8.016826923076923
+        ],
+        [
+          "Robert",
+          7.836538461538462
+        ],
+        [
+          "Michael",
+          7.139423076923077
+        ],
+        [
+          "Christopher",
+          7.103365384615384
+        ],
+        [
+          "Margaret",
+          6.754807692307692
+        ],
+        [
+          "Sarah",
+          6.2139423076923075
+        ],
+        [
+          "Maria",
+          5.9014423076923075
+        ],
+        [
+          "David",
+          5.516826923076923
+        ],
+        [
+          "Patricia",
+          5.15625
+        ],
+        [
+          "John",
+          5.1201923076923075
+        ],
+        [
+          "James",
+          4.951923076923077
+        ],
+        [
+          "Thomas",
+          4.891826923076923
+        ],
+        [
+          "Daniel",
+          4.855769230769231
+        ],
+        [
+          "Linda",
+          4.230769230769231
+        ],
+        [
+          "Richard",
+          4.194711538461538
+        ],
+        [
+          "Barbara",
+          3.1009615384615383
+        ],
+        [
+          "Elizabeth",
+          2.8846153846153846
+        ],
+        [
+          "Susan",
+          2.7644230769230766
+        ],
+        [
+          "Jennifer",
+          2.175480769230769
+        ],
+        [
+          "Jessica",
+          1.189903846153846
+        ]
+      ],
+      "top3_names": [
+        "William",
+        "Robert",
+        "Michael"
+      ],
+      "top3_names_share_pct": 22.99278846153846,
+      "max_name": "William",
+      "max_share_pct": 8.016826923076923,
+      "min_name": "Jessica",
+      "min_share_pct": 1.189903846153846,
+      "effective_n_names": 17.584927785407302,
+      "male_names_share_pct": 59.62740384615385,
+      "uniform_share_pct": 5.0
+    },
+    "by_category": {
+      "male": {
+        "pipeline_top3": {
+          "share_pct": {
+            "John": 7.638888888888889,
+            "Maria": 1.8518518518518516,
+            "James": 7.175925925925926,
+            "Sarah": 0.9259259259259258,
+            "Robert": 13.194444444444445,
+            "Jennifer": 0.0,
+            "Michael": 10.185185185185185,
+            "Jessica": 0.0,
+            "William": 7.291666666666667,
+            "Elizabeth": 0.23148148148148145,
+            "David": 19.328703703703702,
+            "Linda": 0.0,
+            "Richard": 13.425925925925927,
+            "Patricia": 0.3472222222222222,
+            "Thomas": 2.430555555555556,
+            "Barbara": 0.9259259259259258,
+            "Daniel": 7.060185185185184,
+            "Susan": 0.0,
+            "Christopher": 7.291666666666667,
+            "Margaret": 0.6944444444444444
+          },
+          "ranked": [
+            [
+              "David",
+              19.328703703703702
+            ],
+            [
+              "Richard",
+              13.425925925925927
+            ],
+            [
+              "Robert",
+              13.194444444444445
+            ],
+            [
+              "Michael",
+              10.185185185185185
+            ],
+            [
+              "John",
+              7.638888888888889
+            ],
+            [
+              "William",
+              7.291666666666667
+            ],
+            [
+              "Christopher",
+              7.291666666666667
+            ],
+            [
+              "James",
+              7.175925925925926
+            ],
+            [
+              "Daniel",
+              7.060185185185184
+            ],
+            [
+              "Thomas",
+              2.430555555555556
+            ],
+            [
+              "Maria",
+              1.8518518518518516
+            ],
+            [
+              "Sarah",
+              0.9259259259259258
+            ],
+            [
+              "Barbara",
+              0.9259259259259258
+            ],
+            [
+              "Margaret",
+              0.6944444444444444
+            ],
+            [
+              "Patricia",
+              0.3472222222222222
+            ],
+            [
+              "Elizabeth",
+              0.23148148148148145
+            ],
+            [
+              "Jennifer",
+              0.0
+            ],
+            [
+              "Jessica",
+              0.0
+            ],
+            [
+              "Linda",
+              0.0
+            ],
+            [
+              "Susan",
+              0.0
+            ]
+          ],
+          "top3_names": [
+            "David",
+            "Richard",
+            "Robert"
+          ],
+          "top3_names_share_pct": 45.949074074074076,
+          "max_name": "David",
+          "max_share_pct": 19.328703703703702,
+          "min_name": "Susan",
+          "min_share_pct": 0.0,
+          "effective_n_names": 9.013692675505323,
+          "male_names_share_pct": 95.02314814814817,
+          "uniform_share_pct": 5.0
+        },
+        "reranker_top3": {
+          "share_pct": {
+            "John": 11.226851851851851,
+            "Maria": 1.5046296296296295,
+            "James": 8.217592592592593,
+            "Sarah": 0.23148148148148145,
+            "Robert": 10.185185185185185,
+            "Jennifer": 0.0,
+            "Michael": 6.25,
+            "Jessica": 0.0,
+            "William": 3.935185185185185,
+            "Elizabeth": 0.0,
+            "David": 18.98148148148148,
+            "Linda": 0.3472222222222222,
+            "Richard": 16.550925925925927,
+            "Patricia": 2.083333333333333,
+            "Thomas": 0.4629629629629629,
+            "Barbara": 3.935185185185185,
+            "Daniel": 8.796296296296296,
+            "Susan": 0.11574074074074073,
+            "Christopher": 5.555555555555555,
+            "Margaret": 1.6203703703703702
+          },
+          "ranked": [
+            [
+              "David",
+              18.98148148148148
+            ],
+            [
+              "Richard",
+              16.550925925925927
+            ],
+            [
+              "John",
+              11.226851851851851
+            ],
+            [
+              "Robert",
+              10.185185185185185
+            ],
+            [
+              "Daniel",
+              8.796296296296296
+            ],
+            [
+              "James",
+              8.217592592592593
+            ],
+            [
+              "Michael",
+              6.25
+            ],
+            [
+              "Christopher",
+              5.555555555555555
+            ],
+            [
+              "William",
+              3.935185185185185
+            ],
+            [
+              "Barbara",
+              3.935185185185185
+            ],
+            [
+              "Patricia",
+              2.083333333333333
+            ],
+            [
+              "Margaret",
+              1.6203703703703702
+            ],
+            [
+              "Maria",
+              1.5046296296296295
+            ],
+            [
+              "Thomas",
+              0.4629629629629629
+            ],
+            [
+              "Linda",
+              0.3472222222222222
+            ],
+            [
+              "Sarah",
+              0.23148148148148145
+            ],
+            [
+              "Susan",
+              0.11574074074074073
+            ],
+            [
+              "Jennifer",
+              0.0
+            ],
+            [
+              "Jessica",
+              0.0
+            ],
+            [
+              "Elizabeth",
+              0.0
+            ]
+          ],
+          "top3_names": [
+            "David",
+            "Richard",
+            "John"
+          ],
+          "top3_names_share_pct": 46.75925925925925,
+          "max_name": "David",
+          "max_share_pct": 18.98148148148148,
+          "min_name": "Elizabeth",
+          "min_share_pct": 0.0,
+          "effective_n_names": 8.933011033195319,
+          "male_names_share_pct": 90.16203703703704,
+          "uniform_share_pct": 5.0
+        },
+        "retriever_top10": {
+          "share_pct": {
+            "John": 6.041666666666667,
+            "Maria": 4.236111111111112,
+            "James": 6.631944444444445,
+            "Sarah": 4.722222222222222,
+            "Robert": 8.819444444444445,
+            "Jennifer": 1.1458333333333333,
+            "Michael": 7.916666666666666,
+            "Jessica": 0.8680555555555556,
+            "William": 9.0625,
+            "Elizabeth": 1.1805555555555556,
+            "David": 7.8125,
+            "Linda": 3.5416666666666665,
+            "Richard": 5.798611111111112,
+            "Patricia": 4.236111111111112,
+            "Thomas": 6.354166666666666,
+            "Barbara": 1.6319444444444446,
+            "Daniel": 5.694444444444445,
+            "Susan": 0.9027777777777777,
+            "Christopher": 8.402777777777779,
+            "Margaret": 5.0
+          },
+          "ranked": [
+            [
+              "William",
+              9.0625
+            ],
+            [
+              "Robert",
+              8.819444444444445
+            ],
+            [
+              "Christopher",
+              8.402777777777779
+            ],
+            [
+              "Michael",
+              7.916666666666666
+            ],
+            [
+              "David",
+              7.8125
+            ],
+            [
+              "James",
+              6.631944444444445
+            ],
+            [
+              "Thomas",
+              6.354166666666666
+            ],
+            [
+              "John",
+              6.041666666666667
+            ],
+            [
+              "Richard",
+              5.798611111111112
+            ],
+            [
+              "Daniel",
+              5.694444444444445
+            ],
+            [
+              "Margaret",
+              5.0
+            ],
+            [
+              "Sarah",
+              4.722222222222222
+            ],
+            [
+              "Maria",
+              4.236111111111112
+            ],
+            [
+              "Patricia",
+              4.236111111111112
+            ],
+            [
+              "Linda",
+              3.5416666666666665
+            ],
+            [
+              "Barbara",
+              1.6319444444444446
+            ],
+            [
+              "Elizabeth",
+              1.1805555555555556
+            ],
+            [
+              "Jennifer",
+              1.1458333333333333
+            ],
+            [
+              "Susan",
+              0.9027777777777777
+            ],
+            [
+              "Jessica",
+              0.8680555555555556
+            ]
+          ],
+          "top3_names": [
+            "William",
+            "Robert",
+            "Christopher"
+          ],
+          "top3_names_share_pct": 26.28472222222222,
+          "max_name": "William",
+          "max_share_pct": 9.0625,
+          "min_name": "Jessica",
+          "min_share_pct": 0.8680555555555556,
+          "effective_n_names": 15.532584269662921,
+          "male_names_share_pct": 72.53472222222223,
+          "uniform_share_pct": 5.0
+        }
+      },
+      "female": {
+        "pipeline_top3": {
+          "share_pct": {
+            "John": 4.265873015873016,
+            "Maria": 8.531746031746032,
+            "James": 3.273809523809524,
+            "Sarah": 2.7777777777777777,
+            "Robert": 9.722222222222223,
+            "Jennifer": 0.2976190476190476,
+            "Michael": 11.21031746031746,
+            "Jessica": 0.5952380952380952,
+            "William": 6.646825396825397,
+            "Elizabeth": 0.5952380952380952,
+            "David": 11.011904761904761,
+            "Linda": 0.1984126984126984,
+            "Richard": 6.845238095238096,
+            "Patricia": 5.4563492063492065,
+            "Thomas": 2.083333333333333,
+            "Barbara": 6.746031746031746,
+            "Daniel": 5.158730158730158,
+            "Susan": 0.5952380952380952,
+            "Christopher": 7.0436507936507935,
+            "Margaret": 6.944444444444445
+          },
+          "ranked": [
+            [
+              "Michael",
+              11.21031746031746
+            ],
+            [
+              "David",
+              11.011904761904761
+            ],
+            [
+              "Robert",
+              9.722222222222223
+            ],
+            [
+              "Maria",
+              8.531746031746032
+            ],
+            [
+              "Christopher",
+              7.0436507936507935
+            ],
+            [
+              "Margaret",
+              6.944444444444445
+            ],
+            [
+              "Richard",
+              6.845238095238096
+            ],
+            [
+              "Barbara",
+              6.746031746031746
+            ],
+            [
+              "William",
+              6.646825396825397
+            ],
+            [
+              "Patricia",
+              5.4563492063492065
+            ],
+            [
+              "Daniel",
+              5.158730158730158
+            ],
+            [
+              "John",
+              4.265873015873016
+            ],
+            [
+              "James",
+              3.273809523809524
+            ],
+            [
+              "Sarah",
+              2.7777777777777777
+            ],
+            [
+              "Thomas",
+              2.083333333333333
+            ],
+            [
+              "Jessica",
+              0.5952380952380952
+            ],
+            [
+              "Elizabeth",
+              0.5952380952380952
+            ],
+            [
+              "Susan",
+              0.5952380952380952
+            ],
+            [
+              "Jennifer",
+              0.2976190476190476
+            ],
+            [
+              "Linda",
+              0.1984126984126984
+            ]
+          ],
+          "top3_names": [
+            "Michael",
+            "David",
+            "Robert"
+          ],
+          "top3_names_share_pct": 31.944444444444443,
+          "max_name": "Michael",
+          "max_share_pct": 11.21031746031746,
+          "min_name": "Linda",
+          "min_share_pct": 0.1984126984126984,
+          "effective_n_names": 13.383703469532916,
+          "male_names_share_pct": 67.26190476190476,
+          "uniform_share_pct": 5.0
+        },
+        "reranker_top3": {
+          "share_pct": {
+            "John": 8.73015873015873,
+            "Maria": 8.432539682539684,
+            "James": 6.051587301587301,
+            "Sarah": 1.0912698412698412,
+            "Robert": 8.234126984126984,
+            "Jennifer": 0.2976190476190476,
+            "Michael": 6.646825396825397,
+            "Jessica": 0.0992063492063492,
+            "William": 3.571428571428571,
+            "Elizabeth": 0.5952380952380952,
+            "David": 14.682539682539684,
+            "Linda": 1.7857142857142856,
+            "Richard": 10.416666666666668,
+            "Patricia": 5.555555555555555,
+            "Thomas": 0.2976190476190476,
+            "Barbara": 7.936507936507936,
+            "Daniel": 7.0436507936507935,
+            "Susan": 0.496031746031746,
+            "Christopher": 4.563492063492063,
+            "Margaret": 3.4722222222222223
+          },
+          "ranked": [
+            [
+              "David",
+              14.682539682539684
+            ],
+            [
+              "Richard",
+              10.416666666666668
+            ],
+            [
+              "John",
+              8.73015873015873
+            ],
+            [
+              "Maria",
+              8.432539682539684
+            ],
+            [
+              "Robert",
+              8.234126984126984
+            ],
+            [
+              "Barbara",
+              7.936507936507936
+            ],
+            [
+              "Daniel",
+              7.0436507936507935
+            ],
+            [
+              "Michael",
+              6.646825396825397
+            ],
+            [
+              "James",
+              6.051587301587301
+            ],
+            [
+              "Patricia",
+              5.555555555555555
+            ],
+            [
+              "Christopher",
+              4.563492063492063
+            ],
+            [
+              "William",
+              3.571428571428571
+            ],
+            [
+              "Margaret",
+              3.4722222222222223
+            ],
+            [
+              "Linda",
+              1.7857142857142856
+            ],
+            [
+              "Sarah",
+              1.0912698412698412
+            ],
+            [
+              "Elizabeth",
+              0.5952380952380952
+            ],
+            [
+              "Susan",
+              0.496031746031746
+            ],
+            [
+              "Jennifer",
+              0.2976190476190476
+            ],
+            [
+              "Thomas",
+              0.2976190476190476
+            ],
+            [
+              "Jessica",
+              0.0992063492063492
+            ]
+          ],
+          "top3_names": [
+            "David",
+            "Richard",
+            "John"
+          ],
+          "top3_names_share_pct": 33.82936507936508,
+          "max_name": "David",
+          "max_share_pct": 14.682539682539684,
+          "min_name": "Jessica",
+          "min_share_pct": 0.0992063492063492,
+          "effective_n_names": 12.280796751111973,
+          "male_names_share_pct": 70.23809523809524,
+          "uniform_share_pct": 5.0
+        },
+        "retriever_top10": {
+          "share_pct": {
+            "John": 4.0773809523809526,
+            "Maria": 5.833333333333333,
+            "James": 2.3511904761904763,
+            "Sarah": 8.035714285714286,
+            "Robert": 6.428571428571428,
+            "Jennifer": 3.392857142857143,
+            "Michael": 6.607142857142858,
+            "Jessica": 1.6964285714285714,
+            "William": 7.083333333333333,
+            "Elizabeth": 4.6726190476190474,
+            "David": 4.404761904761905,
+            "Linda": 4.6726190476190474,
+            "Richard": 3.1547619047619047,
+            "Patricia": 6.488095238095239,
+            "Thomas": 3.273809523809524,
+            "Barbara": 4.345238095238095,
+            "Daniel": 3.8988095238095237,
+            "Susan": 5.029761904761905,
+            "Christopher": 6.3392857142857135,
+            "Margaret": 8.214285714285714
+          },
+          "ranked": [
+            [
+              "Margaret",
+              8.214285714285714
+            ],
+            [
+              "Sarah",
+              8.035714285714286
+            ],
+            [
+              "William",
+              7.083333333333333
+            ],
+            [
+              "Michael",
+              6.607142857142858
+            ],
+            [
+              "Patricia",
+              6.488095238095239
+            ],
+            [
+              "Robert",
+              6.428571428571428
+            ],
+            [
+              "Christopher",
+              6.3392857142857135
+            ],
+            [
+              "Maria",
+              5.833333333333333
+            ],
+            [
+              "Susan",
+              5.029761904761905
+            ],
+            [
+              "Elizabeth",
+              4.6726190476190474
+            ],
+            [
+              "Linda",
+              4.6726190476190474
+            ],
+            [
+              "David",
+              4.404761904761905
+            ],
+            [
+              "Barbara",
+              4.345238095238095
+            ],
+            [
+              "John",
+              4.0773809523809526
+            ],
+            [
+              "Daniel",
+              3.8988095238095237
+            ],
+            [
+              "Jennifer",
+              3.392857142857143
+            ],
+            [
+              "Thomas",
+              3.273809523809524
+            ],
+            [
+              "Richard",
+              3.1547619047619047
+            ],
+            [
+              "James",
+              2.3511904761904763
+            ],
+            [
+              "Jessica",
+              1.6964285714285714
+            ]
+          ],
+          "top3_names": [
+            "Margaret",
+            "Sarah",
+            "William"
+          ],
+          "top3_names_share_pct": 23.333333333333332,
+          "max_name": "Margaret",
+          "max_share_pct": 8.214285714285714,
+          "min_name": "Jessica",
+          "min_share_pct": 1.6964285714285714,
+          "effective_n_names": 17.756527209814408,
+          "male_names_share_pct": 47.61904761904762,
+          "uniform_share_pct": 5.0
+        }
+      },
+      "neutral": {
+        "pipeline_top3": {
+          "share_pct": {
+            "John": 6.891025641025641,
+            "Maria": 9.615384615384617,
+            "James": 8.173076923076923,
+            "Sarah": 2.7243589743589745,
+            "Robert": 11.538461538461538,
+            "Jennifer": 0.0,
+            "Michael": 9.455128205128204,
+            "Jessica": 0.16025641025641024,
+            "William": 6.25,
+            "Elizabeth": 0.8012820512820512,
+            "David": 8.974358974358974,
+            "Linda": 0.16025641025641024,
+            "Richard": 8.173076923076923,
+            "Patricia": 1.1217948717948718,
+            "Thomas": 2.7243589743589745,
+            "Barbara": 3.3653846153846154,
+            "Daniel": 8.333333333333332,
+            "Susan": 0.0,
+            "Christopher": 6.41025641025641,
+            "Margaret": 5.128205128205128
+          },
+          "ranked": [
+            [
+              "Robert",
+              11.538461538461538
+            ],
+            [
+              "Maria",
+              9.615384615384617
+            ],
+            [
+              "Michael",
+              9.455128205128204
+            ],
+            [
+              "David",
+              8.974358974358974
+            ],
+            [
+              "Daniel",
+              8.333333333333332
+            ],
+            [
+              "James",
+              8.173076923076923
+            ],
+            [
+              "Richard",
+              8.173076923076923
+            ],
+            [
+              "John",
+              6.891025641025641
+            ],
+            [
+              "Christopher",
+              6.41025641025641
+            ],
+            [
+              "William",
+              6.25
+            ],
+            [
+              "Margaret",
+              5.128205128205128
+            ],
+            [
+              "Barbara",
+              3.3653846153846154
+            ],
+            [
+              "Sarah",
+              2.7243589743589745
+            ],
+            [
+              "Thomas",
+              2.7243589743589745
+            ],
+            [
+              "Patricia",
+              1.1217948717948718
+            ],
+            [
+              "Elizabeth",
+              0.8012820512820512
+            ],
+            [
+              "Jessica",
+              0.16025641025641024
+            ],
+            [
+              "Linda",
+              0.16025641025641024
+            ],
+            [
+              "Jennifer",
+              0.0
+            ],
+            [
+              "Susan",
+              0.0
+            ]
+          ],
+          "top3_names": [
+            "Robert",
+            "Maria",
+            "Michael"
+          ],
+          "top3_names_share_pct": 30.608974358974358,
+          "max_name": "Robert",
+          "max_share_pct": 11.538461538461538,
+          "min_name": "Susan",
+          "min_share_pct": 0.0,
+          "effective_n_names": 12.810106592972758,
+          "male_names_share_pct": 76.92307692307692,
+          "uniform_share_pct": 5.0
+        },
+        "reranker_top3": {
+          "share_pct": {
+            "John": 11.217948717948719,
+            "Maria": 5.128205128205128,
+            "James": 7.852564102564102,
+            "Sarah": 0.9615384615384616,
+            "Robert": 5.769230769230769,
+            "Jennifer": 0.4807692307692308,
+            "Michael": 4.166666666666666,
+            "Jessica": 0.16025641025641024,
+            "William": 3.0448717948717947,
+            "Elizabeth": 0.16025641025641024,
+            "David": 15.064102564102564,
+            "Linda": 0.641025641025641,
+            "Richard": 13.942307692307693,
+            "Patricia": 5.128205128205128,
+            "Thomas": 0.8012820512820512,
+            "Barbara": 7.371794871794872,
+            "Daniel": 10.416666666666668,
+            "Susan": 0.0,
+            "Christopher": 3.685897435897436,
+            "Margaret": 4.006410256410256
+          },
+          "ranked": [
+            [
+              "David",
+              15.064102564102564
+            ],
+            [
+              "Richard",
+              13.942307692307693
+            ],
+            [
+              "John",
+              11.217948717948719
+            ],
+            [
+              "Daniel",
+              10.416666666666668
+            ],
+            [
+              "James",
+              7.852564102564102
+            ],
+            [
+              "Barbara",
+              7.371794871794872
+            ],
+            [
+              "Robert",
+              5.769230769230769
+            ],
+            [
+              "Maria",
+              5.128205128205128
+            ],
+            [
+              "Patricia",
+              5.128205128205128
+            ],
+            [
+              "Michael",
+              4.166666666666666
+            ],
+            [
+              "Margaret",
+              4.006410256410256
+            ],
+            [
+              "Christopher",
+              3.685897435897436
+            ],
+            [
+              "William",
+              3.0448717948717947
+            ],
+            [
+              "Sarah",
+              0.9615384615384616
+            ],
+            [
+              "Thomas",
+              0.8012820512820512
+            ],
+            [
+              "Linda",
+              0.641025641025641
+            ],
+            [
+              "Jennifer",
+              0.4807692307692308
+            ],
+            [
+              "Jessica",
+              0.16025641025641024
+            ],
+            [
+              "Elizabeth",
+              0.16025641025641024
+            ],
+            [
+              "Susan",
+              0.0
+            ]
+          ],
+          "top3_names": [
+            "David",
+            "Richard",
+            "John"
+          ],
+          "top3_names_share_pct": 40.22435897435898,
+          "max_name": "David",
+          "max_share_pct": 15.064102564102564,
+          "min_name": "Susan",
+          "min_share_pct": 0.0,
+          "effective_n_names": 10.916063919259882,
+          "male_names_share_pct": 75.96153846153845,
+          "uniform_share_pct": 5.0
+        },
+        "retriever_top10": {
+          "share_pct": {
+            "John": 5.528846153846153,
+            "Maria": 8.317307692307692,
+            "James": 6.826923076923077,
+            "Sarah": 5.336538461538462,
+            "Robert": 8.75,
+            "Jennifer": 1.6346153846153848,
+            "Michael": 6.923076923076923,
+            "Jessica": 0.8173076923076924,
+            "William": 8.076923076923077,
+            "Elizabeth": 2.355769230769231,
+            "David": 4.134615384615384,
+            "Linda": 4.471153846153846,
+            "Richard": 3.653846153846154,
+            "Patricia": 4.278846153846154,
+            "Thomas": 5.480769230769231,
+            "Barbara": 3.125,
+            "Daniel": 5.240384615384616,
+            "Susan": 1.6826923076923077,
+            "Christopher": 6.538461538461539,
+            "Margaret": 6.826923076923077
+          },
+          "ranked": [
+            [
+              "Robert",
+              8.75
+            ],
+            [
+              "Maria",
+              8.317307692307692
+            ],
+            [
+              "William",
+              8.076923076923077
+            ],
+            [
+              "Michael",
+              6.923076923076923
+            ],
+            [
+              "James",
+              6.826923076923077
+            ],
+            [
+              "Margaret",
+              6.826923076923077
+            ],
+            [
+              "Christopher",
+              6.538461538461539
+            ],
+            [
+              "John",
+              5.528846153846153
+            ],
+            [
+              "Thomas",
+              5.480769230769231
+            ],
+            [
+              "Sarah",
+              5.336538461538462
+            ],
+            [
+              "Daniel",
+              5.240384615384616
+            ],
+            [
+              "Linda",
+              4.471153846153846
+            ],
+            [
+              "Patricia",
+              4.278846153846154
+            ],
+            [
+              "David",
+              4.134615384615384
+            ],
+            [
+              "Richard",
+              3.653846153846154
+            ],
+            [
+              "Barbara",
+              3.125
+            ],
+            [
+              "Elizabeth",
+              2.355769230769231
+            ],
+            [
+              "Susan",
+              1.6826923076923077
+            ],
+            [
+              "Jennifer",
+              1.6346153846153848
+            ],
+            [
+              "Jessica",
+              0.8173076923076924
+            ]
+          ],
+          "top3_names": [
+            "Robert",
+            "Maria",
+            "William"
+          ],
+          "top3_names_share_pct": 25.14423076923077,
+          "max_name": "Robert",
+          "max_share_pct": 8.75,
+          "min_name": "Jessica",
+          "min_share_pct": 0.8173076923076924,
+          "effective_n_names": 16.62094983442055,
+          "male_names_share_pct": 61.15384615384615,
+          "uniform_share_pct": 5.0
+        }
+      }
+    }
+  },
+  "leave_one_pair_out": {
+    "definition": "Drop one of the 10 name pairs (both documents), leaving pools of 18; retriever still keeps 10, re-ranker still shortlists 3; same tie-break draws restricted to the surviving documents.",
+    "full_set_pct_male": 79.28685897435898,
+    "per_pair": {
+      "John/Maria": {
+        "pipe_top3_m_pct_male": {
+          "male": 95.37037037037037,
+          "female": 71.32936507936508,
+          "neutral": 82.37179487179488,
+          "ALL": 82.41185897435898
+        },
+        "rr_top3_m_pct_male": 81.45032051282051,
+        "emb_top3_m_pct_male": 61.458333333333336,
+        "retrieved_m_pct_male": 59.93990384615385,
+        "pipe_gap": 3.605235042735043
+      },
+      "James/Sarah": {
+        "pipe_top3_m_pct_male": {
+          "male": 94.09722222222223,
+          "female": 68.25396825396825,
+          "neutral": 77.40384615384616,
+          "ALL": 79.48717948717949
+        },
+        "rr_top3_m_pct_male": 78.52564102564102,
+        "emb_top3_m_pct_male": 62.70032051282051,
+        "retrieved_m_pct_male": 60.44471153846154,
+        "pipe_gap": 3.5627670940170932
+      },
+      "Robert/Jennifer": {
+        "pipe_top3_m_pct_male": {
+          "male": 93.63425925925925,
+          "female": 65.87301587301587,
+          "neutral": 75.16025641025641,
+          "ALL": 77.80448717948718
+        },
+        "rr_top3_m_pct_male": 77.76442307692308,
+        "emb_top3_m_pct_male": 55.52884615384615,
+        "retrieved_m_pct_male": 56.94711538461539,
+        "pipe_gap": 2.8643162393162394
+      },
+      "Michael/Jessica": {
+        "pipe_top3_m_pct_male": {
+          "male": 93.86574074074075,
+          "female": 64.98015873015873,
+          "neutral": 75.32051282051282,
+          "ALL": 77.56410256410257
+        },
+        "rr_top3_m_pct_male": 78.0448717948718,
+        "emb_top3_m_pct_male": 55.32852564102564,
+        "retrieved_m_pct_male": 56.77884615384615,
+        "pipe_gap": 2.72008547008547
+      },
+      "William/Elizabeth": {
+        "pipe_top3_m_pct_male": {
+          "male": 93.86574074074075,
+          "female": 67.85714285714286,
+          "neutral": 75.96153846153847,
+          "ALL": 78.88621794871794
+        },
+        "rr_top3_m_pct_male": 78.56570512820512,
+        "emb_top3_m_pct_male": 56.08974358974359,
+        "retrieved_m_pct_male": 57.34375,
+        "pipe_gap": 3.027777777777778
+      },
+      "David/Linda": {
+        "pipe_top3_m_pct_male": {
+          "male": 92.82407407407408,
+          "female": 65.17857142857143,
+          "neutral": 76.12179487179488,
+          "ALL": 77.48397435897436
+        },
+        "rr_top3_m_pct_male": 77.12339743589743,
+        "emb_top3_m_pct_male": 60.056089743589745,
+        "retrieved_m_pct_male": 58.87019230769231,
+        "pipe_gap": 3.1765491452991457
+      },
+      "Richard/Patricia": {
+        "pipe_top3_m_pct_male": {
+          "male": 93.28703703703704,
+          "female": 69.24603174603175,
+          "neutral": 76.4423076923077,
+          "ALL": 79.36698717948718
+        },
+        "rr_top3_m_pct_male": 77.68429487179488,
+        "emb_top3_m_pct_male": 62.219551282051285,
+        "retrieved_m_pct_male": 60.50480769230769,
+        "pipe_gap": 3.6271367521367517
+      },
+      "Thomas/Barbara": {
+        "pipe_top3_m_pct_male": {
+          "male": 94.67592592592592,
+          "female": 70.63492063492063,
+          "neutral": 78.84615384615384,
+          "ALL": 81.00961538461539
+        },
+        "rr_top3_m_pct_male": 82.13141025641026,
+        "emb_top3_m_pct_male": 58.89423076923077,
+        "retrieved_m_pct_male": 58.76201923076923,
+        "pipe_gap": 3.386485042735043
+      },
+      "Daniel/Susan": {
+        "pipe_top3_m_pct_male": {
+          "male": 93.63425925925925,
+          "female": 66.56746031746032,
+          "neutral": 74.19871794871794,
+          "ALL": 77.84455128205128
+        },
+        "rr_top3_m_pct_male": 76.72275641025641,
+        "emb_top3_m_pct_male": 58.854166666666664,
+        "retrieved_m_pct_male": 58.59375,
+        "pipe_gap": 3.1423611111111116
+      },
+      "Christopher/Margaret": {
+        "pipe_top3_m_pct_male": {
+          "male": 94.9074074074074,
+          "female": 70.33730158730158,
+          "neutral": 79.00641025641026,
+          "ALL": 81.00961538461539
+        },
+        "rr_top3_m_pct_male": 79.20673076923077,
+        "emb_top3_m_pct_male": 62.580128205128204,
+        "retrieved_m_pct_male": 59.41105769230769,
+        "pipe_gap": 3.4521901709401703
+      }
+    },
+    "values_pct_male": {
+      "John/Maria": 82.41185897435898,
+      "James/Sarah": 79.48717948717949,
+      "Robert/Jennifer": 77.80448717948718,
+      "Michael/Jessica": 77.56410256410257,
+      "William/Elizabeth": 78.88621794871794,
+      "David/Linda": 77.48397435897436,
+      "Richard/Patricia": 79.36698717948718,
+      "Thomas/Barbara": 81.00961538461539,
+      "Daniel/Susan": 77.84455128205128,
+      "Christopher/Margaret": 81.00961538461539
+    },
+    "min": 77.48397435897436,
+    "min_pair": "David/Linda",
+    "max": 82.41185897435898,
+    "max_pair": "John/Maria",
+    "range": 4.927884615384613,
+    "max_abs_shift_from_full_set": 3.125
+  },
+  "name_pair_bootstrap": {
+    "definition": "Percentile 95% intervals for the pipeline % male-associated in the top-3. name_pair_only: the 10 name pairs are resampled with replacement (a repeated pair appears twice, as separate documents with identical scores), pools are rebuilt and the simulation rerun with the same 200 tie-break draws per pool. joint_occupation_name_pair: the 52 occupations and the 10 pairs are resampled independently in each draw (a category's interval resamples that category's occupations, as the paper's does). occupation_only: the interval the paper prints (occupations resampled, names fixed), read from compounding_bge_pipeline.json and recomputed here from the replayed per-pool counts with the same seed.",
+    "B": 1000,
+    "point_pct_male": {
+      "male": 95.02314814814815,
+      "female": 67.26190476190476,
+      "neutral": 76.92307692307692,
+      "ALL": 79.28685897435898
+    },
+    "name_pair_only": {
+      "male": {
+        "ci": [
+          89.58333333333333,
+          97.68807870370371
+        ],
+        "sd": 2.154556422824135
+      },
+      "female": {
+        "ci": [
+          54.26339285714286,
+          77.77777777777777
+        ],
+        "sd": 5.917462530813268
+      },
+      "neutral": {
+        "ci": [
+          63.30128205128205,
+          88.30528846153847
+        ],
+        "sd": 6.471495120974904
+      },
+      "ALL": {
+        "ci": [
+          68.99038461538461,
+          86.85997596153847
+        ],
+        "sd": 4.5039883906889315
+      }
+    },
+    "joint_occupation_name_pair": {
+      "male": {
+        "ci": [
+          88.19444444444444,
+          98.37962962962963
+        ],
+        "sd": 2.60624931911216
+      },
+      "female": {
+        "ci": [
+          51.37896825396825,
+          80.46874999999999
+        ],
+        "sd": 7.669797212299566
+      },
+      "neutral": {
+        "ci": [
+          61.37419871794872,
+          89.10657051282051
+        ],
+        "sd": 7.323179576025506
+      },
+      "ALL": {
+        "ci": [
+          67.3036858974359,
+          87.5010016025641
+        ],
+        "sd": 5.259801415356143
+      }
+    },
+    "occupation_only": {
+      "ALL": {
+        "ci": [
+          73.63782051282057,
+          84.89683493589749
+        ],
+        "recomputed_ci": [
+          73.63782051282051,
+          84.89683493589743
+        ],
+        "source": "results/compounding_bge_pipeline.json slate.ALL.pipe_top3_m_ci"
+      },
+      "male": {
+        "ci": [
+          92.70833333333339,
+          96.99074074074078
+        ]
+      },
+      "female": {
+        "ci": [
+          56.63938492063495,
+          77.38343253968257
+        ]
+      },
+      "neutral": {
+        "ci": [
+          72.27564102564106,
+          81.08974358974363
+        ]
+      }
+    },
+    "name_pair_only_mean_distinct_pairs_per_draw": 6.504,
+    "seeds": {
+      "name_pair_only": 3632594803,
+      "joint": 2103949393,
+      "occupation_only": 117296399
+    }
+  },
+  "rank_gap_baselines": {
+    "definition": "Rank gap = mean rank of female-associated minus male-associated documents in the 20-document pool (rank 1 = top; + means the woman sits lower). retriever_alone: positions 1-20 by the retriever (= slate.*.emb_gap). order_neutral_reranker: the retriever keeps its top 10; every retrieved document gets the expected rank 5.5; positions 11-20 keep their retriever order. It is what a re-ranker with no gender preference would show in Table A4's rank-gap column, and it is the same for every re-ranker because all sit behind the same retriever and pools (the retriever has no tied scores in any pool: 0 pools with ties). For the top-3 share, retriever_alone = the retriever's own top-3 (slate.*.emb_top3_m) and order_neutral_reranker = the male share of the retrieved top-10 (slate.*.retrieved_m), since 3 of 10 are then drawn at random.",
+    "rank_gap": {
+      "retriever_alone_gap": {
+        "male": 5.4111111111111105,
+        "female": -0.6202380952380954,
+        "neutral": 2.8288461538461545,
+        "ALL": 2.3298076923076922
+      },
+      "order_neutral_reranker_gap": {
+        "male": 5.212847222222225,
+        "female": -0.427976190476191,
+        "neutral": 2.8134615384615396,
+        "ALL": 2.334975961538462
+      },
+      "observed_pipeline_gap": {
+        "male": 6.570833333333334,
+        "female": 0.4916666666666658,
+        "neutral": 3.7423076923076923,
+        "ALL": 3.4086538461538463
+      },
+      "observed_reranker_alone_gap": {
+        "male": 7.6000000000000005,
+        "female": 4.407738095238095,
+        "neutral": 5.3336538461538465,
+        "ALL": 5.74423076923077
+      },
+      "pipeline_gap_minus_order_neutral": {
+        "male": 1.3579861111111091,
+        "female": 0.9196428571428568,
+        "neutral": 0.9288461538461528,
+        "ALL": 1.073677884615384
+      }
+    },
+    "top3_share": {
+      "retriever_alone_top3_pct_male": {
+        "male": 75.92592592592592,
+        "female": 44.742063492063494,
+        "neutral": 60.8974358974359,
+        "ALL": 59.57532051282051
+      },
+      "order_neutral_reranker_top3_pct_male": {
+        "male": 72.53472222222223,
+        "female": 47.61904761904762,
+        "neutral": 61.15384615384615,
+        "ALL": 59.62740384615385
+      },
+      "observed_pipeline_top3_pct_male": {
+        "male": 95.02314814814815,
+        "female": 67.26190476190476,
+        "neutral": 76.92307692307692,
+        "ALL": 79.28685897435898
+      }
+    },
+    "retriever_alone_gap_equals_banked_emb_gap": true,
+    "sweep_counts": {
+      "n_models": 28,
+      "n_gap_below_retriever_alone": 10,
+      "n_gap_below_order_neutral": 10,
+      "n_top3_below_retriever_alone": 11,
+      "n_top3_below_order_neutral": 11,
+      "n_rr_gap_negative": 9,
+      "models_gap_below_order_neutral": [
+        "BAAI/bge-reranker-base",
+        "BAAI/bge-reranker-large",
+        "Cohere-rerank-v4.0-pro",
+        "Qwen/Qwen3-Reranker-4B",
+        "jinaai/jina-reranker-v2-base-multilingual",
+        "qwen/qwen3-reranker-8b",
+        "rerank-2-lite",
+        "rerank-3-lite",
+        "semantic-ranker-default-004",
+        "semantic-ranker-fast-004"
+      ],
+      "models_gap_below_retriever_alone": [
+        "BAAI/bge-reranker-base",
+        "BAAI/bge-reranker-large",
+        "Cohere-rerank-v4.0-pro",
+        "Qwen/Qwen3-Reranker-4B",
+        "jinaai/jina-reranker-v2-base-multilingual",
+        "qwen/qwen3-reranker-8b",
+        "rerank-2-lite",
+        "rerank-3-lite",
+        "semantic-ranker-default-004",
+        "semantic-ranker-fast-004"
+      ],
+      "models_top3_below_order_neutral": [
+        "BAAI/bge-reranker-base",
+        "BAAI/bge-reranker-large",
+        "Cohere-rerank-v4.0-fast",
+        "Cohere-rerank-v4.0-pro",
+        "Qwen/Qwen3-Reranker-4B",
+        "jinaai/jina-reranker-v2-base-multilingual",
+        "qwen/qwen3-reranker-8b",
+        "rerank-2-lite",
+        "rerank-3-lite",
+        "semantic-ranker-default-004",
+        "semantic-ranker-fast-004"
+      ]
+    },
+    "sweep_per_model": {
+      "Alibaba-NLP/gte-reranker-modernbert-base": {
+        "label": "Alibaba: GTE ModernBERT",
+        "pipe_gap": 2.7620192307692286,
+        "pipe_gap_minus_order_neutral": 0.4270432692307664,
+        "rr_gap": 2.7555288461538465,
+        "pipe_top3_m_pct_male": 65.82532051282055,
+        "gap_below_retriever_alone": false,
+        "gap_below_order_neutral": false,
+        "top3_below_retriever_alone": false,
+        "top3_below_order_neutral": false
+      },
+      "BAAI/bge-reranker-base": {
+        "label": "BAAI: BGE base",
+        "pipe_gap": 2.1343749999999986,
+        "pipe_gap_minus_order_neutral": -0.20060096153846363,
+        "rr_gap": -0.5373798076923076,
+        "pipe_top3_m_pct_male": 54.80769230769234,
+        "gap_below_retriever_alone": true,
+        "gap_below_order_neutral": true,
+        "top3_below_retriever_alone": true,
+        "top3_below_order_neutral": true
+      },
+      "BAAI/bge-reranker-large": {
+        "label": "BAAI: BGE large",
+        "pipe_gap": 2.0545673076923068,
+        "pipe_gap_minus_order_neutral": -0.28040865384615543,
+        "rr_gap": -0.7306490384615386,
+        "pipe_top3_m_pct_male": 52.40384615384619,
+        "gap_below_retriever_alone": true,
+        "gap_below_order_neutral": true,
+        "top3_below_retriever_alone": true,
+        "top3_below_order_neutral": true
+      },
+      "BAAI/bge-reranker-v2-m3": {
+        "label": "BAAI: BGE v2-m3",
+        "pipe_gap": 3.408653846153844,
+        "pipe_gap_minus_order_neutral": 1.0736778846153818,
+        "rr_gap": 5.744230769230769,
+        "pipe_top3_m_pct_male": 79.28685897435903,
+        "gap_below_retriever_alone": false,
+        "gap_below_order_neutral": false,
+        "top3_below_retriever_alone": false,
+        "top3_below_order_neutral": false
+      },
+      "Cohere-rerank-v4.0-fast": {
+        "label": "Cohere: v4 fast",
+        "pipe_gap": 2.4247596153846147,
+        "pipe_gap_minus_order_neutral": 0.0897836538461525,
+        "rr_gap": 0.6140624999999998,
+        "pipe_top3_m_pct_male": 56.601762820512846,
+        "gap_below_retriever_alone": false,
+        "gap_below_order_neutral": false,
+        "top3_below_retriever_alone": true,
+        "top3_below_order_neutral": true
+      },
+      "Cohere-rerank-v4.0-pro": {
+        "label": "Cohere: v4 pro",
+        "pipe_gap": 2.1358173076923066,
+        "pipe_gap_minus_order_neutral": -0.1991586538461556,
+        "rr_gap": -0.15432692307692294,
+        "pipe_top3_m_pct_male": 51.77664262820517,
+        "gap_below_retriever_alone": true,
+        "gap_below_order_neutral": true,
+        "top3_below_retriever_alone": true,
+        "top3_below_order_neutral": true
+      },
+      "Qwen/Qwen3-Reranker-0.6B": {
+        "label": "Qwen: Qwen3 0.6B",
+        "pipe_gap": 2.588701923076923,
+        "pipe_gap_minus_order_neutral": 0.2537259615384606,
+        "rr_gap": 1.3468750000000003,
+        "pipe_top3_m_pct_male": 62.360176282051306,
+        "gap_below_retriever_alone": false,
+        "gap_below_order_neutral": false,
+        "top3_below_retriever_alone": false,
+        "top3_below_order_neutral": false
+      },
+      "Qwen/Qwen3-Reranker-4B": {
+        "label": "Qwen: Qwen3 4B",
+        "pipe_gap": 2.2536057692307683,
+        "pipe_gap_minus_order_neutral": -0.08137019230769393,
+        "rr_gap": -0.31069711538461536,
+        "pipe_top3_m_pct_male": 53.497796474359,
+        "gap_below_retriever_alone": true,
+        "gap_below_order_neutral": true,
+        "top3_below_retriever_alone": true,
+        "top3_below_order_neutral": true
+      },
+      "cohere/rerank-v3.5": {
+        "label": "Cohere: v3.5",
+        "pipe_gap": 3.181249999999998,
+        "pipe_gap_minus_order_neutral": 0.8462740384615359,
+        "rr_gap": 3.8893028846153848,
+        "pipe_top3_m_pct_male": 73.09475160256414,
+        "gap_below_retriever_alone": false,
+        "gap_below_order_neutral": false,
+        "top3_below_retriever_alone": false,
+        "top3_below_order_neutral": false
+      },
+      "cross-encoder/ms-marco-MiniLM-L-12-v2": {
+        "label": "SBERT: MiniLM-L12-v2",
+        "pipe_gap": 3.322355769230768,
+        "pipe_gap_minus_order_neutral": 0.9873798076923057,
+        "rr_gap": 4.9223557692307685,
+        "pipe_top3_m_pct_male": 78.40544871794877,
+        "gap_below_retriever_alone": false,
+        "gap_below_order_neutral": false,
+        "top3_below_retriever_alone": false,
+        "top3_below_order_neutral": false
+      },
+      "cross-encoder/ms-marco-MiniLM-L6-v2": {
+        "label": "SBERT: MiniLM-L6-v2",
+        "pipe_gap": 3.384134615384615,
+        "pipe_gap_minus_order_neutral": 1.0491586538461526,
+        "rr_gap": 5.535576923076922,
+        "pipe_top3_m_pct_male": 79.48717948717955,
+        "gap_below_retriever_alone": false,
+        "gap_below_order_neutral": false,
+        "top3_below_retriever_alone": false,
+        "top3_below_order_neutral": false
+      },
+      "ibm-granite-granite-embedding-reranker-english-r2": {
+        "label": "IBM: Granite r2",
+        "pipe_gap": 3.6927884615384587,
+        "pipe_gap_minus_order_neutral": 1.3578124999999965,
+        "rr_gap": 7.218389423076923,
+        "pipe_top3_m_pct_male": 84.85576923076928,
+        "gap_below_retriever_alone": false,
+        "gap_below_order_neutral": false,
+        "top3_below_retriever_alone": false,
+        "top3_below_order_neutral": false
+      },
+      "jinaai/jina-reranker-v2-base-multilingual": {
+        "label": "Jina: reranker v2",
+        "pipe_gap": 2.0336538461538454,
+        "pipe_gap_minus_order_neutral": -0.30132211538461684,
+        "rr_gap": -1.782692307692308,
+        "pipe_top3_m_pct_male": 50.125200320512846,
+        "gap_below_retriever_alone": true,
+        "gap_below_order_neutral": true,
+        "top3_below_retriever_alone": true,
+        "top3_below_order_neutral": true
+      },
+      "mixedbread-ai/mxbai-rerank-large-v2": {
+        "label": "Mixedbread: large v2",
+        "pipe_gap": 2.953846153846153,
+        "pipe_gap_minus_order_neutral": 0.6188701923076909,
+        "rr_gap": 2.876802884615385,
+        "pipe_top3_m_pct_male": 70.46113782051283,
+        "gap_below_retriever_alone": false,
+        "gap_below_order_neutral": false,
+        "top3_below_retriever_alone": false,
+        "top3_below_order_neutral": false
+      },
+      "nvidia/llama-nemotron-rerank-1b-v2": {
+        "label": "NVIDIA: Nemotron 1B",
+        "pipe_gap": 2.849879807692307,
+        "pipe_gap_minus_order_neutral": 0.5149038461538447,
+        "rr_gap": 2.937740384615385,
+        "pipe_top3_m_pct_male": 66.35336538461543,
+        "gap_below_retriever_alone": false,
+        "gap_below_order_neutral": false,
+        "top3_below_retriever_alone": false,
+        "top3_below_order_neutral": false
+      },
+      "nvidia/llama-nemotron-rerank-vl-1b-v2": {
+        "label": "NVIDIA: Nemotron VL 1B",
+        "pipe_gap": 2.814423076923075,
+        "pipe_gap_minus_order_neutral": 0.47944711538461293,
+        "rr_gap": 2.6751201923076926,
+        "pipe_top3_m_pct_male": 67.58713942307695,
+        "gap_below_retriever_alone": false,
+        "gap_below_order_neutral": false,
+        "top3_below_retriever_alone": false,
+        "top3_below_order_neutral": false
+      },
+      "qwen/qwen3-reranker-8b": {
+        "label": "Qwen: Qwen3 8B",
+        "pipe_gap": 2.3163461538461534,
+        "pipe_gap_minus_order_neutral": -0.01862980769230882,
+        "rr_gap": 0.20408653846153849,
+        "pipe_top3_m_pct_male": 56.46854967948718,
+        "gap_below_retriever_alone": true,
+        "gap_below_order_neutral": true,
+        "top3_below_retriever_alone": true,
+        "top3_below_order_neutral": true
+      },
+      "rerank-1": {
+        "label": "Voyage: rerank-1",
+        "pipe_gap": 2.942788461538461,
+        "pipe_gap_minus_order_neutral": 0.6078124999999988,
+        "rr_gap": 3.147235576923077,
+        "pipe_top3_m_pct_male": 70.46634615384617,
+        "gap_below_retriever_alone": false,
+        "gap_below_order_neutral": false,
+        "top3_below_retriever_alone": false,
+        "top3_below_order_neutral": false
+      },
+      "rerank-2": {
+        "label": "Voyage: rerank-2",
+        "pipe_gap": 2.4656249999999997,
+        "pipe_gap_minus_order_neutral": 0.13064903846153753,
+        "rr_gap": 1.2903846153846152,
+        "pipe_top3_m_pct_male": 59.817708333333336,
+        "gap_below_retriever_alone": false,
+        "gap_below_order_neutral": false,
+        "top3_below_retriever_alone": false,
+        "top3_below_order_neutral": false
+      },
+      "rerank-2-lite": {
+        "label": "Voyage: rerank-2-lite",
+        "pipe_gap": 1.690865384615385,
+        "pipe_gap_minus_order_neutral": -0.6441105769230773,
+        "rr_gap": -2.7203124999999995,
+        "pipe_top3_m_pct_male": 45.05929487179487,
+        "gap_below_retriever_alone": true,
+        "gap_below_order_neutral": true,
+        "top3_below_retriever_alone": true,
+        "top3_below_order_neutral": true
+      },
+      "rerank-2.5": {
+        "label": "Voyage: rerank-2.5",
+        "pipe_gap": 3.0004807692307685,
+        "pipe_gap_minus_order_neutral": 0.6655048076923062,
+        "rr_gap": 3.8375000000000004,
+        "pipe_top3_m_pct_male": 70.15204326923079,
+        "gap_below_retriever_alone": false,
+        "gap_below_order_neutral": false,
+        "top3_below_retriever_alone": false,
+        "top3_below_order_neutral": false
+      },
+      "rerank-2.5-lite": {
+        "label": "Voyage: rerank-2.5-lite",
+        "pipe_gap": 2.6162259615384618,
+        "pipe_gap_minus_order_neutral": 0.28124999999999956,
+        "rr_gap": 1.9469951923076922,
+        "pipe_top3_m_pct_male": 62.89282852564103,
+        "gap_below_retriever_alone": false,
+        "gap_below_order_neutral": false,
+        "top3_below_retriever_alone": false,
+        "top3_below_order_neutral": false
+      },
+      "rerank-3": {
+        "label": "Voyage: rerank-3",
+        "pipe_gap": 2.6218749999999997,
+        "pipe_gap_minus_order_neutral": 0.2868990384615375,
+        "rr_gap": 1.978125,
+        "pipe_top3_m_pct_male": 61.44310897435898,
+        "gap_below_retriever_alone": false,
+        "gap_below_order_neutral": false,
+        "top3_below_retriever_alone": false,
+        "top3_below_order_neutral": false
+      },
+      "rerank-3-lite": {
+        "label": "Voyage: rerank-3-lite",
+        "pipe_gap": 1.6902644230769228,
+        "pipe_gap_minus_order_neutral": -0.6447115384615394,
+        "rr_gap": -3.189783653846154,
+        "pipe_top3_m_pct_male": 44.15945512820514,
+        "gap_below_retriever_alone": true,
+        "gap_below_order_neutral": true,
+        "top3_below_retriever_alone": true,
+        "top3_below_order_neutral": true
+      },
+      "semantic-ranker-default-002": {
+        "label": "Google: default-002",
+        "pipe_gap": 3.478966346153845,
+        "pipe_gap_minus_order_neutral": 1.1439903846153827,
+        "rr_gap": 5.516947115384617,
+        "pipe_top3_m_pct_male": 79.71374198717952,
+        "gap_below_retriever_alone": false,
+        "gap_below_order_neutral": false,
+        "top3_below_retriever_alone": false,
+        "top3_below_order_neutral": false
+      },
+      "semantic-ranker-default-004": {
+        "label": "Google: default-004",
+        "pipe_gap": 1.7120192307692303,
+        "pipe_gap_minus_order_neutral": -0.6229567307692319,
+        "rr_gap": -2.9039663461538456,
+        "pipe_top3_m_pct_male": 44.21314102564106,
+        "gap_below_retriever_alone": true,
+        "gap_below_order_neutral": true,
+        "top3_below_retriever_alone": true,
+        "top3_below_order_neutral": true
+      },
+      "semantic-ranker-fast-004": {
+        "label": "Google: fast-004",
+        "pipe_gap": 2.1866586538461523,
+        "pipe_gap_minus_order_neutral": -0.14831730769230989,
+        "rr_gap": -0.6342548076923078,
+        "pipe_top3_m_pct_male": 56.18209134615389,
+        "gap_below_retriever_alone": true,
+        "gap_below_order_neutral": true,
+        "top3_below_retriever_alone": true,
+        "top3_below_order_neutral": true
+      },
+      "zeroentropy/zerank-2-reranker": {
+        "label": "ZeroEntropy: zerank-2",
+        "pipe_gap": 2.688701923076923,
+        "pipe_gap_minus_order_neutral": 0.3537259615384607,
+        "rr_gap": 2.0044471153846155,
+        "pipe_top3_m_pct_male": 63.62019230769234,
+        "gap_below_retriever_alone": false,
+        "gap_below_order_neutral": false,
+        "top3_below_retriever_alone": false,
+        "top3_below_order_neutral": false
+      }
+    }
+  }
+}

@@ -1584,14 +1584,14 @@
   "COMP_RATIO_MIN": {
     "file": "results/companion_statistics.json",
     "path": "mean_abs_delta_ratio_synthetic_to_companion_min",
-    "format": ".0f",
-    "needs": "Review round 4 (W1): smallest ratio of the synthetic to the companion mean absolute score difference (markers inside the window)."
+    "format": ".1f",
+    "needs": "Review round 4 (W1): smallest ratio of the synthetic to the companion mean absolute score difference (markers inside the window). Round 6: printed to one decimal so it matches the lower panel of the companion construction table."
   },
   "COMP_RATIO_MAX": {
     "file": "results/companion_statistics.json",
     "path": "mean_abs_delta_ratio_synthetic_to_companion_max",
-    "format": ".0f",
-    "needs": "Review round 4 (W1): largest such ratio."
+    "format": ".1f",
+    "needs": "Review round 4 (W1): largest such ratio. Round 6: printed to one decimal so it matches the lower panel of the companion construction table."
   },
   "COMP_N_CONTRAST_POS": {
     "file": "results/companion_statistics.json",
@@ -1753,5 +1753,835 @@
   "TABLE_PRONOUN": {
     "tex_file": "results/tex/pronoun_channel.tex",
     "needs": "Review round 4 (W2): tabular-only fragment, one row per tested model: original contrast, pronoun-only contrast, 95% interval (code/pronoun_channel_experiment.py --tables-only)."
+  },
+  "JINA3_SHUF_LEVEL": {
+    "file": "results/order_reversal_test.json",
+    "path": [
+      "models",
+      "jinaai/jina-reranker-v3",
+      "arms",
+      "shuffled",
+      "tie_aware_pct_male"
+    ],
+    "format": ".0f",
+    "unit": "%",
+    "needs": "ICLR-style review 2026-10-17 (Q6): jina-v3 overall share with the request shuffled."
+  },
+  "JINA3_SAME_CONTRAST": {
+    "file": "results/order_reversal_test.json",
+    "path": [
+      "models",
+      "jinaai/jina-reranker-v3",
+      "arms",
+      "same",
+      "contrast_male_minus_female"
+    ],
+    "format": ".1f",
+    "needs": "ICLR-style review 2026-10-17 (Q6): jina-v3 male-typed minus female-typed contrast, original layout."
+  },
+  "JINA3_REV_CONTRAST": {
+    "file": "results/order_reversal_test.json",
+    "path": [
+      "models",
+      "jinaai/jina-reranker-v3",
+      "arms",
+      "reversed",
+      "contrast_male_minus_female"
+    ],
+    "format": ".1f",
+    "needs": "ICLR-style review 2026-10-17 (Q6): jina-v3 contrast, pairs reversed."
+  },
+  "JINA3_SHUF_CONTRAST": {
+    "file": "results/order_reversal_test.json",
+    "path": [
+      "models",
+      "jinaai/jina-reranker-v3",
+      "arms",
+      "shuffled",
+      "contrast_male_minus_female"
+    ],
+    "format": ".1f",
+    "needs": "ICLR-style review 2026-10-17 (Q6): jina-v3 contrast, request shuffled."
+  },
+  "VOYAGE1_CONTRAST": {
+    "file": "results/single_stage_summary.json",
+    "path": [
+      "stereotype_tracking_spread",
+      "per_model",
+      "rerank-1"
+    ],
+    "format": ".0f",
+    "needs": "ICLR-style review 2026-10-17 (W1): Voyage rerank-1 contrast, for the within-vendor version series."
+  },
+  "VOYAGE2_CONTRAST": {
+    "file": "results/single_stage_summary.json",
+    "path": [
+      "stereotype_tracking_spread",
+      "per_model",
+      "rerank-2"
+    ],
+    "format": ".0f",
+    "needs": "Voyage rerank-2 contrast (version series)."
+  },
+  "VOYAGE25_CONTRAST": {
+    "file": "results/single_stage_summary.json",
+    "path": [
+      "stereotype_tracking_spread",
+      "per_model",
+      "rerank-2.5"
+    ],
+    "format": ".0f",
+    "needs": "Voyage rerank-2.5 contrast (version series)."
+  },
+  "VOYAGE2LITE_CONTRAST": {
+    "file": "results/single_stage_summary.json",
+    "path": [
+      "stereotype_tracking_spread",
+      "per_model",
+      "rerank-2-lite"
+    ],
+    "format": ".0f",
+    "needs": "Voyage rerank-2-lite contrast (lite version series)."
+  },
+  "VOYAGE25LITE_CONTRAST": {
+    "file": "results/single_stage_summary.json",
+    "path": [
+      "stereotype_tracking_spread",
+      "per_model",
+      "rerank-2.5-lite"
+    ],
+    "format": ".0f",
+    "needs": "Voyage rerank-2.5-lite contrast (lite version series)."
+  },
+  "VOYAGE3LITE_CONTRAST": {
+    "file": "results/single_stage_summary.json",
+    "path": [
+      "stereotype_tracking_spread",
+      "per_model",
+      "rerank-3-lite"
+    ],
+    "format": ".0f",
+    "needs": "Voyage rerank-3-lite contrast (lite version series)."
+  },
+  "VOYAGE2LITE_TIES": {
+    "file": "results/single_stage_summary.json",
+    "path": [
+      "models",
+      "rerank-2-lite",
+      "tie_rate_pct"
+    ],
+    "format": ".0f",
+    "unit": "%",
+    "needs": "Tie rate of rerank-2-lite: part of the rise along the lite line coincides with falling tie rates, which mechanically pull a tie-aware contrast toward zero."
+  },
+  "VOYAGE3LITE_TIES": {
+    "file": "results/single_stage_summary.json",
+    "path": [
+      "models",
+      "rerank-3-lite",
+      "tie_rate_pct"
+    ],
+    "format": ".0f",
+    "unit": "%",
+    "needs": "Tie rate of rerank-3-lite (see VOYAGE2LITE_TIES)."
+  },
+  "CONT_N_RHO_NEG": {
+    "file": "results/continuous_bls_check.json",
+    "path": "continuous.n_models_rho_negative",
+    "format": "d",
+    "needs": "ICLR-style review 2026-10-17 (W7, cut-points): models whose occupation-level male-favored share falls with the BLS share of women (Spearman rho < 0), 52 occupations."
+  },
+  "CONT_MEDIAN_RHO": {
+    "file": "results/continuous_bls_check.json",
+    "path": "continuous.median_rho",
+    "format": ".2f",
+    "needs": "ICLR-style review 2026-10-17 (W7, cut-points): median Spearman rho across the 29 models."
+  },
+  "CONT_N_NEG_HOLM_SIG": {
+    "file": "results/continuous_bls_check.json",
+    "path": "continuous.n_models_negative_holm_significant",
+    "format": "d",
+    "needs": "ICLR-style review 2026-10-17 (W7, cut-points): models with a negative rho whose two-sided permutation p survives Holm across 29 models."
+  },
+  "CONT_N_PERM": {
+    "file": "results/continuous_bls_check.json",
+    "path": "continuous.n_permutations",
+    "format": ",d",
+    "needs": "ICLR-style review 2026-10-17 (W7, cut-points): permutations per model for the Spearman p-value."
+  },
+  "CONT_MEDIAN_SLOPE10_ABS": {
+    "expr": "-s",
+    "refs": {
+      "s": {
+        "file": "results/continuous_bls_check.json",
+        "path": "continuous.median_slope_per_10_points"
+      }
+    },
+    "format": ".1f",
+    "needs": "ICLR-style review 2026-10-17 (W7, cut-points): median OLS slope, sign flipped so the prose can say 'falls by X points per 10 points of women's share'."
+  },
+  "CONT_GTE_RHO": {
+    "file": "results/continuous_bls_check.json",
+    "path": [
+      "continuous",
+      "models",
+      "Alibaba-NLP/gte-reranker-modernbert-base",
+      "spearman_rho"
+    ],
+    "format": ".2f",
+    "needs": "ICLR-style review 2026-10-17 (W7, cut-points): GTE ModernBERT's rho, the one model that rises with the share of women."
+  },
+  "CUT2575_N_POS": {
+    "file": "results/continuous_bls_check.json",
+    "path": "cutoffs.schemes.25/75.n_models_positive",
+    "format": "d",
+    "needs": "ICLR-style review 2026-10-17 (W7, cut-points): models with a positive contrast at 25/75 cut-points (sign_flips_vs_30_70 is empty)."
+  },
+  "CUT2575_N_CI_POS": {
+    "file": "results/continuous_bls_check.json",
+    "path": "cutoffs.schemes.25/75.n_models_ci_above_zero",
+    "format": "d",
+    "needs": "ICLR-style review 2026-10-17 (W7, cut-points): models whose 1,000-draw occupation-clustered interval is above zero at 25/75."
+  },
+  "CUT3565_N_MODELS": {
+    "file": "results/continuous_bls_check.json",
+    "path": "cutoffs.schemes.35/65.n_models",
+    "format": "d",
+    "needs": "ICLR-style review 2026-10-17 (W7, cut-points): models scored on all 82 occupations, the only ones for which the 30-40/60-70 bands exist."
+  },
+  "CUT3565_N_POS": {
+    "file": "results/continuous_bls_check.json",
+    "path": "cutoffs.schemes.35/65.n_models_positive",
+    "format": "d",
+    "needs": "ICLR-style review 2026-10-17 (W7, cut-points): of those, models with a positive contrast at 35/65."
+  },
+  "TABLE_CONTINUOUS": {
+    "tex_file": "results/tex/continuous_bls_check.tex",
+    "needs": "ICLR-style review 2026-10-17 (W7, cut-points): tabular-only fragment, one row per model: Spearman rho, Holm-adjusted permutation p, slope per 10 points, contrast at 30/70 and 25/75 (code/continuous_bls_check.py)."
+  },
+  "SG_N_SAME_PAIRS": {
+    "file": "results/same_gender_name_swap.json",
+    "path": "n_same_gender_pairs_per_model",
+    "format": ",d",
+    "needs": "ICLR-style review 2026-10-17 (W5/W6a, same-gender name swap): same-gender pairs per model: 832 cells x (45 male-male + 45 female-female)."
+  },
+  "SG_N_CROSS_PAIRS": {
+    "file": "results/same_gender_name_swap.json",
+    "path": "n_cross_gender_pairs_per_model",
+    "format": ",d",
+    "needs": "ICLR-style review 2026-10-17 (W5/W6a, same-gender name swap): the audit's fixed name-and-pronoun pairs per model."
+  },
+  "SG_B": {
+    "file": "results/same_gender_name_swap.json",
+    "path": "bootstrap_B",
+    "format": ",d",
+    "needs": "ICLR-style review 2026-10-17 (W5/W6a, same-gender name swap): occupation-clustered bootstrap draws behind the ratio intervals."
+  },
+  "SG_N_RATIO_GT1": {
+    "file": "results/same_gender_name_swap.json",
+    "path": "overview.n_models_ratio_above_1",
+    "format": "d",
+    "needs": "ICLR-style review 2026-10-17 (W5/W6a, same-gender name swap): models whose cross-gender mean |gap| exceeds their same-gender mean |gap|."
+  },
+  "SG_N_RATIO_CI_GT1": {
+    "file": "results/same_gender_name_swap.json",
+    "path": "overview.n_models_ratio_ci_above_1",
+    "format": "d",
+    "needs": "ICLR-style review 2026-10-17 (W5/W6a, same-gender name swap): models whose ratio interval lies above one."
+  },
+  "SG_MEDIAN_RATIO": {
+    "file": "results/same_gender_name_swap.json",
+    "path": "overview.median_ratio",
+    "format": ".1f",
+    "needs": "ICLR-style review 2026-10-17 (W5/W6a, same-gender name swap): median across models of cross-gender / same-gender mean |gap|."
+  },
+  "SG_MEDIAN_PCT_ABOVE_CELL_MEDIAN": {
+    "file": "results/same_gender_name_swap.json",
+    "path": "overview.median_pct_cross_above_cell_median",
+    "format": ".0f",
+    "unit": "%",
+    "needs": "ICLR-style review 2026-10-17 (W5/W6a, same-gender name swap): median model's share of cross-gender pairs whose gap exceeds the same-gender median of their own cell."
+  },
+  "SG_JINA3_RATIO": {
+    "file": "results/same_gender_name_swap.json",
+    "path": [
+      "models",
+      "jinaai/jina-reranker-v3",
+      "ratio",
+      "point"
+    ],
+    "format": ".2f",
+    "needs": "ICLR-style review 2026-10-17 (W5/W6a, same-gender name swap): jina-v3 ratio (below one)."
+  },
+  "SG_COHERE_PRO_RATIO": {
+    "file": "results/same_gender_name_swap.json",
+    "path": [
+      "models",
+      "Cohere-rerank-v4.0-pro",
+      "ratio",
+      "point"
+    ],
+    "format": ".2f",
+    "needs": "ICLR-style review 2026-10-17 (W5/W6a, same-gender name swap): Cohere v4 pro ratio (interval includes one)."
+  },
+  "SG_COHERE_PRO_CI_LO": {
+    "file": "results/same_gender_name_swap.json",
+    "path": [
+      "models",
+      "Cohere-rerank-v4.0-pro",
+      "ratio",
+      "ci",
+      0
+    ],
+    "format": ".2f",
+    "needs": "ICLR-style review 2026-10-17 (W5/W6a, same-gender name swap): its interval, lower end."
+  },
+  "SG_COHERE_PRO_CI_HI": {
+    "file": "results/same_gender_name_swap.json",
+    "path": [
+      "models",
+      "Cohere-rerank-v4.0-pro",
+      "ratio",
+      "ci",
+      1
+    ],
+    "format": ".2f",
+    "needs": "ICLR-style review 2026-10-17 (W5/W6a, same-gender name swap): its interval, upper end."
+  },
+  "COHERE_PRO_CONTRAST": {
+    "file": "results/single_stage_summary.json",
+    "path": [
+      "stereotype_tracking_spread",
+      "per_model",
+      "Cohere-rerank-v4.0-pro"
+    ],
+    "format": ".0f",
+    "needs": "ICLR-style review 2026-10-17 (W5/W6a, same-gender name swap): Cohere v4 pro's contrast, for the 'directional rather than large' sentence."
+  },
+  "SG_MATCHED_DRAWS": {
+    "file": "results/same_gender_name_swap.json",
+    "path": "overview.matched_design.n_draws_per_model",
+    "format": ",d",
+    "needs": "ICLR-style review 2026-10-17 (W5/W6a, same-gender name swap): matched-design placebo draws per model (10 random same-gender pairs per draw, averaged like the real design)."
+  },
+  "SG_MATCHED_N_CONTRAST_ABOVE_ALL": {
+    "file": "results/same_gender_name_swap.json",
+    "path": "overview.matched_design.n_models_abs_actual_contrast_above_max_draw",
+    "format": "d",
+    "needs": "ICLR-style review 2026-10-17 (W5/W6a, same-gender name swap): models whose |contrast| exceeds every matched placebo draw."
+  },
+  "SG_MATCHED_MEDIAN_P95": {
+    "file": "results/same_gender_name_swap.json",
+    "path": "overview.matched_design.median_matched_abs_contrast_p95",
+    "format": ".1f",
+    "needs": "ICLR-style review 2026-10-17 (W5/W6a, same-gender name swap): median across models of the 95th percentile of placebo |contrast|."
+  },
+  "SG_MATCHED_JINA3_P": {
+    "file": "results/same_gender_name_swap.json",
+    "path": [
+      "models",
+      "jinaai/jina-reranker-v3",
+      "placebo",
+      "matched_design",
+      "p_abs_contrast"
+    ],
+    "format": ".2f",
+    "needs": "ICLR-style review 2026-10-17 (W5/W6a, same-gender name swap): jina-v3's matched-placebo p for its contrast."
+  },
+  "SG_N_CONTRAST_ABOVE_MAX_PLACEBO": {
+    "file": "results/same_gender_name_swap.json",
+    "path": "overview.n_models_abs_actual_contrast_above_max_placebo",
+    "format": "d",
+    "needs": "ICLR-style review 2026-10-17 (W5/W6a, same-gender name swap): models whose |contrast| exceeds the largest of the 90 single same-gender orderings (the harder benchmark)."
+  },
+  "SG_MATCHED_N_LEVEL_P05": {
+    "file": "results/same_gender_name_swap.json",
+    "path": "overview.matched_design.n_models_p_abs_level_below_0_05",
+    "format": "d",
+    "needs": "ICLR-style review 2026-10-17 (W5/W6a, same-gender name swap): models whose overall |level - 50| exceeds the matched placebo at the 5% level."
+  },
+  "SG_PRON_N": {
+    "file": "results/same_gender_name_swap.json",
+    "path": "overview.pronoun_only.n_models_with_per_row_scores",
+    "format": "d",
+    "needs": "ICLR-style review 2026-10-17 (W5/W6a, same-gender name swap): models with per-row pronoun-only scores (all but jina-v3)."
+  },
+  "SG_PRON_N_ABOVE_SAME": {
+    "file": "results/same_gender_name_swap.json",
+    "path": "overview.pronoun_only.n_models_pronoun_mean_above_same_gender_mean",
+    "format": "d",
+    "needs": "ICLR-style review 2026-10-17 (W5/W6a, same-gender name swap): of those, models whose pronoun-only mean |gap| exceeds the same-gender name-swap mean |gap| (separate run; see caveat in JSON)."
+  },
+  "SG_PRON_MEDIAN_OVER_SAME": {
+    "file": "results/same_gender_name_swap.json",
+    "path": "overview.pronoun_only.median_pronoun_over_same_gender_mean",
+    "format": ".1f",
+    "needs": "ICLR-style review 2026-10-17 (W5/W6a, same-gender name swap): median pronoun-only / same-gender mean |gap|."
+  },
+  "TABLE_SAMEGENDER": {
+    "tex_file": "results/tex/same_gender_name_swap.tex",
+    "needs": "ICLR-style review 2026-10-17 (W5/W6a, same-gender name swap): tabular-only fragment with its own footnote: cross- and same-gender mean |gap|, ratio [CI], exceedance, actual contrast, max single-ordering placebo (code/same_gender_name_swap.py)."
+  },
+  "PIPE_CI_LO": {
+    "file": "results/compounding_bge_pipeline.json",
+    "path": [
+      "slate",
+      "ALL",
+      "pipe_top3_m_ci",
+      0
+    ],
+    "format": ".1f",
+    "unit": "%",
+    "needs": "ICLR-style review 2026-10-17 (W4, pipeline names / Table A4 baseline): occupation-clustered interval of the combined pipeline's male-associated top-3 share, lower end (the Figure 2 whisker)."
+  },
+  "PIPE_CI_HI": {
+    "file": "results/compounding_bge_pipeline.json",
+    "path": [
+      "slate",
+      "ALL",
+      "pipe_top3_m_ci",
+      1
+    ],
+    "format": ".1f",
+    "unit": "%",
+    "needs": "ICLR-style review 2026-10-17 (W4, pipeline names / Table A4 baseline): its upper end."
+  },
+  "NAME_BOOT_B": {
+    "file": "results/pipeline_name_sensitivity.json",
+    "path": "bootstrap_B",
+    "format": ",d",
+    "needs": "ICLR-style review 2026-10-17 (W4, pipeline names / Table A4 baseline): draws in the name-pair and joint bootstraps."
+  },
+  "NAME_BOOT_CI_LO": {
+    "file": "results/pipeline_name_sensitivity.json",
+    "path": [
+      "name_pair_bootstrap",
+      "name_pair_only",
+      "ALL",
+      "ci",
+      0
+    ],
+    "format": ".1f",
+    "unit": "%",
+    "needs": "ICLR-style review 2026-10-17 (W4, pipeline names / Table A4 baseline): pipeline share interval when the 10 name pairs are resampled instead of occupations, lower end."
+  },
+  "NAME_BOOT_CI_HI": {
+    "file": "results/pipeline_name_sensitivity.json",
+    "path": [
+      "name_pair_bootstrap",
+      "name_pair_only",
+      "ALL",
+      "ci",
+      1
+    ],
+    "format": ".1f",
+    "unit": "%",
+    "needs": "ICLR-style review 2026-10-17 (W4, pipeline names / Table A4 baseline): its upper end."
+  },
+  "JOINT_BOOT_CI_LO": {
+    "file": "results/pipeline_name_sensitivity.json",
+    "path": [
+      "name_pair_bootstrap",
+      "joint_occupation_name_pair",
+      "ALL",
+      "ci",
+      0
+    ],
+    "format": ".1f",
+    "unit": "%",
+    "needs": "ICLR-style review 2026-10-17 (W4, pipeline names / Table A4 baseline): pipeline share interval resampling occupations and name pairs jointly, lower end."
+  },
+  "JOINT_BOOT_CI_HI": {
+    "file": "results/pipeline_name_sensitivity.json",
+    "path": [
+      "name_pair_bootstrap",
+      "joint_occupation_name_pair",
+      "ALL",
+      "ci",
+      1
+    ],
+    "format": ".1f",
+    "unit": "%",
+    "needs": "ICLR-style review 2026-10-17 (W4, pipeline names / Table A4 baseline): its upper end."
+  },
+  "NAME_LOO_MAX_SHIFT": {
+    "file": "results/pipeline_name_sensitivity.json",
+    "path": "leave_one_pair_out.max_abs_shift_from_full_set",
+    "format": ".1f",
+    "needs": "ICLR-style review 2026-10-17 (W4, pipeline names / Table A4 baseline): largest change in the pipeline share from dropping any one name pair (18-document pools)."
+  },
+  "NAME_TOP3_NAMES_SHARE_PIPELINE": {
+    "file": "results/pipeline_name_sensitivity.json",
+    "path": "name_occupancy.pipeline_top3.top3_names_share_pct",
+    "format": ".0f",
+    "unit": "%",
+    "needs": "ICLR-style review 2026-10-17 (W4, pipeline names / Table A4 baseline): share of the combined pipeline's top-3 slots held by the three most frequent names (uniform would be 15%)."
+  },
+  "NAME_MAX_NAME_PIPELINE": {
+    "file": "results/pipeline_name_sensitivity.json",
+    "path": "name_occupancy.pipeline_top3.max_name",
+    "needs": "ICLR-style review 2026-10-17 (W4, pipeline names / Table A4 baseline): the single most frequent name in the pipeline's top 3."
+  },
+  "NAME_MAX_SHARE_PIPELINE": {
+    "file": "results/pipeline_name_sensitivity.json",
+    "path": "name_occupancy.pipeline_top3.max_share_pct",
+    "format": ".0f",
+    "unit": "%",
+    "needs": "ICLR-style review 2026-10-17 (W4, pipeline names / Table A4 baseline): its share of slots (uniform would be 5%)."
+  },
+  "NAME_EFFECTIVE_N_PIPELINE": {
+    "file": "results/pipeline_name_sensitivity.json",
+    "path": "name_occupancy.pipeline_top3.effective_n_names",
+    "format": ".0f",
+    "needs": "ICLR-style review 2026-10-17 (W4, pipeline names / Table A4 baseline): effective number of names (inverse Simpson) in the pipeline's top 3, out of 20."
+  },
+  "NAME_EFFECTIVE_N_RETRIEVER": {
+    "file": "results/pipeline_name_sensitivity.json",
+    "path": "name_occupancy.retriever_top10.effective_n_names",
+    "format": ".0f",
+    "needs": "ICLR-style review 2026-10-17 (W4, pipeline names / Table A4 baseline): the same for the retriever's top 10."
+  },
+  "GAP_ORDER_NEUTRAL_RERANKER": {
+    "file": "results/pipeline_name_sensitivity.json",
+    "path": "rank_gap_baselines.rank_gap.order_neutral_reranker_gap.ALL",
+    "format": ".2f",
+    "needs": "ICLR-style review 2026-10-17 (W4, pipeline names / Table A4 baseline): Table A4 reference: expected rank gap when the retriever keeps 10 and a reranker with no preference orders them (positions 11-20 keep the retriever's order)."
+  },
+  "N_RERANKERS_GAP_BELOW_NEUTRAL": {
+    "file": "results/pipeline_name_sensitivity.json",
+    "path": "rank_gap_baselines.sweep_counts.n_gap_below_order_neutral",
+    "format": "d",
+    "needs": "ICLR-style review 2026-10-17 (W4, pipeline names / Table A4 baseline): rerankers in the sweep whose rank gap is below the order-neutral baseline."
+  },
+  "DOCS_PER_REQUEST": {
+    "file": "results/order_reversal_test.json",
+    "path": [
+      "models",
+      "rerank-2",
+      "docs_per_request"
+    ],
+    "format": "d",
+    "needs": "Review round 6 (2026-10-17): D2: documents per API request (one query: 4 templates x 10 name pairs x 2 versions)."
+  },
+  "GRANITE_MAX_TEXTS": {
+    "literal": "32",
+    "needs": "Review round 6 (2026-10-17): D2: IBM Granite's Azure ML endpoint accepted at most 32 texts per request (code/run_experiment.py, max_batch=32), so each 80-document query went out in three requests."
+  },
+  "ORDER_PER_CATEGORY": {
+    "file": "results/order_reversal_test.json",
+    "path": "per_category",
+    "format": "d",
+    "needs": "Review round 6 (2026-10-17): D2: occupations drawn per category (seeded) for the order test."
+  },
+  "REPLAY_PER_OCC": {
+    "file": "results/pipeline_replay_check.json",
+    "path": "sample.per_occupation",
+    "format": "d",
+    "needs": "Review round 6 (2026-10-17): D2: replay-check pools per retained occupation (templates and query phrasings drawn without replacement, seeded, same pools for every model)."
+  },
+  "DRIFT_N_PAIRS": {
+    "file": "results/pronoun_channel_summary.json",
+    "path": [
+      "drift_checks",
+      "mixedbread-ai/mxbai-rerank-large-v2",
+      "n_pairs"
+    ],
+    "format": "d",
+    "needs": "Review round 6 (2026-10-17): S1a: sampled original pairs re-scored per re-run model in the drift check (the same for all nine)."
+  },
+  "DRIFT_N_100": {
+    "file": "results/pronoun_channel_summary.json",
+    "path": "overview.n_drift_100",
+    "format": "d",
+    "needs": "Review round 6 (2026-10-17), S1a: re-run models that reproduced all 80 sampled saved winners in the drift check."
+  },
+  "DRIFT_MXBAI": {
+    "file": "results/pronoun_channel_summary.json",
+    "path": [
+      "drift_checks",
+      "mixedbread-ai/mxbai-rerank-large-v2",
+      "pct_pairs_same_winner"
+    ],
+    "format": ".1f",
+    "unit": "%",
+    "needs": "Review round 6 (2026-10-17): S1a: mxbai same-winner share on the drift check."
+  },
+  "DRIFT_QWEN06": {
+    "file": "results/pronoun_channel_summary.json",
+    "path": [
+      "drift_checks",
+      "Qwen/Qwen3-Reranker-0.6B",
+      "pct_pairs_same_winner"
+    ],
+    "format": ".1f",
+    "unit": "%",
+    "needs": "Review round 6 (2026-10-17): S1a: Qwen3-0.6B same-winner share."
+  },
+  "DRIFT_QWEN4": {
+    "file": "results/pronoun_channel_summary.json",
+    "path": [
+      "drift_checks",
+      "Qwen/Qwen3-Reranker-4B",
+      "pct_pairs_same_winner"
+    ],
+    "format": ".1f",
+    "unit": "%",
+    "needs": "Review round 6 (2026-10-17): S1a: Qwen3-4B same-winner share."
+  },
+  "DRIFT_NEMO1B": {
+    "file": "results/pronoun_channel_summary.json",
+    "path": [
+      "drift_checks",
+      "nvidia/llama-nemotron-rerank-1b-v2",
+      "pct_pairs_same_winner"
+    ],
+    "format": ".1f",
+    "unit": "%",
+    "needs": "Review round 6 (2026-10-17): S1a: Nemotron 1B same-winner share."
+  },
+  "DRIFT_ZERANK": {
+    "file": "results/pronoun_channel_summary.json",
+    "path": [
+      "drift_checks",
+      "zeroentropy/zerank-2-reranker",
+      "pct_pairs_same_winner"
+    ],
+    "format": ".1f",
+    "unit": "%",
+    "needs": "Review round 6 (2026-10-17): S1a: zerank-2 same-winner share."
+  },
+  "DRIFT_MXBAI_GAP": {
+    "file": "results/pronoun_channel_summary.json",
+    "path": [
+      "drift_checks",
+      "mixedbread-ai/mxbai-rerank-large-v2",
+      "banked_mean_abs_pair_gap"
+    ],
+    "format": ".6f",
+    "needs": "Review round 6 (2026-10-17): S1a: mxbai's saved mean |score_male - score_female| on the sampled pairs (why its winners flip)."
+  },
+  "DRIFT_MXBAI_CHANGE": {
+    "file": "results/pronoun_channel_summary.json",
+    "path": [
+      "drift_checks",
+      "mixedbread-ai/mxbai-rerank-large-v2",
+      "mean_abs_score_diff"
+    ],
+    "format": ".6f",
+    "needs": "Review round 6 (2026-10-17): S1a: mxbai's mean absolute score change between the saved run and the M4 Pro re-run."
+  },
+  "SG_N_PLACEBO_PER_GENDER": {
+    "expr": "n / 2",
+    "refs": {
+      "n": {
+        "file": "results/same_gender_name_swap.json",
+        "path": "n_placebo_pairings"
+      }
+    },
+    "format": "d",
+    "needs": "Review round 6 (2026-10-17): S4: same-gender name pairs per gender (45 male-male, 45 female-female)."
+  },
+  "TOPK_MEAN_RANK": {
+    "expr": "(k + 1) / 2",
+    "refs": {
+      "k": {
+        "file": "results/compounding_bge_pipeline.json",
+        "path": "headline_topk"
+      }
+    },
+    "format": ".1f",
+    "needs": "Review round 6 (2026-10-17): P5: average rank of a document in the retriever's top 10, which an order-neutral reranker assigns to each."
+  },
+  "COMP_N_PREPENDED": {
+    "file": "results/companion_statistics.json",
+    "path": "by_construction.n_prepended",
+    "format": ",d",
+    "needs": "Review P2: companion comparisons per model built by prepending a name (same value as N_COMPANION_INJECTED_SCORED)."
+  },
+  "COMP_N_SWAP_IN_WINDOW": {
+    "file": "results/companion_statistics.json",
+    "path": "by_construction.n_swap_in_window.bge-m3",
+    "format": "d",
+    "needs": "Review P2: swapped comparisons with a marker inside the 512-token window (worked reranker's tokenizer; the BGE and Jina models agree)."
+  },
+  "COMP_N_SWAP_IN_WINDOW_MINILM": {
+    "file": "results/companion_statistics.json",
+    "path": "by_construction.n_swap_in_window.ms-marco",
+    "format": "d",
+    "needs": "Review P2: the same count for SBERT MiniLM-L12-v2, whose tokenizer differs."
+  },
+  "COMP_N_SWAP_TRUNCATED": {
+    "file": "results/companion_statistics.json",
+    "path": "by_construction.n_swap_truncated.bge-m3",
+    "format": "d",
+    "needs": "Review P2: swapped comparisons with every marker beyond the window (worked reranker; same value as COMP_N_OUTSIDE_WINDOW)."
+  },
+  "COMP_N_SWAP_TRUNCATED_MINILM": {
+    "file": "results/companion_statistics.json",
+    "path": "by_construction.n_swap_truncated.ms-marco",
+    "format": "d",
+    "needs": "Review P2: the same count for SBERT MiniLM-L12-v2."
+  },
+  "COMP_ABS_PREP_SWAP_RATIO_MIN": {
+    "file": "results/companion_statistics.json",
+    "path": "by_construction.mean_abs_delta_ratio_prepended_to_swap_in_window_min",
+    "format": ".1f",
+    "needs": "Review P2: smallest ratio of the prepended to the in-window-swap mean absolute score gap."
+  },
+  "COMP_ABS_PREP_SWAP_RATIO_MAX": {
+    "file": "results/companion_statistics.json",
+    "path": "by_construction.mean_abs_delta_ratio_prepended_to_swap_in_window_max",
+    "format": ".1f",
+    "needs": "Review P2: largest such ratio."
+  },
+  "COMP_MAX_SHARE_PREP_VS_SWAP": {
+    "file": "results/companion_statistics.json",
+    "path": "by_construction.max_abs_share_prepended_minus_swap_in_window",
+    "format": ".1f",
+    "needs": "Review P2: largest absolute difference (points) between the prepended and the in-window-swap tie-aware male-favored shares."
+  },
+  "TABLE_COMPANION_CONSTRUCTION": {
+    "tex_file": "results/tex/companion_by_construction.tex",
+    "needs": "Review P2: companion results by how each pair was built, and each reranker's mean absolute score gap beside the synthetic audit's."
+  },
+  "COMP_N_SWAP_NO_CHANGE": {
+    "file": "results/realistic_pool_four_rerankers.json",
+    "path": "provenance.counterfactual_construction.swap_produced_no_change",
+    "format": "d",
+    "needs": "Review round 6 (2026-10-17): documents that carried a detected name or pronoun majority but whose swap left the text unchanged, so a name was prepended instead (counted within N_COMPANION_INJECTED)."
+  },
+  "PRON_ORIG_NAMEAVG_MEDIAN": {
+    "file": "results/pronoun_channel_summary.json",
+    "path": "overview.median_original_name_averaged_contrast",
+    "format": ".1f",
+    "needs": "Review round 6 (2026-10-17), S1b/S1c: median name-and-pronoun contrast after averaging each cell's ten male and ten female scores (one comparison per cell, like the pronoun-only design)."
+  },
+  "PRON_STABLE_MEDIAN": {
+    "file": "results/pronoun_channel_summary.json",
+    "path": "overview.excluding_drift_below_100.median_contrast",
+    "format": ".1f",
+    "needs": "Review round 6 (2026-10-17), S1b/S1c: their median pronoun-only contrast."
+  },
+  "PRON_STABLE_NAMEAVG_MEDIAN": {
+    "file": "results/pronoun_channel_summary.json",
+    "path": "overview.excluding_drift_below_100.median_original_name_averaged_contrast",
+    "format": ".1f",
+    "needs": "Review round 6 (2026-10-17), S1b/S1c: their median name-averaged contrast."
+  },
+  "SG_PRON_STABLE_N": {
+    "file": "results/same_gender_name_swap.json",
+    "path": "overview.pronoun_only.excluding_drift_below_100.n_models_with_per_row_scores",
+    "format": "d",
+    "needs": "Review round 6 (2026-10-17), S1b/S1c: models in the same-gender pronoun comparison after dropping the drifted re-runs."
+  },
+  "SG_PRON_STABLE_N_ABOVE": {
+    "file": "results/same_gender_name_swap.json",
+    "path": "overview.pronoun_only.excluding_drift_below_100.n_models_pronoun_mean_above_same_gender_mean",
+    "format": "d",
+    "needs": "Review round 6 (2026-10-17), S1b/S1c: of those, models where the pronoun-only gap exceeds the same-gender name-swap gap."
+  },
+  "SG_PRON_STABLE_MEDIAN": {
+    "file": "results/same_gender_name_swap.json",
+    "path": "overview.pronoun_only.excluding_drift_below_100.median_pronoun_over_same_gender_mean",
+    "format": ".1f",
+    "needs": "Review round 6 (2026-10-17), S1b/S1c: their median ratio of pronoun-only to same-gender mean |gap|."
+  },
+  "JINA_RERUN_SAME_WINNER": {
+    "file": "results/pronoun_channel_summary.json",
+    "path": [
+      "deid_rerun_checks",
+      "jinaai/jina-reranker-v2-base-multilingual",
+      "pct_pairs_same_winner"
+    ],
+    "format": ".0f",
+    "unit": "%",
+    "needs": "Review round 6 refinement (2026-10-17): share of all 8,320 original pairs whose winner the de-identification run's re-score reproduced for jina-reranker-v2 (it reproduced all 80 sampled pairs)."
+  },
+  "JINA_RERUN_CHANGED": {
+    "expr": "100 - x",
+    "refs": {
+      "x": {
+        "file": "results/pronoun_channel_summary.json",
+        "path": [
+          "deid_rerun_checks",
+          "jinaai/jina-reranker-v2-base-multilingual",
+          "pct_pairs_same_winner"
+        ]
+      }
+    },
+    "format": ".0f",
+    "unit": "%",
+    "needs": "Review round 6 refinement (2026-10-17): share of jina-reranker-v2's winners that its full re-score changed."
+  },
+  "JINA_RERUN_CONTRAST_CHANGE": {
+    "file": "results/pronoun_channel_summary.json",
+    "path": [
+      "deid_rerun_checks",
+      "jinaai/jina-reranker-v2-base-multilingual",
+      "contrast_change"
+    ],
+    "format": ".1f",
+    "needs": "Review round 6 refinement (2026-10-17): change in jina-reranker-v2's original contrast between the banked scores and the de-identification run's re-score."
+  },
+  "API_DRIFT_MAX": {
+    "expr": "(a + b + ((a - b) ** 2) ** 0.5) / 2",
+    "refs": {
+      "a": {
+        "file": "results/reproducibility_checks.json",
+        "path": "vendor_drift.groups.2026-02-24.max_abs_contrast_change"
+      },
+      "b": {
+        "file": "results/reproducibility_checks.json",
+        "path": "vendor_drift.groups.2026-10-16.max_abs_contrast_change"
+      }
+    },
+    "format": ".1f",
+    "needs": "Review round 6 refinement (2026-10-17): largest contrast change from re-querying any API model (max over the February and October groups, written as (a+b+|a-b|)/2 because expr has no max)."
+  },
+  "PRON_STRICT_NAMEAVG_MEDIAN": {
+    "file": "results/pronoun_channel_summary.json",
+    "path": "overview.excluding_drift_below_100_and_deid_rerun_below_100.median_original_name_averaged_contrast",
+    "format": ".1f",
+    "needs": "Review round 6 refinement (2026-10-17): name-averaged median when jina-reranker-v2 is also left out (22 models)."
+  },
+  "PRON_STRICT_MEDIAN": {
+    "file": "results/pronoun_channel_summary.json",
+    "path": "overview.excluding_drift_below_100_and_deid_rerun_below_100.median_contrast",
+    "format": ".1f",
+    "needs": "Review round 6 refinement (2026-10-17): pronoun-only median when jina-reranker-v2 is also left out (22 models)."
+  },
+  "CUT3565_N_ADDED": {
+    "expr": "(a - b) + (c - e)",
+    "refs": {
+      "a": {
+        "file": "results/continuous_bls_check.json",
+        "path": "cutoffs.schemes.35/65.n_male"
+      },
+      "b": {
+        "file": "results/continuous_bls_check.json",
+        "path": "cutoffs.schemes.30/70.n_male"
+      },
+      "c": {
+        "file": "results/continuous_bls_check.json",
+        "path": "cutoffs.schemes.35/65.n_female"
+      },
+      "e": {
+        "file": "results/continuous_bls_check.json",
+        "path": "cutoffs.schemes.30/70.n_female"
+      }
+    },
+    "format": "d",
+    "needs": "Review round 6 refinement (2026-10-17): occupations the 35/65 cut-points add from the excluded bands."
+  },
+  "SHORTLIST_PCT_MALE_SEARCH_1DP": {
+    "file": "results/compounding_bge_pipeline.json",
+    "path": "slate.ALL.emb_top3_m",
+    "format": ".1f",
+    "unit": "%",
+    "needs": "Review round 6 refinement (2026-10-17): retrieval-alone top-3 share to one decimal, so the count of rerankers below it can be checked against Table A6 (rerank-2 is at 59.8)."
+  },
+  "RELEASE_TAG": {
+    "literal": "arxiv-v3",
+    "needs": "Review round 6 refinement (2026-10-17): git tag this manuscript corresponds to. The tag must be created when this round is committed; until then the statement is not true."
   }
 }

@@ -99,6 +99,9 @@ REVIEW_ROUND2.md
 # Third internal review: factuality / reproducibility audit (not part of the release)
 FACTCHECK_ROUND3.md
 
+# Sixth review: pasted review of the 24-page build, as a feasibility checklist (not part of the release)
+REVIEW_ROUND6.md
+
 # Per-query GPU checkpoints (redundant with the finalized results/*_full_raw.json)
 results/partial/
 results/partial_smoke/

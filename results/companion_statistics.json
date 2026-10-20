@@ -1,6 +1,6 @@
 {
   "script_version": "companion_statistics.py v1.0",
-  "generated": "2026-10-16T23:43:45",
+  "generated": "2026-10-17T15:41:24",
   "source": {
     "summary": "results/realistic_pool_four_rerankers.json",
     "rows": "results/realistic_pool_four_rerankers_rows.json.gz",
@@ -68,11 +68,52 @@
       "PUBLIC-RELATIONS"
     ]
   },
+  "by_construction": {
+    "groups": {
+      "prepended": "a frequency-matched given name prepended (mode inject)",
+      "swap_in_window": "an existing name or pronouns swapped, a marker inside the token window",
+      "swap_truncated": "an existing name or pronouns swapped, every marker beyond the token window"
+    },
+    "n_prepended": 3374,
+    "n_prepended_document_carried_a_name": 39,
+    "n_swap": 466,
+    "n_swap_in_window": {
+      "bge-m3": 199,
+      "bge-base": 199,
+      "ms-marco": 222,
+      "jina": 199
+    },
+    "n_swap_truncated": {
+      "bge-m3": 267,
+      "bge-base": 267,
+      "ms-marco": 244,
+      "jina": 267
+    },
+    "n_models_mean_abs_delta_prepended_above_swap_in_window": 4,
+    "mean_abs_delta_ratio_prepended_to_swap_in_window": {
+      "bge-m3": 2.344475949853145,
+      "bge-base": 3.156054684085761,
+      "ms-marco": 1.7861069165369814,
+      "jina": 2.5933533508024533
+    },
+    "mean_abs_delta_ratio_prepended_to_swap_in_window_min": 1.7861069165369814,
+    "mean_abs_delta_ratio_prepended_to_swap_in_window_max": 3.156054684085761,
+    "share_prepended_minus_swap_in_window": {
+      "bge-m3": 6.789281320651867,
+      "bge-base": -5.051338494487851,
+      "ms-marco": 1.0771292928969274,
+      "jina": 0.33019275392969405
+    },
+    "n_models_share_prepended_above_swap_in_window": 3,
+    "max_abs_share_prepended_minus_swap_in_window": 6.789281320651867,
+    "max_abs_share_prepended_minus_swap_in_window_model": "bge-m3"
+  },
   "notes": {
     "window": "outside-window comparisons are rows with marker_in_token_window false: every gender marker lies beyond the model's tokenizer window (512 tokens) for the (query, résumé) pair, so the two forms' token ids are identical and the scores tie. Counts differ by tokenizer (MiniLM uses a different vocabulary). The character-based marker_in_scored_window heuristic is not used.",
     "shares": "tie-aware % male-favored (ties count half), full precision; Table A6 prints the all-comparison values to one decimal",
     "magnitude": "mean |score_male - score_female| on each model's own output scale (its CrossEncoder default: scores in (0, 1) for BGE and Jina, unbounded logits for MiniLM). Both runs score a given model on the same scale (see score_range), so each ratio compares like with like; ratios are not comparable to raw score gaps across models",
-    "flips": "top-3 membership from the exact-k ranks; net_female_form = female-form-only minus male-form-only. The binomial p tests female_form_only ~ Binomial(n_flips, 1/2) and is descriptive only: the 3,840 comparisons come from 192 pools of 20 focal comparisons that share their other members, and 1,952 distinct résumés fill them, so flips are not independent"
+    "flips": "top-3 membership from the exact-k ranks; net_female_form = female-form-only minus male-form-only. The binomial p tests female_form_only ~ Binomial(n_flips, 1/2) and is descriptive only: the 3,840 comparisons come from 192 pools of 20 focal comparisons that share their other members, and 1,952 distinct résumés fill them, so flips are not independent",
+    "by_construction": "prepended = mode inject: a frequency-matched male or female given name, with one surname shared by both forms, prepended and any pronouns made to agree with it; swap_in_window / swap_truncated = mode swap with marker_in_token_window true / false. Every prepended comparison has its marker in the window, so prepended plus swap_in_window are the in-window comparisons and swap_truncated the outside-window ties. n_prepended_document_carried_a_name counts prepended comparisons whose document carried a detected given name that swapping could not change, so that name stays in both forms. ratio_synthetic_to_companion is the model's synthetic mean |score_male - score_female| over the group's (null when the group's is 0). Shares, gaps and flips are defined as above"
   },
   "models": {
     "bge-m3": {
@@ -143,6 +184,47 @@
         "net_female_form": 8,
         "binomial_p_two_sided": 0.439705429185822,
         "n_pools_with_a_flip": 58
+      },
+      "by_construction": {
+        "prepended": {
+          "n": 3374,
+          "n_ties": 0,
+          "tie_aware_pct_male": 52.0154119739182,
+          "mean_abs_delta": 0.0020871960586960887,
+          "ratio_synthetic_to_companion": 17.154228270098507,
+          "top3": {
+            "n_flips": 78,
+            "flip_rate_pct": 2.3117960877296975,
+            "male_form_only": 35,
+            "female_form_only": 43
+          }
+        },
+        "swap_in_window": {
+          "n": 199,
+          "n_ties": 0,
+          "tie_aware_pct_male": 45.22613065326633,
+          "mean_abs_delta": 0.0008902612367709842,
+          "ratio_synthetic_to_companion": 40.21767561753687,
+          "top3": {
+            "n_flips": 4,
+            "flip_rate_pct": 2.0100502512562812,
+            "male_form_only": 2,
+            "female_form_only": 2
+          }
+        },
+        "swap_truncated": {
+          "n": 267,
+          "n_ties": 267,
+          "tie_aware_pct_male": 50.0,
+          "mean_abs_delta": 0.0,
+          "ratio_synthetic_to_companion": null,
+          "top3": {
+            "n_flips": 0,
+            "flip_rate_pct": 0.0,
+            "male_form_only": 0,
+            "female_form_only": 0
+          }
+        }
       }
     },
     "bge-base": {
@@ -213,6 +295,47 @@
         "net_female_form": 23,
         "binomial_p_two_sided": 0.028089467947778154,
         "n_pools_with_a_flip": 74
+      },
+      "by_construction": {
+        "prepended": {
+          "n": 3374,
+          "n_ties": 2,
+          "tie_aware_pct_male": 45.702430349733255,
+          "mean_abs_delta": 0.0005864863499940166,
+          "ratio_synthetic_to_companion": 63.58613968926926,
+          "top3": {
+            "n_flips": 96,
+            "flip_rate_pct": 2.8452874925903973,
+            "male_form_only": 37,
+            "female_form_only": 59
+          }
+        },
+        "swap_in_window": {
+          "n": 199,
+          "n_ties": 2,
+          "tie_aware_pct_male": 50.753768844221106,
+          "mean_abs_delta": 0.00018582895694150772,
+          "ratio_synthetic_to_companion": 200.68133400924975,
+          "top3": {
+            "n_flips": 5,
+            "flip_rate_pct": 2.512562814070352,
+            "male_form_only": 2,
+            "female_form_only": 3
+          }
+        },
+        "swap_truncated": {
+          "n": 267,
+          "n_ties": 267,
+          "tie_aware_pct_male": 50.0,
+          "mean_abs_delta": 0.0,
+          "ratio_synthetic_to_companion": null,
+          "top3": {
+            "n_flips": 0,
+            "flip_rate_pct": 0.0,
+            "male_form_only": 0,
+            "female_form_only": 0
+          }
+        }
       }
     },
     "ms-marco": {
@@ -283,6 +406,47 @@
         "net_female_form": 9,
         "binomial_p_two_sided": 0.03515625,
         "n_pools_with_a_flip": 13
+      },
+      "by_construction": {
+        "prepended": {
+          "n": 3374,
+          "n_ties": 0,
+          "tie_aware_pct_male": 36.66271487848251,
+          "mean_abs_delta": 0.062003977791084366,
+          "ratio_synthetic_to_companion": 4.511715985009528,
+          "top3": {
+            "n_flips": 15,
+            "flip_rate_pct": 0.44457617071724953,
+            "male_form_only": 3,
+            "female_form_only": 12
+          }
+        },
+        "swap_in_window": {
+          "n": 222,
+          "n_ties": 0,
+          "tie_aware_pct_male": 35.585585585585584,
+          "mean_abs_delta": 0.03471459475186494,
+          "ratio_synthetic_to_companion": 8.058407126275977,
+          "top3": {
+            "n_flips": 0,
+            "flip_rate_pct": 0.0,
+            "male_form_only": 0,
+            "female_form_only": 0
+          }
+        },
+        "swap_truncated": {
+          "n": 244,
+          "n_ties": 244,
+          "tie_aware_pct_male": 50.0,
+          "mean_abs_delta": 0.0,
+          "ratio_synthetic_to_companion": null,
+          "top3": {
+            "n_flips": 0,
+            "flip_rate_pct": 0.0,
+            "male_form_only": 0,
+            "female_form_only": 0
+          }
+        }
       }
     },
     "jina": {
@@ -353,6 +517,47 @@
         "net_female_form": 23,
         "binomial_p_two_sided": 0.004444019471066869,
         "n_pools_with_a_flip": 50
+      },
+      "by_construction": {
+        "prepended": {
+          "n": 3374,
+          "n_ties": 368,
+          "tie_aware_pct_male": 40.782454060462356,
+          "mean_abs_delta": 0.004255420298143894,
+          "ratio_synthetic_to_companion": 4.375363151034599,
+          "top3": {
+            "n_flips": 60,
+            "flip_rate_pct": 1.7783046828689981,
+            "male_form_only": 19,
+            "female_form_only": 41
+          }
+        },
+        "swap_in_window": {
+          "n": 199,
+          "n_ties": 63,
+          "tie_aware_pct_male": 40.45226130653266,
+          "mean_abs_delta": 0.0016408949042085426,
+          "ratio_synthetic_to_companion": 11.346862688713157,
+          "top3": {
+            "n_flips": 1,
+            "flip_rate_pct": 0.5025125628140703,
+            "male_form_only": 0,
+            "female_form_only": 1
+          }
+        },
+        "swap_truncated": {
+          "n": 267,
+          "n_ties": 267,
+          "tie_aware_pct_male": 50.0,
+          "mean_abs_delta": 0.0,
+          "ratio_synthetic_to_companion": null,
+          "top3": {
+            "n_flips": 0,
+            "flip_rate_pct": 0.0,
+            "male_form_only": 0,
+            "female_form_only": 0
+          }
+        }
       }
     }
   }

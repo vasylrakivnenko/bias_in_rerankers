@@ -133,6 +133,10 @@ def fig_single_stage():
             # credit every tie to the woman's document.
             "male_jobs": male["tie_aware_pct_male"],
             "female_jobs": fem["tie_aware_pct_male"],
+            # Occupation-clustered bootstrap 95% percentile intervals for the
+            # same tie-aware share, [lo, hi] in percent.
+            "male_ci": male["tie_aware_pct_male_ci"],
+            "female_ci": fem["tie_aware_pct_male_ci"],
         })
 
     # Largest shift first, so both the common direction and the exceptions at
@@ -156,6 +160,17 @@ def fig_single_stage():
     for y, r in zip(ypos, rows):
         ax.plot([r["female_jobs"], r["male_jobs"]], [y, y],
                 color="#b9c0c7", lw=2.0, solid_capstyle="round", zorder=2)
+    # 95% occupation-clustered intervals as thin, capless whiskers in the
+    # series colour at reduced alpha, drawn above the grey connector and below
+    # the dots so the dots stay legible. The two series are staggered by
+    # +/-0.15 of the row pitch (male-typed above, female-typed below on the
+    # inverted axis) so the two whiskers never lie on top of each other or on
+    # the connector where the intervals overlap; the dots stay on the row centre.
+    ci_offset = 0.15
+    for series, off, col in (("male", -ci_offset, MALE), ("female", ci_offset, FEMALE)):
+        lo = [r[f"{series}_ci"][0] for r in rows]
+        hi = [r[f"{series}_ci"][1] for r in rows]
+        ax.hlines(ypos + off, lo, hi, color=col, lw=1.0, alpha=0.6, zorder=3)
     ax.scatter([r["female_jobs"] for r in rows], ypos, s=34, color=FEMALE,
                edgecolor="white", linewidth=0.6, zorder=4)
     ax.scatter([r["male_jobs"] for r in rows], ypos, s=34, color=MALE,
@@ -192,10 +207,12 @@ def fig_single_stage():
 
     fig.savefig(f"{FIGDIR}/fig_single_stage.pdf")
     plt.close(fig)
-    print("wrote fig_single_stage.pdf  (%d directly labelled models; shifts %.1f--%.1f points)"
+    print("wrote fig_single_stage.pdf  (%d directly labelled models; shifts %.1f--%.1f points; "
+          "widest 95%% interval %.1f points)"
           % (len(rows),
              min(r["male_jobs"] - r["female_jobs"] for r in rows),
-             max(r["male_jobs"] - r["female_jobs"] for r in rows)))
+             max(r["male_jobs"] - r["female_jobs"] for r in rows),
+             max(r[k][1] - r[k][0] for r in rows for k in ("male_ci", "female_ci"))))
     return rows
 
 

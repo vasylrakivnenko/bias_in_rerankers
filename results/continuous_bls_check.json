@@ -1,0 +1,2392 @@
+{
+  "script_version": "continuous_bls_check.py v1.0",
+  "generated": "2026-10-17T15:36:02",
+  "label_source": "BLS CPS Table 11 via occupations_bls.csv",
+  "seed": 20260822,
+  "seed_note": "every permutation and bootstrap stream is np.random.default_rng(stable_seed(model, purpose, ...)) with analyze_single_stage.stable_seed, derived from `seed`",
+  "n_permutations": 100000,
+  "bootstrap_B": 1000,
+  "alpha": 0.05,
+  "definition": "occupation-level tie-aware % male-favored share ((wins_M + 0.5 * ties) / pairs) against the BLS CPS Table 11 % women, continuously and under alternative cut-points",
+  "inputs": [
+    "results/single_stage_summary.json",
+    "results/*_full_raw.json",
+    "code/occupations_bls.csv"
+  ],
+  "n_models": 29,
+  "n_models_fully_scored": 14,
+  "occupation_sets": {
+    "kept_52": {
+      "n": 52,
+      "label_counts": {
+        "male": 18,
+        "female": 21,
+        "neutral": 13
+      }
+    },
+    "all_with_pct_women": {
+      "n": 63,
+      "n_added": 11,
+      "added": [
+        "CEO",
+        "baker",
+        "cashier",
+        "cleaner",
+        "editor",
+        "executive",
+        "janitor",
+        "manager",
+        "pharmacist",
+        "translator",
+        "writer"
+      ],
+      "n_without_pct_women": 19
+    }
+  },
+  "continuous": {
+    "occupation_set": "kept_52",
+    "n_occupations": 52,
+    "n_models": 29,
+    "alpha": 0.05,
+    "adjustment": "Holm across the 29 models",
+    "n_models_rho_negative": 28,
+    "n_models_tau_negative": 28,
+    "n_models_slope_negative": 28,
+    "n_models_perm_p_below_alpha": 28,
+    "n_models_holm_below_alpha": 27,
+    "n_models_negative_perm_significant": 27,
+    "n_models_negative_holm_significant": 27,
+    "n_models_positive_perm_significant": 1,
+    "n_models_positive_holm_significant": 0,
+    "models_positive_perm_significant": [
+      "Alibaba-NLP/gte-reranker-modernbert-base"
+    ],
+    "median_rho": -0.7492634213240383,
+    "min_rho": -0.8966952734725246,
+    "max_rho": 0.2930070016324253,
+    "median_tau": -0.5585452642769484,
+    "median_slope_per_10_points": -4.639527313996226,
+    "min_slope_per_10_points": -9.548939785744588,
+    "max_slope_per_10_points": 0.7537844620669497,
+    "models_rho_not_negative": [
+      "Alibaba-NLP/gte-reranker-modernbert-base"
+    ],
+    "models_perm_p_not_below_alpha": [
+      "jinaai/jina-reranker-v3"
+    ],
+    "models_not_holm_significant": [
+      "Alibaba-NLP/gte-reranker-modernbert-base",
+      "jinaai/jina-reranker-v3"
+    ],
+    "models": {
+      "Alibaba-NLP/gte-reranker-modernbert-base": {
+        "n_occupations": 52,
+        "spearman_rho": 0.2930070016324253,
+        "perm_p_two_sided": 0.035919640803591966,
+        "n_permutations_at_least_as_extreme": 3591,
+        "kendall_tau": 0.20343283756600597,
+        "kendall_p_asymptotic": 0.03494524942144836,
+        "pearson_r": 0.24013817344227392,
+        "slope_per_10_points": 0.7537844620669497,
+        "intercept": 61.60564161864817,
+        "p_holm": 0.07183928160718393
+      },
+      "BAAI/bge-reranker-base": {
+        "n_occupations": 52,
+        "spearman_rho": -0.46073533557668656,
+        "perm_p_two_sided": 0.0006599934000659993,
+        "n_permutations_at_least_as_extreme": 65,
+        "kendall_tau": -0.335988468966921,
+        "kendall_p_asymptotic": 0.0004697303682120764,
+        "pearson_r": -0.4661113073125558,
+        "slope_per_10_points": -3.0640631425574965,
+        "intercept": 62.6118905820501,
+        "p_holm": 0.0026399736002639972
+      },
+      "BAAI/bge-reranker-large": {
+        "n_occupations": 52,
+        "spearman_rho": -0.7067826535226133,
+        "perm_p_two_sided": 9.99990000099999e-06,
+        "n_permutations_at_least_as_extreme": 0,
+        "kendall_tau": -0.5178096284693939,
+        "kendall_p_asymptotic": 8.781052432152542e-08,
+        "pearson_r": -0.6949337866830295,
+        "slope_per_10_points": -2.8506923373234185,
+        "intercept": 59.66560161493762,
+        "p_holm": 0.00028999710002899974
+      },
+      "BAAI/bge-reranker-v2-m3": {
+        "n_occupations": 52,
+        "spearman_rho": -0.5403218377354065,
+        "perm_p_two_sided": 5.999940000599994e-05,
+        "n_permutations_at_least_as_extreme": 5,
+        "kendall_tau": -0.3832196172691228,
+        "kendall_p_asymptotic": 7.308802452909522e-05,
+        "pearson_r": -0.45581956027823634,
+        "slope_per_10_points": -2.3434588659100135,
+        "intercept": 89.92685721517121,
+        "p_holm": 0.0003599964000359997
+      },
+      "Cohere-rerank-v4.0-fast": {
+        "n_occupations": 52,
+        "spearman_rho": -0.6942095880689739,
+        "perm_p_two_sided": 9.99990000099999e-06,
+        "n_permutations_at_least_as_extreme": 0,
+        "kendall_tau": -0.5058788009050481,
+        "kendall_p_asymptotic": 1.3949591489613928e-07,
+        "pearson_r": -0.7144838943193472,
+        "slope_per_10_points": -4.668085517991876,
+        "intercept": 77.66074533855839,
+        "p_holm": 0.00028999710002899974
+      },
+      "Cohere-rerank-v4.0-pro": {
+        "n_occupations": 52,
+        "spearman_rho": -0.8708878596438276,
+        "perm_p_two_sided": 9.99990000099999e-06,
+        "n_permutations_at_least_as_extreme": 0,
+        "kendall_tau": -0.6757473052732422,
+        "kendall_p_asymptotic": 1.8059282961377263e-12,
+        "pearson_r": -0.8604103340305229,
+        "slope_per_10_points": -5.873757548495172,
+        "intercept": 80.01405250727329,
+        "p_holm": 0.00028999710002899974
+      },
+      "Qwen/Qwen3-Reranker-0.6B": {
+        "n_occupations": 52,
+        "spearman_rho": -0.6699543145040775,
+        "perm_p_two_sided": 9.99990000099999e-06,
+        "n_permutations_at_least_as_extreme": 0,
+        "kendall_tau": -0.49507948523845574,
+        "kendall_p_asymptotic": 2.4384478105860163e-07,
+        "pearson_r": -0.6691433357264333,
+        "slope_per_10_points": -4.363406316718065,
+        "intercept": 78.7761134937834,
+        "p_holm": 0.00028999710002899974
+      },
+      "Qwen/Qwen3-Reranker-4B": {
+        "n_occupations": 52,
+        "spearman_rho": -0.7170613017778997,
+        "perm_p_two_sided": 9.99990000099999e-06,
+        "n_permutations_at_least_as_extreme": 0,
+        "kendall_tau": -0.5276730857553297,
+        "kendall_p_asymptotic": 3.9139072596316813e-08,
+        "pearson_r": -0.697136341269631,
+        "slope_per_10_points": -3.1795181395276457,
+        "intercept": 64.47811700032106,
+        "p_holm": 0.00028999710002899974
+      },
+      "cohere/rerank-v3.5": {
+        "n_occupations": 52,
+        "spearman_rho": -0.7561652694685583,
+        "perm_p_two_sided": 9.99990000099999e-06,
+        "n_permutations_at_least_as_extreme": 0,
+        "kendall_tau": -0.5751152986327954,
+        "kendall_p_asymptotic": 2.1700978698887905e-09,
+        "pearson_r": -0.7230856195453467,
+        "slope_per_10_points": -5.621068488007835,
+        "intercept": 97.79362099074903,
+        "p_holm": 0.00028999710002899974
+      },
+      "cross-encoder/ms-marco-MiniLM-L-12-v2": {
+        "n_occupations": 52,
+        "spearman_rho": -0.5451575509741664,
+        "perm_p_two_sided": 2.999970000299997e-05,
+        "n_permutations_at_least_as_extreme": 2,
+        "kendall_tau": -0.4065909639896326,
+        "kendall_p_asymptotic": 2.6241943393409217e-05,
+        "pearson_r": -0.5078668113663909,
+        "slope_per_10_points": -3.951301918166977,
+        "intercept": 94.7246772964474,
+        "p_holm": 0.00028999710002899974
+      },
+      "cross-encoder/ms-marco-MiniLM-L6-v2": {
+        "n_occupations": 52,
+        "spearman_rho": -0.5373393536003243,
+        "perm_p_two_sided": 2.999970000299997e-05,
+        "n_permutations_at_least_as_extreme": 2,
+        "kendall_tau": -0.3872042322486916,
+        "kendall_p_asymptotic": 5.9954554288643815e-05,
+        "pearson_r": -0.5416268228789334,
+        "slope_per_10_points": -3.879912571138857,
+        "intercept": 97.36703303666097,
+        "p_holm": 0.00028999710002899974
+      },
+      "ibm-granite-granite-embedding-reranker-english-r2": {
+        "n_occupations": 52,
+        "spearman_rho": -0.627423785098548,
+        "perm_p_two_sided": 9.99990000099999e-06,
+        "n_permutations_at_least_as_extreme": 0,
+        "kendall_tau": -0.46110791699115533,
+        "kendall_p_asymptotic": 2.0206374368875343e-06,
+        "pearson_r": -0.5827601209284637,
+        "slope_per_10_points": -2.2317580097172924,
+        "intercept": 95.57368138741276,
+        "p_holm": 0.00028999710002899974
+      },
+      "jinaai/jina-reranker-v2-base-multilingual": {
+        "n_occupations": 52,
+        "spearman_rho": -0.42236741315065635,
+        "perm_p_two_sided": 0.0018499815001849981,
+        "n_permutations_at_least_as_extreme": 184,
+        "kendall_tau": -0.28896525209118934,
+        "kendall_p_asymptotic": 0.0026300419544530115,
+        "pearson_r": -0.41693684309502604,
+        "slope_per_10_points": -2.0787158913591184,
+        "intercept": 52.458928509186954,
+        "p_holm": 0.005549944500554994
+      },
+      "jinaai/jina-reranker-v3": {
+        "n_occupations": 52,
+        "spearman_rho": -0.08343846854249914,
+        "perm_p_two_sided": 0.5573744262557374,
+        "n_permutations_at_least_as_extreme": 55737,
+        "kendall_tau": -0.05293917848983314,
+        "kendall_p_asymptotic": 0.5854436786413935,
+        "pearson_r": -0.07828060787588678,
+        "slope_per_10_points": -0.1241572175940964,
+        "intercept": 33.755360519558025,
+        "p_holm": 0.5573744262557374
+      },
+      "mixedbread-ai/mxbai-rerank-large-v2": {
+        "n_occupations": 52,
+        "spearman_rho": -0.7492634213240383,
+        "perm_p_two_sided": 9.99990000099999e-06,
+        "n_permutations_at_least_as_extreme": 0,
+        "kendall_tau": -0.5585452642769484,
+        "kendall_p_asymptotic": 5.948684471397834e-09,
+        "pearson_r": -0.7195017325085428,
+        "slope_per_10_points": -3.2879211533964243,
+        "intercept": 82.16791468669597,
+        "p_holm": 0.00028999710002899974
+      },
+      "nvidia/llama-nemotron-rerank-1b-v2": {
+        "n_occupations": 52,
+        "spearman_rho": -0.8457695527499793,
+        "perm_p_two_sided": 9.99990000099999e-06,
+        "n_permutations_at_least_as_extreme": 0,
+        "kendall_tau": -0.6722247617552962,
+        "kendall_p_asymptotic": 2.5195094701999377e-12,
+        "pearson_r": -0.8185171287040571,
+        "slope_per_10_points": -6.467003577563688,
+        "intercept": 97.31088681754981,
+        "p_holm": 0.00028999710002899974
+      },
+      "nvidia/llama-nemotron-rerank-vl-1b-v2": {
+        "n_occupations": 52,
+        "spearman_rho": -0.8327178022092606,
+        "perm_p_two_sided": 9.99990000099999e-06,
+        "n_permutations_at_least_as_extreme": 0,
+        "kendall_tau": -0.640938373534643,
+        "kendall_p_asymptotic": 2.2996133726712475e-11,
+        "pearson_r": -0.8163712007848463,
+        "slope_per_10_points": -4.777934972827694,
+        "intercept": 87.51533869569693,
+        "p_holm": 0.00028999710002899974
+      },
+      "qwen/qwen3-reranker-8b": {
+        "n_occupations": 52,
+        "spearman_rho": -0.8846309858765379,
+        "perm_p_two_sided": 9.99990000099999e-06,
+        "n_permutations_at_least_as_extreme": 0,
+        "kendall_tau": -0.6967058432040539,
+        "kendall_p_asymptotic": 3.8063980058576567e-13,
+        "pearson_r": -0.8679706463984358,
+        "slope_per_10_points": -4.639527313996226,
+        "intercept": 74.08426165707971,
+        "p_holm": 0.00028999710002899974
+      },
+      "rerank-1": {
+        "n_occupations": 52,
+        "spearman_rho": -0.7652270448574614,
+        "perm_p_two_sided": 9.99990000099999e-06,
+        "n_permutations_at_least_as_extreme": 0,
+        "kendall_tau": -0.5929572556834503,
+        "kendall_p_asymptotic": 6.376724155661815e-10,
+        "pearson_r": -0.7353377521420006,
+        "slope_per_10_points": -4.9159915223849575,
+        "intercept": 89.68261388124718,
+        "p_holm": 0.00028999710002899974
+      },
+      "rerank-2": {
+        "n_occupations": 52,
+        "spearman_rho": -0.8839954744451834,
+        "perm_p_two_sided": 9.99990000099999e-06,
+        "n_permutations_at_least_as_extreme": 0,
+        "kendall_tau": -0.7120696688265632,
+        "kendall_p_asymptotic": 1.106017318947423e-13,
+        "pearson_r": -0.871146417098781,
+        "slope_per_10_points": -8.308618032709624,
+        "intercept": 98.73429320799362,
+        "p_holm": 0.00028999710002899974
+      },
+      "rerank-2-lite": {
+        "n_occupations": 52,
+        "spearman_rho": -0.6082425995122442,
+        "perm_p_two_sided": 9.99990000099999e-06,
+        "n_permutations_at_least_as_extreme": 0,
+        "kendall_tau": -0.4616574064567542,
+        "kendall_p_asymptotic": 1.5798792986792431e-06,
+        "pearson_r": -0.6107368296992556,
+        "slope_per_10_points": -2.650790055127114,
+        "intercept": 49.383847739502116,
+        "p_holm": 0.00028999710002899974
+      },
+      "rerank-2.5": {
+        "n_occupations": 52,
+        "spearman_rho": -0.8966952734725246,
+        "perm_p_two_sided": 9.99990000099999e-06,
+        "n_permutations_at_least_as_extreme": 0,
+        "kendall_tau": -0.7100681302043907,
+        "kendall_p_asymptotic": 1.3201221722519332e-13,
+        "pearson_r": -0.8479589169029875,
+        "slope_per_10_points": -8.334783093124681,
+        "intercept": 111.68564585415092,
+        "p_holm": 0.00028999710002899974
+      },
+      "rerank-2.5-lite": {
+        "n_occupations": 52,
+        "spearman_rho": -0.8380155417082015,
+        "perm_p_two_sided": 9.99990000099999e-06,
+        "n_permutations_at_least_as_extreme": 0,
+        "kendall_tau": -0.6520425466052902,
+        "kendall_p_asymptotic": 1.0189478573184113e-11,
+        "pearson_r": -0.8148625034852105,
+        "slope_per_10_points": -5.055546808326036,
+        "intercept": 86.25653678588763,
+        "p_holm": 0.00028999710002899974
+      },
+      "rerank-3": {
+        "n_occupations": 52,
+        "spearman_rho": -0.8828778829568233,
+        "perm_p_two_sided": 9.99990000099999e-06,
+        "n_permutations_at_least_as_extreme": 0,
+        "kendall_tau": -0.7090911125720886,
+        "kendall_p_asymptotic": 1.481571057512255e-13,
+        "pearson_r": -0.8612714106707084,
+        "slope_per_10_points": -8.818576968921914,
+        "intercept": 105.40394241471301,
+        "p_holm": 0.00028999710002899974
+      },
+      "rerank-3-lite": {
+        "n_occupations": 52,
+        "spearman_rho": -0.8809274768901635,
+        "perm_p_two_sided": 9.99990000099999e-06,
+        "n_permutations_at_least_as_extreme": 0,
+        "kendall_tau": -0.7065967182815622,
+        "kendall_p_asymptotic": 1.8691547939602707e-13,
+        "pearson_r": -0.8799096808552535,
+        "slope_per_10_points": -6.903671743687942,
+        "intercept": 69.3956899432895,
+        "p_holm": 0.00028999710002899974
+      },
+      "semantic-ranker-default-002": {
+        "n_occupations": 52,
+        "spearman_rho": -0.5054238901788832,
+        "perm_p_two_sided": 0.00013999860001399987,
+        "n_permutations_at_least_as_extreme": 13,
+        "kendall_tau": -0.36750359329781085,
+        "kendall_p_asymptotic": 0.00013251606130327154,
+        "pearson_r": -0.46681355185474754,
+        "slope_per_10_points": -3.5804949828739256,
+        "intercept": 96.39373039285665,
+        "p_holm": 0.0006999930000699993
+      },
+      "semantic-ranker-default-004": {
+        "n_occupations": 52,
+        "spearman_rho": -0.8481917936894241,
+        "perm_p_two_sided": 9.99990000099999e-06,
+        "n_permutations_at_least_as_extreme": 0,
+        "kendall_tau": -0.6737320211960637,
+        "kendall_p_asymptotic": 2.1369643154370315e-12,
+        "pearson_r": -0.8453325234466873,
+        "slope_per_10_points": -6.247392505045183,
+        "intercept": 66.72474221648038,
+        "p_holm": 0.00028999710002899974
+      },
+      "semantic-ranker-fast-004": {
+        "n_occupations": 52,
+        "spearman_rho": -0.8424929610510439,
+        "perm_p_two_sided": 9.99990000099999e-06,
+        "n_permutations_at_least_as_extreme": 0,
+        "kendall_tau": -0.6474609414296719,
+        "kendall_p_asymptotic": 1.560152426863222e-11,
+        "pearson_r": -0.8256790003822763,
+        "slope_per_10_points": -5.56952495247402,
+        "intercept": 75.38649582120512,
+        "p_holm": 0.00028999710002899974
+      },
+      "zeroentropy/zerank-2-reranker": {
+        "n_occupations": 52,
+        "spearman_rho": -0.873839063842962,
+        "perm_p_two_sided": 9.99990000099999e-06,
+        "n_permutations_at_least_as_extreme": 0,
+        "kendall_tau": -0.6757691328431752,
+        "kendall_p_asymptotic": 2.0036924247993135e-12,
+        "pearson_r": -0.8646829920395731,
+        "slope_per_10_points": -9.548939785744588,
+        "intercept": 108.65534793912366,
+        "p_holm": 0.00028999710002899974
+      }
+    },
+    "definition": "per model: Spearman rho, Kendall tau-b and the OLS slope between an occupation's tie-aware % male-favored share and its BLS % women, over the 52 kept occupations; the permutation p permutes % women across occupations",
+    "n_permutations": 100000,
+    "min_attainable_p": 9.99990000099999e-06,
+    "across_model_median_share": {
+      "n_occupations": 52,
+      "spearman_rho": -0.9152006840110533,
+      "perm_p_two_sided": 9.99990000099999e-06,
+      "n_permutations_at_least_as_extreme": 0,
+      "kendall_tau": -0.7515153671704187,
+      "kendall_p_asymptotic": 4.84514921329532e-15,
+      "pearson_r": -0.8574845847809307,
+      "slope_per_10_points": -5.299895288348474,
+      "intercept": 84.77476644378619
+    }
+  },
+  "continuous_82": {
+    "occupation_set": "all_with_pct_women",
+    "n_occupations": 63,
+    "n_models": 14,
+    "alpha": 0.05,
+    "adjustment": "Holm across the 14 models",
+    "n_models_rho_negative": 14,
+    "n_models_tau_negative": 14,
+    "n_models_slope_negative": 14,
+    "n_models_perm_p_below_alpha": 14,
+    "n_models_holm_below_alpha": 14,
+    "n_models_negative_perm_significant": 14,
+    "n_models_negative_holm_significant": 14,
+    "n_models_positive_perm_significant": 0,
+    "n_models_positive_holm_significant": 0,
+    "models_positive_perm_significant": [],
+    "median_rho": -0.6572063707595401,
+    "min_rho": -0.8971936818410092,
+    "max_rho": -0.40843177092510996,
+    "median_tau": -0.4828106364625471,
+    "median_slope_per_10_points": -4.504779567191054,
+    "min_slope_per_10_points": -8.100009610323099,
+    "max_slope_per_10_points": -2.1346273493518693,
+    "models_rho_not_negative": [],
+    "models_perm_p_not_below_alpha": [],
+    "models_not_holm_significant": [],
+    "models": {
+      "BAAI/bge-reranker-v2-m3": {
+        "n_occupations": 63,
+        "spearman_rho": -0.4833588698996832,
+        "perm_p_two_sided": 6.999930000699993e-05,
+        "n_permutations_at_least_as_extreme": 6,
+        "kendall_tau": -0.34017475281403253,
+        "kendall_p_asymptotic": 9.813846600795212e-05,
+        "pearson_r": -0.4390506752714716,
+        "slope_per_10_points": -2.2744590032684338,
+        "intercept": 90.3571192566368,
+        "rho_on_kept_52": -0.5403218377354065,
+        "rho_change": 0.056962967835723355,
+        "slope_on_kept_52_per_10_points": -2.3434588659100135,
+        "p_holm": 0.0002099979000209998
+      },
+      "Cohere-rerank-v4.0-fast": {
+        "n_occupations": 63,
+        "spearman_rho": -0.6079274029904296,
+        "perm_p_two_sided": 9.99990000099999e-06,
+        "n_permutations_at_least_as_extreme": 0,
+        "kendall_tau": -0.43283633682564426,
+        "kendall_p_asymptotic": 6.040587176154256e-07,
+        "pearson_r": -0.6452028891466233,
+        "slope_per_10_points": -4.373746372071794,
+        "intercept": 77.40195216819019,
+        "rho_on_kept_52": -0.6942095880689739,
+        "rho_change": 0.08628218507854435,
+        "slope_on_kept_52_per_10_points": -4.668085517991876,
+        "p_holm": 0.00013999860001399987
+      },
+      "Cohere-rerank-v4.0-pro": {
+        "n_occupations": 63,
+        "spearman_rho": -0.8374342847540629,
+        "perm_p_two_sided": 9.99990000099999e-06,
+        "n_permutations_at_least_as_extreme": 0,
+        "kendall_tau": -0.6377183967112026,
+        "kendall_p_asymptotic": 1.8077884886051262e-13,
+        "pearson_r": -0.82284789058488,
+        "slope_per_10_points": -5.65885540342844,
+        "intercept": 79.67748810748303,
+        "rho_on_kept_52": -0.8708878596438276,
+        "rho_change": 0.03345357488976475,
+        "slope_on_kept_52_per_10_points": -5.873757548495172,
+        "p_holm": 0.00013999860001399987
+      },
+      "cross-encoder/ms-marco-MiniLM-L-12-v2": {
+        "n_occupations": 63,
+        "spearman_rho": -0.5471733388949623,
+        "perm_p_two_sided": 9.99990000099999e-06,
+        "n_permutations_at_least_as_extreme": 0,
+        "kendall_tau": -0.41765866714725014,
+        "kendall_p_asymptotic": 1.7536002206726678e-06,
+        "pearson_r": -0.4961813253011316,
+        "slope_per_10_points": -3.8019388674379924,
+        "intercept": 95.25525009539705,
+        "rho_on_kept_52": -0.5451575509741664,
+        "rho_change": -0.0020157879207959306,
+        "slope_on_kept_52_per_10_points": -3.951301918166977,
+        "p_holm": 0.00013999860001399987
+      },
+      "ibm-granite-granite-embedding-reranker-english-r2": {
+        "n_occupations": 63,
+        "spearman_rho": -0.5877607174868488,
+        "perm_p_two_sided": 9.99990000099999e-06,
+        "n_permutations_at_least_as_extreme": 0,
+        "kendall_tau": -0.43000137434529895,
+        "kendall_p_asymptotic": 9.759773763216198e-07,
+        "pearson_r": -0.5595106777588043,
+        "slope_per_10_points": -2.1346273493518693,
+        "intercept": 95.94495711730409,
+        "rho_on_kept_52": -0.627423785098548,
+        "rho_change": 0.03966306761169924,
+        "slope_on_kept_52_per_10_points": -2.2317580097172924,
+        "p_holm": 0.00013999860001399987
+      },
+      "jinaai/jina-reranker-v2-base-multilingual": {
+        "n_occupations": 63,
+        "spearman_rho": -0.40843177092510996,
+        "perm_p_two_sided": 0.0008599914000859991,
+        "n_permutations_at_least_as_extreme": 85,
+        "kendall_tau": -0.2743183918288566,
+        "kendall_p_asymptotic": 0.0015640501616958752,
+        "pearson_r": -0.39686080390616213,
+        "slope_per_10_points": -2.1376751341241365,
+        "intercept": 54.11027241287187,
+        "rho_on_kept_52": -0.42236741315065635,
+        "rho_change": 0.013935642225546385,
+        "slope_on_kept_52_per_10_points": -2.0787158913591184,
+        "p_holm": 0.0008599914000859991
+      },
+      "rerank-1": {
+        "n_occupations": 63,
+        "spearman_rho": -0.7064853385286508,
+        "perm_p_two_sided": 9.99990000099999e-06,
+        "n_permutations_at_least_as_extreme": 0,
+        "kendall_tau": -0.53278493609945,
+        "kendall_p_asymptotic": 7.923973623318995e-10,
+        "pearson_r": -0.6841126176402494,
+        "slope_per_10_points": -4.635812762310313,
+        "intercept": 89.84702280345508,
+        "rho_on_kept_52": -0.7652270448574614,
+        "rho_change": 0.058741706328810595,
+        "slope_on_kept_52_per_10_points": -4.9159915223849575,
+        "p_holm": 0.00013999860001399987
+      },
+      "rerank-2": {
+        "n_occupations": 63,
+        "spearman_rho": -0.8585711885157358,
+        "perm_p_two_sided": 9.99990000099999e-06,
+        "n_permutations_at_least_as_extreme": 0,
+        "kendall_tau": -0.6832777004256921,
+        "kendall_p_asymptotic": 3.015984849108775e-15,
+        "pearson_r": -0.8439915316112899,
+        "slope_per_10_points": -8.06911026545662,
+        "intercept": 99.19805206232742,
+        "rho_on_kept_52": -0.8839954744451834,
+        "rho_change": 0.025424285929447676,
+        "slope_on_kept_52_per_10_points": -8.308618032709624,
+        "p_holm": 0.00013999860001399987
+      },
+      "rerank-2-lite": {
+        "n_occupations": 63,
+        "spearman_rho": -0.5407858314854525,
+        "perm_p_two_sided": 1.999980000199998e-05,
+        "n_permutations_at_least_as_extreme": 1,
+        "kendall_tau": -0.3883605590103208,
+        "kendall_p_asymptotic": 7.674915632802656e-06,
+        "pearson_r": -0.52185556140139,
+        "slope_per_10_points": -2.6837561620529815,
+        "intercept": 51.94943533408174,
+        "rho_on_kept_52": -0.6082425995122442,
+        "rho_change": 0.06745676802679179,
+        "slope_on_kept_52_per_10_points": -2.650790055127114,
+        "p_holm": 0.00013999860001399987
+      },
+      "rerank-2.5": {
+        "n_occupations": 63,
+        "spearman_rho": -0.8971936818410092,
+        "perm_p_two_sided": 9.99990000099999e-06,
+        "n_permutations_at_least_as_extreme": 0,
+        "kendall_tau": -0.7151671896388786,
+        "kendall_p_asymptotic": 1.5516201903167775e-16,
+        "pearson_r": -0.8300469409329034,
+        "slope_per_10_points": -8.100009610323099,
+        "intercept": 111.82061241013346,
+        "rho_on_kept_52": -0.8966952734725246,
+        "rho_change": -0.0004984083684845819,
+        "slope_on_kept_52_per_10_points": -8.334783093124681,
+        "p_holm": 0.00013999860001399987
+      },
+      "rerank-2.5-lite": {
+        "n_occupations": 63,
+        "spearman_rho": -0.7827188057370632,
+        "perm_p_two_sided": 9.99990000099999e-06,
+        "n_permutations_at_least_as_extreme": 0,
+        "kendall_tau": -0.5983565247360874,
+        "kendall_p_asymptotic": 4.806519802355321e-12,
+        "pearson_r": -0.7757415769518637,
+        "slope_per_10_points": -4.948573994552156,
+        "intercept": 85.00549537417433,
+        "rho_on_kept_52": -0.8380155417082015,
+        "rho_change": 0.05529673597113827,
+        "slope_on_kept_52_per_10_points": -5.055546808326036,
+        "p_holm": 0.00013999860001399987
+      },
+      "semantic-ranker-default-002": {
+        "n_occupations": 63,
+        "spearman_rho": -0.47756195890314734,
+        "perm_p_two_sided": 0.00013999860001399987,
+        "n_permutations_at_least_as_extreme": 13,
+        "kendall_tau": -0.3423582000360835,
+        "kendall_p_asymptotic": 8.13657371152736e-05,
+        "pearson_r": -0.4425308736695894,
+        "slope_per_10_points": -3.437619189868813,
+        "intercept": 98.10814637789095,
+        "rho_on_kept_52": -0.5054238901788832,
+        "rho_change": 0.027861931275735885,
+        "slope_on_kept_52_per_10_points": -3.5804949828739256,
+        "p_holm": 0.00027999720002799973
+      },
+      "semantic-ranker-default-004": {
+        "n_occupations": 63,
+        "spearman_rho": -0.8007993951100785,
+        "perm_p_two_sided": 9.99990000099999e-06,
+        "n_permutations_at_least_as_extreme": 0,
+        "kendall_tau": -0.6198920790689204,
+        "kendall_p_asymptotic": 8.380821141404583e-13,
+        "pearson_r": -0.7882061311928567,
+        "slope_per_10_points": -6.06291880799387,
+        "intercept": 65.05764767218211,
+        "rho_on_kept_52": -0.8481917936894241,
+        "rho_change": 0.04739239857934563,
+        "slope_on_kept_52_per_10_points": -6.247392505045183,
+        "p_holm": 0.00013999860001399987
+      },
+      "semantic-ranker-fast-004": {
+        "n_occupations": 63,
+        "spearman_rho": -0.8080593496062102,
+        "perm_p_two_sided": 9.99990000099999e-06,
+        "n_permutations_at_least_as_extreme": 0,
+        "kendall_tau": -0.6195014129722193,
+        "kendall_p_asymptotic": 9.092978511298332e-13,
+        "pearson_r": -0.7925655948914678,
+        "slope_per_10_points": -5.683420527989803,
+        "intercept": 77.138838014536,
+        "rho_on_kept_52": -0.8424929610510439,
+        "rho_change": 0.0344336114448337,
+        "slope_on_kept_52_per_10_points": -5.56952495247402,
+        "p_holm": 0.00013999860001399987
+      }
+    },
+    "definition": "as `continuous`, for the models scored on all 82 occupations, over every occupation with a BLS % women: the 52 kept plus the dropped ones in the ambiguous 30-40 / 60-70 bands",
+    "n_permutations": 100000,
+    "n_occupations_added": 11,
+    "added_occupations": [
+      {
+        "occupation": "CEO",
+        "pct_women": 33.0,
+        "bls_title": "Chief executives"
+      },
+      {
+        "occupation": "baker",
+        "pct_women": 62.5,
+        "bls_title": "Bakers"
+      },
+      {
+        "occupation": "cashier",
+        "pct_women": 68.5,
+        "bls_title": "Cashiers"
+      },
+      {
+        "occupation": "cleaner",
+        "pct_women": 36.2,
+        "bls_title": "Janitors and building cleaners"
+      },
+      {
+        "occupation": "editor",
+        "pct_women": 63.2,
+        "bls_title": "Editors"
+      },
+      {
+        "occupation": "executive",
+        "pct_women": 33.0,
+        "bls_title": "Chief executives"
+      },
+      {
+        "occupation": "janitor",
+        "pct_women": 36.2,
+        "bls_title": "Janitors and building cleaners"
+      },
+      {
+        "occupation": "manager",
+        "pct_women": 37.7,
+        "bls_title": "Managers, all other"
+      },
+      {
+        "occupation": "pharmacist",
+        "pct_women": 62.7,
+        "bls_title": "Pharmacists"
+      },
+      {
+        "occupation": "translator",
+        "pct_women": 66.9,
+        "bls_title": "Interpreters and translators"
+      },
+      {
+        "occupation": "writer",
+        "pct_women": 66.8,
+        "bls_title": "Writers and authors"
+      }
+    ],
+    "n_occupations_without_pct_women": 19,
+    "occupations_without_pct_women": [
+      "assistant",
+      "attendant",
+      "boss",
+      "broadcaster",
+      "captain",
+      "chief",
+      "fighter pilot",
+      "financier",
+      "homemaker",
+      "maestro",
+      "magician",
+      "midwife",
+      "philosopher",
+      "protege",
+      "researcher",
+      "skipper",
+      "socialite",
+      "supervisor",
+      "warrior"
+    ],
+    "models_fully_scored": [
+      "BAAI/bge-reranker-v2-m3",
+      "Cohere-rerank-v4.0-fast",
+      "Cohere-rerank-v4.0-pro",
+      "cross-encoder/ms-marco-MiniLM-L-12-v2",
+      "ibm-granite-granite-embedding-reranker-english-r2",
+      "jinaai/jina-reranker-v2-base-multilingual",
+      "rerank-1",
+      "rerank-2",
+      "rerank-2-lite",
+      "rerank-2.5",
+      "rerank-2.5-lite",
+      "semantic-ranker-default-002",
+      "semantic-ranker-default-004",
+      "semantic-ranker-fast-004"
+    ],
+    "same_models_on_kept_52": {
+      "n_models": 14,
+      "n_models_rho_negative": 14,
+      "n_models_tau_negative": 14,
+      "n_models_slope_negative": 14,
+      "n_models_perm_p_below_alpha": 14,
+      "n_models_holm_below_alpha": 14,
+      "n_models_negative_perm_significant": 14,
+      "n_models_negative_holm_significant": 14,
+      "n_models_positive_perm_significant": 0,
+      "n_models_positive_holm_significant": 0,
+      "median_rho": -0.7297183164632177,
+      "min_rho": -0.8966952734725246,
+      "max_rho": -0.42236741315065635,
+      "median_tau": -0.5494180282942491,
+      "median_slope_per_10_points": -4.792038520188417,
+      "min_slope_per_10_points": -8.334783093124681,
+      "max_slope_per_10_points": -2.0787158913591184
+    },
+    "median_rho_change": 0.03704833952826647,
+    "max_abs_rho_change": 0.08628218507854435,
+    "n_models_rho_moved_toward_zero": 12
+  },
+  "cutoffs": {
+    "definition": "tie-aware % male-favored on male-typed minus female-typed occupations, with male-typed = BLS % women below the first cut-point and female-typed = above the second; 95% percentile interval from an occupation-clustered bootstrap within each group",
+    "bootstrap_B": 1000,
+    "n_models_positive_at_30_70_and_25_75": 28,
+    "n_models_ci_above_zero_at_30_70_and_25_75": 27,
+    "n_fully_scored_models_positive_at_all_three": 14,
+    "sign_flips": {
+      "25/75 vs 30/70": [],
+      "35/65 vs 30/70": []
+    },
+    "schemes": {
+      "30/70": {
+        "occupation_set": "kept_52",
+        "male_typed_below_pct_women": 30.0,
+        "female_typed_above_pct_women": 70.0,
+        "n_male": 18,
+        "n_female": 21,
+        "n_models": 29,
+        "occupations": {
+          "male": [
+            {
+              "occupation": "architect",
+              "pct_women": 29.8
+            },
+            {
+              "occupation": "carpenter",
+              "pct_women": 3.1
+            },
+            {
+              "occupation": "construction worker",
+              "pct_women": 4.7
+            },
+            {
+              "occupation": "developer",
+              "pct_women": 20.3
+            },
+            {
+              "occupation": "driver",
+              "pct_women": 7.7
+            },
+            {
+              "occupation": "electrician",
+              "pct_women": 3.5
+            },
+            {
+              "occupation": "engineer",
+              "pct_women": 17.9
+            },
+            {
+              "occupation": "farmer",
+              "pct_women": 25.7
+            },
+            {
+              "occupation": "firefighter",
+              "pct_women": 5.1
+            },
+            {
+              "occupation": "guard",
+              "pct_women": 22.9
+            },
+            {
+              "occupation": "laborer",
+              "pct_women": 24.6
+            },
+            {
+              "occupation": "mechanic",
+              "pct_women": 1.8
+            },
+            {
+              "occupation": "mover",
+              "pct_women": 24.6
+            },
+            {
+              "occupation": "pilot",
+              "pct_women": 7.0
+            },
+            {
+              "occupation": "plumber",
+              "pct_women": 3.1
+            },
+            {
+              "occupation": "programmer",
+              "pct_women": 18.5
+            },
+            {
+              "occupation": "sheriff",
+              "pct_women": 16.4
+            },
+            {
+              "occupation": "surgeon",
+              "pct_women": 25.9
+            }
+          ],
+          "female": [
+            {
+              "occupation": "babysitter",
+              "pct_women": 93.2
+            },
+            {
+              "occupation": "bookkeeper",
+              "pct_women": 82.7
+            },
+            {
+              "occupation": "caregiver",
+              "pct_women": 79.8
+            },
+            {
+              "occupation": "clerk",
+              "pct_women": 80.5
+            },
+            {
+              "occupation": "counselor",
+              "pct_women": 74.5
+            },
+            {
+              "occupation": "dental hygienist",
+              "pct_women": 95.0
+            },
+            {
+              "occupation": "dietitian",
+              "pct_women": 91.7
+            },
+            {
+              "occupation": "guidance counselor",
+              "pct_women": 77.0
+            },
+            {
+              "occupation": "housekeeper",
+              "pct_women": 86.4
+            },
+            {
+              "occupation": "interior designer",
+              "pct_women": 82.8
+            },
+            {
+              "occupation": "librarian",
+              "pct_women": 84.9
+            },
+            {
+              "occupation": "nanny",
+              "pct_women": 93.2
+            },
+            {
+              "occupation": "nurse",
+              "pct_women": 87.3
+            },
+            {
+              "occupation": "psychologist",
+              "pct_women": 71.3
+            },
+            {
+              "occupation": "receptionist",
+              "pct_women": 89.6
+            },
+            {
+              "occupation": "secretary",
+              "pct_women": 91.9
+            },
+            {
+              "occupation": "social worker",
+              "pct_women": 84.4
+            },
+            {
+              "occupation": "stylist",
+              "pct_women": 92.0
+            },
+            {
+              "occupation": "tailor",
+              "pct_women": 72.8
+            },
+            {
+              "occupation": "teacher",
+              "pct_women": 79.2
+            },
+            {
+              "occupation": "veterinarian",
+              "pct_women": 70.9
+            }
+          ]
+        },
+        "n_models_positive": 28,
+        "n_models_ci_above_zero": 27,
+        "n_models_ci_below_zero": 1,
+        "median_contrast": 31.44097222222222,
+        "min_contrast": -6.731150793650798,
+        "max_contrast": 65.27529761904762,
+        "models_not_positive": [
+          "Alibaba-NLP/gte-reranker-modernbert-base"
+        ],
+        "models_ci_not_above_zero": [
+          "Alibaba-NLP/gte-reranker-modernbert-base",
+          "jinaai/jina-reranker-v3"
+        ],
+        "models": {
+          "Alibaba-NLP/gte-reranker-modernbert-base": {
+            "contrast": -6.731150793650798,
+            "tie_aware_pct_male": {
+              "male": 62.46527777777777,
+              "female": 69.19642857142857
+            },
+            "ci": [
+              -12.784226190476204,
+              -0.19580853174604537
+            ],
+            "above_zero": false,
+            "below_zero": true
+          },
+          "BAAI/bge-reranker-base": {
+            "contrast": 19.781746031746025,
+            "tie_aware_pct_male": {
+              "male": 57.013888888888886,
+              "female": 37.23214285714286
+            },
+            "ci": [
+              8.212301587301582,
+              30.033110119047606
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "BAAI/bge-reranker-large": {
+            "contrast": 19.766865079365083,
+            "tie_aware_pct_male": {
+              "male": 57.11805555555556,
+              "female": 37.351190476190474
+            },
+            "ci": [
+              14.186259920634921,
+              25.362475198412707
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "BAAI/bge-reranker-v2-m3": {
+            "contrast": 15.114087301587304,
+            "tie_aware_pct_male": {
+              "male": 87.04861111111111,
+              "female": 71.93452380952381
+            },
+            "ci": [
+              6.14806547619047,
+              25.26438492063493
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "Cohere-rerank-v4.0-fast": {
+            "contrast": 31.44097222222222,
+            "tie_aware_pct_male": {
+              "male": 67.48263888888889,
+              "female": 36.041666666666664
+            },
+            "ci": [
+              22.62766617063492,
+              40.34548611111111
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "Cohere-rerank-v4.0-pro": {
+            "contrast": 41.073908730158735,
+            "tie_aware_pct_male": {
+              "male": 71.89236111111111,
+              "female": 30.818452380952383
+            },
+            "ci": [
+              33.932539682539684,
+              48.14818948412699
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "Qwen/Qwen3-Reranker-0.6B": {
+            "contrast": 27.467757936507937,
+            "tie_aware_pct_male": {
+              "male": 68.73263888888889,
+              "female": 41.26488095238095
+            },
+            "ci": [
+              16.282552083333332,
+              38.546440972222214
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "Qwen/Qwen3-Reranker-4B": {
+            "contrast": 21.579861111111107,
+            "tie_aware_pct_male": {
+              "male": 59.07986111111111,
+              "female": 37.5
+            },
+            "ci": [
+              14.808283730158724,
+              28.214595734126977
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "cohere/rerank-v3.5": {
+            "contrast": 37.207341269841265,
+            "tie_aware_pct_male": {
+              "male": 85.13888888888889,
+              "female": 47.93154761904762
+            },
+            "ci": [
+              27.321242559523807,
+              48.181113591269835
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "cross-encoder/ms-marco-MiniLM-L-12-v2": {
+            "contrast": 26.006944444444443,
+            "tie_aware_pct_male": {
+              "male": 84.75694444444444,
+              "female": 58.75
+            },
+            "ci": [
+              13.1388888888889,
+              38.94022817460317
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "cross-encoder/ms-marco-MiniLM-L6-v2": {
+            "contrast": 25.049603174603178,
+            "tie_aware_pct_male": {
+              "male": 86.59722222222223,
+              "female": 61.54761904761905
+            },
+            "ci": [
+              13.344122023809517,
+              37.16493055555556
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "ibm-granite-granite-embedding-reranker-english-r2": {
+            "contrast": 15.302579365079382,
+            "tie_aware_pct_male": {
+              "male": 91.28472222222223,
+              "female": 75.98214285714285
+            },
+            "ci": [
+              9.007316468253967,
+              21.827132936507933
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "jinaai/jina-reranker-v2-base-multilingual": {
+            "contrast": 14.263392857142854,
+            "tie_aware_pct_male": {
+              "male": 49.322916666666664,
+              "female": 35.05952380952381
+            },
+            "ci": [
+              5.82806299603175,
+              22.866939484126984
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "jinaai/jina-reranker-v3": {
+            "contrast": 0.7837301587301582,
+            "tie_aware_pct_male": {
+              "male": 32.56944444444444,
+              "female": 31.785714285714285
+            },
+            "ci": [
+              -1.8521825396825382,
+              3.4774305555555602
+            ],
+            "above_zero": false,
+            "below_zero": false
+          },
+          "mixedbread-ai/mxbai-rerank-large-v2": {
+            "contrast": 20.776289682539684,
+            "tie_aware_pct_male": {
+              "male": 74.39236111111111,
+              "female": 53.61607142857143
+            },
+            "ci": [
+              14.894903273809526,
+              27.234871031746025
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "nvidia/llama-nemotron-rerank-1b-v2": {
+            "contrast": 43.44494047619048,
+            "tie_aware_pct_male": {
+              "male": 86.40625,
+              "female": 42.96130952380952
+            },
+            "ci": [
+              32.86377728174603,
+              53.29123263888887
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "nvidia/llama-nemotron-rerank-vl-1b-v2": {
+            "contrast": 32.214781746031754,
+            "tie_aware_pct_male": {
+              "male": 79.56597222222223,
+              "female": 47.351190476190474
+            },
+            "ci": [
+              24.587363591269842,
+              39.52442956349206
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "qwen/qwen3-reranker-8b": {
+            "contrast": 31.639384920634917,
+            "tie_aware_pct_male": {
+              "male": 66.68402777777777,
+              "female": 35.044642857142854
+            },
+            "ci": [
+              25.450830853174608,
+              37.05214533730159
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "rerank-1": {
+            "contrast": 31.696428571428577,
+            "tie_aware_pct_male": {
+              "male": 78.85416666666667,
+              "female": 47.157738095238095
+            },
+            "ci": [
+              21.68353174603174,
+              41.70579117063491
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "rerank-2": {
+            "contrast": 57.27926587301587,
+            "tie_aware_pct_male": {
+              "male": 85.64236111111111,
+              "female": 28.363095238095237
+            },
+            "ci": [
+              47.01785714285714,
+              67.32961309523809
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "rerank-2-lite": {
+            "contrast": 19.164186507936506,
+            "tie_aware_pct_male": {
+              "male": 45.81597222222222,
+              "female": 26.651785714285715
+            },
+            "ci": [
+              12.184151785714286,
+              25.486421130952383
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "rerank-2.5": {
+            "contrast": 57.71081349206349,
+            "tie_aware_pct_male": {
+              "male": 95.43402777777777,
+              "female": 37.723214285714285
+            },
+            "ci": [
+              47.7163318452381,
+              67.34393601190476
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "rerank-2.5-lite": {
+            "contrast": 35.181051587301596,
+            "tie_aware_pct_male": {
+              "male": 79.70486111111111,
+              "female": 44.52380952380952
+            },
+            "ci": [
+              27.704861111111107,
+              42.909722222222214
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "rerank-3": {
+            "contrast": 60.89037698412699,
+            "tie_aware_pct_male": {
+              "male": 90.50347222222223,
+              "female": 29.613095238095237
+            },
+            "ci": [
+              50.18359375000001,
+              71.64800347222221
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "rerank-3-lite": {
+            "contrast": 49.605654761904766,
+            "tie_aware_pct_male": {
+              "male": 62.03125000000001,
+              "female": 12.425595238095239
+            },
+            "ci": [
+              42.68315972222222,
+              56.470920138888886
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "semantic-ranker-default-002": {
+            "contrast": 24.809027777777786,
+            "tie_aware_pct_male": {
+              "male": 91.47569444444444,
+              "female": 66.66666666666666
+            },
+            "ci": [
+              13.451884920634917,
+              37.56659226190476
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "semantic-ranker-default-004": {
+            "contrast": 43.56150793650794,
+            "tie_aware_pct_male": {
+              "male": 59.201388888888886,
+              "female": 15.639880952380953
+            },
+            "ci": [
+              34.71961805555556,
+              51.821118551587304
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "semantic-ranker-fast-004": {
+            "contrast": 38.678075396825406,
+            "tie_aware_pct_male": {
+              "male": 67.51736111111111,
+              "female": 28.83928571428571
+            },
+            "ci": [
+              29.773375496031747,
+              46.88585069444445
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "zeroentropy/zerank-2-reranker": {
+            "contrast": 65.27529761904762,
+            "tie_aware_pct_male": {
+              "male": 92.13541666666667,
+              "female": 26.860119047619047
+            },
+            "ci": [
+              53.32266865079365,
+              77.0288318452381
+            ],
+            "above_zero": true,
+            "below_zero": false
+          }
+        }
+      },
+      "25/75": {
+        "occupation_set": "kept_52",
+        "male_typed_below_pct_women": 25.0,
+        "female_typed_above_pct_women": 75.0,
+        "n_male": 15,
+        "n_female": 17,
+        "n_models": 29,
+        "occupations": {
+          "male": [
+            {
+              "occupation": "carpenter",
+              "pct_women": 3.1
+            },
+            {
+              "occupation": "construction worker",
+              "pct_women": 4.7
+            },
+            {
+              "occupation": "developer",
+              "pct_women": 20.3
+            },
+            {
+              "occupation": "driver",
+              "pct_women": 7.7
+            },
+            {
+              "occupation": "electrician",
+              "pct_women": 3.5
+            },
+            {
+              "occupation": "engineer",
+              "pct_women": 17.9
+            },
+            {
+              "occupation": "firefighter",
+              "pct_women": 5.1
+            },
+            {
+              "occupation": "guard",
+              "pct_women": 22.9
+            },
+            {
+              "occupation": "laborer",
+              "pct_women": 24.6
+            },
+            {
+              "occupation": "mechanic",
+              "pct_women": 1.8
+            },
+            {
+              "occupation": "mover",
+              "pct_women": 24.6
+            },
+            {
+              "occupation": "pilot",
+              "pct_women": 7.0
+            },
+            {
+              "occupation": "plumber",
+              "pct_women": 3.1
+            },
+            {
+              "occupation": "programmer",
+              "pct_women": 18.5
+            },
+            {
+              "occupation": "sheriff",
+              "pct_women": 16.4
+            }
+          ],
+          "female": [
+            {
+              "occupation": "babysitter",
+              "pct_women": 93.2
+            },
+            {
+              "occupation": "bookkeeper",
+              "pct_women": 82.7
+            },
+            {
+              "occupation": "caregiver",
+              "pct_women": 79.8
+            },
+            {
+              "occupation": "clerk",
+              "pct_women": 80.5
+            },
+            {
+              "occupation": "dental hygienist",
+              "pct_women": 95.0
+            },
+            {
+              "occupation": "dietitian",
+              "pct_women": 91.7
+            },
+            {
+              "occupation": "guidance counselor",
+              "pct_women": 77.0
+            },
+            {
+              "occupation": "housekeeper",
+              "pct_women": 86.4
+            },
+            {
+              "occupation": "interior designer",
+              "pct_women": 82.8
+            },
+            {
+              "occupation": "librarian",
+              "pct_women": 84.9
+            },
+            {
+              "occupation": "nanny",
+              "pct_women": 93.2
+            },
+            {
+              "occupation": "nurse",
+              "pct_women": 87.3
+            },
+            {
+              "occupation": "receptionist",
+              "pct_women": 89.6
+            },
+            {
+              "occupation": "secretary",
+              "pct_women": 91.9
+            },
+            {
+              "occupation": "social worker",
+              "pct_women": 84.4
+            },
+            {
+              "occupation": "stylist",
+              "pct_women": 92.0
+            },
+            {
+              "occupation": "teacher",
+              "pct_women": 79.2
+            }
+          ]
+        },
+        "n_models_positive": 28,
+        "n_models_ci_above_zero": 27,
+        "n_models_ci_below_zero": 0,
+        "median_contrast": 34.10906862745099,
+        "min_contrast": -6.156862745098039,
+        "max_contrast": 72.9203431372549,
+        "models_not_positive": [
+          "Alibaba-NLP/gte-reranker-modernbert-base"
+        ],
+        "models_ci_not_above_zero": [
+          "Alibaba-NLP/gte-reranker-modernbert-base",
+          "jinaai/jina-reranker-v3"
+        ],
+        "models": {
+          "Alibaba-NLP/gte-reranker-modernbert-base": {
+            "contrast": -6.156862745098039,
+            "tie_aware_pct_male": {
+              "male": 63.29166666666667,
+              "female": 69.44852941176471
+            },
+            "ci": [
+              -12.33314950980394,
+              1.1978553921568535
+            ],
+            "above_zero": false,
+            "below_zero": false
+          },
+          "BAAI/bge-reranker-base": {
+            "contrast": 25.35294117647058,
+            "tie_aware_pct_male": {
+              "male": 57.99999999999999,
+              "female": 32.64705882352941
+            },
+            "ci": [
+              13.486825980392148,
+              36.62530637254903
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "BAAI/bge-reranker-large": {
+            "contrast": 23.291666666666664,
+            "tie_aware_pct_male": {
+              "male": 57.666666666666664,
+              "female": 34.375
+            },
+            "ci": [
+              17.999080882352942,
+              29.261090686274503
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "BAAI/bge-reranker-v2-m3": {
+            "contrast": 18.22549019607844,
+            "tie_aware_pct_male": {
+              "male": 87.41666666666667,
+              "female": 69.19117647058823
+            },
+            "ci": [
+              8.29148284313726,
+              30.85735294117648
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "Cohere-rerank-v4.0-fast": {
+            "contrast": 34.10906862745099,
+            "tie_aware_pct_male": {
+              "male": 66.64583333333334,
+              "female": 32.536764705882355
+            },
+            "ci": [
+              24.740778186274525,
+              43.183210784313715
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "Cohere-rerank-v4.0-pro": {
+            "contrast": 46.62009803921568,
+            "tie_aware_pct_male": {
+              "male": 73.14583333333333,
+              "female": 26.52573529411765
+            },
+            "ci": [
+              39.86878063725489,
+              53.678400735294126
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "Qwen/Qwen3-Reranker-0.6B": {
+            "contrast": 32.917892156862756,
+            "tie_aware_pct_male": {
+              "male": 69.33333333333334,
+              "female": 36.41544117647059
+            },
+            "ci": [
+              21.56534926470588,
+              43.61338848039215
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "Qwen/Qwen3-Reranker-4B": {
+            "contrast": 25.87745098039216,
+            "tie_aware_pct_male": {
+              "male": 60.895833333333336,
+              "female": 35.018382352941174
+            },
+            "ci": [
+              19.22827818627451,
+              32.56378676470588
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "cohere/rerank-v3.5": {
+            "contrast": 41.46813725490195,
+            "tie_aware_pct_male": {
+              "male": 83.41666666666666,
+              "female": 41.94852941176471
+            },
+            "ci": [
+              30.545772058823523,
+              52.62319240196079
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "cross-encoder/ms-marco-MiniLM-L-12-v2": {
+            "contrast": 31.5343137254902,
+            "tie_aware_pct_male": {
+              "male": 84.29166666666667,
+              "female": 52.75735294117647
+            },
+            "ci": [
+              16.80398284313726,
+              46.19620098039215
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "cross-encoder/ms-marco-MiniLM-L6-v2": {
+            "contrast": 31.352941176470594,
+            "tie_aware_pct_male": {
+              "male": 85.875,
+              "female": 54.522058823529406
+            },
+            "ci": [
+              19.088909313725495,
+              44.117095588235294
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "ibm-granite-granite-embedding-reranker-english-r2": {
+            "contrast": 17.09313725490196,
+            "tie_aware_pct_male": {
+              "male": 91.54166666666667,
+              "female": 74.44852941176471
+            },
+            "ci": [
+              10.015686274509802,
+              24.91243872549019
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "jinaai/jina-reranker-v2-base-multilingual": {
+            "contrast": 16.669117647058826,
+            "tie_aware_pct_male": {
+              "male": 48.5625,
+              "female": 31.893382352941174
+            },
+            "ci": [
+              7.516329656862751,
+              25.678676470588236
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "jinaai/jina-reranker-v3": {
+            "contrast": 0.4803921568627487,
+            "tie_aware_pct_male": {
+              "male": 32.208333333333336,
+              "female": 31.727941176470587
+            },
+            "ci": [
+              -2.446629901960777,
+              3.228125000000002
+            ],
+            "above_zero": false,
+            "below_zero": false
+          },
+          "mixedbread-ai/mxbai-rerank-large-v2": {
+            "contrast": 25.439950980392155,
+            "tie_aware_pct_male": {
+              "male": 75.77083333333333,
+              "female": 50.330882352941174
+            },
+            "ci": [
+              19.03777573529412,
+              32.42337622549019
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "nvidia/llama-nemotron-rerank-1b-v2": {
+            "contrast": 48.840686274509814,
+            "tie_aware_pct_male": {
+              "male": 86.39583333333334,
+              "female": 37.55514705882353
+            },
+            "ci": [
+              38.38838848039216,
+              58.93158700980393
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "nvidia/llama-nemotron-rerank-vl-1b-v2": {
+            "contrast": 35.981617647058826,
+            "tie_aware_pct_male": {
+              "male": 79.4375,
+              "female": 43.455882352941174
+            },
+            "ci": [
+              27.80765931372548,
+              43.62015931372548
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "qwen/qwen3-reranker-8b": {
+            "contrast": 35.85539215686274,
+            "tie_aware_pct_male": {
+              "male": 66.95833333333333,
+              "female": 31.102941176470587
+            },
+            "ci": [
+              30.82144607843137,
+              41.25272671568627
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "rerank-1": {
+            "contrast": 39.154411764705884,
+            "tie_aware_pct_male": {
+              "male": 80.9375,
+              "female": 41.783088235294116
+            },
+            "ci": [
+              29.89908088235294,
+              48.16136642156864
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "rerank-2": {
+            "contrast": 63.63848039215687,
+            "tie_aware_pct_male": {
+              "male": 85.45833333333334,
+              "female": 21.81985294117647
+            },
+            "ci": [
+              53.01973039215686,
+              73.29908088235294
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "rerank-2-lite": {
+            "contrast": 19.332107843137262,
+            "tie_aware_pct_male": {
+              "male": 46.35416666666667,
+              "female": 27.02205882352941
+            },
+            "ci": [
+              11.234436274509804,
+              26.76731004901961
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "rerank-2.5": {
+            "contrast": 64.70588235294117,
+            "tie_aware_pct_male": {
+              "male": 95.625,
+              "female": 30.919117647058826
+            },
+            "ci": [
+              55.59237132352941,
+              73.3485906862745
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "rerank-2.5-lite": {
+            "contrast": 39.31862745098039,
+            "tie_aware_pct_male": {
+              "male": 80.45833333333333,
+              "female": 41.13970588235294
+            },
+            "ci": [
+              31.912162990196073,
+              46.767922794117645
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "rerank-3": {
+            "contrast": 69.41053921568627,
+            "tie_aware_pct_male": {
+              "male": 90.77083333333333,
+              "female": 21.360294117647058
+            },
+            "ci": [
+              60.26182598039216,
+              78.19592524509804
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "rerank-3-lite": {
+            "contrast": 53.70098039215686,
+            "tie_aware_pct_male": {
+              "male": 63.33333333333333,
+              "female": 9.632352941176471
+            },
+            "ci": [
+              46.68501838235294,
+              60.96207107843138
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "semantic-ranker-default-002": {
+            "contrast": 26.632352941176464,
+            "tie_aware_pct_male": {
+              "male": 90.75,
+              "female": 64.11764705882354
+            },
+            "ci": [
+              13.509497549019613,
+              41.09047181372548
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "semantic-ranker-default-004": {
+            "contrast": 49.68259803921569,
+            "tie_aware_pct_male": {
+              "male": 61.520833333333336,
+              "female": 11.838235294117647
+            },
+            "ci": [
+              41.51452205882353,
+              57.15542279411765
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "semantic-ranker-fast-004": {
+            "contrast": 43.99632352941177,
+            "tie_aware_pct_male": {
+              "male": 70.6875,
+              "female": 26.691176470588236
+            },
+            "ci": [
+              35.77132352941177,
+              51.37159926470588
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "zeroentropy/zerank-2-reranker": {
+            "contrast": 72.9203431372549,
+            "tie_aware_pct_male": {
+              "male": 93.10416666666667,
+              "female": 20.183823529411764
+            },
+            "ci": [
+              60.45116421568628,
+              83.20101102941176
+            ],
+            "above_zero": true,
+            "below_zero": false
+          }
+        },
+        "removed_relative_to_30_70": {
+          "male": [
+            "architect",
+            "farmer",
+            "surgeon"
+          ],
+          "female": [
+            "counselor",
+            "psychologist",
+            "tailor",
+            "veterinarian"
+          ]
+        },
+        "added_relative_to_30_70": {
+          "male": [],
+          "female": []
+        },
+        "change_in_contrast_vs_30_70": {
+          "Alibaba-NLP/gte-reranker-modernbert-base": 0.5742880485527593,
+          "BAAI/bge-reranker-base": 5.571195144724555,
+          "BAAI/bge-reranker-large": 3.5248015873015817,
+          "BAAI/bge-reranker-v2-m3": 3.1114028944911354,
+          "Cohere-rerank-v4.0-fast": 2.6680964052287663,
+          "Cohere-rerank-v4.0-pro": 5.546189309056942,
+          "Qwen/Qwen3-Reranker-0.6B": 5.450134220354819,
+          "Qwen/Qwen3-Reranker-4B": 4.297589869281055,
+          "cohere/rerank-v3.5": 4.260795985060682,
+          "cross-encoder/ms-marco-MiniLM-L-12-v2": 5.5273692810457575,
+          "cross-encoder/ms-marco-MiniLM-L6-v2": 6.3033380018674166,
+          "ibm-granite-granite-embedding-reranker-english-r2": 1.7905578898225798,
+          "jinaai/jina-reranker-v2-base-multilingual": 2.405724789915972,
+          "jinaai/jina-reranker-v3": -0.30333800186740945,
+          "mixedbread-ai/mxbai-rerank-large-v2": 4.663661297852471,
+          "nvidia/llama-nemotron-rerank-1b-v2": 5.395745798319332,
+          "nvidia/llama-nemotron-rerank-vl-1b-v2": 3.766835901027072,
+          "qwen/qwen3-reranker-8b": 4.216007236227824,
+          "rerank-1": 7.4579831932773075,
+          "rerank-2": 6.359214519140998,
+          "rerank-2-lite": 0.1679213352007558,
+          "rerank-2.5": 6.995068860877687,
+          "rerank-2.5-lite": 4.137575863678791,
+          "rerank-3": 8.520162231559283,
+          "rerank-3-lite": 4.095325630252091,
+          "semantic-ranker-default-002": 1.8233251633986782,
+          "semantic-ranker-default-004": 6.121090102707754,
+          "semantic-ranker-fast-004": 5.318248132586362,
+          "zeroentropy/zerank-2-reranker": 7.645045518207283
+        },
+        "median_abs_change_vs_30_70": 4.297589869281055,
+        "max_abs_change_vs_30_70": 8.520162231559283,
+        "sign_flips_vs_30_70": []
+      },
+      "35/65": {
+        "occupation_set": "all_with_pct_women",
+        "male_typed_below_pct_women": 35.0,
+        "female_typed_above_pct_women": 65.0,
+        "n_male": 20,
+        "n_female": 24,
+        "n_models": 14,
+        "occupations": {
+          "male": [
+            {
+              "occupation": "CEO",
+              "pct_women": 33.0
+            },
+            {
+              "occupation": "architect",
+              "pct_women": 29.8
+            },
+            {
+              "occupation": "carpenter",
+              "pct_women": 3.1
+            },
+            {
+              "occupation": "construction worker",
+              "pct_women": 4.7
+            },
+            {
+              "occupation": "developer",
+              "pct_women": 20.3
+            },
+            {
+              "occupation": "driver",
+              "pct_women": 7.7
+            },
+            {
+              "occupation": "electrician",
+              "pct_women": 3.5
+            },
+            {
+              "occupation": "engineer",
+              "pct_women": 17.9
+            },
+            {
+              "occupation": "executive",
+              "pct_women": 33.0
+            },
+            {
+              "occupation": "farmer",
+              "pct_women": 25.7
+            },
+            {
+              "occupation": "firefighter",
+              "pct_women": 5.1
+            },
+            {
+              "occupation": "guard",
+              "pct_women": 22.9
+            },
+            {
+              "occupation": "laborer",
+              "pct_women": 24.6
+            },
+            {
+              "occupation": "mechanic",
+              "pct_women": 1.8
+            },
+            {
+              "occupation": "mover",
+              "pct_women": 24.6
+            },
+            {
+              "occupation": "pilot",
+              "pct_women": 7.0
+            },
+            {
+              "occupation": "plumber",
+              "pct_women": 3.1
+            },
+            {
+              "occupation": "programmer",
+              "pct_women": 18.5
+            },
+            {
+              "occupation": "sheriff",
+              "pct_women": 16.4
+            },
+            {
+              "occupation": "surgeon",
+              "pct_women": 25.9
+            }
+          ],
+          "female": [
+            {
+              "occupation": "babysitter",
+              "pct_women": 93.2
+            },
+            {
+              "occupation": "bookkeeper",
+              "pct_women": 82.7
+            },
+            {
+              "occupation": "caregiver",
+              "pct_women": 79.8
+            },
+            {
+              "occupation": "cashier",
+              "pct_women": 68.5
+            },
+            {
+              "occupation": "clerk",
+              "pct_women": 80.5
+            },
+            {
+              "occupation": "counselor",
+              "pct_women": 74.5
+            },
+            {
+              "occupation": "dental hygienist",
+              "pct_women": 95.0
+            },
+            {
+              "occupation": "dietitian",
+              "pct_women": 91.7
+            },
+            {
+              "occupation": "guidance counselor",
+              "pct_women": 77.0
+            },
+            {
+              "occupation": "housekeeper",
+              "pct_women": 86.4
+            },
+            {
+              "occupation": "interior designer",
+              "pct_women": 82.8
+            },
+            {
+              "occupation": "librarian",
+              "pct_women": 84.9
+            },
+            {
+              "occupation": "nanny",
+              "pct_women": 93.2
+            },
+            {
+              "occupation": "nurse",
+              "pct_women": 87.3
+            },
+            {
+              "occupation": "psychologist",
+              "pct_women": 71.3
+            },
+            {
+              "occupation": "receptionist",
+              "pct_women": 89.6
+            },
+            {
+              "occupation": "secretary",
+              "pct_women": 91.9
+            },
+            {
+              "occupation": "social worker",
+              "pct_women": 84.4
+            },
+            {
+              "occupation": "stylist",
+              "pct_women": 92.0
+            },
+            {
+              "occupation": "tailor",
+              "pct_women": 72.8
+            },
+            {
+              "occupation": "teacher",
+              "pct_women": 79.2
+            },
+            {
+              "occupation": "translator",
+              "pct_women": 66.9
+            },
+            {
+              "occupation": "veterinarian",
+              "pct_women": 70.9
+            },
+            {
+              "occupation": "writer",
+              "pct_women": 66.8
+            }
+          ]
+        },
+        "n_models_positive": 14,
+        "n_models_ci_above_zero": 14,
+        "n_models_ci_below_zero": 0,
+        "median_contrast": 27.69140625,
+        "min_contrast": 12.927083333333329,
+        "max_contrast": 52.052083333333336,
+        "models_not_positive": [],
+        "models_ci_not_above_zero": [],
+        "models": {
+          "BAAI/bge-reranker-v2-m3": {
+            "contrast": 12.927083333333329,
+            "tie_aware_pct_male": {
+              "male": 86.15625,
+              "female": 73.22916666666667
+            },
+            "ci": [
+              5.392708333333329,
+              22.52760416666667
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "Cohere-rerank-v4.0-fast": {
+            "contrast": 28.247395833333336,
+            "tie_aware_pct_male": {
+              "male": 67.53125,
+              "female": 39.283854166666664
+            },
+            "ci": [
+              19.21510416666667,
+              37.38854166666667
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "Cohere-rerank-v4.0-pro": {
+            "contrast": 35.627604166666664,
+            "tie_aware_pct_male": {
+              "male": 68.921875,
+              "female": 33.294270833333336
+            },
+            "ci": [
+              26.816341145833334,
+              43.0283203125
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "cross-encoder/ms-marco-MiniLM-L-12-v2": {
+            "contrast": 23.46354166666667,
+            "tie_aware_pct_male": {
+              "male": 84.6875,
+              "female": 61.22395833333333
+            },
+            "ci": [
+              11.853255208333339,
+              35.491796875
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "ibm-granite-granite-embedding-reranker-english-r2": {
+            "contrast": 13.145833333333329,
+            "tie_aware_pct_male": {
+              "male": 91.0625,
+              "female": 77.91666666666667
+            },
+            "ci": [
+              7.588281250000005,
+              19.719010416666666
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "jinaai/jina-reranker-v2-base-multilingual": {
+            "contrast": 15.023437500000007,
+            "tie_aware_pct_male": {
+              "male": 50.14062500000001,
+              "female": 35.1171875
+            },
+            "ci": [
+              7.13984375,
+              22.757877604166666
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "rerank-1": {
+            "contrast": 27.135416666666664,
+            "tie_aware_pct_male": {
+              "male": 77.734375,
+              "female": 50.598958333333336
+            },
+            "ci": [
+              17.524348958333338,
+              37.127734374999996
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "rerank-2": {
+            "contrast": 51.190104166666664,
+            "tie_aware_pct_male": {
+              "male": 84.171875,
+              "female": 32.981770833333336
+            },
+            "ci": [
+              40.10240885416666,
+              61.981510416666666
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "rerank-2-lite": {
+            "contrast": 16.950520833333332,
+            "tie_aware_pct_male": {
+              "male": 46.15625,
+              "female": 29.205729166666668
+            },
+            "ci": [
+              9.776888020833336,
+              24.31360677083333
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "rerank-2.5": {
+            "contrast": 52.052083333333336,
+            "tie_aware_pct_male": {
+              "male": 93.40625,
+              "female": 41.354166666666664
+            },
+            "ci": [
+              41.964908854166666,
+              61.835611979166664
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "rerank-2.5-lite": {
+            "contrast": 33.53125,
+            "tie_aware_pct_male": {
+              "male": 77.90625,
+              "female": 44.375
+            },
+            "ci": [
+              26.117838541666664,
+              40.761653645833334
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "semantic-ranker-default-002": {
+            "contrast": 22.434895833333343,
+            "tie_aware_pct_male": {
+              "male": 92.03125,
+              "female": 69.59635416666666
+            },
+            "ci": [
+              12.120442708333329,
+              34.25390625
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "semantic-ranker-default-004": {
+            "contrast": 39.02864583333333,
+            "tie_aware_pct_male": {
+              "male": 55.8125,
+              "female": 16.783854166666668
+            },
+            "ci": [
+              30.235156250000003,
+              47.96699218750001
+            ],
+            "above_zero": true,
+            "below_zero": false
+          },
+          "semantic-ranker-fast-004": {
+            "contrast": 38.427083333333336,
+            "tie_aware_pct_male": {
+              "male": 68.84375,
+              "female": 30.416666666666664
+            },
+            "ci": [
+              29.231250000000003,
+              46.362890625000006
+            ],
+            "above_zero": true,
+            "below_zero": false
+          }
+        },
+        "removed_relative_to_30_70": {
+          "male": [],
+          "female": []
+        },
+        "added_relative_to_30_70": {
+          "male": [
+            "CEO",
+            "executive"
+          ],
+          "female": [
+            "cashier",
+            "translator",
+            "writer"
+          ]
+        },
+        "change_in_contrast_vs_30_70": {
+          "BAAI/bge-reranker-v2-m3": -2.1870039682539755,
+          "Cohere-rerank-v4.0-fast": -3.1935763888888857,
+          "Cohere-rerank-v4.0-pro": -5.44630456349207,
+          "cross-encoder/ms-marco-MiniLM-L-12-v2": -2.5434027777777715,
+          "ibm-granite-granite-embedding-reranker-english-r2": -2.156746031746053,
+          "jinaai/jina-reranker-v2-base-multilingual": 0.760044642857153,
+          "rerank-1": -4.561011904761912,
+          "rerank-2": -6.089161706349209,
+          "rerank-2-lite": -2.213665674603174,
+          "rerank-2.5": -5.658730158730151,
+          "rerank-2.5-lite": -1.6498015873015959,
+          "semantic-ranker-default-002": -2.374131944444443,
+          "semantic-ranker-default-004": -4.532862103174608,
+          "semantic-ranker-fast-004": -0.25099206349207037
+        },
+        "median_abs_change_vs_30_70": 2.458767361111107,
+        "max_abs_change_vs_30_70": 6.089161706349209,
+        "sign_flips_vs_30_70": [],
+        "same_models_at_30_70": {
+          "n_models_positive": 14,
+          "n_models_ci_above_zero": 14,
+          "median_contrast": 31.5687003968254
+        },
+        "same_models_at_25_75": {
+          "n_models_positive": 14,
+          "n_models_ci_above_zero": 14,
+          "median_contrast": 36.63174019607844
+        }
+      }
+    }
+  },
+  "tex_row_order": "results/tex/contrast_intervals.tex"
+}
