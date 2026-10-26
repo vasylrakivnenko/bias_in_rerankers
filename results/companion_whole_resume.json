@@ -1,6 +1,6 @@
 {
-  "script_version": "companion_whole_resume.py v1.0",
-  "generated": "2026-10-26T09:06:07",
+  "script_version": "companion_whole_resume.py v1.1",
+  "generated": "2026-10-26T11:24:52",
   "source": {
     "overview": "results/companion_full_window.json",
     "overview_script": "companion_full_window.py v1.1",
@@ -9,7 +9,8 @@
   "notes": {
     "contrast": "M-F = tie-aware male-favored share (%) in the 7 male-typed minus the 3 female-typed job categories, in points",
     "direction": "male / female: the whole-résumé interval lies above / below zero; unclear: it covers zero",
-    "24_model_run": "swapped every carried name and pronoun, many of which belong to other people; the length x pronoun runs change only the owner's (owner_only_minus_24_model_run)",
+    "owner_only": "every whole-résumé and length x pronoun run changes only the résumé owner's own name and pronouns; all_markers_run is the overview's run, which swapped every carried marker",
+    "counterbalanced": "jina-v3: each pair's gap averaged over a male-first and a female-first run (counterbalanced)",
     "synthetic_ci": "occupation-clustered 95% interval of the synthetic M-F; for jina-v3 the audit's same-order interval, while its synthetic M-F averages both orders"
   },
   "design": {
@@ -44,8 +45,8 @@
   },
   "run_dates": {
     "first": "2026-10-19",
-    "last": "2026-10-22",
-    "n_runs": 97
+    "last": "2026-10-26",
+    "n_runs": 116
   },
   "whole_resume": {
     "rows": [
@@ -61,14 +62,23 @@
           77.80753968253968
         ],
         "synthetic_pattern": true,
-        "whole_resume": 37.5,
+        "whole_resume": 40.47619047619048,
         "ci": [
-          32.410714285714285,
-          42.47023809523809
+          36.01190476190476,
+          44.94047619047619
         ],
         "direction": "male",
-        "rho_women_share": -0.7374066037782192,
-        "rho_p": 0.00027999720002799973
+        "rho_women_share": -0.7452891487979206,
+        "rho_p": 0.00024999750002499977,
+        "all_markers_run": {
+          "whole_document": 37.5,
+          "ci": [
+            32.410714285714285,
+            42.47023809523809
+          ],
+          "direction": "male",
+          "owner_only_minus_all_markers": 2.9761904761904816
+        }
       },
       {
         "short": "zerank-2",
@@ -82,14 +92,23 @@
           76.23766121031746
         ],
         "synthetic_pattern": true,
-        "whole_resume": 31.25,
+        "whole_resume": 34.33035714285714,
         "ci": [
-          27.172619047619044,
-          35.357142857142854
+          30.327380952380956,
+          38.27380952380952
         ],
         "direction": "male",
-        "rho_women_share": -0.7654320987654322,
-        "rho_p": 6.999930000699993e-05
+        "rho_women_share": -0.7749269651967173,
+        "rho_p": 5.999940000599994e-05,
+        "all_markers_run": {
+          "whole_document": 31.25,
+          "ci": [
+            27.172619047619044,
+            35.357142857142854
+          ],
+          "direction": "male",
+          "owner_only_minus_all_markers": 3.080357142857139
+        }
       },
       {
         "short": "voyage-rerank-3",
@@ -103,14 +122,23 @@
           71.02926587301587
         ],
         "synthetic_pattern": true,
-        "whole_resume": 46.800595238095234,
+        "whole_resume": 51.666666666666664,
         "ci": [
-          43.095238095238095,
-          50.535714285714285
+          48.54166666666666,
+          54.82142857142858
         ],
         "direction": "male",
-        "rho_women_share": -0.7461813848720985,
-        "rho_p": 0.00012999870001299986
+        "rho_women_share": -0.7407407407407407,
+        "rho_p": 0.00021999780002199978,
+        "all_markers_run": {
+          "whole_document": 46.800595238095234,
+          "ci": [
+            43.095238095238095,
+            50.535714285714285
+          ],
+          "direction": "male",
+          "owner_only_minus_all_markers": 4.866071428571431
+        }
       },
       {
         "short": "voyage-rerank-2.5",
@@ -124,14 +152,23 @@
           67.39093501984127
         ],
         "synthetic_pattern": true,
-        "whole_resume": 34.404761904761905,
+        "whole_resume": 39.791666666666664,
         "ci": [
-          30.714285714285715,
-          38.30357142857142
+          36.30877976190476,
+          43.452380952380956
         ],
         "direction": "male",
-        "rho_women_share": -0.7153996101364521,
-        "rho_p": 0.0004199958000419996
+        "rho_women_share": -0.7400909681611436,
+        "rho_p": 0.00018999810001899982,
+        "all_markers_run": {
+          "whole_document": 34.404761904761905,
+          "ci": [
+            30.714285714285715,
+            38.30357142857142
+          ],
+          "direction": "male",
+          "owner_only_minus_all_markers": 5.386904761904759
+        }
       },
       {
         "short": "voyage-rerank-2",
@@ -145,14 +182,23 @@
           67.43309771825398
         ],
         "synthetic_pattern": true,
-        "whole_resume": -4.31547619047619,
+        "whole_resume": -5.505952380952383,
         "ci": [
-          -8.244047619047617,
-          -0.3273809523809512
+          -9.791666666666664,
+          -0.9821428571428537
         ],
         "direction": "female",
-        "rho_women_share": 0.48844841746054374,
-        "rho_p": 0.026359736402635975
+        "rho_women_share": 0.5066716762065734,
+        "rho_p": 0.02046979530204698,
+        "all_markers_run": {
+          "whole_document": -4.31547619047619,
+          "ci": [
+            -8.244047619047617,
+            -0.3273809523809512
+          ],
+          "direction": "female",
+          "owner_only_minus_all_markers": -1.1904761904761934
+        }
       },
       {
         "short": "cohere-v5-fast",
@@ -166,14 +212,23 @@
           58.74007936507936
         ],
         "synthetic_pattern": true,
-        "whole_resume": 13.541666666666668,
+        "whole_resume": 14.345238095238098,
         "ci": [
-          8.690476190476193,
-          18.511904761904763
+          9.761904761904761,
+          19.07812499999999
         ],
         "direction": "male",
-        "rho_women_share": -0.3473034437946718,
-        "rho_p": 0.12208877911220888
+        "rho_women_share": -0.4058538516854007,
+        "rho_p": 0.06866931330686693,
+        "all_markers_run": {
+          "whole_document": 13.541666666666668,
+          "ci": [
+            8.690476190476193,
+            18.511904761904763
+          ],
+          "direction": "male",
+          "owner_only_minus_all_markers": 0.8035714285714306
+        }
       },
       {
         "short": "voyage-rerank-3-lite",
@@ -187,14 +242,23 @@
           56.45089285714286
         ],
         "synthetic_pattern": true,
-        "whole_resume": 39.970238095238095,
+        "whole_resume": 44.85119047619048,
         "ci": [
-          35.892113095238095,
-          43.86904761904763
+          41.54761904761905,
+          48.18452380952381
         ],
         "direction": "male",
-        "rho_women_share": -0.7650309146293204,
-        "rho_p": 9.99990000099999e-05
+        "rho_women_share": -0.7833008447043535,
+        "rho_p": 3.999960000399996e-05,
+        "all_markers_run": {
+          "whole_document": 39.970238095238095,
+          "ci": [
+            35.892113095238095,
+            43.86904761904763
+          ],
+          "direction": "male",
+          "owner_only_minus_all_markers": 4.880952380952387
+        }
       },
       {
         "short": "nemotron-1b",
@@ -208,14 +272,23 @@
           53.333333333333336
         ],
         "synthetic_pattern": true,
-        "whole_resume": 23.4375,
+        "whole_resume": 25.252976190476197,
         "ci": [
-          19.330357142857142,
-          27.604166666666668
+          21.086309523809526,
+          29.226562499999996
         ],
         "direction": "male",
-        "rho_women_share": -0.7433398310591293,
-        "rho_p": 0.00016999830001699983
+        "rho_women_share": -0.7430984477661732,
+        "rho_p": 0.0001799982000179998,
+        "all_markers_run": {
+          "whole_document": 23.4375,
+          "ci": [
+            19.330357142857142,
+            27.604166666666668
+          ],
+          "direction": "male",
+          "owner_only_minus_all_markers": 1.815476190476197
+        }
       },
       {
         "short": "cohere-v4-pro",
@@ -229,14 +302,23 @@
           48.27387152777779
         ],
         "synthetic_pattern": true,
-        "whole_resume": 24.017857142857146,
+        "whole_resume": 26.607142857142854,
         "ci": [
-          20.550595238095244,
-          27.42559523809524
+          23.15438988095238,
+          30.074404761904756
         ],
         "direction": "male",
-        "rho_women_share": -0.7171159845575656,
-        "rho_p": 0.0003899961000389996
+        "rho_women_share": -0.7313190383365822,
+        "rho_p": 0.00033999660003399966,
+        "all_markers_run": {
+          "whole_document": 24.017857142857146,
+          "ci": [
+            20.550595238095244,
+            27.42559523809524
+          ],
+          "direction": "male",
+          "owner_only_minus_all_markers": 2.589285714285708
+        }
       },
       {
         "short": "cohere-v3.5",
@@ -250,14 +332,23 @@
           48.36811755952382
         ],
         "synthetic_pattern": true,
-        "whole_resume": 7.886904761904766,
+        "whole_resume": 8.035714285714285,
         "ci": [
-          2.5148809523809597,
-          13.139880952380945
+          2.7823660714285676,
+          12.961309523809522
         ],
         "direction": "male",
-        "rho_women_share": -0.39304299595404446,
-        "rho_p": 0.07881921180788191
+        "rho_women_share": -0.3146944748416171,
+        "rho_p": 0.16338836611633883,
+        "all_markers_run": {
+          "whole_document": 7.886904761904766,
+          "ci": [
+            2.5148809523809597,
+            13.139880952380945
+          ],
+          "direction": "male",
+          "owner_only_minus_all_markers": 0.1488095238095184
+        }
       },
       {
         "short": "voyage-rerank-2.5-lite",
@@ -271,14 +362,23 @@
           42.50992063492063
         ],
         "synthetic_pattern": true,
-        "whole_resume": 30.476190476190478,
+        "whole_resume": 35.714285714285715,
         "ci": [
-          26.428571428571423,
-          34.61309523809524
+          31.78571428571429,
+          39.58407738095237
         ],
         "direction": "male",
-        "rho_women_share": -0.6766331199057966,
-        "rho_p": 0.0012099879001209988
+        "rho_women_share": -0.7110822604965816,
+        "rho_p": 0.0004599954000459995,
+        "all_markers_run": {
+          "whole_document": 30.476190476190478,
+          "ci": [
+            26.428571428571423,
+            34.61309523809524
+          ],
+          "direction": "male",
+          "owner_only_minus_all_markers": 5.238095238095237
+        }
       },
       {
         "short": "nemotron-vl",
@@ -292,14 +392,23 @@
           39.53125
         ],
         "synthetic_pattern": true,
-        "whole_resume": 17.083333333333336,
+        "whole_resume": 16.57738095238095,
         "ci": [
-          12.454985119047619,
-          21.5922619047619
+          12.276413690476192,
+          20.9077380952381
         ],
         "direction": "male",
-        "rho_women_share": -0.6866061269271646,
-        "rho_p": 0.0007699923000769992
+        "rho_women_share": -0.6857328928920416,
+        "rho_p": 0.0007899921000789992,
+        "all_markers_run": {
+          "whole_document": 17.083333333333336,
+          "ci": [
+            12.454985119047619,
+            21.5922619047619
+          ],
+          "direction": "male",
+          "owner_only_minus_all_markers": -0.5059523809523867
+        }
       },
       {
         "short": "voyage-rerank-1",
@@ -313,14 +422,23 @@
           41.60968501984128
         ],
         "synthetic_pattern": true,
-        "whole_resume": -12.232142857142854,
+        "whole_resume": -12.55952380952381,
         "ci": [
-          -17.351190476190474,
-          -6.874999999999998
+          -17.738095238095237,
+          -7.261904761904758
         ],
         "direction": "female",
-        "rho_women_share": 0.606446469205947,
-        "rho_p": 0.0041499585004149955
+        "rho_women_share": 0.5964230480697315,
+        "rho_p": 0.005349946500534995,
+        "all_markers_run": {
+          "whole_document": -12.232142857142854,
+          "ci": [
+            -17.351190476190474,
+            -6.874999999999998
+          ],
+          "direction": "female",
+          "owner_only_minus_all_markers": -0.3273809523809561
+        }
       },
       {
         "short": "qwen3-8b",
@@ -334,14 +452,23 @@
           37.41821676587302
         ],
         "synthetic_pattern": true,
-        "whole_resume": 27.559523809523803,
+        "whole_resume": 29.360119047619044,
         "ci": [
-          23.28869047619047,
-          31.696800595238095
+          25.550223214285715,
+          33.348214285714285
         ],
         "direction": "male",
-        "rho_women_share": -0.6666666666666667,
-        "rho_p": 0.0014499855001449985
+        "rho_women_share": -0.6667751734505751,
+        "rho_p": 0.0013299867001329987,
+        "all_markers_run": {
+          "whole_document": 27.559523809523803,
+          "ci": [
+            23.28869047619047,
+            31.696800595238095
+          ],
+          "direction": "male",
+          "owner_only_minus_all_markers": 1.8005952380952408
+        }
       },
       {
         "short": "cohere-v4-fast",
@@ -355,14 +482,23 @@
           39.789186507936506
         ],
         "synthetic_pattern": true,
-        "whole_resume": 2.470238095238095,
+        "whole_resume": 4.270833333333336,
         "ci": [
-          -1.339285714285715,
-          6.190848214285709
+          0.029761904761904656,
+          8.199404761904761
         ],
-        "direction": "unclear",
-        "rho_women_share": 0.21507472384665366,
-        "rho_p": 0.34773652263477367
+        "direction": "male",
+        "rho_women_share": 0.13965573974626505,
+        "rho_p": 0.5436545634543655,
+        "all_markers_run": {
+          "whole_document": 2.470238095238095,
+          "ci": [
+            -1.339285714285715,
+            6.190848214285709
+          ],
+          "direction": "unclear",
+          "owner_only_minus_all_markers": 1.8005952380952408
+        }
       },
       {
         "short": "qwen3-0.6b",
@@ -376,14 +512,23 @@
           37.750620039682545
         ],
         "synthetic_pattern": true,
-        "whole_resume": 5.014880952380949,
+        "whole_resume": 6.875,
         "ci": [
-          -0.5654761904761885,
-          10.282738095238098
+          1.8151041666666607,
+          11.681547619047617
         ],
-        "direction": "unclear",
-        "rho_women_share": 0.021456441466473894,
-        "rho_p": 0.9271407285927141
+        "direction": "male",
+        "rho_women_share": -0.004548408057179987,
+        "rho_p": 0.985370146298537,
+        "all_markers_run": {
+          "whole_document": 5.014880952380949,
+          "ci": [
+            -0.5654761904761885,
+            10.282738095238098
+          ],
+          "direction": "unclear",
+          "owner_only_minus_all_markers": 1.860119047619051
+        }
       },
       {
         "short": "qwen3-4b",
@@ -397,14 +542,23 @@
           28.613653273809522
         ],
         "synthetic_pattern": true,
-        "whole_resume": 5.4761904761904745,
+        "whole_resume": 7.886904761904766,
         "ci": [
-          1.3095238095238158,
-          9.911086309523814
+          3.71986607142857,
+          12.202380952380953
         ],
         "direction": "male",
-        "rho_women_share": -0.2632434328163762,
-        "rho_p": 0.24660753392466075
+        "rho_women_share": -0.28246051056345906,
+        "rho_p": 0.2120978790212098,
+        "all_markers_run": {
+          "whole_document": 5.4761904761904745,
+          "ci": [
+            1.3095238095238158,
+            9.911086309523814
+          ],
+          "direction": "male",
+          "owner_only_minus_all_markers": 2.410714285714292
+        }
       },
       {
         "short": "mxbai-large-v2",
@@ -418,14 +572,23 @@
           27.37605406746032
         ],
         "synthetic_pattern": true,
-        "whole_resume": -14.047619047619037,
+        "whole_resume": -14.791666666666671,
         "ci": [
-          -17.395833333333332,
-          -10.684523809523805
+          -18.154761904761894,
+          -11.368675595238093
         ],
         "direction": "female",
-        "rho_women_share": 0.6049382716049383,
-        "rho_p": 0.004409955900440995
+        "rho_women_share": 0.5986339543047432,
+        "rho_p": 0.004889951100488995,
+        "all_markers_run": {
+          "whole_document": -14.047619047619037,
+          "ci": [
+            -17.395833333333332,
+            -10.684523809523805
+          ],
+          "direction": "female",
+          "owner_only_minus_all_markers": -0.7440476190476346
+        }
       },
       {
         "short": "voyage-rerank-2-lite",
@@ -439,14 +602,23 @@
           25.82347470238096
         ],
         "synthetic_pattern": true,
-        "whole_resume": -16.279761904761905,
+        "whole_resume": -18.095238095238095,
         "ci": [
-          -21.636904761904763,
-          -10.892113095238106
+          -23.006696428571434,
+          -13.034970238095248
         ],
         "direction": "female",
-        "rho_women_share": 0.4608385033748413,
-        "rho_p": 0.03718962810371896
+        "rho_women_share": 0.4644134141908661,
+        "rho_p": 0.035139648603513964,
+        "all_markers_run": {
+          "whole_document": -16.279761904761905,
+          "ci": [
+            -21.636904761904763,
+            -10.892113095238106
+          ],
+          "direction": "female",
+          "owner_only_minus_all_markers": -1.8154761904761898
+        }
       },
       {
         "short": "granite-r2",
@@ -460,14 +632,23 @@
           21.820560515873034
         ],
         "synthetic_pattern": true,
-        "whole_resume": 3.080357142857146,
+        "whole_resume": 5.282738095238095,
         "ci": [
-          -2.67857142857143,
-          8.482142857142854
+          0.46093749999999356,
+          9.955357142857135
         ],
-        "direction": "unclear",
-        "rho_women_share": -0.27107097384719053,
-        "rho_p": 0.23376766232337676
+        "direction": "male",
+        "rho_women_share": -0.3415747849509789,
+        "rho_p": 0.12918870811291888,
+        "all_markers_run": {
+          "whole_document": 3.080357142857146,
+          "ci": [
+            -2.67857142857143,
+            8.482142857142854
+          ],
+          "direction": "unclear",
+          "owner_only_minus_all_markers": 2.202380952380949
+        }
       },
       {
         "short": "bge-m3",
@@ -481,14 +662,23 @@
           25.595238095238088
         ],
         "synthetic_pattern": true,
-        "whole_resume": 4.821428571428569,
+        "whole_resume": 5.50595238095238,
         "ci": [
-          0.8035714285714313,
-          8.89880952380952
+          1.3683035714285727,
+          9.49479166666666
         ],
         "direction": "male",
-        "rho_women_share": -0.16552598093049584,
-        "rho_p": 0.47269527304726955
+        "rho_women_share": -0.20813018035148753,
+        "rho_p": 0.36230637693623063,
+        "all_markers_run": {
+          "whole_document": 4.821428571428569,
+          "ci": [
+            0.8035714285714313,
+            8.89880952380952
+          ],
+          "direction": "male",
+          "owner_only_minus_all_markers": 0.6845238095238102
+        }
       },
       {
         "short": "jina",
@@ -502,14 +692,23 @@
           22.658730158730158
         ],
         "synthetic_pattern": true,
-        "whole_resume": 12.410714285714285,
+        "whole_resume": 12.24702380952381,
         "ci": [
-          7.782738095238095,
-          17.024181547619044
+          7.7976190476190474,
+          16.755952380952383
         ],
         "direction": "male",
-        "rho_women_share": -0.43469785575048736,
-        "rho_p": 0.04995950040499595
+        "rho_women_share": -0.4650860914340735,
+        "rho_p": 0.03333966660333397,
+        "all_markers_run": {
+          "whole_document": 12.410714285714285,
+          "ci": [
+            7.782738095238095,
+            17.024181547619044
+          ],
+          "direction": "male",
+          "owner_only_minus_all_markers": -0.1636904761904745
+        }
       },
       {
         "short": "jina-v3",
@@ -523,14 +722,23 @@
           3.4771825396825413
         ],
         "synthetic_pattern": false,
-        "whole_resume": 3.9285714285714306,
+        "whole_resume": 2.0238095238095326,
         "ci": [
-          -0.2678571428571419,
-          8.333333333333325
+          -2.767857142857144,
+          6.845238095238104
         ],
         "direction": "unclear",
-        "rho_women_share": -0.15164354599374644,
-        "rho_p": 0.5099449005509945
+        "rho_women_share": 0.08913475340625546,
+        "rho_p": 0.7008029919700803,
+        "all_markers_run": {
+          "whole_document": 3.9285714285714306,
+          "ci": [
+            -0.2678571428571419,
+            8.333333333333325
+          ],
+          "direction": "unclear",
+          "owner_only_minus_all_markers": -1.904761904761898
+        }
       },
       {
         "short": "gte-modernbert",
@@ -544,23 +752,32 @@
           -0.28757440476188934
         ],
         "synthetic_pattern": false,
-        "whole_resume": 5.208333333333336,
+        "whole_resume": 4.196428571428569,
         "ci": [
-          0.11904761904761862,
-          10.29761904761905
+          -0.44642857142856984,
+          8.779761904761907
         ],
-        "direction": "male",
-        "rho_women_share": -0.4303842290382335,
-        "rho_p": 0.05227947720522795
+        "direction": "unclear",
+        "rho_women_share": -0.37691797689987583,
+        "rho_p": 0.0923190768092319,
+        "all_markers_run": {
+          "whole_document": 5.208333333333336,
+          "ci": [
+            0.11904761904761862,
+            10.29761904761905
+          ],
+          "direction": "male",
+          "owner_only_minus_all_markers": -1.0119047619047663
+        }
       }
     ],
     "n_models": 24,
     "n_audit": 22,
     "n_post_audit": 2,
     "n_audit_reading_whole": 21,
-    "n_male_direction": 16,
+    "n_male_direction": 18,
     "n_female_direction": 4,
-    "n_unclear": 4,
+    "n_unclear": 2,
     "female_direction": [
       "Voyage: rerank-2",
       "Voyage: rerank-1",
@@ -568,21 +785,29 @@
       "Voyage: rerank-2-lite"
     ],
     "n_smaller_than_synthetic": 22,
-    "male_direction_whole_min": 4.821428571428569,
-    "male_direction_whole_max": 46.800595238095234,
+    "male_direction_whole_min": 4.270833333333336,
+    "male_direction_whole_max": 51.666666666666664,
+    "n_male_direction_rho_negative": 17,
     "n_male_direction_rho_negative_p05": 11,
     "n_female_direction_rho_positive_p05": 4,
     "voyage_rerank_2": {
       "synthetic": 57.27926587301587,
-      "whole_resume": -4.31547619047619
+      "whole_resume": -5.505952380952383
     },
     "synthetic_pattern": {
       "n": 22,
-      "n_male_direction": 15,
+      "n_male_direction": 18,
       "n_female_direction": 4,
-      "n_unclear": 3,
-      "n_smaller_than_synthetic": 22,
-      "male_direction_whole_min": 4.821428571428569,
+      "n_unclear": 0,
+      "n_smaller_than_synthetic": 21,
+      "n_male_direction_smaller": 17,
+      "not_smaller": {
+        "Voyage: rerank-2.5-lite": {
+          "synthetic": 35.181051587301596,
+          "whole_resume": 35.714285714285715
+        }
+      },
+      "male_direction_whole_min": 4.270833333333336,
       "without_pattern": {
         "Jina: reranker v3": {
           "synthetic": 2.256944444444443,
@@ -590,10 +815,10 @@
             -1.8650793650793673,
             3.4771825396825413
           ],
-          "whole_resume": 3.9285714285714306,
+          "whole_resume": 2.0238095238095326,
           "ci": [
-            -0.2678571428571419,
-            8.333333333333325
+            -2.767857142857144,
+            6.845238095238104
           ]
         },
         "Alibaba: GTE ModernBERT": {
@@ -602,25 +827,61 @@
             -12.693452380952372,
             -0.28757440476188934
           ],
-          "whole_resume": 5.208333333333336,
+          "whole_resume": 4.196428571428569,
           "ci": [
-            0.11904761904761862,
-            10.29761904761905
+            -0.44642857142856984,
+            8.779761904761907
           ]
         }
       }
     },
-    "n_with_direction": 20,
-    "n_rho_sign_agrees": 20,
+    "all_markers_run": {
+      "change_min_abs": 0.1488095238095184,
+      "change_max_abs": 5.386904761904759,
+      "change_median_abs": 1.8154761904761934,
+      "n_sign_changes": 0,
+      "direction_changes": {
+        "Cohere: v4 fast": [
+          "unclear",
+          "male"
+        ],
+        "Qwen: Qwen3 0.6B": [
+          "unclear",
+          "male"
+        ],
+        "IBM: Granite r2": [
+          "unclear",
+          "male"
+        ],
+        "Alibaba: GTE ModernBERT": [
+          "male",
+          "unclear"
+        ]
+      },
+      "note": "the overview's whole-résumé run swapped every carried name and pronoun, most of them other people's; change = owner-only minus that run"
+    },
+    "n_with_direction": 22,
+    "n_rho_sign_agrees": 21,
+    "rho_sign_disagrees": {
+      "Cohere: v4 fast": {
+        "whole_resume": 4.270833333333336,
+        "ci": [
+          0.029761904761904656,
+          8.199404761904761
+        ],
+        "rho": 0.13965573974626505,
+        "p": 0.5436545634543655
+      }
+    },
     "rho_p_note": "permutation p values are unadjusted for the number of rerankers",
     "correlation": {
-      "spearman_rho": 0.6521739130434783,
+      "spearman_rho": 0.6747826086956521,
       "spearman_ci": [
-        0.29421937946225996,
-        0.8470948012232415
+        0.3336182960689756,
+        0.863282314066704
       ],
-      "pearson_r": 0.6179290010132137,
-      "audit_only_spearman_rho": 0.6058723884810843,
+      "pearson_r": 0.6255458833770476,
+      "audit_only_spearman_rho": 0.6363636363636365,
       "n_bootstrap": 10000,
       "bootstrap": "rerankers resampled with replacement"
     }
@@ -630,7 +891,6 @@
       "voyage-rerank-3": {
         "label": "Voyage: rerank-3",
         "synthetic": 60.89037698412699,
-        "whole_resume_24_model_run": 46.800595238095234,
         "by_length": {
           "35": {
             "name": {
@@ -761,35 +1021,33 @@
             "name": {
               "gap": 51.666666666666664,
               "ci": [
-                48.63095238095239,
-                54.732142857142854
+                48.54166666666666,
+                54.82142857142858
               ],
               "n_resumes_cut": 0
             },
             "line": {
               "gap": 53.363095238095234,
               "ci": [
-                50.32738095238096,
-                56.36904761904762
+                50.32738095238095,
+                56.339285714285715
               ],
               "n_resumes_cut": 0
             },
             "line_minus_name": {
               "diff": 1.6964285714285694,
               "ci": [
-                -1.1309523809523725,
-                4.31622023809524
+                -1.1011904761904816,
+                4.31547619047619
               ]
             }
           }
         },
-        "owner_only_minus_24_model_run": 4.866071428571431,
         "short_line_minus_synthetic": 3.127480158730151
       },
       "cohere-v5-pro": {
         "label": "Cohere: v5 pro",
         "synthetic": 68.44246031746033,
-        "whole_resume_24_model_run": 37.5,
         "by_length": {
           "35": {
             "name": {
@@ -920,35 +1178,33 @@
             "name": {
               "gap": 40.47619047619048,
               "ci": [
-                35.951636904761905,
-                44.88095238095238
+                36.01190476190476,
+                44.94047619047619
               ],
               "n_resumes_cut": 0
             },
             "line": {
               "gap": 42.97619047619047,
               "ci": [
-                38.392113095238095,
-                47.38095238095239
+                38.42261904761905,
+                47.4404761904762
               ],
               "n_resumes_cut": 0
             },
             "line_minus_name": {
               "diff": 2.499999999999986,
               "ci": [
-                -2.6488095238095255,
-                7.44047619047619
+                -2.6785714285714306,
+                7.708333333333329
               ]
             }
           }
         },
-        "owner_only_minus_24_model_run": 2.9761904761904816,
         "short_line_minus_synthetic": -4.5138888888889
       },
       "qwen3-8b": {
         "label": "Qwen: Qwen3 8B",
         "synthetic": 31.639384920634917,
-        "whole_resume_24_model_run": 27.559523809523803,
         "by_length": {
           "35": {
             "name": {
@@ -1079,35 +1335,33 @@
             "name": {
               "gap": 29.360119047619044,
               "ci": [
-                25.46130952380953,
-                33.34821428571429
+                25.550223214285715,
+                33.348214285714285
               ],
               "n_resumes_cut": 0
             },
             "line": {
               "gap": 29.285714285714292,
               "ci": [
-                25.40178571428572,
-                33.095238095238095
+                25.342261904761905,
+                33.24404761904762
               ],
               "n_resumes_cut": 0
             },
             "line_minus_name": {
               "diff": -0.07440476190475209,
               "ci": [
-                -4.642857142857142,
-                4.374999999999993
+                -4.598214285714278,
+                4.419642857142858
               ]
             }
           }
         },
-        "owner_only_minus_24_model_run": 1.8005952380952408,
         "short_line_minus_synthetic": -6.862599206349209
       },
       "voyage-rerank-2": {
         "label": "Voyage: rerank-2",
         "synthetic": 57.27926587301587,
-        "whole_resume_24_model_run": -4.31547619047619,
         "by_length": {
           "35": {
             "name": {
@@ -1238,35 +1492,33 @@
             "name": {
               "gap": -5.505952380952383,
               "ci": [
-                -9.88095238095238,
-                -1.0416666666666685
+                -9.791666666666664,
+                -0.9821428571428537
               ],
               "n_resumes_cut": 0
             },
             "line": {
               "gap": -0.6547619047619051,
               "ci": [
-                -4.136904761904761,
-                3.0059523809523814
+                -4.19642857142857,
+                3.0654761904761907
               ],
               "n_resumes_cut": 0
             },
             "line_minus_name": {
               "diff": 4.851190476190478,
               "ci": [
-                0.9821428571428564,
-                8.75
+                1.011904761904761,
+                8.779761904761905
               ]
             }
           }
         },
-        "owner_only_minus_24_model_run": -1.1904761904761934,
         "short_line_minus_synthetic": -42.21974206349206
       },
       "bge-m3": {
         "label": "BAAI: BGE v2-m3",
         "synthetic": 15.114087301587304,
-        "whole_resume_24_model_run": 4.821428571428569,
         "by_length": {
           "35": {
             "name": {
@@ -1397,35 +1649,33 @@
             "name": {
               "gap": 5.50595238095238,
               "ci": [
-                1.2797619047619058,
-                9.761904761904756
+                1.3683035714285727,
+                9.49479166666666
               ],
               "n_resumes_cut": 0
             },
             "line": {
               "gap": 5.208333333333332,
               "ci": [
-                1.6071428571428599,
-                8.809523809523812
+                1.517857142857143,
+                8.809523809523808
               ],
               "n_resumes_cut": 0
             },
             "line_minus_name": {
               "diff": -0.29761904761904745,
               "ci": [
-                -4.970238095238091,
-                4.523809523809521
+                -5.0892857142857135,
+                4.464285714285715
               ]
             }
           }
         },
-        "owner_only_minus_24_model_run": 0.6845238095238102,
         "short_line_minus_synthetic": -3.864087301587304
       },
       "mxbai-large-v2": {
         "label": "Mixedbread: large v2",
         "synthetic": 20.776289682539684,
-        "whole_resume_24_model_run": -14.047619047619037,
         "by_length": {
           "35": {
             "name": {
@@ -1556,33 +1806,34 @@
             "name": {
               "gap": -14.791666666666671,
               "ci": [
-                -18.318452380952376,
-                -11.517857142857146
+                -18.154761904761894,
+                -11.368675595238093
               ],
               "n_resumes_cut": 0
             },
             "line": {
               "gap": -6.071428571428569,
               "ci": [
-                -9.940476190476188,
-                -2.3214285714285743
+                -9.999999999999998,
+                -2.291666666666669
               ],
               "n_resumes_cut": 0
             },
             "line_minus_name": {
               "diff": 8.720238095238102,
               "ci": [
-                5.282366071428569,
-                12.232142857142858
+                5.2529761904762005,
+                12.142857142857146
               ]
             }
           }
         },
-        "owner_only_minus_24_model_run": -0.7440476190476346,
         "short_line_minus_synthetic": -3.082837301587304
       }
     },
-    "labels_sha256": "2f1e31c3f475224264c5f7ef30afa18a5a97f610fed10ecd8791a6fabc9072e2",
+    "labels_sha256": [
+      "2f1e31c3f475224264c5f7ef30afa18a5a97f610fed10ecd8791a6fabc9072e2"
+    ],
     "lengths": [
       "35",
       "75",
@@ -1604,10 +1855,7 @@
         "Voyage: rerank-2",
         "Mixedbread: large v2"
       ],
-      "line_effect_full_rest_max_abs": 2.499999999999986,
-      "owner_only_change_min_abs": 0.6845238095238102,
-      "owner_only_change_max_abs": 4.866071428571431,
-      "owner_only_n_sign_changes": 0
+      "line_effect_full_rest_max_abs": 2.499999999999986
     }
   },
   "word_counts": {

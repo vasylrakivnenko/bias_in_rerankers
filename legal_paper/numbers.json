@@ -2673,21 +2673,6 @@
     "format": ",d",
     "needs": "Companion on whole résumés (2026-10-26): Jina reranker v2's input limit in tokens."
   },
-  "WR_N_SWAP_SCORED": {
-    "expr": "a - b",
-    "refs": {
-      "a": {
-        "file": "results/realistic_pool_four_rerankers.json",
-        "path": "models.bge-m3.summary.overall.n"
-      },
-      "b": {
-        "file": "results/realistic_pool_four_rerankers.json",
-        "path": "models.bge-m3.summary.by_mode.inject.n"
-      }
-    },
-    "format": ",d",
-    "needs": "Companion on whole résumés (2026-10-26): scored comparisons whose pair swapped a carried marker (the 24-model construction)."
-  },
   "TABLE_WHOLE_RESUME": {
     "tex_file": "results/tex/companion_whole_resume.tex",
     "needs": "Companion on whole résumés (2026-10-26): Table E1, synthetic vs whole-résumé M-F for every reranker (code/companion_whole_resume.py)."
@@ -2855,13 +2840,13 @@
   },
   "OL_CHANGE_MIN": {
     "file": "results/companion_whole_resume.json",
-    "path": "length_pronoun.derived.owner_only_change_min_abs",
+    "path": "whole_resume.all_markers_run.change_min_abs",
     "format": ".1f",
-    "needs": "Companion on whole résumés (2026-10-26): smallest |change| in whole-résumé M-F from the 24-model construction to owner-only markers."
+    "needs": "Companion on whole résumés (2026-10-26): smallest |change| in whole-résumé M-F, owner-only vs the run that swapped every marker, over all rerankers."
   },
   "OL_CHANGE_MAX": {
     "file": "results/companion_whole_resume.json",
-    "path": "length_pronoun.derived.owner_only_change_max_abs",
+    "path": "whole_resume.all_markers_run.change_max_abs",
     "format": ".1f",
     "needs": "Companion on whole résumés (2026-10-26): largest such |change|."
   },
@@ -2912,12 +2897,6 @@
     "path": "whole_resume.synthetic_pattern.n_female_direction",
     "format": "d",
     "needs": "Companion on whole résumés (2026-10-26): of them, whole-résumé interval below zero."
-  },
-  "WR_N_PAT_UNCLEAR": {
-    "file": "results/companion_whole_resume.json",
-    "path": "whole_resume.synthetic_pattern.n_unclear",
-    "format": "d",
-    "needs": "Companion on whole résumés (2026-10-26): of them, whole-résumé interval covering zero."
   },
   "WR_PAT_KEEP_MIN": {
     "file": "results/companion_whole_resume.json",
@@ -3009,6 +2988,78 @@
     "file": "results/companion_whole_resume.json",
     "path": "run_dates.last",
     "needs": "Companion on whole résumés (2026-10-26): last such day."
+  },
+  "WR_V25L_SYN": {
+    "file": "results/companion_whole_resume.json",
+    "path": [
+      "whole_resume",
+      "synthetic_pattern",
+      "not_smaller",
+      "Voyage: rerank-2.5-lite",
+      "synthetic"
+    ],
+    "format": ".1f",
+    "needs": "Companion on whole résumés (2026-10-26): Voyage rerank-2.5-lite synthetic M-F (the one reranker with the pattern whose whole-résumé M-F is not smaller)."
+  },
+  "WR_V25L_WHOLE": {
+    "file": "results/companion_whole_resume.json",
+    "path": [
+      "whole_resume",
+      "synthetic_pattern",
+      "not_smaller",
+      "Voyage: rerank-2.5-lite",
+      "whole_resume"
+    ],
+    "format": ".1f",
+    "needs": "Companion on whole résumés (2026-10-26): its whole-résumé M-F."
+  },
+  "WR_N_RHO_AGREE": {
+    "file": "results/companion_whole_resume.json",
+    "path": "whole_resume.n_rho_sign_agrees",
+    "format": "d",
+    "needs": "Companion on whole résumés (2026-10-26): rerankers with a direction whose continuous check has the same sign."
+  },
+  "WR_N_MALE_RHO_NEG": {
+    "file": "results/companion_whole_resume.json",
+    "path": "whole_resume.n_male_direction_rho_negative",
+    "format": "d",
+    "needs": "Companion on whole résumés (2026-10-26): male-direction rerankers whose continuous check is negative."
+  },
+  "WR_C4F_LO": {
+    "file": "results/companion_whole_resume.json",
+    "path": "whole_resume.rho_sign_disagrees.Cohere: v4 fast.ci.0",
+    "format": ".1f",
+    "needs": "Companion on whole résumés (2026-10-26): Cohere rerank v4 fast whole-résumé interval, lower end."
+  },
+  "WR_C4F_HI": {
+    "file": "results/companion_whole_resume.json",
+    "path": "whole_resume.rho_sign_disagrees.Cohere: v4 fast.ci.1",
+    "format": ".1f",
+    "needs": "Companion on whole résumés (2026-10-26): upper end."
+  },
+  "WR_C4F_RHO": {
+    "file": "results/companion_whole_resume.json",
+    "path": "whole_resume.rho_sign_disagrees.Cohere: v4 fast.rho",
+    "format": ".2f",
+    "needs": "Companion on whole résumés (2026-10-26): its continuous-check Spearman rho."
+  },
+  "WR_C4F_P": {
+    "file": "results/companion_whole_resume.json",
+    "path": "whole_resume.rho_sign_disagrees.Cohere: v4 fast.p",
+    "format": ".2f",
+    "needs": "Companion on whole résumés (2026-10-26): its permutation p."
+  },
+  "OL_CHANGE_MEDIAN": {
+    "file": "results/companion_whole_resume.json",
+    "path": "whole_resume.all_markers_run.change_median_abs",
+    "format": ".1f",
+    "needs": "Companion on whole résumés (2026-10-26): median |change| in whole-résumé M-F, owner-only vs the run that swapped every marker."
+  },
+  "OL_N_DIR_CHANGES": {
+    "file": "results/companion_whole_resume.json",
+    "path": "whole_resume.all_markers_run.direction_changes",
+    "len": true,
+    "needs": "Companion on whole résumés (2026-10-26): rerankers whose direction category differs between the two constructions."
   },
   "RELEASE_TAG": {
     "literal": "arxiv-v3",

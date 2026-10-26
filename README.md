@@ -239,14 +239,22 @@ and the labelling passes' working files, which held the names, are not released.
 With `--marker-labels`, `realistic_pool_experiment.py` gives every résumé a prepended name,
 puts it wherever the owner is named, and changes only the owner's pronouns; `--cut-words N`
 keeps the first N words after the name, and `--owner-line` inserts a fourteen-word sentence
-with three of the owner's pronouns (`OWNER_LINE`). `code/run_length_pronoun.sh` runs the
-twelve length x pronoun conditions for one reranker (its header lists the settings used for
+with three of the owner's pronouns (`OWNER_LINE`). `code/run_length_pronoun.sh` writes these
+runs into `results/length_pronoun/`: `whole <model>` scores whole résumés with the name only,
+for every one of the 24 rerankers (jina-v3 also female-first), and these runs make the paper's
+whole-résumé table; `full <model>` adds the twelve length x pronoun conditions, run for
 Voyage rerank-3 and rerank-2, Cohere Rerank 5 Pro, Qwen3-Reranker-8B, bge-reranker-v2-m3 and
-mxbai-rerank-large-v2) into `results/length_pronoun/`. `code/companion_whole_resume.py` then
-writes `results/companion_whole_resume.json` and `results/tex/companion_whole_resume.tex`
-(the whole-résumé table and the numbers of the paper's whole-résumé subsection and Appendix E), and
-`legal_paper/generate_figures.py` draws `fig_length_pronoun.pdf` from it. Fireworks' Qwen
-scores vary slightly between identical calls, so a re-run of that model will not match exactly.
+mxbai-rerank-large-v2. The script's header lists each model's settings, the same as in the
+runs above. Each model first passed a two-pool canary (`whole-canary`, `canary`) in which the
+résumés without an owner marker scored as in its earlier run: identically for the local
+pointwise models, within call-to-call variation for the hosted ones, and within 0.02 for
+jina-v3, whose listwise scores move with the other documents in a request.
+`code/companion_whole_resume.py` then writes `results/companion_whole_resume.json` and
+`results/tex/companion_whole_resume.tex` (the whole-résumé table, its comparison with the
+swap-every-marker runs above, and the numbers of the paper's whole-résumé subsection and
+Appendix E), and `legal_paper/generate_figures.py` draws `fig_length_pronoun.pdf` from it.
+Fireworks' Qwen scores vary slightly between identical calls, so a re-run of that model will
+not match exactly.
 
 ### What is and is not tracked
 
