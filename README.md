@@ -233,9 +233,13 @@ else (a supervisor, a book's author, a school named after a person).
 `data/owner_marker_labels.json` records, for each of the 295 scored résumés with a detected
 name or a gendered pronoun, which occurrences refer to the résumé's owner. Two independent
 labelling passes (Claude subagents, October 2026) agreed on 333 of 333 names and 270 of 273
-pronouns; a third reading by the same model settled the disagreements, and no person has
-checked the labels. The file stores character offsets and a sha256 of the text there, never the names,
-and the labelling passes' working files, which held the names, are not released.
+pronouns; a third reading by the same model settled the disagreements. After the runs, one of the
+authors checked 40 of the labels blind (`code/owner_label_handcheck.py` draws them and builds the
+page, which holds résumé text and is not released; the answers are in
+`data/owner_marker_handcheck.json`): they agreed with 29 of the 32 they could decide, including all
+19 the model gave to the owner, and on a second look sided with the model in the other 3. The labels
+file stores character offsets and a sha256 of the text there, never the names, and the labelling
+passes' working files, which held the names, are not released.
 With `--marker-labels`, `realistic_pool_experiment.py` gives every résumé a prepended name,
 puts it wherever the owner is named, and changes only the owner's pronouns; `--cut-words N`
 keeps the first N words after the name, and `--owner-line` inserts a fourteen-word sentence

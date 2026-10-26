@@ -35,6 +35,8 @@ synthetic audit's documents; without the corpus the previous output's counts are
 Reads:  results/companion_full_window.json
         results/length_pronoun/<model>_w<35|75|150|300|600|full>_<name|line>.json (+ rows),
         jina-v3_wfull_name_female_first.json
+        data/owner_marker_labels.json, data/owner_marker_handcheck.json (a person's check of 40
+        labels, tallied by owner_label_handcheck.py)
         data/resumes/resumes.csv (optional, word counts)
 Output: results/companion_whole_resume.json, results/tex/companion_whole_resume.tex
 Run:    venv/bin/python code/companion_whole_resume.py
@@ -62,19 +64,21 @@ from interval_sensitivity import cell_tables, contrast_draws  # noqa: E402
 from labels import load_labels  # noqa: E402
 from companion_statistics import shares  # noqa: E402
 from model_labels import model_label  # noqa: E402
+from owner_label_handcheck import tally as handcheck_tally  # noqa: E402
 from realistic_pool_experiment import _PRON_RE, OWNER_LINE, OWNER_LINE_WORDS, load_queries  # noqa: E402
 
-SCRIPT_VERSION = "companion_whole_resume.py v1.1"
+SCRIPT_VERSION = "companion_whole_resume.py v1.2"
 RESULTS = ROOT / "results"
 OVERVIEW = RESULTS / "companion_full_window.json"
 LP_DIR = RESULTS / "length_pronoun"
 LABELS = ROOT / "data" / "owner_marker_labels.json"
 SENSITIVITY = RESULTS / "interval_sensitivity.json"
-# sha256 of the labels file the length x pronoun runs used, and of its labels alone: the
-# file's description was corrected before the other rerankers' owner-only runs, the labels
-# were not, so a run may record either file
-RUN_LABELS = ("2f1e31c3f475224264c5f7ef30afa18a5a97f610fed10ecd8791a6fabc9072e2",
-              "95611e9e7b9cb40c5aa20f03e21066188ed9e1262a056105e84f943e2241b53d")
+# sha256 of the labels files the owner-only runs used (the length x pronoun runs, then the
+# other rerankers' runs, after a correction of the file's description), and of its labels
+# alone: the description changed again after the runs, the labels never did
+RUN_LABEL_FILES = {"2f1e31c3f475224264c5f7ef30afa18a5a97f610fed10ecd8791a6fabc9072e2",
+                   "4b03d5d66ea067032691609a57a7dea4fe77a39c669520cbdcca8a91a11dd303"}
+RUN_LABELS = "95611e9e7b9cb40c5aa20f03e21066188ed9e1262a056105e84f943e2241b53d"
 POOL_SHA = "91687571c4c9dd4f78c5d442c751070ea0efc18b56e5f9713479a4532f80c400"
 N_COMPARISONS = 3840
 # listwise and order-sensitive: both orders averaged (companion_full_window.COUNTERBALANCED)
@@ -381,7 +385,7 @@ def owner_labels(shas):
     data = json.loads(raw)
     content = hashlib.sha256(json.dumps(data["labels"], sort_keys=True, ensure_ascii=False,
                                         separators=(",", ":")).encode()).hexdigest()
-    if content != RUN_LABELS[1] or not set(shas) <= {RUN_LABELS[0], hashlib.sha256(raw).hexdigest()}:
+    if content != RUN_LABELS or not set(shas) <= RUN_LABEL_FILES | {hashlib.sha256(raw).hexdigest()}:
         raise SystemExit(f"{LABELS.name} does not hold the labels the runs used")
     labels = data["labels"]
     names = [h["ref"] for v in labels.values() for h in v["names"]]
@@ -391,6 +395,13 @@ def owner_labels(shas):
     m = re.search(r"agreed on (\d+) of (\d+) names and (\d+) of (\d+) pronouns", data["description"])
     if not m or (int(m[2]), int(m[4])) != (len(names), len(prons)):
         raise SystemExit(f"{LABELS.name}: the description's agreement counts do not match the labels")
+    hc = handcheck_tally()
+    # the paper says the checker agreed with every applicant label they could decide, and that
+    # every disagreement was a word the checker gave to the applicant, settled for the model
+    # on a second look
+    if (hc["model_applicant"]["agree"] != hc["model_applicant"]["decided"]
+            or not hc["disagree"] == hc["disagree_checker_applicant"] == hc["disagree_reread_model"]):
+        raise SystemExit("the hand check no longer matches the paper's description of it")
     return {"n_resumes": len(labels),
             "passes_agree_names": int(m[1]),
             "passes_agree_pronouns": int(m[3]),
@@ -402,7 +413,8 @@ def owner_labels(shas):
             "n_pronouns": len(prons),
             "n_pronouns_owner": prons.count("applicant"),
             "n_pronouns_other_person": prons.count("other"),
-            "n_pronouns_no_person": prons.count("none")}
+            "n_pronouns_no_person": prons.count("none"),
+            "hand_check": hc}
 
 
 def run_dates():

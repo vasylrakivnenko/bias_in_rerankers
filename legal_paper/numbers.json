@@ -3061,8 +3061,56 @@
     "len": true,
     "needs": "Companion on whole résumés (2026-10-26): rerankers whose direction category differs between the two constructions."
   },
+  "HC_N": {
+    "file": "results/companion_whole_resume.json",
+    "path": "owner_labels.hand_check.n",
+    "format": "d",
+    "needs": "Owner-label hand check (2026-10-26): labels a person checked blind (data/owner_marker_handcheck.json)."
+  },
+  "HC_N_NAMES": {
+    "file": "results/companion_whole_resume.json",
+    "path": "owner_labels.hand_check.names.n",
+    "format": "d",
+    "needs": "Owner-label hand check (2026-10-26): names among them."
+  },
+  "HC_N_PRON": {
+    "file": "results/companion_whole_resume.json",
+    "path": "owner_labels.hand_check.pronouns.n",
+    "format": "d",
+    "needs": "Owner-label hand check (2026-10-26): pronouns among them."
+  },
+  "HC_N_DECIDED": {
+    "file": "results/companion_whole_resume.json",
+    "path": "owner_labels.hand_check.decided",
+    "format": "d",
+    "needs": "Owner-label hand check (2026-10-26): cases the checker could decide."
+  },
+  "HC_N_AGREE": {
+    "file": "results/companion_whole_resume.json",
+    "path": "owner_labels.hand_check.agree",
+    "format": "d",
+    "needs": "Owner-label hand check (2026-10-26): decided cases where the checker agreed with the model."
+  },
+  "HC_N_APPL_DECIDED": {
+    "file": "results/companion_whole_resume.json",
+    "path": "owner_labels.hand_check.model_applicant.decided",
+    "format": "d",
+    "needs": "Owner-label hand check (2026-10-26): decided cases the model gave to the applicant (all agreed; companion_whole_resume.py checks)."
+  },
+  "HC_N_UNSURE": {
+    "file": "results/companion_whole_resume.json",
+    "path": "owner_labels.hand_check.unsure",
+    "format": "d",
+    "needs": "Owner-label hand check (2026-10-26): cases the checker could not decide."
+  },
+  "HC_N_DISAGREE": {
+    "file": "results/companion_whole_resume.json",
+    "path": "owner_labels.hand_check.disagree",
+    "format": "d",
+    "needs": "Owner-label hand check (2026-10-26): disagreements (all checker applicant vs model not, all settled for the model on a second look; checked)."
+  },
   "RELEASE_TAG": {
-    "literal": "arxiv-v3",
-    "needs": "Review round 6 refinement (2026-10-17): git tag this manuscript corresponds to. The tag must be created when this round is committed; until then the statement is not true."
+    "literal": "arxiv-v3.1",
+    "needs": "Owner-label hand check (2026-10-26): git tag this manuscript corresponds to (arxiv-v3 plus the hand check). The tag must be created when this round is committed; until then the statement is not true."
   }
 }

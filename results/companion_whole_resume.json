@@ -1,6 +1,6 @@
 {
-  "script_version": "companion_whole_resume.py v1.1",
-  "generated": "2026-10-26T11:24:52",
+  "script_version": "companion_whole_resume.py v1.2",
+  "generated": "2026-10-26T14:30:15",
   "source": {
     "overview": "results/companion_full_window.json",
     "overview_script": "companion_full_window.py v1.1",
@@ -41,7 +41,43 @@
     "n_pronouns": 273,
     "n_pronouns_owner": 128,
     "n_pronouns_other_person": 84,
-    "n_pronouns_no_person": 61
+    "n_pronouns_no_person": 61,
+    "hand_check": {
+      "n_rounds": 2,
+      "seed": 20261026,
+      "n": 40,
+      "decided": 32,
+      "agree": 29,
+      "unsure": 8,
+      "names": {
+        "n": 20,
+        "decided": 16,
+        "agree": 15
+      },
+      "pronouns": {
+        "n": 20,
+        "decided": 16,
+        "agree": 14
+      },
+      "model_applicant": {
+        "n": 20,
+        "decided": 19,
+        "agree": 19
+      },
+      "model_not_applicant": {
+        "n": 20,
+        "decided": 13,
+        "agree": 10
+      },
+      "disagree": 3,
+      "disagree_checker_applicant": 3,
+      "disagree_reread_model": 3,
+      "disagree_cases": [
+        15,
+        21,
+        35
+      ]
+    }
   },
   "run_dates": {
     "first": "2026-10-19",
