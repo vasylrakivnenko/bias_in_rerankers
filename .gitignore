@@ -95,6 +95,13 @@ legal_paper/SUPERSEDED_*.pdf
 legal_paper/gender-bias-automated-hiring_deidentification_*.pdf
 legal_paper/gender-bias-neural-rerankers_empirical_*.pdf
 
+# Private drafts, submission notes and the racialized-name pilot (not part of the release)
+*.docx
+legal_paper/cover_note.txt
+legal_paper/journals_to_submit.md
+code/racialized_name_experiment.py
+results/racialized_name_pilot_*
+
 # Second internal review (not part of the release)
 REVIEW_ROUND2.md
 
