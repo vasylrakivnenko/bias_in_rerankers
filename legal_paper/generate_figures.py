@@ -1,5 +1,5 @@
 """
-Generate the three figures for the legal paper, from the saved experiment outputs.
+Generate the figures for the paper, from the saved experiment outputs.
 All figures are vector PDFs written to legal_paper/figures/.
 
 Run:  ../venv/bin/python generate_figures.py
@@ -384,8 +384,58 @@ def fig_deid():
     return {k: conds[k]["overall"] for k, _ in order}
 
 
+# ---------------------------------------------------------------------------
+# Figure E1: the companion experiment's length and pronoun conditions -- one
+# panel per re-ranker, the male-typed minus female-typed difference against how
+# much of the résumé is kept, with and without a sentence carrying three of the
+# applicant's pronouns. All panels share one scale so that the synthetic audit's
+# difference (dashed) can be read against every curve.
+# ---------------------------------------------------------------------------
+def fig_length_pronoun():
+    d = _load("companion_whole_resume.json")["length_pronoun"]
+    keys = d["lengths"]
+    x = np.arange(len(keys))
+    arms = [("name", "Name only", MALE_DARK, "o", "-"),
+            ("line", "Name and a sentence with three pronouns", FEMALE, "s", "--")]
+    fig, axes = plt.subplots(2, 3, figsize=(W_FIG, 4.3), sharex=True, sharey=True)
+    for ax, (m, v) in zip(axes.flat, d["models"].items()):
+        for arm, lab, col, mk, ls in arms:
+            g = [v["by_length"][k][arm]["gap"] for k in keys]
+            lo = [v["by_length"][k][arm]["ci"][0] for k in keys]
+            hi = [v["by_length"][k][arm]["ci"][1] for k in keys]
+            ax.fill_between(x, lo, hi, color=col, alpha=0.15, lw=0, zorder=2)
+            ax.plot(x, g, marker=mk, ls=ls, color=col, lw=1.1, ms=3.2, label=lab, zorder=3)
+        ax.axhline(v["synthetic"], color=REFERENCE, lw=0.9, ls=(0, (4, 2)), zorder=1,
+                   label="Synthetic audit")
+        ax.axhline(0, color=INK, lw=0.6, zorder=1)
+        ax.set_title(v["label"], fontsize=FONT_AXIS)
+        ax.set_xticks(x)
+        ax.set_xticklabels([k if k != "full" else "all" for k in keys], fontsize=FONT_TICK - 0.6)
+        ax.tick_params(axis="y", labelsize=FONT_TICK)
+        style(ax)
+    axes[0, 0].set_ylim(-25, 75)
+    axes[0, 0].set_yticks([-20, 0, 20, 40, 60])
+    for ax in axes[1]:
+        ax.set_xlabel("Words after the name", fontsize=FONT_AXIS)
+    for ax in axes[:, 0]:
+        ax.set_ylabel("Male-typed minus\nfemale-typed (points)", fontsize=FONT_AXIS,
+                      linespacing=1.25)
+    handles, labels = axes[0, 0].get_legend_handles_labels()
+    fig.legend(handles, labels, frameon=False, fontsize=FONT_LEGEND, loc="lower center",
+               ncol=3, bbox_to_anchor=(0.5, 0.0), handlelength=2.2, columnspacing=1.4)
+    fig.tight_layout(rect=(0, 0.06, 1, 1))
+    fig.savefig(f"{FIGDIR}/fig_length_pronoun.pdf")
+    plt.close(fig)
+    print("wrote fig_length_pronoun.pdf  ("
+          + "; ".join("%s %+.1f..%+.1f" % (m, v["by_length"][keys[0]]["name"]["gap"],
+                                           v["by_length"]["full"]["name"]["gap"])
+                      for m, v in d["models"].items()) + ")")
+    return d["models"]
+
+
 if __name__ == "__main__":
     fig_single_stage()
     fig_pipeline()
     fig_deid()
+    fig_length_pronoun()
     print("done ->", FIGDIR)

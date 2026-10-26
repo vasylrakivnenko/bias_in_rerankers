@@ -154,7 +154,11 @@ def pinned_or_current(name, spec, checkpoint_revision=None):
 UNPINNED = False
 
 
-def load_backend(name, spec, revision=None):
+def load_backend(name, spec, revision=None, window=None):
+    """The model's scoring function and the revision loaded. `window` (tokens) replaces the
+    audit's input limit -- 512 for the cross-encoders and Nemotron, 8,192 for Qwen3, 2,048
+    per document for jina-reranker-v3 -- for the whole-resume runs of
+    code/realistic_pool_experiment.py; the audit's own runs leave it unset."""
     import torch
     from huggingface_hub import snapshot_download
 
@@ -164,7 +168,7 @@ def load_backend(name, spec, revision=None):
 
     if spec["backend"] == "crossencoder":
         from sentence_transformers import CrossEncoder
-        kw = {"trust_remote_code": True, "max_length": 512}
+        kw = {"trust_remote_code": True, "max_length": window or 512}
         if dtype is not None:
             kw["model_kwargs"] = {"torch_dtype": dtype}
         model = CrossEncoder(name, revision=revision, device=device(), **kw)
@@ -196,7 +200,7 @@ def load_backend(name, spec, revision=None):
         pre = tok.encode(prefix, add_special_tokens=False)
         suf = tok.encode(suffix, add_special_tokens=False)
         task = "Given a web search query, retrieve relevant passages that answer the query"
-        max_length = 8192
+        max_length = window or 8192
 
         def score(query, docs):
             out = []
@@ -230,7 +234,7 @@ def load_backend(name, spec, revision=None):
             texts = [f"question:{query} \n \n passage:{d}" for d in docs]  # model card template
             for i in range(0, len(texts), spec["batch"]):
                 b = tok(texts[i:i + spec["batch"]], padding=True, truncation=True,
-                        return_tensors="pt", max_length=512).to(device())
+                        return_tensors="pt", max_length=window or 512).to(device())
                 with torch.inference_mode():
                     out += model(**b).logits.view(-1).float().cpu().tolist()
             return out
@@ -242,7 +246,7 @@ def load_backend(name, spec, revision=None):
                                           trust_remote_code=True).eval().to(device())
 
         def score(query, docs):
-            res = model.rerank(query, docs)
+            res = model.rerank(query, docs, max_doc_length=window or 2048)
             got = {r["index"]: float(r["relevance_score"]) for r in res}
             return [got[i] for i in range(len(docs))]
         return score, revision

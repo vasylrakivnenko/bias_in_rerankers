@@ -78,6 +78,8 @@ legal_paper/prereg.md
 run_full_realistic_pool.sh
 results/realistic_pool_*.json
 !results/realistic_pool_four_rerankers.json
+# The whole-résumé runs behind the paper's whole-résumé table (no résumé text)
+!results/realistic_pool_full_window_*.json
 !results/realistic_pool_sampling.json
 results/leakage_probe.json
 results/utility_retention.json
@@ -108,6 +110,9 @@ results/partial_smoke/
 # Pronoun-only run checkpoints and ledgers (redundant with results/pronoun_channel/<model>.json,
 # which embed the drift checks, request ledgers and sessions)
 results/pronoun_channel/partial/
+# Two-pool canaries of the length x pronoun runs (code/run_length_pronoun.sh) and run logs
+results/length_pronoun/canary_*
+logs/
 
 # RunPod SSH keys and pod state
 code/runpod/id_ed25519*

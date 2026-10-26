@@ -1,0 +1,1636 @@
+{
+  "script_version": "companion_whole_resume.py v1.0",
+  "generated": "2026-10-26T09:06:07",
+  "source": {
+    "overview": "results/companion_full_window.json",
+    "overview_script": "companion_full_window.py v1.1",
+    "length_pronoun": "results/length_pronoun"
+  },
+  "notes": {
+    "contrast": "M-F = tie-aware male-favored share (%) in the 7 male-typed minus the 3 female-typed job categories, in points",
+    "direction": "male / female: the whole-résumé interval lies above / below zero; unclear: it covers zero",
+    "24_model_run": "swapped every carried name and pronoun, many of which belong to other people; the length x pronoun runs change only the owner's (owner_only_minus_24_model_run)",
+    "synthetic_ci": "occupation-clustered 95% interval of the synthetic M-F; for jina-v3 the audit's same-order interval, while its synthetic M-F averages both orders"
+  },
+  "design": {
+    "cut_words": [
+      35,
+      75,
+      150,
+      300,
+      600
+    ],
+    "cut_words_text": "35, 75, 150, 300, or 600",
+    "owner_line": {
+      "male": "He is a dedicated professional, and his colleagues describe him as reliable and thorough.",
+      "female": "She is a dedicated professional, and her colleagues describe her as reliable and thorough."
+    },
+    "owner_line_words": 14,
+    "owner_line_pronouns": 3
+  },
+  "owner_labels": {
+    "n_resumes": 295,
+    "passes_agree_names": 333,
+    "passes_agree_pronouns": 270,
+    "n_name_occurrences_other": 258,
+    "n_pronouns_not_owner": 145,
+    "n_name_occurrences": 333,
+    "n_name_occurrences_owner": 75,
+    "n_resumes_with_owner_name": 34,
+    "n_pronouns": 273,
+    "n_pronouns_owner": 128,
+    "n_pronouns_other_person": 84,
+    "n_pronouns_no_person": 61
+  },
+  "run_dates": {
+    "first": "2026-10-19",
+    "last": "2026-10-22",
+    "n_runs": 97
+  },
+  "whole_resume": {
+    "rows": [
+      {
+        "short": "cohere-v5-pro",
+        "model": "rerank-v5.0-pro",
+        "label": "Cohere: v5 pro",
+        "post_audit": true,
+        "reads_every_resume_whole": true,
+        "synthetic": 68.44246031746033,
+        "synthetic_ci": [
+          57.86693948412699,
+          77.80753968253968
+        ],
+        "synthetic_pattern": true,
+        "whole_resume": 37.5,
+        "ci": [
+          32.410714285714285,
+          42.47023809523809
+        ],
+        "direction": "male",
+        "rho_women_share": -0.7374066037782192,
+        "rho_p": 0.00027999720002799973
+      },
+      {
+        "short": "zerank-2",
+        "model": "zeroentropy/zerank-2-reranker",
+        "label": "ZeroEntropy: zerank-2",
+        "post_audit": false,
+        "reads_every_resume_whole": true,
+        "synthetic": 65.27529761904762,
+        "synthetic_ci": [
+          52.886842757936506,
+          76.23766121031746
+        ],
+        "synthetic_pattern": true,
+        "whole_resume": 31.25,
+        "ci": [
+          27.172619047619044,
+          35.357142857142854
+        ],
+        "direction": "male",
+        "rho_women_share": -0.7654320987654322,
+        "rho_p": 6.999930000699993e-05
+      },
+      {
+        "short": "voyage-rerank-3",
+        "model": "rerank-3",
+        "label": "Voyage: rerank-3",
+        "post_audit": false,
+        "reads_every_resume_whole": true,
+        "synthetic": 60.89037698412699,
+        "synthetic_ci": [
+          50.26283482142857,
+          71.02926587301587
+        ],
+        "synthetic_pattern": true,
+        "whole_resume": 46.800595238095234,
+        "ci": [
+          43.095238095238095,
+          50.535714285714285
+        ],
+        "direction": "male",
+        "rho_women_share": -0.7461813848720985,
+        "rho_p": 0.00012999870001299986
+      },
+      {
+        "short": "voyage-rerank-2.5",
+        "model": "rerank-2.5",
+        "label": "Voyage: rerank-2.5",
+        "post_audit": false,
+        "reads_every_resume_whole": true,
+        "synthetic": 57.71081349206349,
+        "synthetic_ci": [
+          47.77771577380952,
+          67.39093501984127
+        ],
+        "synthetic_pattern": true,
+        "whole_resume": 34.404761904761905,
+        "ci": [
+          30.714285714285715,
+          38.30357142857142
+        ],
+        "direction": "male",
+        "rho_women_share": -0.7153996101364521,
+        "rho_p": 0.0004199958000419996
+      },
+      {
+        "short": "voyage-rerank-2",
+        "model": "rerank-2",
+        "label": "Voyage: rerank-2",
+        "post_audit": false,
+        "reads_every_resume_whole": true,
+        "synthetic": 57.27926587301587,
+        "synthetic_ci": [
+          46.651661706349195,
+          67.43309771825398
+        ],
+        "synthetic_pattern": true,
+        "whole_resume": -4.31547619047619,
+        "ci": [
+          -8.244047619047617,
+          -0.3273809523809512
+        ],
+        "direction": "female",
+        "rho_women_share": 0.48844841746054374,
+        "rho_p": 0.026359736402635975
+      },
+      {
+        "short": "cohere-v5-fast",
+        "model": "rerank-v5.0-fast",
+        "label": "Cohere: v5 fast",
+        "post_audit": true,
+        "reads_every_resume_whole": true,
+        "synthetic": 52.7529761904762,
+        "synthetic_ci": [
+          46.542658730158735,
+          58.74007936507936
+        ],
+        "synthetic_pattern": true,
+        "whole_resume": 13.541666666666668,
+        "ci": [
+          8.690476190476193,
+          18.511904761904763
+        ],
+        "direction": "male",
+        "rho_women_share": -0.3473034437946718,
+        "rho_p": 0.12208877911220888
+      },
+      {
+        "short": "voyage-rerank-3-lite",
+        "model": "rerank-3-lite",
+        "label": "Voyage: rerank-3-lite",
+        "post_audit": false,
+        "reads_every_resume_whole": true,
+        "synthetic": 49.605654761904766,
+        "synthetic_ci": [
+          42.529761904761905,
+          56.45089285714286
+        ],
+        "synthetic_pattern": true,
+        "whole_resume": 39.970238095238095,
+        "ci": [
+          35.892113095238095,
+          43.86904761904763
+        ],
+        "direction": "male",
+        "rho_women_share": -0.7650309146293204,
+        "rho_p": 9.99990000099999e-05
+      },
+      {
+        "short": "nemotron-1b",
+        "model": "nvidia/llama-nemotron-rerank-1b-v2",
+        "label": "NVIDIA: Nemotron 1B",
+        "post_audit": false,
+        "reads_every_resume_whole": true,
+        "synthetic": 43.44494047619048,
+        "synthetic_ci": [
+          32.938988095238095,
+          53.333333333333336
+        ],
+        "synthetic_pattern": true,
+        "whole_resume": 23.4375,
+        "ci": [
+          19.330357142857142,
+          27.604166666666668
+        ],
+        "direction": "male",
+        "rho_women_share": -0.7433398310591293,
+        "rho_p": 0.00016999830001699983
+      },
+      {
+        "short": "cohere-v4-pro",
+        "model": "Cohere-rerank-v4.0-pro",
+        "label": "Cohere: v4 pro",
+        "post_audit": false,
+        "reads_every_resume_whole": true,
+        "synthetic": 41.073908730158735,
+        "synthetic_ci": [
+          33.541604662698404,
+          48.27387152777779
+        ],
+        "synthetic_pattern": true,
+        "whole_resume": 24.017857142857146,
+        "ci": [
+          20.550595238095244,
+          27.42559523809524
+        ],
+        "direction": "male",
+        "rho_women_share": -0.7171159845575656,
+        "rho_p": 0.0003899961000389996
+      },
+      {
+        "short": "cohere-v3.5",
+        "model": "rerank-v3.5",
+        "label": "Cohere: v3.5",
+        "post_audit": false,
+        "reads_every_resume_whole": true,
+        "synthetic": 37.207341269841265,
+        "synthetic_ci": [
+          26.302083333333336,
+          48.36811755952382
+        ],
+        "synthetic_pattern": true,
+        "whole_resume": 7.886904761904766,
+        "ci": [
+          2.5148809523809597,
+          13.139880952380945
+        ],
+        "direction": "male",
+        "rho_women_share": -0.39304299595404446,
+        "rho_p": 0.07881921180788191
+      },
+      {
+        "short": "voyage-rerank-2.5-lite",
+        "model": "rerank-2.5-lite",
+        "label": "Voyage: rerank-2.5-lite",
+        "post_audit": false,
+        "reads_every_resume_whole": true,
+        "synthetic": 35.181051587301596,
+        "synthetic_ci": [
+          27.713231646825392,
+          42.50992063492063
+        ],
+        "synthetic_pattern": true,
+        "whole_resume": 30.476190476190478,
+        "ci": [
+          26.428571428571423,
+          34.61309523809524
+        ],
+        "direction": "male",
+        "rho_women_share": -0.6766331199057966,
+        "rho_p": 0.0012099879001209988
+      },
+      {
+        "short": "nemotron-vl",
+        "model": "nvidia/llama-nemotron-rerank-vl-1b-v2:free",
+        "label": "NVIDIA: Nemotron VL 1B",
+        "post_audit": false,
+        "reads_every_resume_whole": true,
+        "synthetic": 32.214781746031754,
+        "synthetic_ci": [
+          24.650297619047628,
+          39.53125
+        ],
+        "synthetic_pattern": true,
+        "whole_resume": 17.083333333333336,
+        "ci": [
+          12.454985119047619,
+          21.5922619047619
+        ],
+        "direction": "male",
+        "rho_women_share": -0.6866061269271646,
+        "rho_p": 0.0007699923000769992
+      },
+      {
+        "short": "voyage-rerank-1",
+        "model": "rerank-1",
+        "label": "Voyage: rerank-1",
+        "post_audit": false,
+        "reads_every_resume_whole": true,
+        "synthetic": 31.696428571428577,
+        "synthetic_ci": [
+          21.651723710317462,
+          41.60968501984128
+        ],
+        "synthetic_pattern": true,
+        "whole_resume": -12.232142857142854,
+        "ci": [
+          -17.351190476190474,
+          -6.874999999999998
+        ],
+        "direction": "female",
+        "rho_women_share": 0.606446469205947,
+        "rho_p": 0.0041499585004149955
+      },
+      {
+        "short": "qwen3-8b",
+        "model": "accounts/fireworks/models/qwen3-reranker-8b",
+        "label": "Qwen: Qwen3 8B",
+        "post_audit": false,
+        "reads_every_resume_whole": true,
+        "synthetic": 31.639384920634917,
+        "synthetic_ci": [
+          25.900235615079353,
+          37.41821676587302
+        ],
+        "synthetic_pattern": true,
+        "whole_resume": 27.559523809523803,
+        "ci": [
+          23.28869047619047,
+          31.696800595238095
+        ],
+        "direction": "male",
+        "rho_women_share": -0.6666666666666667,
+        "rho_p": 0.0014499855001449985
+      },
+      {
+        "short": "cohere-v4-fast",
+        "model": "Cohere-rerank-v4.0-fast",
+        "label": "Cohere: v4 fast",
+        "post_audit": false,
+        "reads_every_resume_whole": true,
+        "synthetic": 31.44097222222222,
+        "synthetic_ci": [
+          22.876860119047628,
+          39.789186507936506
+        ],
+        "synthetic_pattern": true,
+        "whole_resume": 2.470238095238095,
+        "ci": [
+          -1.339285714285715,
+          6.190848214285709
+        ],
+        "direction": "unclear",
+        "rho_women_share": 0.21507472384665366,
+        "rho_p": 0.34773652263477367
+      },
+      {
+        "short": "qwen3-0.6b",
+        "model": "Qwen/Qwen3-Reranker-0.6B",
+        "label": "Qwen: Qwen3 0.6B",
+        "post_audit": false,
+        "reads_every_resume_whole": true,
+        "synthetic": 27.467757936507937,
+        "synthetic_ci": [
+          16.99150545634921,
+          37.750620039682545
+        ],
+        "synthetic_pattern": true,
+        "whole_resume": 5.014880952380949,
+        "ci": [
+          -0.5654761904761885,
+          10.282738095238098
+        ],
+        "direction": "unclear",
+        "rho_women_share": 0.021456441466473894,
+        "rho_p": 0.9271407285927141
+      },
+      {
+        "short": "qwen3-4b",
+        "model": "Qwen/Qwen3-Reranker-4B",
+        "label": "Qwen: Qwen3 4B",
+        "post_audit": false,
+        "reads_every_resume_whole": true,
+        "synthetic": 21.579861111111107,
+        "synthetic_ci": [
+          14.722160218253968,
+          28.613653273809522
+        ],
+        "synthetic_pattern": true,
+        "whole_resume": 5.4761904761904745,
+        "ci": [
+          1.3095238095238158,
+          9.911086309523814
+        ],
+        "direction": "male",
+        "rho_women_share": -0.2632434328163762,
+        "rho_p": 0.24660753392466075
+      },
+      {
+        "short": "mxbai-large-v2",
+        "model": "mixedbread-ai/mxbai-rerank-large-v2",
+        "label": "Mixedbread: large v2",
+        "post_audit": false,
+        "reads_every_resume_whole": true,
+        "synthetic": 20.776289682539684,
+        "synthetic_ci": [
+          14.327876984126988,
+          27.37605406746032
+        ],
+        "synthetic_pattern": true,
+        "whole_resume": -14.047619047619037,
+        "ci": [
+          -17.395833333333332,
+          -10.684523809523805
+        ],
+        "direction": "female",
+        "rho_women_share": 0.6049382716049383,
+        "rho_p": 0.004409955900440995
+      },
+      {
+        "short": "voyage-rerank-2-lite",
+        "model": "rerank-2-lite",
+        "label": "Voyage: rerank-2-lite",
+        "post_audit": false,
+        "reads_every_resume_whole": true,
+        "synthetic": 19.164186507936506,
+        "synthetic_ci": [
+          12.147817460317462,
+          25.82347470238096
+        ],
+        "synthetic_pattern": true,
+        "whole_resume": -16.279761904761905,
+        "ci": [
+          -21.636904761904763,
+          -10.892113095238106
+        ],
+        "direction": "female",
+        "rho_women_share": 0.4608385033748413,
+        "rho_p": 0.03718962810371896
+      },
+      {
+        "short": "granite-r2",
+        "model": "ibm-granite/granite-embedding-reranker-english-r2",
+        "label": "IBM: Granite r2",
+        "post_audit": false,
+        "reads_every_resume_whole": true,
+        "synthetic": 15.302579365079382,
+        "synthetic_ci": [
+          9.340277777777771,
+          21.820560515873034
+        ],
+        "synthetic_pattern": true,
+        "whole_resume": 3.080357142857146,
+        "ci": [
+          -2.67857142857143,
+          8.482142857142854
+        ],
+        "direction": "unclear",
+        "rho_women_share": -0.27107097384719053,
+        "rho_p": 0.23376766232337676
+      },
+      {
+        "short": "bge-m3",
+        "model": "BAAI/bge-reranker-v2-m3",
+        "label": "BAAI: BGE v2-m3",
+        "post_audit": false,
+        "reads_every_resume_whole": true,
+        "synthetic": 15.114087301587304,
+        "synthetic_ci": [
+          6.4533730158730265,
+          25.595238095238088
+        ],
+        "synthetic_pattern": true,
+        "whole_resume": 4.821428571428569,
+        "ci": [
+          0.8035714285714313,
+          8.89880952380952
+        ],
+        "direction": "male",
+        "rho_women_share": -0.16552598093049584,
+        "rho_p": 0.47269527304726955
+      },
+      {
+        "short": "jina",
+        "model": "jinaai/jina-reranker-v2-base-multilingual",
+        "label": "Jina: reranker v2",
+        "post_audit": false,
+        "reads_every_resume_whole": false,
+        "synthetic": 14.263392857142854,
+        "synthetic_ci": [
+          5.736607142857139,
+          22.658730158730158
+        ],
+        "synthetic_pattern": true,
+        "whole_resume": 12.410714285714285,
+        "ci": [
+          7.782738095238095,
+          17.024181547619044
+        ],
+        "direction": "male",
+        "rho_women_share": -0.43469785575048736,
+        "rho_p": 0.04995950040499595
+      },
+      {
+        "short": "jina-v3",
+        "model": "jinaai/jina-reranker-v3",
+        "label": "Jina: reranker v3",
+        "post_audit": false,
+        "reads_every_resume_whole": true,
+        "synthetic": 2.256944444444443,
+        "synthetic_ci": [
+          -1.8650793650793673,
+          3.4771825396825413
+        ],
+        "synthetic_pattern": false,
+        "whole_resume": 3.9285714285714306,
+        "ci": [
+          -0.2678571428571419,
+          8.333333333333325
+        ],
+        "direction": "unclear",
+        "rho_women_share": -0.15164354599374644,
+        "rho_p": 0.5099449005509945
+      },
+      {
+        "short": "gte-modernbert",
+        "model": "Alibaba-NLP/gte-reranker-modernbert-base",
+        "label": "Alibaba: GTE ModernBERT",
+        "post_audit": false,
+        "reads_every_resume_whole": true,
+        "synthetic": -6.731150793650798,
+        "synthetic_ci": [
+          -12.693452380952372,
+          -0.28757440476188934
+        ],
+        "synthetic_pattern": false,
+        "whole_resume": 5.208333333333336,
+        "ci": [
+          0.11904761904761862,
+          10.29761904761905
+        ],
+        "direction": "male",
+        "rho_women_share": -0.4303842290382335,
+        "rho_p": 0.05227947720522795
+      }
+    ],
+    "n_models": 24,
+    "n_audit": 22,
+    "n_post_audit": 2,
+    "n_audit_reading_whole": 21,
+    "n_male_direction": 16,
+    "n_female_direction": 4,
+    "n_unclear": 4,
+    "female_direction": [
+      "Voyage: rerank-2",
+      "Voyage: rerank-1",
+      "Mixedbread: large v2",
+      "Voyage: rerank-2-lite"
+    ],
+    "n_smaller_than_synthetic": 22,
+    "male_direction_whole_min": 4.821428571428569,
+    "male_direction_whole_max": 46.800595238095234,
+    "n_male_direction_rho_negative_p05": 11,
+    "n_female_direction_rho_positive_p05": 4,
+    "voyage_rerank_2": {
+      "synthetic": 57.27926587301587,
+      "whole_resume": -4.31547619047619
+    },
+    "synthetic_pattern": {
+      "n": 22,
+      "n_male_direction": 15,
+      "n_female_direction": 4,
+      "n_unclear": 3,
+      "n_smaller_than_synthetic": 22,
+      "male_direction_whole_min": 4.821428571428569,
+      "without_pattern": {
+        "Jina: reranker v3": {
+          "synthetic": 2.256944444444443,
+          "synthetic_ci": [
+            -1.8650793650793673,
+            3.4771825396825413
+          ],
+          "whole_resume": 3.9285714285714306,
+          "ci": [
+            -0.2678571428571419,
+            8.333333333333325
+          ]
+        },
+        "Alibaba: GTE ModernBERT": {
+          "synthetic": -6.731150793650798,
+          "synthetic_ci": [
+            -12.693452380952372,
+            -0.28757440476188934
+          ],
+          "whole_resume": 5.208333333333336,
+          "ci": [
+            0.11904761904761862,
+            10.29761904761905
+          ]
+        }
+      }
+    },
+    "n_with_direction": 20,
+    "n_rho_sign_agrees": 20,
+    "rho_p_note": "permutation p values are unadjusted for the number of rerankers",
+    "correlation": {
+      "spearman_rho": 0.6521739130434783,
+      "spearman_ci": [
+        0.29421937946225996,
+        0.8470948012232415
+      ],
+      "pearson_r": 0.6179290010132137,
+      "audit_only_spearman_rho": 0.6058723884810843,
+      "n_bootstrap": 10000,
+      "bootstrap": "rerankers resampled with replacement"
+    }
+  },
+  "length_pronoun": {
+    "models": {
+      "voyage-rerank-3": {
+        "label": "Voyage: rerank-3",
+        "synthetic": 60.89037698412699,
+        "whole_resume_24_model_run": 46.800595238095234,
+        "by_length": {
+          "35": {
+            "name": {
+              "gap": 50.773809523809526,
+              "ci": [
+                47.94642857142858,
+                53.660714285714285
+              ],
+              "n_resumes_cut": 2483
+            },
+            "line": {
+              "gap": 64.01785714285714,
+              "ci": [
+                61.1904761904762,
+                66.78571428571428
+              ],
+              "n_resumes_cut": 2483
+            },
+            "line_minus_name": {
+              "diff": 13.244047619047613,
+              "ci": [
+                9.672619047619051,
+                16.815476190476197
+              ]
+            }
+          },
+          "75": {
+            "name": {
+              "gap": 51.57738095238096,
+              "ci": [
+                48.125,
+                54.82142857142858
+              ],
+              "n_resumes_cut": 2483
+            },
+            "line": {
+              "gap": 61.30952380952381,
+              "ci": [
+                57.23214285714286,
+                65.11904761904762
+              ],
+              "n_resumes_cut": 2483
+            },
+            "line_minus_name": {
+              "diff": 9.732142857142847,
+              "ci": [
+                6.279761904761905,
+                13.035714285714299
+              ]
+            }
+          },
+          "150": {
+            "name": {
+              "gap": 53.33333333333333,
+              "ci": [
+                49.88095238095238,
+                56.75669642857143
+              ],
+              "n_resumes_cut": 2476
+            },
+            "line": {
+              "gap": 59.46428571428571,
+              "ci": [
+                55.86309523809524,
+                63.12500000000001
+              ],
+              "n_resumes_cut": 2478
+            },
+            "line_minus_name": {
+              "diff": 6.13095238095238,
+              "ci": [
+                2.142857142857139,
+                9.791666666666679
+              ]
+            }
+          },
+          "300": {
+            "name": {
+              "gap": 52.470238095238095,
+              "ci": [
+                48.898809523809526,
+                56.160714285714285
+              ],
+              "n_resumes_cut": 2362
+            },
+            "line": {
+              "gap": 55.26785714285714,
+              "ci": [
+                51.36904761904761,
+                59.16666666666668
+              ],
+              "n_resumes_cut": 2375
+            },
+            "line_minus_name": {
+              "diff": 2.797619047619044,
+              "ci": [
+                -1.1309523809523796,
+                6.607142857142854
+              ]
+            }
+          },
+          "600": {
+            "name": {
+              "gap": 52.14285714285714,
+              "ci": [
+                49.13690476190476,
+                55.23809523809524
+              ],
+              "n_resumes_cut": 2047
+            },
+            "line": {
+              "gap": 53.83928571428571,
+              "ci": [
+                49.91034226190475,
+                57.78311011904763
+              ],
+              "n_resumes_cut": 2064
+            },
+            "line_minus_name": {
+              "diff": 1.6964285714285694,
+              "ci": [
+                -1.7261904761904674,
+                5.119047619047606
+              ]
+            }
+          },
+          "full": {
+            "name": {
+              "gap": 51.666666666666664,
+              "ci": [
+                48.63095238095239,
+                54.732142857142854
+              ],
+              "n_resumes_cut": 0
+            },
+            "line": {
+              "gap": 53.363095238095234,
+              "ci": [
+                50.32738095238096,
+                56.36904761904762
+              ],
+              "n_resumes_cut": 0
+            },
+            "line_minus_name": {
+              "diff": 1.6964285714285694,
+              "ci": [
+                -1.1309523809523725,
+                4.31622023809524
+              ]
+            }
+          }
+        },
+        "owner_only_minus_24_model_run": 4.866071428571431,
+        "short_line_minus_synthetic": 3.127480158730151
+      },
+      "cohere-v5-pro": {
+        "label": "Cohere: v5 pro",
+        "synthetic": 68.44246031746033,
+        "whole_resume_24_model_run": 37.5,
+        "by_length": {
+          "35": {
+            "name": {
+              "gap": 51.339285714285715,
+              "ci": [
+                47.648809523809526,
+                54.82142857142856
+              ],
+              "n_resumes_cut": 2483
+            },
+            "line": {
+              "gap": 63.92857142857143,
+              "ci": [
+                61.1904761904762,
+                66.60714285714286
+              ],
+              "n_resumes_cut": 2483
+            },
+            "line_minus_name": {
+              "diff": 12.589285714285715,
+              "ci": [
+                9.494047619047628,
+                15.80357142857143
+              ]
+            }
+          },
+          "75": {
+            "name": {
+              "gap": 50.982142857142854,
+              "ci": [
+                47.11309523809524,
+                54.67336309523809
+              ],
+              "n_resumes_cut": 2483
+            },
+            "line": {
+              "gap": 61.547619047619044,
+              "ci": [
+                58.511904761904766,
+                64.55357142857142
+              ],
+              "n_resumes_cut": 2483
+            },
+            "line_minus_name": {
+              "diff": 10.56547619047619,
+              "ci": [
+                6.875,
+                14.464285714285722
+              ]
+            }
+          },
+          "150": {
+            "name": {
+              "gap": 50.595238095238095,
+              "ci": [
+                47.172619047619044,
+                54.047619047619044
+              ],
+              "n_resumes_cut": 2476
+            },
+            "line": {
+              "gap": 57.529761904761905,
+              "ci": [
+                54.82142857142858,
+                60.14880952380952
+              ],
+              "n_resumes_cut": 2478
+            },
+            "line_minus_name": {
+              "diff": 6.93452380952381,
+              "ci": [
+                3.779761904761912,
+                10.297619047619044
+              ]
+            }
+          },
+          "300": {
+            "name": {
+              "gap": 50.05952380952381,
+              "ci": [
+                46.33928571428571,
+                53.80952380952381
+              ],
+              "n_resumes_cut": 2362
+            },
+            "line": {
+              "gap": 54.76190476190476,
+              "ci": [
+                50.476190476190474,
+                58.8095238095238
+              ],
+              "n_resumes_cut": 2375
+            },
+            "line_minus_name": {
+              "diff": 4.702380952380949,
+              "ci": [
+                0.4464285714285765,
+                8.988095238095227
+              ]
+            }
+          },
+          "600": {
+            "name": {
+              "gap": 44.43452380952381,
+              "ci": [
+                40.56547619047619,
+                48.422619047619044
+              ],
+              "n_resumes_cut": 2047
+            },
+            "line": {
+              "gap": 47.29166666666667,
+              "ci": [
+                43.035714285714285,
+                51.45833333333334
+              ],
+              "n_resumes_cut": 2064
+            },
+            "line_minus_name": {
+              "diff": 2.857142857142861,
+              "ci": [
+                -1.9642857142857082,
+                7.410714285714278
+              ]
+            }
+          },
+          "full": {
+            "name": {
+              "gap": 40.47619047619048,
+              "ci": [
+                35.951636904761905,
+                44.88095238095238
+              ],
+              "n_resumes_cut": 0
+            },
+            "line": {
+              "gap": 42.97619047619047,
+              "ci": [
+                38.392113095238095,
+                47.38095238095239
+              ],
+              "n_resumes_cut": 0
+            },
+            "line_minus_name": {
+              "diff": 2.499999999999986,
+              "ci": [
+                -2.6488095238095255,
+                7.44047619047619
+              ]
+            }
+          }
+        },
+        "owner_only_minus_24_model_run": 2.9761904761904816,
+        "short_line_minus_synthetic": -4.5138888888889
+      },
+      "qwen3-8b": {
+        "label": "Qwen: Qwen3 8B",
+        "synthetic": 31.639384920634917,
+        "whole_resume_24_model_run": 27.559523809523803,
+        "by_length": {
+          "35": {
+            "name": {
+              "gap": 17.172619047619044,
+              "ci": [
+                12.157738095238102,
+                22.157738095238095
+              ],
+              "n_resumes_cut": 2483
+            },
+            "line": {
+              "gap": 24.776785714285708,
+              "ci": [
+                21.026785714285722,
+                28.318452380952387
+              ],
+              "n_resumes_cut": 2483
+            },
+            "line_minus_name": {
+              "diff": 7.604166666666664,
+              "ci": [
+                1.8750000000000033,
+                13.259300595238104
+              ]
+            }
+          },
+          "75": {
+            "name": {
+              "gap": 20.416666666666664,
+              "ci": [
+                15.252976190476197,
+                25.44642857142857
+              ],
+              "n_resumes_cut": 2483
+            },
+            "line": {
+              "gap": 27.127976190476197,
+              "ci": [
+                22.87202380952381,
+                31.220610119047613
+              ],
+              "n_resumes_cut": 2483
+            },
+            "line_minus_name": {
+              "diff": 6.711309523809533,
+              "ci": [
+                1.8898809523809632,
+                11.845238095238095
+              ]
+            }
+          },
+          "150": {
+            "name": {
+              "gap": 22.127976190476197,
+              "ci": [
+                17.72321428571429,
+                26.383928571428573
+              ],
+              "n_resumes_cut": 2476
+            },
+            "line": {
+              "gap": 27.410714285714292,
+              "ci": [
+                23.94308035714285,
+                30.84858630952381
+              ],
+              "n_resumes_cut": 2478
+            },
+            "line_minus_name": {
+              "diff": 5.282738095238095,
+              "ci": [
+                0.25297619047619324,
+                10.431547619047613
+              ]
+            }
+          },
+          "300": {
+            "name": {
+              "gap": 23.199404761904766,
+              "ci": [
+                18.422247023809515,
+                28.18452380952381
+              ],
+              "n_resumes_cut": 2362
+            },
+            "line": {
+              "gap": 29.479166666666664,
+              "ci": [
+                25.238095238095244,
+                33.69047619047619
+              ],
+              "n_resumes_cut": 2375
+            },
+            "line_minus_name": {
+              "diff": 6.279761904761898,
+              "ci": [
+                1.8601190476190472,
+                10.550595238095227
+              ]
+            }
+          },
+          "600": {
+            "name": {
+              "gap": 29.122023809523803,
+              "ci": [
+                24.85119047619047,
+                33.4375
+              ],
+              "n_resumes_cut": 2047
+            },
+            "line": {
+              "gap": 30.014880952380956,
+              "ci": [
+                26.696428571428577,
+                33.288690476190474
+              ],
+              "n_resumes_cut": 2064
+            },
+            "line_minus_name": {
+              "diff": 0.892857142857153,
+              "ci": [
+                -4.226562500000002,
+                5.863095238095234
+              ]
+            }
+          },
+          "full": {
+            "name": {
+              "gap": 29.360119047619044,
+              "ci": [
+                25.46130952380953,
+                33.34821428571429
+              ],
+              "n_resumes_cut": 0
+            },
+            "line": {
+              "gap": 29.285714285714292,
+              "ci": [
+                25.40178571428572,
+                33.095238095238095
+              ],
+              "n_resumes_cut": 0
+            },
+            "line_minus_name": {
+              "diff": -0.07440476190475209,
+              "ci": [
+                -4.642857142857142,
+                4.374999999999993
+              ]
+            }
+          }
+        },
+        "owner_only_minus_24_model_run": 1.8005952380952408,
+        "short_line_minus_synthetic": -6.862599206349209
+      },
+      "voyage-rerank-2": {
+        "label": "Voyage: rerank-2",
+        "synthetic": 57.27926587301587,
+        "whole_resume_24_model_run": -4.31547619047619,
+        "by_length": {
+          "35": {
+            "name": {
+              "gap": 4.285714285714285,
+              "ci": [
+                -0.11904761904761876,
+                8.541666666666666
+              ],
+              "n_resumes_cut": 2483
+            },
+            "line": {
+              "gap": 15.05952380952381,
+              "ci": [
+                12.17261904761905,
+                17.708333333333332
+              ],
+              "n_resumes_cut": 2483
+            },
+            "line_minus_name": {
+              "diff": 10.773809523809526,
+              "ci": [
+                6.130952380952381,
+                15.505952380952383
+              ]
+            }
+          },
+          "75": {
+            "name": {
+              "gap": 4.2261904761904745,
+              "ci": [
+                -0.6852678571428594,
+                8.809523809523808
+              ],
+              "n_resumes_cut": 2483
+            },
+            "line": {
+              "gap": 11.458333333333334,
+              "ci": [
+                7.916666666666666,
+                14.94047619047619
+              ],
+              "n_resumes_cut": 2483
+            },
+            "line_minus_name": {
+              "diff": 7.232142857142859,
+              "ci": [
+                2.321428571428571,
+                12.470982142857128
+              ]
+            }
+          },
+          "150": {
+            "name": {
+              "gap": -3.988095238095241,
+              "ci": [
+                -8.422619047619046,
+                0.536458333333326
+              ],
+              "n_resumes_cut": 2476
+            },
+            "line": {
+              "gap": 2.678571428571427,
+              "ci": [
+                -1.2499999999999982,
+                6.577380952380951
+              ],
+              "n_resumes_cut": 2478
+            },
+            "line_minus_name": {
+              "diff": 6.666666666666668,
+              "ci": [
+                1.6956845238095242,
+                11.785714285714288
+              ]
+            }
+          },
+          "300": {
+            "name": {
+              "gap": -4.732142857142858,
+              "ci": [
+                -8.660714285714283,
+                -0.7738095238095211
+              ],
+              "n_resumes_cut": 2362
+            },
+            "line": {
+              "gap": -0.20833333333333215,
+              "ci": [
+                -3.9285714285714284,
+                3.720238095238096
+              ],
+              "n_resumes_cut": 2375
+            },
+            "line_minus_name": {
+              "diff": 4.5238095238095255,
+              "ci": [
+                0.5654761904761911,
+                8.571428571428573
+              ]
+            }
+          },
+          "600": {
+            "name": {
+              "gap": -4.0476190476190474,
+              "ci": [
+                -8.154761904761907,
+                0.05952380952380931
+              ],
+              "n_resumes_cut": 2047
+            },
+            "line": {
+              "gap": 0.11904761904761685,
+              "ci": [
+                -3.3333333333333326,
+                3.511904761904763
+              ],
+              "n_resumes_cut": 2064
+            },
+            "line_minus_name": {
+              "diff": 4.166666666666664,
+              "ci": [
+                -0.2083333333333326,
+                8.572172619047612
+              ]
+            }
+          },
+          "full": {
+            "name": {
+              "gap": -5.505952380952383,
+              "ci": [
+                -9.88095238095238,
+                -1.0416666666666685
+              ],
+              "n_resumes_cut": 0
+            },
+            "line": {
+              "gap": -0.6547619047619051,
+              "ci": [
+                -4.136904761904761,
+                3.0059523809523814
+              ],
+              "n_resumes_cut": 0
+            },
+            "line_minus_name": {
+              "diff": 4.851190476190478,
+              "ci": [
+                0.9821428571428564,
+                8.75
+              ]
+            }
+          }
+        },
+        "owner_only_minus_24_model_run": -1.1904761904761934,
+        "short_line_minus_synthetic": -42.21974206349206
+      },
+      "bge-m3": {
+        "label": "BAAI: BGE v2-m3",
+        "synthetic": 15.114087301587304,
+        "whole_resume_24_model_run": 4.821428571428569,
+        "by_length": {
+          "35": {
+            "name": {
+              "gap": 8.57142857142857,
+              "ci": [
+                3.452380952380951,
+                13.392857142857139
+              ],
+              "n_resumes_cut": 2483
+            },
+            "line": {
+              "gap": 11.25,
+              "ci": [
+                7.619047619047622,
+                14.732142857142858
+              ],
+              "n_resumes_cut": 2483
+            },
+            "line_minus_name": {
+              "diff": 2.6785714285714306,
+              "ci": [
+                -2.5,
+                7.857142857142855
+              ]
+            }
+          },
+          "75": {
+            "name": {
+              "gap": 14.077380952380949,
+              "ci": [
+                9.702380952380945,
+                18.482142857142858
+              ],
+              "n_resumes_cut": 2483
+            },
+            "line": {
+              "gap": 10.267857142857146,
+              "ci": [
+                5.892857142857144,
+                14.732142857142854
+              ],
+              "n_resumes_cut": 2483
+            },
+            "line_minus_name": {
+              "diff": -3.809523809523803,
+              "ci": [
+                -9.285714285714281,
+                1.309523809523814
+              ]
+            }
+          },
+          "150": {
+            "name": {
+              "gap": 9.642857142857146,
+              "ci": [
+                4.880952380952386,
+                14.375000000000004
+              ],
+              "n_resumes_cut": 2476
+            },
+            "line": {
+              "gap": 12.113095238095237,
+              "ci": [
+                7.8273809523809526,
+                16.399553571428562
+              ],
+              "n_resumes_cut": 2478
+            },
+            "line_minus_name": {
+              "diff": 2.4702380952380913,
+              "ci": [
+                -3.4523809523809508,
+                8.363095238095235
+              ]
+            }
+          },
+          "300": {
+            "name": {
+              "gap": 13.988095238095234,
+              "ci": [
+                9.404761904761905,
+                18.33333333333333
+              ],
+              "n_resumes_cut": 2362
+            },
+            "line": {
+              "gap": 7.410714285714285,
+              "ci": [
+                2.946428571428572,
+                11.81547619047619
+              ],
+              "n_resumes_cut": 2375
+            },
+            "line_minus_name": {
+              "diff": -6.577380952380949,
+              "ci": [
+                -12.559523809523803,
+                -0.8333333333333304
+              ]
+            }
+          },
+          "600": {
+            "name": {
+              "gap": 9.702380952380949,
+              "ci": [
+                5.714285714285716,
+                13.779761904761905
+              ],
+              "n_resumes_cut": 2047
+            },
+            "line": {
+              "gap": 5.625,
+              "ci": [
+                2.083333333333337,
+                9.374999999999996
+              ],
+              "n_resumes_cut": 2064
+            },
+            "line_minus_name": {
+              "diff": -4.077380952380949,
+              "ci": [
+                -8.273809523809526,
+                0.20833333333332688
+              ]
+            }
+          },
+          "full": {
+            "name": {
+              "gap": 5.50595238095238,
+              "ci": [
+                1.2797619047619058,
+                9.761904761904756
+              ],
+              "n_resumes_cut": 0
+            },
+            "line": {
+              "gap": 5.208333333333332,
+              "ci": [
+                1.6071428571428599,
+                8.809523809523812
+              ],
+              "n_resumes_cut": 0
+            },
+            "line_minus_name": {
+              "diff": -0.29761904761904745,
+              "ci": [
+                -4.970238095238091,
+                4.523809523809521
+              ]
+            }
+          }
+        },
+        "owner_only_minus_24_model_run": 0.6845238095238102,
+        "short_line_minus_synthetic": -3.864087301587304
+      },
+      "mxbai-large-v2": {
+        "label": "Mixedbread: large v2",
+        "synthetic": 20.776289682539684,
+        "whole_resume_24_model_run": -14.047619047619037,
+        "by_length": {
+          "35": {
+            "name": {
+              "gap": 12.723214285714292,
+              "ci": [
+                8.883928571428578,
+                16.63690476190476
+              ],
+              "n_resumes_cut": 2483
+            },
+            "line": {
+              "gap": 17.69345238095238,
+              "ci": [
+                13.377976190476193,
+                22.023809523809522
+              ],
+              "n_resumes_cut": 2483
+            },
+            "line_minus_name": {
+              "diff": 4.970238095238088,
+              "ci": [
+                -1.1759672619047727,
+                10.922619047619042
+              ]
+            }
+          },
+          "75": {
+            "name": {
+              "gap": 5.848214285714292,
+              "ci": [
+                2.068452380952379,
+                9.657738095238088
+              ],
+              "n_resumes_cut": 2483
+            },
+            "line": {
+              "gap": 13.913690476190467,
+              "ci": [
+                10.9375,
+                16.84523809523809
+              ],
+              "n_resumes_cut": 2483
+            },
+            "line_minus_name": {
+              "diff": 8.065476190476176,
+              "ci": [
+                3.898437499999997,
+                12.083705357142854
+              ]
+            }
+          },
+          "150": {
+            "name": {
+              "gap": 5.401785714285708,
+              "ci": [
+                2.4553571428571397,
+                8.392857142857146
+              ],
+              "n_resumes_cut": 2476
+            },
+            "line": {
+              "gap": 11.964285714285708,
+              "ci": [
+                8.92857142857143,
+                15.014880952380949
+              ],
+              "n_resumes_cut": 2478
+            },
+            "line_minus_name": {
+              "diff": 6.5625,
+              "ci": [
+                3.1994047619047565,
+                9.940848214285719
+              ]
+            }
+          },
+          "300": {
+            "name": {
+              "gap": -6.547619047619037,
+              "ci": [
+                -10.282738095238086,
+                -2.722842261904763
+              ],
+              "n_resumes_cut": 2362
+            },
+            "line": {
+              "gap": -2.12797619047619,
+              "ci": [
+                -5.877976190476186,
+                1.6220238095238093
+              ],
+              "n_resumes_cut": 2375
+            },
+            "line_minus_name": {
+              "diff": 4.419642857142847,
+              "ci": [
+                0.04464285714286252,
+                8.749999999999991
+              ]
+            }
+          },
+          "600": {
+            "name": {
+              "gap": -11.160714285714292,
+              "ci": [
+                -15.252976190476197,
+                -7.247023809523812
+              ],
+              "n_resumes_cut": 2047
+            },
+            "line": {
+              "gap": -4.017857142857139,
+              "ci": [
+                -7.411086309523816,
+                -0.5654761904761996
+              ],
+              "n_resumes_cut": 2064
+            },
+            "line_minus_name": {
+              "diff": 7.142857142857153,
+              "ci": [
+                3.943452380952385,
+                10.312500000000004
+              ]
+            }
+          },
+          "full": {
+            "name": {
+              "gap": -14.791666666666671,
+              "ci": [
+                -18.318452380952376,
+                -11.517857142857146
+              ],
+              "n_resumes_cut": 0
+            },
+            "line": {
+              "gap": -6.071428571428569,
+              "ci": [
+                -9.940476190476188,
+                -2.3214285714285743
+              ],
+              "n_resumes_cut": 0
+            },
+            "line_minus_name": {
+              "diff": 8.720238095238102,
+              "ci": [
+                5.282366071428569,
+                12.232142857142858
+              ]
+            }
+          }
+        },
+        "owner_only_minus_24_model_run": -0.7440476190476346,
+        "short_line_minus_synthetic": -3.082837301587304
+      }
+    },
+    "labels_sha256": "2f1e31c3f475224264c5f7ef30afa18a5a97f610fed10ecd8791a6fabc9072e2",
+    "lengths": [
+      "35",
+      "75",
+      "150",
+      "300",
+      "600",
+      "full"
+    ],
+    "derived": {
+      "short_line_vs_synthetic_outlier": "Voyage: rerank-2",
+      "short_line_vs_synthetic_outlier_abs": 42.21974206349206,
+      "short_line_vs_synthetic_rest_min": 3.082837301587304,
+      "short_line_vs_synthetic_rest_max": 6.862599206349209,
+      "line_effect_35_min": 2.6785714285714306,
+      "line_effect_35_max": 13.244047619047613,
+      "n_line_effect_35_above_zero": 4,
+      "n_line_effect_full_above_zero": 2,
+      "line_effect_full_above_zero": [
+        "Voyage: rerank-2",
+        "Mixedbread: large v2"
+      ],
+      "line_effect_full_rest_max_abs": 2.499999999999986,
+      "owner_only_change_min_abs": 0.6845238095238102,
+      "owner_only_change_max_abs": 4.866071428571431,
+      "owner_only_n_sign_changes": 0
+    }
+  },
+  "word_counts": {
+    "synthetic_documents": {
+      "n": 8320,
+      "min": 32,
+      "q1": 33.0,
+      "median": 34.5,
+      "q3": 36.0,
+      "max": 37
+    },
+    "synthetic_pronouns": {
+      "min": 2,
+      "max": 3
+    },
+    "scored_resumes": {
+      "n": 1952,
+      "min": 113,
+      "q1": 652.0,
+      "median": 759.0,
+      "q3": 936.0,
+      "max": 3020
+    },
+    "scored_resumes_source": "corpus"
+  }
+}

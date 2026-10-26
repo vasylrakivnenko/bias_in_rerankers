@@ -36,6 +36,9 @@ MODEL_LABELS = {
     "nvidia/llama-nemotron-rerank-1b-v2": "NVIDIA: Nemotron 1B",
     "zeroentropy/zerank-2-reranker": "ZeroEntropy: zerank-2",
     "jinaai/jina-reranker-v3": "Jina: reranker v3",
+    # Released after the audit; companion experiment only
+    "rerank-v5.0-pro": "Cohere: v5 pro",
+    "rerank-v5.0-fast": "Cohere: v5 fast",
 }
 
 

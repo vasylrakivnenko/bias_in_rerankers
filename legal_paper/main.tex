@@ -53,7 +53,7 @@
 \begin{abstract}
 \noindent
 
-Automated hiring pipelines can retrieve candidate documents with an embedding model and then reorder the leading candidates with a neural reranker. Bias in embedding models is well documented, but rerankers are a different class of model, and few studies have tested how they respond to a candidate's name and pronouns. We audit 29 current commercial and open-weight rerankers with controlled name-and-pronoun comparisons; to our knowledge, no earlier bias study of rerankers covers this many models or includes the commercial reranking services sold today. Each model scores the same 8,320 document pairs, and within each pair, qualifications are unchanged and only the selected name and pronouns differ. In 27 of the 29 models, the male-associated document is favored more often for male-typed occupations than for female-typed occupations, and in each of these the difference is larger than all 10,000 placebo differences built from random pairs of same-gender names; of the two recent exceptions, one shows no difference and the other a reverse pattern that does not survive adjustment for multiple comparisons. When both names are replaced by one placeholder, so that the two documents differ only in their pronouns, the pattern holds in 27 of 28 re-scored models. In synthetic pools of 20 candidates whose documents differ only in name and pronouns, one retrieval-and-reranking pipeline assigns 79\% of top-3 positions to male-associated documents; behind the same retriever, the audited pointwise rerankers range from 44\% to 85\% (median 63\%), against 60\% for retrieval alone. Results vary materially across models, occupations, names, templates, and query wordings. We then test a simple input transform that replaces names with one placeholder and gendered pronouns with one uniform token before ranking. The transform makes each counterfactual pair textually identical and therefore removes score differences attributable to those markers by construction. On a near-ceiling synthetic occupation-matching check, the transform did not reduce top-rank accuracy (827 of 832 correct before, 830 after). These findings establish sensitivity to the tested names and pronouns, rather than discrimination in deployed hiring or a complete solution to demographic bias.
+Automated hiring pipelines can retrieve candidate documents with an embedding model and then reorder the leading candidates with a neural reranker. Bias in embedding models is well documented, but rerankers are a different class of model, and few studies have tested how they respond to a candidate's name and pronouns. We audit 29 current commercial and open-weight rerankers with controlled name-and-pronoun comparisons; to our knowledge, no earlier bias study of rerankers covers this many models or includes the commercial reranking services sold today. Each model scores the same 8,320 document pairs, and within each pair, qualifications are unchanged and only the selected name and pronouns differ. In 27 of the 29 models, the male-associated document is favored more often for male-typed occupations than for female-typed occupations, and in each of these the difference is larger than all 10,000 placebo differences built from random pairs of same-gender names; of the two recent exceptions, one shows no difference and the other a reverse pattern that does not survive adjustment for multiple comparisons. When both names are replaced by one placeholder, so that the two documents differ only in their pronouns, the pattern holds in 27 of 28 re-scored models. On whole real résumés, 15 of the 22 tested rerankers that show the pattern keep it, all at a smaller size, and 4 reverse it, so how much of it carries over depends on the model. In synthetic pools of 20 candidates whose documents differ only in name and pronouns, one retrieval-and-reranking pipeline assigns 79\% of top-3 positions to male-associated documents; behind the same retriever, the audited pointwise rerankers range from 44\% to 85\% (median 63\%), against 60\% for retrieval alone. Results vary materially across models, occupations, names, templates, and query wordings. We then test a simple input transform that replaces names with one placeholder and gendered pronouns with one uniform token before ranking. The transform makes each counterfactual pair textually identical and therefore removes score differences attributable to those markers by construction. On a near-ceiling synthetic occupation-matching check, the transform did not reduce top-rank accuracy (827 of 832 correct before, 830 after). These findings establish sensitivity to the tested names and pronouns, rather than discrimination in deployed hiring or a complete solution to demographic bias.
 
 \end{abstract}
 
@@ -65,7 +65,7 @@ Prior work on social bias spans several other model types. Word and text embeddi
 
 We ask three narrow empirical questions. First, do current rerankers score otherwise identical professional documents differently when selected names and pronouns change? Second, how do such differences affect a two-stage shortlist? Third, which simple de-identification rules remove the measured difference without reducing performance on a basic relevance check?
 
-Our contribution is an audit of 29 current rerankers, commercial and open-weight, in which every model scores the same documents with only the name and pronouns changed. To our knowledge, no earlier bias study of rerankers covers this many models or includes commercial reranking services. Earlier counterfactual tests of candidate text used one placeholder name per gender and one or two cross-encoders that the authors trained \cite{kumar2023,kumar2025}; this audit uses 10 pairs of common given names and rerankers as their developers release them. The audit has three parts. First, 27 of the 29 audited rerankers favor the male-associated version more often on male-typed than on female-typed occupations, including some of the most recently released models. The pattern holds in 27 of 28 re-scored models when the two documents differ only in their pronouns, so it does not depend on the names. Second, in a retrieval-and-reranking simulation, the reranker can override the shortlist that retrieval produces. Third, on four locally runnable rerankers, replacing names and pronouns together removes the measured difference, while replacing names alone does not. The audit is dated and reproducible, and it makes no claim about any employer's deployed system. The design isolates sensitivity to the changed text. Names carry associations beyond gender, but the pronoun-only comparison reproduces the pattern without them. The audit does not measure actual hiring decisions.
+Our contribution is an audit of 29 current rerankers, commercial and open-weight, in which every model scores the same documents with only the name and pronouns changed. To our knowledge, no earlier bias study of rerankers covers this many models or includes commercial reranking services. Earlier counterfactual tests of candidate text used one placeholder name per gender and one or two cross-encoders that the authors trained \cite{kumar2023,kumar2025}; this audit uses 10 pairs of common given names and rerankers as their developers release them. The audit has three parts. First, 27 of the 29 audited rerankers favor the male-associated version more often on male-typed than on female-typed occupations, including some of the most recently released models. The pattern holds in 27 of 28 re-scored models when the two documents differ only in their pronouns, so it does not depend on the names. On whole real résumés it persists, at a smaller size, in 15 of the 22 tested rerankers that show it and reverses in 4. Second, in a retrieval-and-reranking simulation, the reranker can override the shortlist that retrieval produces. Third, on four locally runnable rerankers, replacing names and pronouns together removes the measured difference, while replacing names alone does not. The audit is dated and reproducible, and it makes no claim about any employer's deployed system. The design isolates sensitivity to the changed text. Names carry associations beyond gender, but the pronoun-only comparison reproduces the pattern without them. The audit does not measure actual hiring decisions.
 
 \section{Experimental design}
 
@@ -129,6 +129,14 @@ The level is not invariant to design choices. Across document templates, query p
 
 Swapping two names of the same gender gives a yardstick for the size of these differences and a placebo for their specificity. Within each cell of the design (one occupation, template, and query phrasing) every model scored ten male-associated and ten female-associated documents, so the 74,880 pairs that exchange one male-associated name for another, or one female-associated name for another, hold gender fixed and change only the name. Scores are on each model's own scale, so the comparison is within models (Table~\ref{tab:samegender}). The name-and-pronoun swap moves a model's score further than a same-gender name swap in 27 of the 29 models (median ratio of mean absolute gaps 1.7; interval above one for 27), and the median model's cross-gender gap exceeds the same-gender median of its own cell in 65\% of pairs. The exceptions are the listwise jina-reranker-v3 (0.79) and Cohere rerank v4 pro (0.97, interval 0.90 to 1.06), whose gender swap moves its score no further than a change of first name although its contrast of 41 points is among the larger ones: its difference is consistent in direction rather than large. The same swaps serve as a placebo. Pairing the ten male-associated names at random into five same-gender pairs, the ten female-associated names likewise, and computing the male-typed minus female-typed contrast from those ten pairs exactly as for the real ones, 10,000 times per model, never reaches the size of the observed contrast for 28 of the 29 models (for gte-reranker-modernbert-base, the size of its reversed contrast); the median model's 95th placebo percentile is 4.1 points, and the exception is again jina-reranker-v3 (p = 0.61). A harder benchmark is the largest contrast that any single same-gender name pair produces on its own (45 male–male and 45 female–female pairs); 21 models still exceed it. The overall male-favored share does not pass the same test. Models hold strong preferences among names of the same gender, and the observed share differs from an even split by more than the matched placebo, at the 5\% level, for only 13 models. The contrast between occupation groups, rather than a model's overall lean, is therefore the statistic this audit can attribute to the gender markers. For the 28 models with pronoun-only scores, the pronoun-only swap moves the score further than a same-gender name swap in 19 (median ratio 1.5), although that comparison spans two scoring runs; without the 5 models whose re-run changed some checked winners, it does so in 17 of 23 (median ratio 1.6).
 
+\subsection{The pattern on whole real résumés}
+
+The audit's documents are short, 32 to 37 words, whereas a real résumé in the corpus used here has a median of 759 words (interquartile range 652 to 936). A companion experiment therefore drew 1,952 documents from a public corpus of 2,483 résumé examples posted on a career website (released under CC0) and built 3,840 comparisons. In each, one résumé in a pool of 20 switches between a male- and a female-associated version, and the job query is an O*NET occupation description (Appendix E). The publisher had already removed most names, so most pairs differ by an added given name, male or female, the two equally common. Every audited reranker that can read a whole résumé (21) scored these comparisons, together with jina-reranker-v2-base-multilingual at its 1,024-token limit and Cohere rerank v5 pro and fast, released after the audit: 24 rerankers in all.
+
+The pattern carries over to real résumés for most models, but how much of it survives depends on the model (Table~\ref{tab:wholeresume}). Of the 22 rerankers whose synthetic contrast has an occupation-clustered interval above zero, 15 keep the pattern on whole résumés, all with a smaller contrast (4.8 to 46.8 points, each interval above zero). The pattern reverses for 4, among them Voyage rerank-2, whose contrast falls from 57.3 points in the synthetic audit, one of the largest, to \ensuremath{-}4.3; for the other 3, the interval includes zero. Of the two rerankers without the synthetic pattern, jina-reranker-v3 shows none here either, and gte-reranker-modernbert-base, which showed the reverse, now shows a small male-favoring contrast (5.2 points, interval 0.1 to 10.3). These intervals resample résumé pools within the fixed job categories; a check against each category's share of women agrees in sign for all 20 rerankers whose interval excludes zero (Appendix E). Across rerankers, the synthetic and whole-résumé contrasts have a rank correlation of 0.65 (95\% interval 0.29 to 0.85, resampling rerankers). The synthetic audit therefore ranks rerankers roughly as they rank on whole résumés, but it does not give the size of the contrast there, and for 4 rerankers not its direction.
+
+Length alone does not explain these differences, and its effect differs by reranker. For 6 of the rerankers, we scored each résumé again cut to its first 35, 75, 150, 300, or 600 words after the name, as well as whole (Figure~\ref{fig:lengthpronoun}). These runs change only the applicant's own name and pronouns (Appendix E), which moves the whole-résumé contrasts by at most 4.9 points from Table~\ref{tab:wholeresume}. The closest match to a synthetic document is a 35-word excerpt that begins with the name and a sentence of 14 words carrying 3 of the applicant's pronouns; the synthetic documents carry 2 or 3. This excerpt comes within 3.1 to 6.9 points of the synthetic contrast for every reranker except Voyage rerank-2, which falls 42.2 points short with only 21 words of résumé text. With the name alone, as the résumé lengthens, the contrast stays level for Voyage rerank-3 (50.8 points at 35 words, 51.7 whole), grows for Qwen3-Reranker-8B (17.2 to 29.4), holds to 300 words and then falls for Cohere rerank v5 pro (51.3 to 40.5), and falls below zero for mxbai-rerank-large-v2 (12.7 to \ensuremath{-}14.8). For Voyage rerank-2 it is small at 35 words (4.3 points, interval \ensuremath{-}0.1 to 8.5) and negative from 150 words on. The pronoun sentence raises the contrast by 2.7 to 13.2 points at 35 words, with an interval above zero for 4 of the 6 rerankers. On whole résumés it changes the contrast by at most 2.5 points, except for the two reversals, which it moves back toward zero (mxbai-rerank-large-v2 by 8.7 points, Voyage rerank-2 by 4.9).
+
 \subsection{Request order and reproducibility}
 
 Measured against an identical repeat of each request, so that call-to-call variability is not mistaken for an order effect, reversing pairs or shuffling the request shifted the contrast beyond that variability in 0 of the 15 tested API rerankers. These are individual 95\% intervals that detect only aggregate shifts of about one to two points, not proof that order has no effect. The repeat itself moves Voyage rerank-2 by 2.0 points (0.5 to 3.7), the only one of the 15 repeat intervals to exclude zero, which is about what chance alone produces at the 95\% level. Re-sending the original requests also reproduced the banked contrasts closely. For the 10 API models first scored in February, 234 days earlier, the contrast moved by at most 1.1 points, 0 of the 10 intervals on the change exclude zero, and the two runs pick the same winner in 84\% to 100\% of pairs. The listwise jina-reranker-v3 is deterministic but position-dependent: reversing each pair keeps the same winner in only 65\% of pairs, and its overall male-favored share is 33\% in the original layout, 55\% with each pair reversed, and 47\% with the request shuffled, while its male-typed minus female-typed contrast stays small in all three (0.8, 2.2, and \ensuremath{-}4.0 points). Its level in Figure~\ref{fig:single} therefore reflects the request layout as much as the model, whereas its near-zero contrast does not.
@@ -189,11 +197,11 @@ The main audit uses short synthetic documents and simulated shortlists. It measu
 
 Names carry several social signals at once. Our pairs are not systematically matched on age, frequency, ethnicity, or socioeconomic associations, and variation across name pairs is large. The pronoun-only comparison avoids these confounds but measures the pronoun channel alone. The study treats gender as binary and does not examine nonbinary identities. It also does not audit race or intersectional effects.
 
-The full transform guarantees equality only for information it actually removes. Real resumes may signal gender through schools, affiliations, activities, job histories, and writing patterns \cite{parasurama2022full}. On a large corpus of real online biographies, removing names, pronouns, and honorifics reduced but did not eliminate the gender gap in occupation-classification recall, because other words still signal gender \cite{dearteaga2019}. Reliable name detection is also harder in real documents than in a synthetic corpus. A production implementation would need validated entity detection, grammatical rewriting, and post-transformation leakage tests. This paper does not test the transform on real résumés, where names must be found automatically, or on a ranking task that is not at ceiling; we leave both, together with a measure of the gender signal that remains after the transform, to a follow-up study.
+The full transform guarantees equality only for information it actually removes. Real resumes may signal gender through schools, affiliations, activities, job histories, and writing patterns \cite{parasurama2022full}. On a large corpus of real online biographies, removing names, pronouns, and honorifics reduced but did not eliminate the gender gap in occupation-classification recall, because other words still signal gender \cite{dearteaga2019}. Reliable name detection is also harder in real documents than in a synthetic corpus; in the companion corpus, most detected names belong to someone other than the résumé's owner (Appendix E). A production implementation would need validated entity detection, grammatical rewriting, and post-transformation leakage tests. This paper does not test the transform on real résumés, where names must be found automatically, or on a ranking task that is not at ceiling; we leave both, together with a measure of the gender signal that remains after the transform, to a follow-up study.
 
-The worked pipeline uses one retriever-reranker pair, although Appendix C varies the reranker and Appendix D tests four open-weight rerankers. Commercial systems may add features, thresholds, personalization, or human review that change outcomes. The results are a dated snapshot of model versions queried on 2026-02-24 and from 2026-10-16 to 2026-10-17.
+The worked pipeline uses one retriever-reranker pair, although Appendix C varies the reranker and Appendix D tests four open-weight rerankers. Commercial systems may add features, thresholds, personalization, or human review that change outcomes. The results are a dated snapshot of model versions queried on 2026-02-24 and from 2026-10-16 to 2026-10-17, and for the companion experiment from 2026-10-19 to 2026-10-22.
 
-A companion experiment sampled 1,952 distinct documents from a public corpus of 2,483 publicly posted résumé examples scraped from a career website (released under CC0), with no observed hiring decisions or applicant outcomes. The publisher had already removed most names: across the corpus, 2,182 of the 2,483 counterfactual pairs had to be built by prepending a name, and among the 3,840 scored comparisons per model, 3,374 were built by prepending a name rather than swapping an existing marker. Its results differ from the synthetic audit in level and size (Appendix E). The worked reranker favors the male-associated version in 52\% of comparisons, against 78\% in the synthetic audit, and across the four rerankers the mean score difference between the two versions is 4.5 to 66.1 times smaller than on the synthetic documents, among comparisons whose marker the model could see (Table~\ref{tab:companionbuild}). The male-typed minus female-typed difference is positive for 3 of the 4 rerankers, but the female-typed group rests on only 3 job categories. Because the documents, queries, and marker construction change together, that comparison cannot identify the cause; longer documents, for instance, may dilute the markers. We retain it as a warning against generalizing the synthetic effect size to applicant résumés in deployment. Its corpus must be rebuilt from the repository's provenance notes to reproduce it; Appendix E describes its design.
+The companion experiment on real résumés (Section 3, Appendix E) shows that synthetic effect sizes should not be read as sizes on real résumés, but it has limits of its own. It uses publicly posted résumé examples rather than applications, with no hiring decisions or applicant outcomes, and occupation descriptions rather than job advertisements as queries. Most of its pairs differ by a name we added rather than one the applicant wrote, and its female-typed group rests on 3 job categories, although a check against every category's share of women agrees in sign for all 20 rerankers with a clear direction (Appendix E). Its corpus must be rebuilt from the repository's provenance notes to reproduce it.
 
 \section{Conclusion}
 
@@ -670,99 +678,82 @@ Following-word rule for her$^{\dagger}$ & 50.0 & 0.0 & 0.0000 & 50.0 & 0.0 & 0.0
 
 \section{Companion experiment}
 
-For each of the corpus's 24 job categories, the title and description of the matched O*NET occupation served as the job query. We drew 8 pools of 20 résumés per query (192 pools), each combining 5 résumés from the query's category with 15 drawn at random from the whole corpus. Each pool member served once as the focal candidate, giving 3,840 comparisons per model, in which only the focal résumé switched between its male- and female-associated forms while the other members stayed in a fixed, randomly assigned form. Pools were drawn independently, so the 1,952 distinct résumés appear in one or several pools. Where a document carried a detected given name or a clear pronoun majority and swapping it changed the text (301 of 2,483), we built the pair by swapping the name for an opposite-gender name of matched frequency rank and swapping pronouns; otherwise (2,182 documents, including 24 whose swap left the text unchanged; 3,374 of the scored comparisons) we prepended a frequency-matched male or female given name with an identical surname and made any pronouns agree. Each model scored the query and résumé truncated to 512 tokens; in 267 comparisons, all built by swapping, every marker fell beyond that window for the worked reranker, so the two inputs it saw were identical. Top-three membership selects exactly three candidates in every scoring, breaking score ties with a seeded key fixed per pool and résumé, so that a tie cannot favor either version.
+For each of the corpus's 24 job categories, the title and description of the matched O*NET occupation served as the job query. We drew 8 pools of 20 résumés per query (192 pools), each combining 5 résumés from the query's category with 15 drawn at random from the whole corpus. Each pool member served once as the focal candidate, giving 3,840 comparisons per model, in which only the focal résumé switched between its male- and female-associated forms while the other members stayed in a fixed, randomly assigned form. Pools were drawn independently, so the 1,952 distinct résumés appear in one or several pools.
 
-The 24 job categories fall into 7 male-typed, 3 female-typed, 7 evenly split, and 7 unlabeled groups. Each category takes the women's share of its matched federal labor-force category and the thresholds of Section 2; categories with no match or a share in an excluded band stay unlabeled. Excluding the comparisons whose markers all fell outside the scored window changes no share in Table~\ref{tab:companion} by more than 1.1 points. In all 4 rerankers, comparisons whose two versions land on opposite sides of the top-three cutoff more often favor the female-associated version; these counts are small, and the comparisons share pools.
+Every reranker except jina-reranker-v2-base-multilingual, which reads at most 1,024 tokens and so cuts most résumés, read each query and résumé whole: the hosted services with truncation turned off, and the open-weight models at the audit's pinned revisions with an input limit above the longest input. The audit's other 7 rerankers cut every input at 512 or 1,024 tokens and were not run. jina-reranker-v3 is listwise and sensitive to the order of the documents in a request, so its row averages each comparison over the two orders, as its synthetic contrast does. Cohere rerank v5 pro and fast were released after the audit; their synthetic contrasts and intervals come from scoring the audit's pairs in October 2026.
 
-Table~\ref{tab:companionbuild} splits each reranker's comparisons by how the pair was built: 3,374 with a prepended name, 199 swaps with at least one marker inside the scored window, and 267 swaps whose markers were all cut off and which therefore tie (222 and 244 for MiniLM, whose tokenizer differs). Among comparisons with a marker in the window, the male-favored share differs between prepended and swapped pairs by at most 6.8 points, in no consistent direction, but a prepended name moves the score 1.8 to 3.2 times as much as a swap. The lower panel gives the mean score gaps behind the comparison with the synthetic audit in Section~5.
+In the run behind Table~\ref{tab:wholeresume}, a document that carried a detected given name or a clear majority of gendered pronouns, and whose text changed when they were swapped (301 of 2,483 documents; 466 of the scored comparisons), was paired by replacing that name with an opposite-gender name of matched frequency rank and turning the pronouns of its gender into the other gender's. Every other document was paired by prepending a male or female given name, the two equally common, with an identical surname, and making any pronouns agree with it. A later reading showed that many of these markers belong to other people, such as a supervisor, a book's author, or a school's namesake. Of the 1,952 scored résumés, 295 carry a detected name or a gendered pronoun; across them, 258 of 333 detected-name occurrences belong to other people, and 145 of 273 pronouns do not refer to the résumé's owner. Two passes by the same language model (Claude), run independently, labelled every occurrence. They agreed on 333 of 333 names and 270 of 273 pronouns, which shows consistency rather than accuracy; a third reading by the model settled the disagreements and corrected one name, and no person has checked the labels. The labels, stored as character offsets without the names, are in the repository. The length experiment below therefore gives every résumé a prepended name, also places that name wherever the résumé names its owner, and changes only the owner's pronouns. On whole résumés, this moves the 6 rerankers' contrasts by 0.7 to 4.9 points from Table~\ref{tab:wholeresume}, and none changes sign.
 
-\begin{table}[H]
-\centering
-\caption{Companion experiment on publicly posted résumé examples: tie-aware
-share (\%) of comparisons in which the male-associated version scores higher,
-overall and by occupation group, and the share of comparisons in which the two
-versions land on opposite sides of the top-three cutoff. Groups follow the
-corpus's own job categories, mapped to the same labels where possible.
-M$-$F is the male-typed minus the female-typed share, computed before rounding;
-the last row gives each column's number of comparisons per reranker.
-Comparisons whose markers fell outside the scored window count as ties. These
-documents, queries, and marker constructions differ from the synthetic audit,
-so differences between the two cannot be attributed to any single cause.}
-\label{tab:companion}
-\resizebox{\textwidth}{!}{%
-% Generated by code/companion_table.py -- do not edit by hand.
-\begin{tabular}{lrrrrrrrr}
-\toprule
- & & & Male- & Female- & Evenly & & & Top-3 \\
-Reranker & Comparisons & All & typed & typed & split & Unlabeled & M$-$F & flips \% \\
-\midrule
-BAAI: BGE v2-m3 & 3,840 & 51.5 & 55.8 & 43.2 & 49.2 & 53.0 & 12.6 & 2.1 \\
-BAAI: BGE base & 3,840 & 46.3 & 47.0 & 47.2 & 47.4 & 44.0 & $-$0.2 & 2.6 \\
-SBERT: MiniLM-L12-v2 & 3,840 & 37.4 & 43.1 & 38.4 & 34.6 & 34.2 & 4.7 & 0.4 \\
-Jina: reranker v2 & 3,840 & 41.4 & 48.7 & 33.4 & 41.9 & 37.1 & 15.3 & 1.6 \\
-\midrule
-Comparisons per group & & 3,840 & 1,120 & 480 & 1,120 & 1,120 & & \\
-\bottomrule
-\end{tabular}%
-}
-\end{table}
+The 24 job categories fall into 7 male-typed, 3 female-typed, 7 evenly split, and 7 unlabeled groups. Each category takes the women's share of its matched federal labor-force category and the thresholds of Section 2; categories with no match or a share in an excluded band stay unlabeled. Because the female-typed group has only 3 categories, each run is also tested against the women's share of all 21 categories that have one (last column of Table~\ref{tab:wholeresume}). For all 20 rerankers whose whole-résumé interval excludes zero, the sign of this correlation matches the direction of the contrast: the male-favored share falls as the share of women rises for the 16 with a positive contrast and rises for the 4 reversals. The correlation differs from zero for 11 of the 16 and for all 4 reversals (permutation p < 0.05 with categories as the units, not adjusted for the number of rerankers).
 
 \begin{table}[H]
 \centering
-\caption{Companion experiment by how each pair was built (rows and columns
-defined below the table). Upper panel: for each reranker and kind of pair, the
-tie-aware share (\%) in which the male-associated version scores higher, the
-mean absolute score gap on the reranker's own scale, and top-three flips; the
-rows partition the 3,840 comparisons of
-Table~\ref{tab:companion}. Lower panel: each reranker's mean absolute score gap
-over the comparisons with a marker in the scored window, its gap in the
-synthetic audit (as in Table~\ref{tab:samegender}), and their ratio.}
-\label{tab:companionbuild}
+\caption{Companion experiment on whole résumés. M$-$F is the tie-aware share
+(\%) of comparisons in which the male-associated version scores higher on
+male-typed occupations minus that share on female-typed occupations, in the
+synthetic audit and on whole résumés; the interval resamples pools within each
+job category. $\rho$ is Spearman's correlation between each job category's
+male-favored share and its share of women, across the
+21 categories with one (* permutation p $<$ 0.05). Rows are
+sorted by the synthetic M$-$F. $^{a}$Released after the audit; synthetic M$-$F
+scored in October 2026 on the audit's pairs. $^{b}$Reads the first
+1,024 tokens. $^{c}$Listwise; both columns average the two orders
+in which a pair's versions can be sent. Pairs are built as described in the
+text, including the swaps of markers that belong to other people; changing only
+the applicant's own markers moves the whole-résumé M$-$F of the 6 rerankers in
+Figure~\ref{fig:lengthpronoun} by at most 4.9 points.}
+\label{tab:wholeresume}
 {\small
-% Generated by code/companion_table.py -- do not edit by hand.
-\begin{tabular}{lrrrrrr}
+% Generated by code/companion_whole_resume.py -- do not edit by hand.
+\begin{tabular}{lrrcr}
 \toprule
- & & Tie-aware & & \multicolumn{3}{c}{Top-3 flips} \\
-\cmidrule(l){5-7}
-Pair built by & Comparisons & \%\,M & Mean $|\Delta|$ & \% & Male only & Female only \\
+ & Synthetic & Whole-résumé & & $\rho$ with \\
+Reranker & M$-$F & M$-$F & 95\% interval & women's share \\
 \midrule
-\multicolumn{7}{l}{\textit{BAAI: BGE v2-m3}} \\
-\quad Name prepended & 3,374 & 52.0 & 0.002087 & 2.3 & 35 & 43 \\
-\quad Swapped, in window & 199 & 45.2 & 0.0008903 & 2.0 & 2 & 2 \\
-\quad Swapped, truncated & 267 & 50.0 & 0 & 0.0 & 0 & 0 \\
-\addlinespace
-\multicolumn{7}{l}{\textit{BAAI: BGE base}} \\
-\quad Name prepended & 3,374 & 45.7 & 0.0005865 & 2.8 & 37 & 59 \\
-\quad Swapped, in window & 199 & 50.8 & 0.0001858 & 2.5 & 2 & 3 \\
-\quad Swapped, truncated & 267 & 50.0 & 0 & 0.0 & 0 & 0 \\
-\addlinespace
-\multicolumn{7}{l}{\textit{SBERT: MiniLM-L12-v2}} \\
-\quad Name prepended & 3,374 & 36.7 & 0.06200 & 0.4 & 3 & 12 \\
-\quad Swapped, in window & 222 & 35.6 & 0.03471 & 0.0 & 0 & 0 \\
-\quad Swapped, truncated & 244 & 50.0 & 0 & 0.0 & 0 & 0 \\
-\addlinespace
-\multicolumn{7}{l}{\textit{Jina: reranker v2}} \\
-\quad Name prepended & 3,374 & 40.8 & 0.004255 & 1.8 & 19 & 41 \\
-\quad Swapped, in window & 199 & 40.5 & 0.001641 & 0.5 & 0 & 1 \\
-\quad Swapped, truncated & 267 & 50.0 & 0 & 0.0 & 0 & 0 \\
+Cohere: v5 pro$^{a}$ & 68.4 & 37.5 & [32.4, 42.5] & $-$0.74* \\
+ZeroEntropy: zerank-2 & 65.3 & 31.2 & [27.2, 35.4] & $-$0.77* \\
+Voyage: rerank-3 & 60.9 & 46.8 & [43.1, 50.5] & $-$0.75* \\
+Voyage: rerank-2.5 & 57.7 & 34.4 & [30.7, 38.3] & $-$0.72* \\
+Voyage: rerank-2 & 57.3 & $-$4.3 & [$-$8.2, $-$0.3] & 0.49* \\
+Cohere: v5 fast$^{a}$ & 52.8 & 13.5 & [8.7, 18.5] & $-$0.35 \\
+Voyage: rerank-3-lite & 49.6 & 40.0 & [35.9, 43.9] & $-$0.77* \\
+NVIDIA: Nemotron 1B & 43.4 & 23.4 & [19.3, 27.6] & $-$0.74* \\
+Cohere: v4 pro & 41.1 & 24.0 & [20.6, 27.4] & $-$0.72* \\
+Cohere: v3.5 & 37.2 & 7.9 & [2.5, 13.1] & $-$0.39 \\
+Voyage: rerank-2.5-lite & 35.2 & 30.5 & [26.4, 34.6] & $-$0.68* \\
+NVIDIA: Nemotron VL 1B & 32.2 & 17.1 & [12.5, 21.6] & $-$0.69* \\
+Voyage: rerank-1 & 31.7 & $-$12.2 & [$-$17.4, $-$6.9] & 0.61* \\
+Qwen: Qwen3 8B & 31.6 & 27.6 & [23.3, 31.7] & $-$0.67* \\
+Cohere: v4 fast & 31.4 & 2.5 & [$-$1.3, 6.2] & 0.22 \\
+Qwen: Qwen3 0.6B & 27.5 & 5.0 & [$-$0.6, 10.3] & 0.02 \\
+Qwen: Qwen3 4B & 21.6 & 5.5 & [1.3, 9.9] & $-$0.26 \\
+Mixedbread: large v2 & 20.8 & $-$14.0 & [$-$17.4, $-$10.7] & 0.60* \\
+Voyage: rerank-2-lite & 19.2 & $-$16.3 & [$-$21.6, $-$10.9] & 0.46* \\
+IBM: Granite r2 & 15.3 & 3.1 & [$-$2.7, 8.5] & $-$0.27 \\
+BAAI: BGE v2-m3 & 15.1 & 4.8 & [0.8, 8.9] & $-$0.17 \\
+Jina: reranker v2$^{b}$ & 14.3 & 12.4 & [7.8, 17.0] & $-$0.43* \\
+Jina: reranker v3$^{c}$ & 2.3 & 3.9 & [$-$0.3, 8.3] & $-$0.15 \\
+Alibaba: GTE ModernBERT & $-$6.7 & 5.2 & [0.1, 10.3] & $-$0.43 \\
 \bottomrule
 \end{tabular}
-\par\medskip
-\begin{tabular}{lrrr}
-\toprule
- & \multicolumn{2}{c}{Mean $|\Delta|$} & \\
-\cmidrule(lr){2-3}
-Reranker & Companion, in window & Synthetic audit & Synthetic / companion \\
-\midrule
-BAAI: BGE v2-m3 & 0.002021 & 0.03580 & 17.7 \\
-BAAI: BGE base & 0.0005642 & 0.03729 & 66.1 \\
-SBERT: MiniLM-L12-v2 & 0.06032 & 0.2797 & 4.6 \\
-Jina: reranker v2 & 0.004110 & 0.01862 & 4.5 \\
-\bottomrule
-\end{tabular}
-\par\smallskip{\footnotesize\raggedright Name prepended: a frequency-matched given name prepended; in 39 of the 3,374 comparisons, both versions also keep the document's own detected name, which could not be swapped. Swapped: an existing name or pronouns exchanged, with at least one marker inside the 512-token window (in window) or none (truncated: the reranker saw two identical inputs, which tie and cannot flip); the split depends on the tokenizer. Male only (Female only): flips in which only the male-associated (female-associated) version made the top three. Mean $|\Delta|$ is on each model's own score scale, over the comparisons with a marker in the window and over the synthetic audit's 8,320 pairs; counting the truncated comparisons as zero gaps would put the ratios at 4.9 to 71.0.\par}
 }
 \end{table}
+
+We ran 6 rerankers again to separate length from content: Voyage rerank-3, Cohere rerank v5 pro, and Qwen3-Reranker-8B, which keep the pattern on whole résumés; Voyage rerank-2 and mxbai-rerank-large-v2, which reverse it; and bge-reranker-v2-m3, the worked reranker, whose contrast is small in both settings. Each scored the same 3,840 comparisons with the text after the prepended name cut to its first 35, 75, 150, 300, or 600 words or left whole, each with the name alone or with the name followed by the sentence “He is a dedicated professional, and his colleagues describe him as reliable and thorough” (or its female form), whose 14 words count toward the cut. The 35-word condition with the sentence resembles a synthetic document in length and in carrying a name and pronouns. Figure~\ref{fig:lengthpronoun} shows every condition.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.78\linewidth]{figures/fig_length_pronoun.pdf}
+\caption{\textbf{Companion experiment by résumé length.} Each panel shows one
+reranker's male-typed minus female-typed contrast (points) as more of each
+résumé is kept, with the prepended name alone (solid) or with the name and a
+sentence carrying 3 of the applicant's pronouns (dashed), whose words count
+toward the length; ``all'' is the whole résumé. Only the applicant's own name and
+pronouns change. Bands are 95\% intervals resampling pools within each job
+category; the dashed gray line is the reranker's contrast in the synthetic
+audit.}
+\label{fig:lengthpronoun}
+\end{figure}
 
 \begin{thebibliography}{99}
 

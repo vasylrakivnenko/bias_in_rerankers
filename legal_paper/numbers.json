@@ -2580,6 +2580,436 @@
     "unit": "%",
     "needs": "Review round 6 refinement (2026-10-17): retrieval-alone top-3 share to one decimal, so the count of rerankers below it can be checked against Table A6 (rerank-2 is at 59.8)."
   },
+  "WR_N_MODELS": {
+    "file": "results/companion_whole_resume.json",
+    "path": "whole_resume.n_models",
+    "format": "d",
+    "needs": "Companion on whole résumés (2026-10-26): rerankers scored on whole résumés (audit models that read one, Jina v2 at its limit, Cohere Rerank 5 Pro and Fast)."
+  },
+  "WR_N_AUDIT_WHOLE": {
+    "file": "results/companion_whole_resume.json",
+    "path": "whole_resume.n_audit_reading_whole",
+    "format": "d",
+    "needs": "Companion on whole résumés (2026-10-26): audited rerankers that read every résumé whole."
+  },
+  "WR_N_NOT_RUN": {
+    "expr": "a - b",
+    "refs": {
+      "a": {
+        "file": "results/single_stage_summary.json",
+        "path": "n_models"
+      },
+      "b": {
+        "file": "results/companion_whole_resume.json",
+        "path": "whole_resume.n_audit"
+      }
+    },
+    "format": "d",
+    "needs": "Companion on whole résumés (2026-10-26): audited rerankers with no whole-résumé run (input cut at 512 or 1,024 tokens)."
+  },
+  "WR_N_MALE": {
+    "file": "results/companion_whole_resume.json",
+    "path": "whole_resume.n_male_direction",
+    "format": "d",
+    "needs": "Companion on whole résumés (2026-10-26): rerankers whose whole-résumé M-F interval lies above zero."
+  },
+  "WR_N_FEMALE": {
+    "file": "results/companion_whole_resume.json",
+    "path": "whole_resume.n_female_direction",
+    "format": "d",
+    "needs": "Companion on whole résumés (2026-10-26): rerankers whose whole-résumé M-F interval lies below zero (reversals)."
+  },
+  "WR_MALE_MAX": {
+    "file": "results/companion_whole_resume.json",
+    "path": "whole_resume.male_direction_whole_max",
+    "format": ".1f",
+    "needs": "Companion on whole résumés (2026-10-26): largest whole-résumé M-F."
+  },
+  "WR_V2_SYN": {
+    "file": "results/companion_whole_resume.json",
+    "path": "whole_resume.voyage_rerank_2.synthetic",
+    "format": ".1f",
+    "needs": "Companion on whole résumés (2026-10-26): Voyage rerank-2 synthetic M-F."
+  },
+  "WR_V2_WHOLE": {
+    "file": "results/companion_whole_resume.json",
+    "path": "whole_resume.voyage_rerank_2.whole_resume",
+    "format": ".1f",
+    "needs": "Companion on whole résumés (2026-10-26): Voyage rerank-2 whole-résumé M-F."
+  },
+  "WR_SPEARMAN": {
+    "file": "results/companion_whole_resume.json",
+    "path": "whole_resume.correlation.spearman_rho",
+    "format": ".2f",
+    "needs": "Companion on whole résumés (2026-10-26): rank correlation of synthetic and whole-résumé M-F across rerankers."
+  },
+  "WR_SPEARMAN_LO": {
+    "file": "results/companion_whole_resume.json",
+    "path": "whole_resume.correlation.spearman_ci.0",
+    "format": ".2f",
+    "needs": "Companion on whole résumés (2026-10-26): its 95% bootstrap interval (rerankers resampled), lower end."
+  },
+  "WR_SPEARMAN_HI": {
+    "file": "results/companion_whole_resume.json",
+    "path": "whole_resume.correlation.spearman_ci.1",
+    "format": ".2f",
+    "needs": "Companion on whole résumés (2026-10-26): upper end."
+  },
+  "WR_N_MALE_RHO": {
+    "file": "results/companion_whole_resume.json",
+    "path": "whole_resume.n_male_direction_rho_negative_p05",
+    "format": "d",
+    "needs": "Companion on whole résumés (2026-10-26): of the rerankers that keep the pattern, those whose male-favored share falls with the women's share across categories (permutation p < 0.05)."
+  },
+  "WR_N_CONT_CATS": {
+    "file": "results/companion_full_window.json",
+    "path": "overview.bge-m3.continuous.n_categories",
+    "format": "d",
+    "needs": "Companion on whole résumés (2026-10-26): job categories with a BLS women's share (continuous check)."
+  },
+  "WR_JINA_WINDOW": {
+    "file": "results/companion_full_window.json",
+    "path": "models.jina.max_length_full_window",
+    "format": ",d",
+    "needs": "Companion on whole résumés (2026-10-26): Jina reranker v2's input limit in tokens."
+  },
+  "WR_N_SWAP_SCORED": {
+    "expr": "a - b",
+    "refs": {
+      "a": {
+        "file": "results/realistic_pool_four_rerankers.json",
+        "path": "models.bge-m3.summary.overall.n"
+      },
+      "b": {
+        "file": "results/realistic_pool_four_rerankers.json",
+        "path": "models.bge-m3.summary.by_mode.inject.n"
+      }
+    },
+    "format": ",d",
+    "needs": "Companion on whole résumés (2026-10-26): scored comparisons whose pair swapped a carried marker (the 24-model construction)."
+  },
+  "TABLE_WHOLE_RESUME": {
+    "tex_file": "results/tex/companion_whole_resume.tex",
+    "needs": "Companion on whole résumés (2026-10-26): Table E1, synthetic vs whole-résumé M-F for every reranker (code/companion_whole_resume.py)."
+  },
+  "SYN_WORDS_MIN": {
+    "file": "results/companion_whole_resume.json",
+    "path": "word_counts.synthetic_documents.min",
+    "format": "d",
+    "needs": "Companion on whole résumés (2026-10-26): shortest synthetic audit document, in words."
+  },
+  "SYN_WORDS_MAX": {
+    "file": "results/companion_whole_resume.json",
+    "path": "word_counts.synthetic_documents.max",
+    "format": "d",
+    "needs": "Companion on whole résumés (2026-10-26): longest synthetic audit document, in words."
+  },
+  "REAL_WORDS_MEDIAN": {
+    "file": "results/companion_whole_resume.json",
+    "path": "word_counts.scored_resumes.median",
+    "format": ",d",
+    "needs": "Companion on whole résumés (2026-10-26): median words of the scored résumés."
+  },
+  "REAL_WORDS_Q1": {
+    "file": "results/companion_whole_resume.json",
+    "path": "word_counts.scored_resumes.q1",
+    "format": ",d",
+    "needs": "Companion on whole résumés (2026-10-26): lower quartile of their words."
+  },
+  "REAL_WORDS_Q3": {
+    "file": "results/companion_whole_resume.json",
+    "path": "word_counts.scored_resumes.q3",
+    "format": ",d",
+    "needs": "Companion on whole résumés (2026-10-26): upper quartile of their words."
+  },
+  "LP_N_MODELS": {
+    "file": "results/companion_whole_resume.json",
+    "path": "length_pronoun.models",
+    "len": true,
+    "needs": "Companion on whole résumés (2026-10-26): rerankers in the length x pronoun runs."
+  },
+  "LP_CUT_TEXT": {
+    "file": "results/companion_whole_resume.json",
+    "path": "design.cut_words_text",
+    "needs": "Companion on whole résumés (2026-10-26): the cut lengths, in words after the name."
+  },
+  "LP_LINE_WORDS": {
+    "file": "results/companion_whole_resume.json",
+    "path": "design.owner_line_words",
+    "format": "d",
+    "needs": "Companion on whole résumés (2026-10-26): words in the sentence about the owner."
+  },
+  "LP_LINE_PRONOUNS": {
+    "file": "results/companion_whole_resume.json",
+    "path": "design.owner_line_pronouns",
+    "format": "d",
+    "needs": "Companion on whole résumés (2026-10-26): the owner's pronouns in that sentence."
+  },
+  "LP_V3_NAME_35": {
+    "file": "results/companion_whole_resume.json",
+    "path": "length_pronoun.models.voyage-rerank-3.by_length.35.name.gap",
+    "format": ".1f",
+    "needs": "Companion on whole résumés (2026-10-26): Voyage rerank-3, name only, 35 words."
+  },
+  "LP_V3_NAME_FULL": {
+    "file": "results/companion_whole_resume.json",
+    "path": "length_pronoun.models.voyage-rerank-3.by_length.full.name.gap",
+    "format": ".1f",
+    "needs": "Companion on whole résumés (2026-10-26): Voyage rerank-3, name only, whole résumé."
+  },
+  "LP_QWEN_NAME_35": {
+    "file": "results/companion_whole_resume.json",
+    "path": "length_pronoun.models.qwen3-8b.by_length.35.name.gap",
+    "format": ".1f",
+    "needs": "Companion on whole résumés (2026-10-26): Qwen3-Reranker-8B, name only, 35 words."
+  },
+  "LP_QWEN_NAME_FULL": {
+    "file": "results/companion_whole_resume.json",
+    "path": "length_pronoun.models.qwen3-8b.by_length.full.name.gap",
+    "format": ".1f",
+    "needs": "Companion on whole résumés (2026-10-26): Qwen3-Reranker-8B, name only, whole."
+  },
+  "LP_C5_NAME_35": {
+    "file": "results/companion_whole_resume.json",
+    "path": "length_pronoun.models.cohere-v5-pro.by_length.35.name.gap",
+    "format": ".1f",
+    "needs": "Companion on whole résumés (2026-10-26): Cohere Rerank 5 Pro, name only, 35 words."
+  },
+  "LP_C5_NAME_FULL": {
+    "file": "results/companion_whole_resume.json",
+    "path": "length_pronoun.models.cohere-v5-pro.by_length.full.name.gap",
+    "format": ".1f",
+    "needs": "Companion on whole résumés (2026-10-26): Cohere Rerank 5 Pro, name only, whole."
+  },
+  "LP_MXBAI_NAME_35": {
+    "file": "results/companion_whole_resume.json",
+    "path": "length_pronoun.models.mxbai-large-v2.by_length.35.name.gap",
+    "format": ".1f",
+    "needs": "Companion on whole résumés (2026-10-26): mxbai-rerank-large-v2, name only, 35 words."
+  },
+  "LP_MXBAI_NAME_FULL": {
+    "file": "results/companion_whole_resume.json",
+    "path": "length_pronoun.models.mxbai-large-v2.by_length.full.name.gap",
+    "format": ".1f",
+    "needs": "Companion on whole résumés (2026-10-26): mxbai-rerank-large-v2, name only, whole."
+  },
+  "LP_V2_NAME_35": {
+    "file": "results/companion_whole_resume.json",
+    "path": "length_pronoun.models.voyage-rerank-2.by_length.35.name.gap",
+    "format": ".1f",
+    "needs": "Companion on whole résumés (2026-10-26): Voyage rerank-2, name only, 35 words."
+  },
+  "LP_LINE35_MIN": {
+    "file": "results/companion_whole_resume.json",
+    "path": "length_pronoun.derived.line_effect_35_min",
+    "format": ".1f",
+    "needs": "Companion on whole résumés (2026-10-26): smallest sentence-minus-name difference at 35 words."
+  },
+  "LP_LINE35_MAX": {
+    "file": "results/companion_whole_resume.json",
+    "path": "length_pronoun.derived.line_effect_35_max",
+    "format": ".1f",
+    "needs": "Companion on whole résumés (2026-10-26): largest sentence-minus-name difference at 35 words."
+  },
+  "LP_N_LINE35_POS": {
+    "file": "results/companion_whole_resume.json",
+    "path": "length_pronoun.derived.n_line_effect_35_above_zero",
+    "format": "d",
+    "needs": "Companion on whole résumés (2026-10-26): rerankers whose sentence-minus-name interval at 35 words lies above zero."
+  },
+  "LP_LINEFULL_REST_MAX": {
+    "file": "results/companion_whole_resume.json",
+    "path": "length_pronoun.derived.line_effect_full_rest_max_abs",
+    "format": ".1f",
+    "needs": "Companion on whole résumés (2026-10-26): largest |sentence-minus-name| on whole résumés among rerankers whose interval covers zero."
+  },
+  "LP_MXBAI_LINEFULL": {
+    "file": "results/companion_whole_resume.json",
+    "path": "length_pronoun.models.mxbai-large-v2.by_length.full.line_minus_name.diff",
+    "format": ".1f",
+    "needs": "Companion on whole résumés (2026-10-26): mxbai sentence-minus-name, whole résumé."
+  },
+  "LP_V2_LINEFULL": {
+    "file": "results/companion_whole_resume.json",
+    "path": "length_pronoun.models.voyage-rerank-2.by_length.full.line_minus_name.diff",
+    "format": ".1f",
+    "needs": "Companion on whole résumés (2026-10-26): Voyage rerank-2 sentence-minus-name, whole résumé."
+  },
+  "LP_SHORT_REST_MIN": {
+    "file": "results/companion_whole_resume.json",
+    "path": "length_pronoun.derived.short_line_vs_synthetic_rest_min",
+    "format": ".1f",
+    "needs": "Companion on whole résumés (2026-10-26): 35-word excerpt with the sentence vs synthetic M-F: smallest |difference| among all but the outlier."
+  },
+  "LP_SHORT_REST_MAX": {
+    "file": "results/companion_whole_resume.json",
+    "path": "length_pronoun.derived.short_line_vs_synthetic_rest_max",
+    "format": ".1f",
+    "needs": "Companion on whole résumés (2026-10-26): largest such |difference| among all but the outlier."
+  },
+  "LP_SHORT_OUTLIER_ABS": {
+    "file": "results/companion_whole_resume.json",
+    "path": "length_pronoun.derived.short_line_vs_synthetic_outlier_abs",
+    "format": ".1f",
+    "needs": "Companion on whole résumés (2026-10-26): the outlier's |difference| (Voyage rerank-2)."
+  },
+  "OL_CHANGE_MIN": {
+    "file": "results/companion_whole_resume.json",
+    "path": "length_pronoun.derived.owner_only_change_min_abs",
+    "format": ".1f",
+    "needs": "Companion on whole résumés (2026-10-26): smallest |change| in whole-résumé M-F from the 24-model construction to owner-only markers."
+  },
+  "OL_CHANGE_MAX": {
+    "file": "results/companion_whole_resume.json",
+    "path": "length_pronoun.derived.owner_only_change_max_abs",
+    "format": ".1f",
+    "needs": "Companion on whole résumés (2026-10-26): largest such |change|."
+  },
+  "OL_N_LABELLED": {
+    "file": "results/companion_whole_resume.json",
+    "path": "owner_labels.n_resumes",
+    "format": "d",
+    "needs": "Companion on whole résumés (2026-10-26): scored résumés with a detected name or a pronoun, all labelled."
+  },
+  "OL_N_NAMES": {
+    "file": "results/companion_whole_resume.json",
+    "path": "owner_labels.n_name_occurrences",
+    "format": "d",
+    "needs": "Companion on whole résumés (2026-10-26): detected-name occurrences labelled."
+  },
+  "OL_N_PRONOUNS": {
+    "file": "results/companion_whole_resume.json",
+    "path": "owner_labels.n_pronouns",
+    "format": "d",
+    "needs": "Companion on whole résumés (2026-10-26): third-person pronouns labelled."
+  },
+  "OL_AGREE_NAMES": {
+    "file": "results/companion_whole_resume.json",
+    "path": "owner_labels.passes_agree_names",
+    "format": "d",
+    "needs": "Companion on whole résumés (2026-10-26): names on which the two labelling passes agreed (from the labels file's description)."
+  },
+  "OL_AGREE_PRON": {
+    "file": "results/companion_whole_resume.json",
+    "path": "owner_labels.passes_agree_pronouns",
+    "format": "d",
+    "needs": "Companion on whole résumés (2026-10-26): pronouns on which they agreed (same source)."
+  },
+  "WR_N_PATTERN": {
+    "file": "results/companion_whole_resume.json",
+    "path": "whole_resume.synthetic_pattern.n",
+    "format": "d",
+    "needs": "Companion on whole résumés (2026-10-26): rerankers whose synthetic M-F has an occupation-clustered interval above zero."
+  },
+  "WR_N_PAT_KEEP": {
+    "file": "results/companion_whole_resume.json",
+    "path": "whole_resume.synthetic_pattern.n_male_direction",
+    "format": "d",
+    "needs": "Companion on whole résumés (2026-10-26): of them, whole-résumé interval above zero."
+  },
+  "WR_N_PAT_REVERSE": {
+    "file": "results/companion_whole_resume.json",
+    "path": "whole_resume.synthetic_pattern.n_female_direction",
+    "format": "d",
+    "needs": "Companion on whole résumés (2026-10-26): of them, whole-résumé interval below zero."
+  },
+  "WR_N_PAT_UNCLEAR": {
+    "file": "results/companion_whole_resume.json",
+    "path": "whole_resume.synthetic_pattern.n_unclear",
+    "format": "d",
+    "needs": "Companion on whole résumés (2026-10-26): of them, whole-résumé interval covering zero."
+  },
+  "WR_PAT_KEEP_MIN": {
+    "file": "results/companion_whole_resume.json",
+    "path": "whole_resume.synthetic_pattern.male_direction_whole_min",
+    "format": ".1f",
+    "needs": "Companion on whole résumés (2026-10-26): smallest whole-résumé M-F among those that keep the pattern."
+  },
+  "WR_N_DIRECTED": {
+    "file": "results/companion_whole_resume.json",
+    "path": "whole_resume.n_with_direction",
+    "format": "d",
+    "needs": "Companion on whole résumés (2026-10-26): rerankers whose whole-résumé interval excludes zero."
+  },
+  "WR_GTE_WHOLE": {
+    "file": "results/companion_whole_resume.json",
+    "path": "whole_resume.synthetic_pattern.without_pattern.Alibaba: GTE ModernBERT.whole_resume",
+    "format": ".1f",
+    "needs": "Companion on whole résumés (2026-10-26): GTE ModernBERT whole-résumé M-F."
+  },
+  "WR_GTE_LO": {
+    "file": "results/companion_whole_resume.json",
+    "path": "whole_resume.synthetic_pattern.without_pattern.Alibaba: GTE ModernBERT.ci.0",
+    "format": ".1f",
+    "needs": "Companion on whole résumés (2026-10-26): its interval, lower end."
+  },
+  "WR_GTE_HI": {
+    "file": "results/companion_whole_resume.json",
+    "path": "whole_resume.synthetic_pattern.without_pattern.Alibaba: GTE ModernBERT.ci.1",
+    "format": ".1f",
+    "needs": "Companion on whole résumés (2026-10-26): upper end."
+  },
+  "OL_N_NAMES_OTHER": {
+    "file": "results/companion_whole_resume.json",
+    "path": "owner_labels.n_name_occurrences_other",
+    "format": "d",
+    "needs": "Companion on whole résumés (2026-10-26): detected-name occurrences that are not the owner's."
+  },
+  "OL_N_PRON_NOT_OWNER": {
+    "file": "results/companion_whole_resume.json",
+    "path": "owner_labels.n_pronouns_not_owner",
+    "format": "d",
+    "needs": "Companion on whole résumés (2026-10-26): pronouns that do not refer to the owner."
+  },
+  "SYN_PRON_MIN": {
+    "file": "results/companion_whole_resume.json",
+    "path": "word_counts.synthetic_pronouns.min",
+    "format": "d",
+    "needs": "Companion on whole résumés (2026-10-26): fewest pronouns in a synthetic document."
+  },
+  "SYN_PRON_MAX": {
+    "file": "results/companion_whole_resume.json",
+    "path": "word_counts.synthetic_pronouns.max",
+    "format": "d",
+    "needs": "Companion on whole résumés (2026-10-26): most pronouns in a synthetic document."
+  },
+  "LP_V2_NAME_35_LO": {
+    "file": "results/companion_whole_resume.json",
+    "path": "length_pronoun.models.voyage-rerank-2.by_length.35.name.ci.0",
+    "format": ".1f",
+    "needs": "Companion on whole résumés (2026-10-26): Voyage rerank-2, name only, 35 words, interval lower end."
+  },
+  "LP_V2_NAME_35_HI": {
+    "file": "results/companion_whole_resume.json",
+    "path": "length_pronoun.models.voyage-rerank-2.by_length.35.name.ci.1",
+    "format": ".1f",
+    "needs": "Companion on whole résumés (2026-10-26): upper end."
+  },
+  "LP_SHORT_RESUME_WORDS": {
+    "expr": "a - b",
+    "refs": {
+      "a": {
+        "file": "results/companion_whole_resume.json",
+        "path": "design.cut_words.0"
+      },
+      "b": {
+        "file": "results/companion_whole_resume.json",
+        "path": "design.owner_line_words"
+      }
+    },
+    "format": "d",
+    "needs": "Companion on whole résumés (2026-10-26): résumé words in the shortest excerpt with the sentence."
+  },
+  "COMP_DATE_FIRST": {
+    "file": "results/companion_whole_resume.json",
+    "path": "run_dates.first",
+    "needs": "Companion on whole résumés (2026-10-26): first day a whole-résumé or length x pronoun run was written."
+  },
+  "COMP_DATE_LAST": {
+    "file": "results/companion_whole_resume.json",
+    "path": "run_dates.last",
+    "needs": "Companion on whole résumés (2026-10-26): last such day."
+  },
   "RELEASE_TAG": {
     "literal": "arxiv-v3",
     "needs": "Review round 6 refinement (2026-10-17): git tag this manuscript corresponds to. The tag must be created when this round is committed; until then the statement is not true."

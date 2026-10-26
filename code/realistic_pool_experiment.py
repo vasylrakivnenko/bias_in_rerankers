@@ -31,6 +31,7 @@ import argparse
 import csv
 import io
 import json
+import math
 import os
 import random
 import re
@@ -99,7 +100,46 @@ RERANKERS = {
     "bge-base": "BAAI/bge-reranker-base",
     "ms-marco": "cross-encoder/ms-marco-MiniLM-L-12-v2",
     "jina": "jinaai/jina-reranker-v2-base-multilingual",
+    # long-window open-weight rerankers, for the full-window re-run only
+    "gte-modernbert": "Alibaba-NLP/gte-reranker-modernbert-base",
+    "granite-r2": "ibm-granite/granite-embedding-reranker-english-r2",
+    "zerank-2": "zeroentropy/zerank-2-reranker",
+    "mxbai-large-v2": "mixedbread-ai/mxbai-rerank-large-v2",
 }
+# Hosted rerankers: (vendor, model id as the synthetic audit names it, documented
+# context window in tokens). Both windows exceed every resume in the corpus, and
+# APIScorer makes sure the whole document is read. Cohere's Rerank 5 (released
+# 2026-10-21, after the audit) is called on Cohere's own API; its synthetic-pair scores
+# come from code/post_audit_synthetic.py, not from the audit.
+API_RERANKERS = {
+    "voyage-rerank-3": ("voyage", "rerank-3", 32_000),
+    "voyage-rerank-2.5": ("voyage", "rerank-2.5", 32_000),
+    "cohere-v4-pro": ("azure-cohere", "Cohere-rerank-v4.0-pro", 32_000),
+    "cohere-v5-pro": ("cohere", "rerank-v5.0-pro", 32_000),
+    "cohere-v5-fast": ("cohere", "rerank-v5.0-fast", 32_000),
+    # The audit's other hosted rerankers whose window holds every resume (the longest
+    # (query, resume) input is about 4,700 tokens; Google's rankers cut each record at
+    # 512 or 1,024 tokens and are left out). Each goes to the backend that served it in
+    # the audit: Cohere's rerank-v3.5 and Fireworks' Qwen3-Reranker-8B were reached through
+    # OpenRouter then, NVIDIA's VL reranker still is.
+    "voyage-rerank-2": ("voyage", "rerank-2", 16_000),
+    "voyage-rerank-3-lite": ("voyage", "rerank-3-lite", 32_000),
+    "voyage-rerank-2.5-lite": ("voyage", "rerank-2.5-lite", 32_000),
+    "voyage-rerank-1": ("voyage", "rerank-1", 8_000),
+    "voyage-rerank-2-lite": ("voyage", "rerank-2-lite", 8_000),
+    "cohere-v4-fast": ("azure-cohere", "Cohere-rerank-v4.0-fast", 32_000),
+    "cohere-v3.5": ("cohere", "rerank-v3.5", 4_096),
+    "qwen3-8b": ("fireworks", "accounts/fireworks/models/qwen3-reranker-8b", 40_960),
+    "nemotron-vl": ("openrouter", "nvidia/llama-nemotron-rerank-vl-1b-v2:free", 10_240),
+    # Not hosted, but listwise: jina-reranker-v3 scores a query's documents together, so it
+    # takes the same request layout, each "request" one rerank() call on the local model
+    # (at the audit's pinned revision), with documents cut at 8,192 tokens, not 2,048
+    "jina-v3": ("local-listwise", "jinaai/jina-reranker-v3", 8_192),
+}
+COHERE_API = "https://api.cohere.com/v2/rerank"
+FIREWORKS_API = "https://api.fireworks.ai/inference/v1/rerank"
+OPENROUTER_API = "https://openrouter.ai/api/v1/rerank"
+RERANKERS.update({short: spec[1] for short, spec in API_RERANKERS.items()})
 
 
 class MissingData(SystemExit):
@@ -145,6 +185,11 @@ class Resume:
     mode: str | None = None                          # 'swap' | 'inject'
     default_form: str = "male"                       # form used when a pool filler, not focal
     injected: tuple[str, str, str] | None = None     # (male given, female given, surname)
+    # set by apply_marker_labels (--marker-labels): each form's prepended name and body
+    heads: dict[str, str] | None = None
+    bodies: dict[str, str] | None = None
+    owner_markers: dict | None = None                # what the labels changed, for the rows file
+    unlabelled_markers: bool = False                 # carries a marker the labels do not cover
 
     def form(self, which: str) -> str:
         if which == "male":
@@ -550,29 +595,29 @@ def _match_case(src: str, repl: str) -> str:
     return repl
 
 
+def _swap_word(w: str, direction: str, rest: str) -> str:
+    """One pronoun in the other gender; `rest`, the text after it, resolves the
+    his/her and her/his ambiguity by its first token."""
+    lw = w.lower()
+    if direction == "M2F":
+        if lw == "his":
+            nxt = re.match(r"[A-Za-z']+", rest.lstrip())
+            repl = "hers" if (not nxt or nxt.group(0).lower() in _POSS_STOP) else "her"
+        else:
+            repl = _M2F.get(lw, lw)
+    else:
+        if lw == "her":
+            nxt = re.match(r"[A-Za-z']+", rest.lstrip())
+            repl = "him" if (not nxt or nxt.group(0).lower() in _POSS_STOP) else "his"
+        else:
+            repl = _F2M.get(lw, lw)
+    return _match_case(w, repl)
+
+
 def swap_pronouns(text: str, direction: str) -> str:
     """direction 'M2F' or 'F2M'. Resolves the his/her and her/his ambiguity by
     the following token, the same heuristic deid_transforms.gram_pos uses."""
-    def sub(m: re.Match) -> str:
-        w = m.group(0)
-        lw = w.lower()
-        if direction == "M2F":
-            if lw == "his":
-                rest = text[m.end():].lstrip()
-                nxt = re.match(r"[A-Za-z']+", rest)
-                repl = "hers" if (not nxt or nxt.group(0).lower() in _POSS_STOP) else "her"
-            else:
-                repl = _M2F.get(lw, lw)
-        else:
-            if lw == "her":
-                rest = text[m.end():].lstrip()
-                nxt = re.match(r"[A-Za-z']+", rest)
-                repl = "him" if (not nxt or nxt.group(0).lower() in _POSS_STOP) else "his"
-            else:
-                repl = _F2M.get(lw, lw)
-        return _match_case(w, repl)
-
-    return _PRON_RE.sub(sub, text)
+    return _PRON_RE.sub(lambda m: _swap_word(m.group(0), direction, text[m.end():]), text)
 
 
 def pronoun_gender(text: str, min_margin: int = 2) -> str | None:
@@ -720,6 +765,155 @@ def build_forms(
 
 
 # ---------------------------------------------------------------------------
+# Owner-only markers and document length (October 2026)
+# ---------------------------------------------------------------------------
+# build_forms swaps every carried name and pronoun, but in this corpus most carried
+# names belong to someone else (a supervisor, a book's author, a school named after a
+# person) and some pronouns describe a client or a boss. --marker-labels reads
+# hand-checked labels of which ones refer to the résumé's owner and rebuilds the forms
+# so that only the owner's gender changes. --cut-words and --owner-line then vary how
+# long the document is and whether it also carries the owner's pronouns.
+
+# Third-person line with three of the owner's pronouns, as the synthetic profiles have;
+# its words are the same in both forms except the pronouns
+OWNER_LINE = {"male": "He is a dedicated professional, and his colleagues describe him "
+                      "as reliable and thorough.",
+              "female": "She is a dedicated professional, and her colleagues describe her "
+                        "as reliable and thorough."}
+OWNER_LINE_WORDS = len(OWNER_LINE["male"].split())
+
+
+def load_marker_labels(path: Path) -> tuple[dict, str]:
+    """{rid: {"names": [...], "pronouns": [...], "owner_spans": [...]}} and the file's
+    sha256. `names` records whether each detected name was the owner's; `owner_spans`
+    locate every occurrence of the owner's name, with the template that replaces it."""
+    import hashlib
+    raw = Path(path).read_bytes()
+    labels = json.loads(raw)["labels"]
+    for rid, lab in labels.items():
+        for h in lab["names"]:
+            if h["ref"] not in ("applicant", "other"):
+                raise SystemExit(f"{path}: name at {rid}:{h['start']} is {h['ref']!r}")
+        for p in lab["pronouns"]:
+            if p["ref"] not in ("applicant", "other", "none"):
+                raise SystemExit(f"{path}: pronoun at {rid}:{p['start']} is {p['ref']!r}")
+    return labels, hashlib.sha256(raw).hexdigest()
+
+
+def apply_marker_labels(
+    resumes: Sequence[Resume],
+    labels: dict,
+    name_table: dict[str, dict],
+    twin_map: dict[str, str],
+    seed: int = DEFAULT_SEED,
+    surnames: Sequence[str] = DEFAULT_SURNAMES,
+    inject_top_n: int = 400,
+) -> dict:
+    """Rebuild each résumé's two forms so that only its owner's gender differs.
+
+    Every form becomes a prepended name and a body. A résumé that build_forms swapped
+    gets a prepended name too, drawn from the same name pools by a generator seeded per
+    résumé, so every other résumé keeps its names and filler form. In the body the
+    owner's own name (where labelled) becomes the prepended one and the owner's pronouns
+    follow the form; other people's names and pronouns stay as written. A résumé with a
+    pronoun or a swapped name but no labels is flagged, and run_g3 will not score it.
+    """
+    male_pool = sorted((n for n, v in name_table.items() if v["gender"] == "M"),
+                       key=lambda n: -name_table[n]["count"])[:inject_top_n]
+    stats = Counter()
+    for r in resumes:
+        if not (r.male_text and r.female_text):
+            continue
+        lab = labels.get(r.rid)
+        was_swap = r.mode == "swap"
+        if was_swap:
+            rng = random.Random(f"{seed}|{r.rid}")
+            m = f = None
+            for _ in range(1000):
+                m = rng.choice(male_pool)
+                f = twin_map.get(m)
+                if f:
+                    break
+            if not f:
+                raise SystemExit(f"{r.rid}: no male name with a female twin")
+            sur = rng.choice(list(surnames)) if surnames else ""
+            r.injected = (m.capitalize(), f.capitalize(), sur)
+            r.mode = "inject"
+            stats["swap_converted_to_inject"] += 1
+        mn, fn, sur = r.injected
+        text = r.text
+        edits = []                                    # (start, end, male, female)
+        if lab is None:
+            if was_swap or _PRON_RE.search(text):
+                r.unlabelled_markers = True
+                stats["unlabelled_with_markers"] += 1
+        else:
+            import hashlib
+            for o in lab["owner_spans"]:
+                s, e = o["start"], o["end"]
+                if hashlib.sha256(text[s:e].encode()).hexdigest() != o["sha256"]:
+                    raise SystemExit(f"{r.rid}: the owner's name is not at {s}-{e}")
+                edits.append((s, e, *(o["template"].format(
+                    given=g, surname=sur, full=f"{g} {sur}".strip(), mr=t)
+                    for g, t in ((mn, "Mr"), (fn, "Ms")))))
+            for p in lab["pronouns"]:
+                s, w = p["start"], p["word"]
+                if text[s:s + len(w)] != w:
+                    raise SystemExit(f"{r.rid}: label pronoun {w!r} is not at {s}")
+                if p["ref"] == "applicant":
+                    rest = text[s + len(w):]
+                    edits.append((s, s + len(w), _swap_word(w, "F2M", rest),
+                                  _swap_word(w, "M2F", rest)))
+        edits.sort()
+        if any(a[1] > b[0] for a, b in zip(edits, edits[1:])):
+            raise SystemExit(f"{r.rid}: overlapping label spans")
+        body = {"male": text, "female": text}
+        for s, e, vm, vf in reversed(edits):
+            body["male"] = body["male"][:s] + vm + body["male"][e:]
+            body["female"] = body["female"][:s] + vf + body["female"][e:]
+        if len(body["male"].split()) != len(body["female"].split()):
+            raise SystemExit(f"{r.rid}: the two bodies differ in length")
+        n_names = len((lab or {}).get("owner_spans", []))
+        n_own = sum(1 for p in (lab or {}).get("pronouns", []) if p["ref"] == "applicant")
+        n_left = sum(1 for p in (lab or {}).get("pronouns", []) if p["ref"] != "applicant")
+        r.owner_markers = {"was_swap": was_swap, "owner_names": n_names,
+                           "owner_pronouns": n_own, "pronouns_left_as_written": n_left}
+        stats["owner_names_replaced"] += n_names
+        stats["owner_pronouns_set_to_form"] += n_own
+        stats["other_pronouns_left_as_written"] += n_left
+        stats["resumes_with_owner_marker_in_body"] += bool(n_names or n_own)
+        r.heads = {"male": f"{mn} {sur}".strip(), "female": f"{fn} {sur}".strip()}
+        r.bodies = body
+        r.male_text = f"{r.heads['male']} {body['male']}"
+        r.female_text = f"{r.heads['female']} {body['female']}"
+    return dict(stats)
+
+
+def cut_words(text: str, n: int) -> str:
+    """The text up to the end of its n-th whitespace-separated word, as written."""
+    for i, m in enumerate(re.finditer(r"\S+", text), 1):
+        if i == n:
+            return text[:m.end()]
+    return text
+
+
+def shape_forms(resumes: Sequence[Resume], cut: int, owner_line: bool) -> dict:
+    """Each form as its prepended name, then (owner_line) OWNER_LINE in the form's gender,
+    then the body, cut so that line and body together hold `cut` words (0: whole)."""
+    n_cut = 0
+    for r in resumes:
+        if r.heads is None:
+            continue
+        keep = cut - OWNER_LINE_WORDS if owner_line else cut
+        for f in ("male", "female"):
+            body = cut_words(r.bodies[f], keep) if cut else r.bodies[f]
+            setattr(r, f"{f}_text", " ".join(
+                [r.heads[f]] + ([OWNER_LINE[f]] if owner_line else []) + [body]))
+        n_cut += bool(cut) and len(r.bodies["male"].split()) > keep
+    return {"cut_words": cut, "owner_line": owner_line, "n_resumes_cut": n_cut}
+
+
+# ---------------------------------------------------------------------------
 # Scoring
 # ---------------------------------------------------------------------------
 
@@ -750,25 +944,96 @@ def _patch_xlm_roberta_for_jina() -> bool:
 
 
 class Scorer:
-    """Batched cross-encoder scoring with a de-duplicating cache."""
+    """Batched cross-encoder scoring with a de-duplicating cache.
+
+    By default items are scored in insertion order, `batch_size` at a time, as in
+    the banked 512-token runs. With `token_budget`, batches are planned by input
+    length instead (see _plan_by_length): a long window needs it, since a fixed
+    batch pads every input to its longest one; `attention_budget` further caps a
+    batch's inputs x padded length squared, the size of its attention matrices,
+    which dominate memory for long inputs. With `checkpoint`, every finished
+    batch is appended to a JSONL file and `resume` reloads it, so a crash costs
+    one batch rather than the model's whole run.
+    """
 
     def __init__(self, model_name: str, device: str = "mps", max_length: int = 512,
-                 batch_size: int = 32):
-        from sentence_transformers import CrossEncoder
+                 batch_size: int = 32, token_budget: int = 0, attention_budget: int = 0,
+                 checkpoint: Path | None = None, checkpoint_meta: dict | None = None,
+                 resume: bool = False, revision: str | None = None, dtype: str | None = None):
         self.shim_applied = _patch_xlm_roberta_for_jina()
         t0 = time.time()
         self.model_name = model_name
         self.max_length = max_length
         self.batch_size = batch_size
-        self.model = CrossEncoder(model_name, trust_remote_code=True, device=device,
-                                  max_length=max_length)
+        self.token_budget = token_budget
+        self.attention_budget = attention_budget
+        self.revision, self.dtype = revision, dtype
+        self.model = self._load_model(device)
         self.load_seconds = time.time() - t0
         self.cache: dict[tuple, float] = {}
         self.n_scored = 0
         self.score_seconds = 0.0
+        self.n_resumed = 0
+        self.n_scored_once = 0
+        self._ckpt = None
+        if checkpoint:
+            meta = json.loads(json.dumps({"model": model_name, "max_length": max_length,
+                                          **(checkpoint_meta or {})}))
+            self._open_checkpoint(Path(checkpoint), meta, resume)
+
+    def _load_model(self, device: str):
+        from sentence_transformers import CrossEncoder
+        kw = {}
+        if self.dtype:
+            import torch
+            kw["model_kwargs"] = {"torch_dtype": getattr(torch, self.dtype)}
+        model = CrossEncoder(self.model_name, trust_remote_code=True, device=device,
+                             max_length=self.max_length, revision=self.revision, **kw)
+        # Decoder-based rerankers (Qwen3 backbones, e.g. zerank-2) can ship without a pad
+        # token, which a sequence-classification head needs to find each input's last
+        # token -- the same fix code/score_open_models.py applies in the audit.
+        if model.tokenizer.pad_token is None and hasattr(model, "model"):
+            model.tokenizer.pad_token = model.tokenizer.eos_token
+            model.model.config.pad_token_id = model.tokenizer.eos_token_id
+        return model
+
+    def _open_checkpoint(self, path: Path, meta: dict, resume: bool) -> None:
+        """Reload the batches a matching earlier attempt finished (with resume);
+        otherwise start the file afresh."""
+        if resume and path.exists():
+            lines = path.read_text(encoding="utf-8").splitlines()
+            try:
+                same = bool(lines) and json.loads(lines[0]).get("meta") == meta
+            except json.JSONDecodeError:
+                same = False
+            if same:
+                for line in lines[1:]:
+                    try:
+                        batch = json.loads(line)["scores"]
+                    except (json.JSONDecodeError, KeyError):
+                        continue  # a batch cut off mid-write is scored again
+                    for k, s in batch:
+                        self.cache[tuple(k)] = s
+                self.n_resumed = len(self.cache)
+                print(f"    resuming {self.n_resumed} scores from {path}", flush=True)
+            else:
+                print(f"    not resuming from {path}: another configuration wrote it",
+                      flush=True)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        if not self.n_resumed:
+            path.write_text(json.dumps({"meta": meta}) + "\n", encoding="utf-8")
+        self._ckpt = path.open("a", encoding="utf-8")
+
+    def _save(self, scored: list[tuple[tuple, float]]) -> None:
+        if self._ckpt:
+            self._ckpt.write(json.dumps({"scores": [[list(k), s] for k, s in scored]}) + "\n")
+            self._ckpt.flush()
+            os.fsync(self._ckpt.fileno())
 
     def score(self, pairs: Sequence[tuple[str, str]], keys: Sequence[tuple],
               progress: bool = True) -> None:
+        if self.token_budget:
+            return self._score_by_length(pairs, keys, progress)
         todo = [(k, p) for k, p in zip(keys, pairs) if k not in self.cache]
         uniq: dict[tuple, tuple[str, str]] = {}
         for k, p in todo:
@@ -783,6 +1048,7 @@ class Scorer:
                                      show_progress_bar=False)
             for (k, _), s in zip(chunk, out):
                 self.cache[k] = float(s)
+            self._save([(k, self.cache[k]) for k, _ in chunk])
             if progress and (i // self.batch_size) % 20 == 0:
                 done = min(i + self.batch_size, len(items))
                 el = time.time() - t0
@@ -791,9 +1057,478 @@ class Scorer:
         self.score_seconds += time.time() - t0
         self.n_scored += len(items)
 
+    def _plan_by_length(self, items: list[tuple[tuple, tuple[str, str]]]) -> list[tuple]:
+        """Batches of (items to score, aliases, padded length), longest first.
+
+        Both forms of a (query, resume) unit -- keys differing only in their last
+        element -- go into one batch, so their scores come from the same padded
+        shape; a batch holds at most `batch_size` inputs, `token_budget` padded
+        tokens and, if set, `attention_budget` inputs x padded length squared. A
+        unit too long for that is scored one input per batch,
+        unpadded, which keeps the memory peak of the longest inputs down. A form
+        whose truncated input equals its twin's is not scored again but takes the
+        twin's score (an alias), which is what the model returns for identical
+        inputs. Going longest first makes a batch too large for memory fail at
+        the start.
+        """
+        tok = self.model.tokenizer
+        units: dict[tuple, list] = defaultdict(list)
+        for k, p in items:
+            units[k[:-1]].append((k, p))
+        planned = []
+        for members in units.values():
+            ids = tok([list(p) for _, p in members], truncation=True)["input_ids"]
+            score_these, aliases, lens = [members[0]], [], [len(ids[0])]
+            for (k, p), i in zip(members[1:], ids[1:]):
+                if i == ids[0]:
+                    aliases.append((k, members[0][0]))
+                else:
+                    score_these.append((k, p))
+                    lens.append(len(i))
+            planned.append((max(lens), score_these, aliases, lens))
+        planned.sort(key=lambda u: -u[0])
+
+        def fits(n_inputs: int, length: int) -> bool:
+            return (n_inputs <= self.batch_size and n_inputs * length <= self.token_budget
+                    and (not self.attention_budget
+                         or n_inputs * length ** 2 <= self.attention_budget))
+
+        batches, cur, cur_alias, cur_len = [], [], [], 0
+        for length, score_these, aliases, lens in planned:
+            if not fits(len(score_these), length):
+                if cur:
+                    batches.append((cur, cur_alias, cur_len))
+                    cur, cur_alias = [], []
+                for j, (item, n_tok) in enumerate(zip(score_these, lens)):
+                    batches.append(([item], aliases if j == 0 else [], n_tok))
+                continue
+            n = len(cur) + len(score_these)
+            if cur and not fits(n, cur_len):
+                batches.append((cur, cur_alias, cur_len))
+                cur, cur_alias = [], []
+            if not cur:
+                cur_len = length
+            cur = cur + score_these
+            cur_alias = cur_alias + aliases
+        if cur:
+            batches.append((cur, cur_alias, cur_len))
+        return batches
+
+    def _score_by_length(self, pairs: Sequence[tuple[str, str]], keys: Sequence[tuple],
+                         progress: bool) -> None:
+        uniq: dict[tuple, tuple[str, str]] = {}
+        for k, p in zip(keys, pairs):
+            uniq.setdefault(k, p)
+        # The plan covers every item, including those a resumed checkpoint already
+        # holds, so a resumed run scores each remaining batch exactly as an
+        # uninterrupted run would.
+        plan = self._plan_by_length(list(uniq.items()))
+        self.n_scored_once = sum(len(a) for _, a, _ in plan)
+        pending = [not all(k in self.cache for k, _ in b) or
+                   not all(a in self.cache for a, _ in al) for b, al, _ in plan]
+        # Rough relative cost of a batch: linear layers grow with its padded tokens,
+        # attention with their square.
+        cost = [len(b) * n * (1 + n / 6144) for b, _, n in plan]
+        total = sum(c for c, p in zip(cost, pending) if p) or 1.0
+        print(f"    {len(plan)} batches planned (longest input {plan[0][2] if plan else 0} "
+              f"tokens), {sum(pending)} to score; {len(uniq) - sum(k in self.cache for k in uniq)}"
+              f" of {len(uniq)} pairs left", flush=True)
+        done, marks, t0, n_done = 0.0, [25, 50, 75, 100], time.time(), 0
+        for bi, ((batch, aliases, length), c, todo) in enumerate(zip(plan, cost, pending)):
+            if not todo:
+                continue
+            out = self.model.predict([p for _, p in batch], batch_size=len(batch),
+                                     show_progress_bar=False)
+            if length >= 2048 and self.model.device.type == "mps":
+                # Return the long inputs' attention buffers to the system, which
+                # otherwise keeps them cached and swaps other programs out.
+                import torch
+                torch.mps.empty_cache()
+            scored = [(k, float(s)) for (k, _), s in zip(batch, out)]
+            got = dict(scored)
+            scored += [(a, got[src]) for a, src in aliases]
+            for k, s in scored:
+                self.cache.setdefault(k, s)
+            self._save(scored)
+            self.n_scored += len(batch)
+            n_done += len(scored)
+            done += c
+            el = time.time() - t0
+            left = el * (total - done) / done
+            if progress and bi % 20 == 0:
+                print(f"    batch {bi + 1}/{len(plan)} ({len(batch)} x {length} tokens)  "
+                      f"{n_done} pairs this run  {n_done / el:5.2f} pairs/s  "
+                      f"~{left / 60:.0f} min left", flush=True)
+            while marks and 100 * done / total >= marks[0] - 1e-9:
+                print(f"    MILESTONE {marks[0]}% of scoring done: {n_done} pairs this run "
+                      f"in {el / 60:.1f} min, ~{left / 60:.0f} min left", flush=True)
+                marks.pop(0)
+        self.score_seconds += time.time() - t0
+
     @property
     def pairs_per_second(self) -> float:
         return self.n_scored / self.score_seconds if self.score_seconds else 0.0
+
+
+class RecipeModel:
+    """A cross-encoder's face (predict, tokenizer, device) on the audit's own scoring recipe
+    for a reranker that is not a sentence-transformers cross-encoder -- Qwen3-Reranker's
+    yes/no logits, NVIDIA Nemotron's classifier -- taken from code/score_open_models.py with
+    its input limit raised to `window`, so Scorer can drive it like any other model."""
+
+    def __init__(self, name: str, window: int, revision: str | None, batch: int):
+        import torch
+        from transformers import AutoTokenizer
+        import score_open_models as som
+        spec = {**som.MODELS[name], "batch": batch}
+        self._score, self.revision = som.load_backend(name, spec, revision, window=window)
+        # used only to plan batches; its limit must be the window, or two forms that
+        # differ only beyond the tokenizer's own limit would look identical
+        self.tokenizer = AutoTokenizer.from_pretrained(name, revision=self.revision,
+                                                       trust_remote_code=True)
+        self.tokenizer.model_max_length = window
+        self.device = torch.device(som.device())
+
+    def predict(self, pairs, batch_size: int = 1, show_progress_bar: bool = False):
+        out, i = [], 0
+        while i < len(pairs):  # one call per run of pairs that share a query
+            j = i
+            while j < len(pairs) and pairs[j][0] == pairs[i][0]:
+                j += 1
+            out += self._score(pairs[i][0], [d for _, d in pairs[i:j]])
+            i = j
+        return out
+
+
+# Open-weight rerankers scored through RecipeModel: short name -> Hugging Face id. Their
+# precision is the audit's (bfloat16, code/score_open_models.MODELS).
+RECIPE_RERANKERS = {
+    "qwen3-0.6b": "Qwen/Qwen3-Reranker-0.6B",
+    "qwen3-4b": "Qwen/Qwen3-Reranker-4B",
+    "nemotron-1b": "nvidia/llama-nemotron-rerank-1b-v2",
+}
+RERANKERS.update(RECIPE_RERANKERS)
+
+
+class RecipeScorer(Scorer):
+    """Scorer over a RecipeModel: same batching, checkpoint and resume."""
+
+    def _load_model(self, device: str):
+        return RecipeModel(self.model_name, self.max_length, self.revision, self.batch_size)
+
+
+def bf16_exact(x: float) -> bool:
+    """True if x is a float32 whose low 16 bits are zero, i.e. exactly a bfloat16."""
+    import struct
+    b = struct.pack("<f", x)
+    return struct.unpack("<f", b)[0] == x and struct.unpack("<I", b)[0] & 0xFFFF == 0
+
+
+class GiveUp(BaseException):
+    """Stop the run now. A BaseException on purpose: the retry loop retries any
+    Exception, and a request cap or a non-retryable HTTP error must not be retried."""
+
+
+class APIScorer(Scorer):
+    """Scores (query, resume) pairs with a hosted reranker, one checked request at a time.
+
+    Each request sends one query with the documents of several (query, resume) units,
+    both forms of a unit together and the male form first, as the synthetic audit's
+    requests did (`female_first` puts the female form first instead: the second pass
+    that counterbalances an order-sensitive listwise model). The whole document is scored: Voyage is called with truncation off,
+    so an over-long input fails instead of being cut, and Cohere with
+    max_tokens_per_doc raised to the model's window (its default, 4,096, would cut the
+    longest resumes); Fireworks and OpenRouter take no such setting, and their windows
+    (40,960 and 10,240 tokens) hold every resume -- the ledger keeps the tokens each
+    reports reading and the backend that served each request. Every response must hold
+    one finite score per document, and not
+    one score for all of them, or the request is retried; a non-retryable HTTP error,
+    exhausted retries or the request cap stops the run. Finished requests go to the
+    checkpoint (see Scorer), and a ledger next to it counts every request sent.
+
+    Voyage answers some requests with every score rounded to a bfloat16 (steps of
+    about 0.002 near 0.3) and others at full precision, each repeatably; real-resume
+    gaps are often smaller than that step, so a rounded response turns most pairs into
+    ties. A rounded response is therefore sent again, up to `coarse_retries` times, and
+    the first full-precision one kept; a request that never gets one keeps its rounded
+    scores and is flagged (coarse_keys), so the analysis can set it apart.
+    """
+
+    NOT_RETRYABLE = {400, 401, 403, 404, 405, 413, 422}
+
+    def __init__(self, short: str, docs_per_request: int = 40,
+                 tokens_per_request: int = 60_000, max_requests: int = 0,
+                 coarse_retries: int = 8,
+                 checkpoint: Path | None = None, checkpoint_meta: dict | None = None,
+                 resume: bool = False, female_first: bool = False):
+        import order_reversal_test as ort
+        ort.load_env()
+        self.female_first = female_first
+        self.vendor, self.model_name, self.max_length = API_RERANKERS[short]
+        self.docs_per_request, self.tokens_per_request = docs_per_request, tokens_per_request
+        self.batch_size, self.token_budget = docs_per_request, tokens_per_request
+        self.max_requests = max_requests
+        self.shim_applied, self.load_seconds = False, 0.0
+        self.cache: dict[tuple, float] = {}
+        self.n_scored, self.score_seconds, self.n_resumed, self.n_scored_once = 0, 0.0, 0, 0
+        self.ledger = {"n_requests": 0, "n_failed_attempts": 0, "billed": 0.0,
+                       "warnings": {}, "n_coarse_responses": 0,
+                       "n_requests_kept_coarse": 0}
+        self.coarse_retries = coarse_retries if self.vendor_of(short) == "voyage" else 0
+        self.coarse_keys: set[tuple] = set()
+        self._tier_seen = False
+        self._retry = ort.call_with_retry
+        if self.vendor == "voyage":
+            import voyageai
+            self.settings = {"truncation": False}
+            self.billed_unit = "tokens"
+            self.throttle = ort.Throttle(tpm=1_000_000, rpm=120)
+            self._vo = voyageai.Client(api_key=os.environ["VOYAGE_API_KEY"], timeout=180)
+        elif self.vendor == "azure-cohere":
+            self.settings = {"max_tokens_per_doc": self.max_length}
+            self.billed_unit = "search units"
+            # 80% of the Azure deployment's 250,000 tokens and 250 requests a minute
+            self.throttle = ort.Throttle(tpm=200_000, rpm=100)
+            self._endpoint = ort.COHERE_ENDPOINT
+            self._headers = {"api-key": os.environ["AZURE_API_KEY"],
+                             "Content-Type": "application/json"}
+        elif self.vendor == "cohere":
+            self.settings = {"max_tokens_per_doc": self.max_length}
+            # Rerank 5 bills input tokens, earlier models search units
+            self.billed_unit = ("input tokens" if self.model_name.startswith("rerank-v5")
+                                else "search units")
+            # Cohere allows a production key 1,000 rerank calls a minute and documents no
+            # token limit; a trial key 10 a minute (and 1,000 a month), which _request
+            # reads from the first response's headers and then keeps under. A production
+            # key in COHERE_API_KEY_PROD is used when set; both return the same scores.
+            self.throttle = ort.Throttle(tpm=3_000_000, rpm=300)
+            self._endpoint = COHERE_API
+            key = os.environ.get("COHERE_API_KEY_PROD") or os.environ["COHERE_API_KEY"]
+            self._headers = {"Authorization": f"Bearer {key}", "Content-Type": "application/json"}
+        elif self.vendor == "local-listwise":
+            import score_open_models as som
+            from run_records import pinned_revision
+            self._score, revision = som.load_backend(
+                self.model_name, som.MODELS[self.model_name],
+                pinned_revision(self.model_name, experiment="audit"), window=self.max_length)
+            self.settings = {"max_doc_length": self.max_length, "revision": revision}
+            self.billed_unit = "none (local model)"
+            self.throttle = ort.Throttle(tpm=10 ** 12, rpm=10 ** 9)
+        elif self.vendor == "fireworks":
+            # No truncation setting: the 40,960-token window holds every resume, and the
+            # reported prompt tokens show what was read
+            self.settings = {"return_documents": False}
+            self.billed_unit = "tokens"
+            self.throttle = ort.Throttle(tpm=2_000_000, rpm=60)
+            self._endpoint = FIREWORKS_API
+            self._headers = {"Authorization": f"Bearer {os.environ['FIREWORKS_API_KEY']}",
+                             "Content-Type": "application/json"}
+        else:  # openrouter
+            self.settings = {}
+            self.billed_unit = "tokens"
+            # OpenRouter's free models allow 20 requests a minute
+            self.throttle = ort.Throttle(tpm=2_000_000, rpm=16)
+            self._endpoint = OPENROUTER_API
+            self._headers = {"Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}",
+                             "Content-Type": "application/json"}
+        self._ckpt = None
+        self._ledger_path = None
+        if checkpoint:
+            meta = json.loads(json.dumps({"model": self.model_name, "max_length": self.max_length,
+                                          "settings": self.settings, **(checkpoint_meta or {})}))
+            self._open_checkpoint(Path(checkpoint), meta, resume)
+            self._ledger_path = Path(checkpoint).with_suffix(".requests.json")
+            if resume and self.n_resumed and self._ledger_path.exists():
+                self.ledger = json.loads(self._ledger_path.read_text())
+            if self.n_resumed:
+                for line in Path(checkpoint).read_text(encoding="utf-8").splitlines()[1:]:
+                    try:
+                        batch = json.loads(line)
+                    except json.JSONDecodeError:
+                        continue
+                    if batch.get("coarse"):
+                        self.coarse_keys.update(tuple(k) for k, _ in batch["scores"])
+
+    @staticmethod
+    def vendor_of(short: str) -> str:
+        return API_RERANKERS[short][0]
+
+    def _save_request(self, scored: list[tuple[tuple, float]], coarse: bool) -> None:
+        if self._ckpt:
+            self._ckpt.write(json.dumps({"scores": [[list(k), s] for k, s in scored],
+                                         "coarse": coarse}) + "\n")
+            self._ckpt.flush()
+            os.fsync(self._ckpt.fileno())
+
+    def _write_ledger(self) -> None:
+        if self._ledger_path:
+            tmp = self._ledger_path.with_suffix(".tmp")
+            tmp.write_text(json.dumps(self.ledger, indent=1))
+            tmp.replace(self._ledger_path)
+
+    def _request(self, query: str, docs: list[str]) -> list[float]:
+        """One API call: a score per document, in input order, or an exception."""
+        if self.max_requests and self.ledger["n_requests"] >= self.max_requests:
+            raise GiveUp(f"request cap reached ({self.ledger['n_requests']} of "
+                         f"{self.max_requests} requests sent)")
+        self.throttle.wait(len(query) * len(docs) + sum(map(len, docs)))
+        self.ledger["n_requests"] += 1
+        self._write_ledger()
+        try:
+            if self.vendor == "voyage":
+                res = self._vo.rerank(query, docs, model=self.model_name, top_k=len(docs),
+                                      truncation=False)
+                got = {x.index: float(x.relevance_score) for x in res.results}
+                self.ledger["billed"] += float(getattr(res, "total_tokens", 0) or 0)
+            elif self.vendor == "local-listwise":
+                got = dict(enumerate(self._score(query, docs)))
+            else:
+                import requests
+                r = requests.post(self._endpoint, headers=self._headers, timeout=180,
+                                  json={"model": self.model_name, "query": query,
+                                        "documents": docs, "top_n": len(docs), **self.settings})
+                if self.vendor == "cohere" and not self._tier_seen:
+                    self._tier_seen = True
+                    trial = r.headers.get("x-trial-endpoint-call-limit")
+                    tiers = self.ledger.setdefault("key_tiers", [])
+                    if ("trial" if trial else "production") not in tiers:
+                        tiers.append("trial" if trial else "production")
+                    if trial:
+                        self.throttle.rpm = min(self.throttle.rpm, max(1, int(trial) - 1))
+                        print(f"    trial key: {trial} calls a minute, "
+                              f"{r.headers.get('x-endpoint-monthly-call-limit')} a month; "
+                              f"throttled to {self.throttle.rpm} a minute", flush=True)
+                r.raise_for_status()
+                body = r.json()
+                got = {x["index"]: float(x["relevance_score"])
+                       for x in body.get("results") or body.get("data") or []}
+                meta = body.get("meta") or {}
+                billed = meta.get("billed_units") or {}
+                usage = body.get("usage") or {}
+                if self.vendor in ("cohere", "azure-cohere"):
+                    n = billed.get("input_tokens" if self.billed_unit == "input tokens"
+                                   else "search_units")
+                else:
+                    n = usage.get("total_tokens") or usage.get("prompt_tokens")
+                self.ledger["billed"] += float(n or 0)
+                if self.vendor in ("fireworks", "openrouter"):
+                    who = "/".join(str(body.get(k)) for k in ("provider", "model") if body.get(k))
+                    served = self.ledger.setdefault("served_by", {})
+                    served[who] = served.get(who, 0) + 1
+                for w in (meta.get("warnings") or []) + (body.get("warnings") or []):
+                    w = str(w)[:200]
+                    self.ledger["warnings"][w] = self.ledger["warnings"].get(w, 0) + 1
+        except Exception as e:  # noqa: BLE001  (vendor SDKs raise assorted types)
+            self.ledger["n_failed_attempts"] += 1
+            self._write_ledger()
+            resp = getattr(e, "response", None)
+            status = getattr(resp, "status_code", None) or getattr(e, "http_status", None)
+            body = str(getattr(resp, "text", None) or getattr(e, "http_body", None) or e)
+            if status == 429 and "trial" in body.lower() and "month" in body.lower():
+                raise GiveUp(f"the trial key's monthly call limit is used up: {body[:300]}") from None
+            if status == 429 and ("per-day" in body.lower() or "per day" in body.lower()):
+                raise GiveUp(f"a daily request limit is used up: {body[:300]}") from None
+            if status == 429:
+                headers = getattr(resp, "headers", None) or getattr(e, "headers", None) or {}
+                try:
+                    wait = min(float(headers.get("Retry-After") or 30), 300.0)
+                except (TypeError, ValueError):
+                    wait = 30.0
+                print(f"    rate limited (HTTP 429); waiting {wait:.0f}s", flush=True)
+                time.sleep(wait)
+            elif status in self.NOT_RETRYABLE:
+                raise GiveUp(f"HTTP {status}, not retryable: {body[:300]}") from None
+            elif status in (500, 502, 503, 504):
+                print(f"    HTTP {status}; waiting 20s", flush=True)
+                time.sleep(20)
+            raise
+        problem = None
+        if sorted(got) != list(range(len(docs))):
+            problem = f"{len(got)} scores for {len(docs)} documents"
+        elif not all(math.isfinite(s) for s in got.values()):
+            problem = "a score is not finite"
+        elif len(docs) > 2 and len(set(got.values())) == 1:
+            problem = f"every document scored {next(iter(got.values()))}"
+        if problem:
+            self.ledger["n_failed_attempts"] += 1
+            self._write_ledger()
+            raise ValueError(f"malformed response: {problem}")
+        self._write_ledger()
+        return [got[i] for i in range(len(docs))]
+
+    def plan_requests(self, items: list[tuple[tuple, tuple[str, str]]]) -> list[list]:
+        """Requests in order: one query each, whole units, the male form first, within
+        docs_per_request documents and tokens_per_request estimated tokens (characters
+        / 4, query counted once per document, as the throttle counts them)."""
+        by_query: dict[str, dict[tuple, list]] = defaultdict(lambda: defaultdict(list))
+        for k, p in items:
+            by_query[k[0]][k[:-1]].append((k, p))
+        plan = []
+        for units in by_query.values():
+            cur, cur_chars = [], 0
+            for members in units.values():
+                first = "female" if self.female_first else "male"
+                members = sorted(members, key=lambda kp: kp[0][-1] != first)
+                add = sum(len(q) + len(d) for _, (q, d) in members)
+                if cur and (len(cur) + len(members) > self.docs_per_request
+                            or (cur_chars + add) / 4 > self.tokens_per_request):
+                    plan.append(cur)
+                    cur, cur_chars = [], 0
+                cur, cur_chars = cur + members, cur_chars + add
+            if cur:
+                plan.append(cur)
+        return plan
+
+    def score(self, pairs: Sequence[tuple[str, str]], keys: Sequence[tuple],
+              progress: bool = True) -> None:
+        uniq: dict[tuple, tuple[str, str]] = {}
+        for k, p in zip(keys, pairs):
+            uniq.setdefault(k, p)
+        plan = self.plan_requests(list(uniq.items()))
+        pending = [req for req in plan if not all(k in self.cache for k, _ in req)]
+        if not self.max_requests:
+            # Room for retries -- and, for Voyage, for re-sending rounded responses (about
+            # 60% of responses in the canary, so 2.5 sends a request on average); a run
+            # that needs more is stopped and looked at.
+            per_request = 4.0 if self.coarse_retries else 1.3
+            self.max_requests = self.ledger["n_requests"] + int(per_request * len(pending)) + 10
+        total = sum(len(req) for req in pending) or 1
+        print(f"    {len(plan)} requests planned, {len(pending)} to send "
+              f"(cap {self.max_requests} requests in all); {total} documents", flush=True)
+        done, marks, t0 = 0, [10, 25, 50, 75, 100], time.time()
+        for i, req in enumerate(pending):
+            query = req[0][1][0]
+            docs = [d for _, (_, d) in req]
+            for attempt in range(self.coarse_retries + 1):
+                scores = self._retry(self._request, query, docs)
+                coarse = len(docs) >= 4 and all(bf16_exact(x) for x in scores)
+                if not coarse:
+                    break
+                self.ledger["n_coarse_responses"] += 1
+            if coarse:
+                self.ledger["n_requests_kept_coarse"] += 1
+                self.coarse_keys.update(k for k, _ in req)
+            self._write_ledger()
+            scored = [(k, s) for (k, _), s in zip(req, scores)]
+            for k, s in scored:
+                self.cache.setdefault(k, s)
+            self._save_request(scored, coarse)
+            self.n_scored += len(req)
+            done += len(req)
+            el = time.time() - t0
+            left = el * (total - done) / done
+            if progress and i % 10 == 0:
+                print(f"    request {i + 1}/{len(pending)}  {done}/{total} documents  "
+                      f"~{left / 60:.0f} min left  ({self.ledger['n_requests']} sent, "
+                      f"{self.ledger['n_failed_attempts']} failed attempts)", flush=True)
+            while marks and 100 * done / total >= marks[0] - 1e-9:
+                print(f"    MILESTONE {marks[0]}% of scoring done: {done}/{total} documents "
+                      f"in {el / 60:.1f} min, ~{left / 60:.0f} min left; "
+                      f"{self.ledger['n_requests']} requests sent, "
+                      f"{self.ledger['n_failed_attempts']} failed attempts, "
+                      f"billed {self.ledger['billed']:,.0f} {self.billed_unit}", flush=True)
+                marks.pop(0)
+        self.score_seconds += time.time() - t0
 
 
 def average_ranks(scores: Sequence[float]) -> list[float]:
@@ -1009,10 +1744,23 @@ def run_g3(args) -> dict:
             "--twin-mode swap this means the corpus carries no gender markers "
             "(the livecareer corpus is pre-anonymised); use --twin-mode auto."
         )
+    owner = None
+    labels_path = getattr(args, "marker_labels", None)
+    if labels_path:
+        labels, labels_sha = load_marker_labels(labels_path)
+        owner = apply_marker_labels(resumes, labels, name_table, twin_map, seed=args.seed,
+                                    surnames=[] if args.no_surname else DEFAULT_SURNAMES)
+        owner.update(labels_file=str(labels_path), labels_sha256=labels_sha,
+                     shape=shape_forms(resumes, args.cut_words, args.owner_line))
+        print(f"[G3] owner-only markers: {owner}", flush=True)
 
     pools = sample_pools(queries, resumes, args.k, args.pools_per_query,
                          args.relevant_per_pool, args.seed)
     print(f"[G3] {len(pools)} pools of K={args.k}", flush=True)
+    unlabelled = sorted({r.rid for p in pools for r in p["members"] if r.unlabelled_markers})
+    if unlabelled:
+        raise SystemExit(f"[G3] {len(unlabelled)} pooled resumes carry markers the labels "
+                         f"do not cover, e.g. {unlabelled[:5]}")
 
     qtext = {q.qid: q.text for q in queries}
     qmeta = {q.qid: q for q in queries}
@@ -1021,11 +1769,29 @@ def run_g3(args) -> dict:
     membership = [(p["qid"], r.rid) for p in pools for r in p["members"]]
     pool_hash = hashlib.sha256(
         json.dumps(membership, separators=(",", ":")).encode()).hexdigest()
+    expect = getattr(args, "expect_pool_sha256", None)
+    if expect and pool_hash != expect:
+        raise SystemExit(f"[G3] pool membership {pool_hash} is not the expected {expect}: "
+                         "these pools differ from the run being repeated")
+    limit_pools = getattr(args, "limit_pools", 0)
+    if limit_pools:
+        # Canary: an even spread of the pools. The membership hash above still
+        # identifies the full sample they come from.
+        pools = pools[::max(1, len(pools) // limit_pools)][:limit_pools]
+        membership = [(p["qid"], r.rid) for p in pools for r in p["members"]]
+        print(f"[G3] canary: scoring {len(pools)} of the pools", flush=True)
     tb = {p["pool_id"]: [tiebreak_key(args.seed, p["pool_id"], r.rid) for r in p["members"]]
           for p in pools}
     fingerprint = {"script_version": SCRIPT_VERSION, "pool_membership_sha256": pool_hash,
                    "seed": args.seed, "K": args.k, "depths": list(args.depths),
                    "max_length": args.max_length, "twin_mode": args.twin_mode}
+    if limit_pools:
+        fingerprint["limit_pools"] = limit_pools
+    if getattr(args, "female_first", False):
+        fingerprint["female_first"] = True
+    if owner:
+        fingerprint.update(marker_labels_sha256=owner["labels_sha256"],
+                           cut_words=args.cut_words, owner_line=args.owner_line)
 
     # Per-model checkpoint, so a crash does not lose finished models.
     ckpt_path: Path | None = getattr(args, "checkpoint", None)
@@ -1049,8 +1815,25 @@ def run_g3(args) -> dict:
             print(f"[G3] === {short}: taken from checkpoint ===", flush=True)
             continue
         print(f"[G3] === {short} ({model_name}) ===", flush=True)
-        scorer = Scorer(model_name, device=args.device, max_length=args.max_length,
-                        batch_size=args.batch_size)
+        score_ckpt = (ckpt_path.with_name(f"{ckpt_path.stem}.{short}.scores.jsonl")
+                      if ckpt_path else None)
+        if short in API_RERANKERS:
+            scorer = APIScorer(short, docs_per_request=getattr(args, "docs_per_request", 40),
+                               tokens_per_request=getattr(args, "tokens_per_request", 60_000),
+                               max_requests=getattr(args, "max_requests", 0),
+                               coarse_retries=getattr(args, "coarse_retries", 8),
+                               checkpoint=score_ckpt, checkpoint_meta=fingerprint,
+                               resume=args.resume,
+                               female_first=getattr(args, "female_first", False))
+        else:
+            make = RecipeScorer if short in RECIPE_RERANKERS else Scorer
+            scorer = make(model_name, device=args.device, max_length=args.max_length,
+                          batch_size=args.batch_size,
+                          token_budget=getattr(args, "token_budget", 0),
+                          attention_budget=getattr(args, "attention_budget", 0),
+                          checkpoint=score_ckpt, checkpoint_meta=fingerprint,
+                          resume=args.resume, revision=getattr(args, "revision", None),
+                          dtype=getattr(args, "model_dtype", None))
 
         keys, pairs = [], []
         for pool in pools:
@@ -1073,14 +1856,19 @@ def run_g3(args) -> dict:
         # but the exact test is on the model's own tokenisation of the
         # (query, resume) pair, truncated as CrossEncoder.predict truncates it:
         # the marker is in the scored window iff the two forms' token ids differ.
-        tok = scorer.model.tokenizer
-        tok_max = int(getattr(tok, "model_max_length", 0) or 0)
+        # A hosted model has no local tokenizer, but APIScorer has it read the whole
+        # document, so there the marker is in the window wherever the two forms differ.
+        tok = None if isinstance(scorer, APIScorer) else scorer.model.tokenizer
+        tok_max = int(getattr(tok, "model_max_length", 0) or 0) if tok else scorer.max_length
         in_tok_window: dict[tuple, bool] = {}
         for pool in pools:
             qt = qtext[pool["qid"]]
             for r in pool["members"]:
                 key = (pool["qid"], r.rid)
                 if key not in in_tok_window:
+                    if tok is None:
+                        in_tok_window[key] = r.form("male") != r.form("female")
+                        continue
                     enc = tok([[qt, r.form("male")], [qt, r.form("female")]], truncation=True)
                     in_tok_window[key] = enc["input_ids"][0] != enc["input_ids"][1]
 
@@ -1136,6 +1924,8 @@ def run_g3(args) -> dict:
             "model": model_name,
             "pairs_per_second": round(scorer.pairs_per_second, 2),
             "n_pairs_scored": scorer.n_scored,
+            "n_pairs_resumed_from_checkpoint": scorer.n_resumed,
+            "n_pairs_identical_inputs_scored_once": scorer.n_scored_once,
             "score_seconds": round(scorer.score_seconds, 1),
             "load_seconds": round(scorer.load_seconds, 1),
             "xlm_roberta_compat_shim_applied": scorer.shim_applied,
@@ -1156,6 +1946,18 @@ def run_g3(args) -> dict:
             "rows": None,
             "rows_file": None,  # filled in by main()
         }
+        if isinstance(scorer, APIScorer):
+            out_models[short]["api"] = {
+                "vendor": scorer.vendor, "settings": scorer.settings,
+                "documented_context_tokens": scorer.max_length,
+                "docs_per_request": scorer.docs_per_request,
+                "tokens_per_request": scorer.tokens_per_request,
+                "max_requests": scorer.max_requests, "billed_unit": scorer.billed_unit,
+                "coarse_retries": scorer.coarse_retries, **scorer.ledger}
+            for row in rows:
+                row["api_coarse_response"] = any(
+                    (row["qid"], row["focal_rid"], f) in scorer.coarse_keys
+                    for f in ("male", "female"))
         rows_by_model[short] = {"filler_scores": filler_scores, "rows": rows}
         del scorer
         if ckpt_path:
@@ -1189,7 +1991,8 @@ def run_g3(args) -> dict:
                             "surname": r.injected[2] if r.injected else None,
                             "carried_gender": r.carried_gender,
                             "carried_source": r.carried_source,
-                            "filler_form": r.default_form}
+                            "filler_form": r.default_form,
+                            **({"owner_markers": r.owner_markers} if owner else {})}
                     for p in pools for r in p["members"]},
         "models": rows_by_model,
     }
@@ -1200,13 +2003,26 @@ def run_g3(args) -> dict:
         "script_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "validation_only": bool(args.demo),
         "full_corpus": not (args.demo or corpus_prov.get("subsampled_to")
-                            or args.max_queries),
+                            or args.max_queries or limit_pools),
+        "canary_limit_pools": limit_pools,
         "seed": args.seed,
         "generated": time.strftime("%Y-%m-%dT%H:%M:%S"),
         "config": {
             "K": args.k, "pools_per_query": args.pools_per_query,
             "relevant_per_pool": args.relevant_per_pool, "depths": args.depths,
             "max_length": args.max_length, "batch_size": args.batch_size,
+            "token_budget": getattr(args, "token_budget", 0),
+            "attention_budget": getattr(args, "attention_budget", 0),
+            "revision": getattr(args, "revision", None),
+            "model_dtype": getattr(args, "model_dtype", None),
+            "female_first": getattr(args, "female_first", False),
+            "marker_labels": str(labels_path) if owner else None,
+            "cut_words": args.cut_words if owner else None,
+            "owner_line": (OWNER_LINE if args.owner_line else None) if owner else None,
+            "batching": ("length-sorted, both forms of a (query, resume) in one batch, "
+                         "identical truncated inputs scored once"
+                         if getattr(args, "token_budget", 0) else
+                         "insertion order, batch_size inputs per batch"),
             "device": args.device, "ner_model": None if args.no_ner else args.ner_model,
             "tie_convention": (
                 "exact-k: each scoring of a pool selects exactly k candidates; members "
@@ -1230,6 +2046,7 @@ def run_g3(args) -> dict:
                            "are gender counterfactuals, not de-identified text)",
             "gender_markers_carried_by_corpus": carried,
             "counterfactual_construction": forms,
+            "owner_only_markers": owner,
             "twin_mode": args.twin_mode,
             "n_resumes_usable": len(resumes),
             "ner_seconds": round(ner_seconds, 1),
@@ -1384,8 +2201,51 @@ def main(argv=None) -> int:
     ap.add_argument("--checkpoint", type=Path, default=None,
                     help="per-model checkpoint (default: results/partial/<out stem>.checkpoint.json)")
     ap.add_argument("--resume", action="store_true",
-                    help="reuse finished models from a matching checkpoint")
+                    help="reuse finished models, and the finished batches of an unfinished "
+                         "one, from a matching checkpoint")
+    ap.add_argument("--token-budget", type=int, default=0,
+                    help="plan batches by input length, at most this many padded tokens each "
+                         "(0: insertion order, --batch-size inputs per batch, as the banked run)")
+    ap.add_argument("--attention-budget", type=int, default=0,
+                    help="with --token-budget, also cap each batch's inputs x padded length "
+                         "squared, which bounds its attention memory (0: no cap)")
+    ap.add_argument("--revision", default=None,
+                    help="model revision to load (pin it to the audit's, see run_records.py)")
+    ap.add_argument("--model-dtype", default=None, choices=("bfloat16", "float16", "float32"),
+                    help="load the model in this precision, as the audit's recipe did "
+                         "(default: the library's, float32)")
+    ap.add_argument("--docs-per-request", type=int, default=40,
+                    help="hosted rerankers: at most this many documents per request")
+    ap.add_argument("--tokens-per-request", type=int, default=60_000,
+                    help="hosted rerankers: at most this many estimated tokens per request")
+    ap.add_argument("--female-first", action="store_true",
+                    help="request layout: each unit's female form first, not its male form "
+                         "(the counterbalancing pass for an order-sensitive listwise model)")
+    ap.add_argument("--coarse-retries", type=int, default=8,
+                    help="Voyage: send a request whose scores all come back rounded to "
+                         "bfloat16 again, up to this many times")
+    ap.add_argument("--max-requests", type=int, default=0,
+                    help="hosted rerankers: stop after this many requests in all "
+                         "(0: 1.3 x the planned requests + 10)")
+    ap.add_argument("--limit-pools", type=int, default=0,
+                    help="canary: score only this many pools, spread evenly over the sample")
+    ap.add_argument("--expect-pool-sha256", default=None,
+                    help="abort unless the sampled pools have this membership hash")
+    ap.add_argument("--marker-labels", type=Path, default=None,
+                    help="hand-checked labels of which carried names and pronouns are the "
+                         "owner's; only those change between the forms (apply_marker_labels)")
+    ap.add_argument("--cut-words", type=int, default=0,
+                    help="with --marker-labels: cut each body so that it (with --owner-line, "
+                         "line and body together) holds this many words after the name "
+                         "(0: whole)")
+    ap.add_argument("--owner-line", action="store_true",
+                    help="with --marker-labels: put OWNER_LINE, three of the owner's "
+                         "pronouns, after the prepended name")
     args = ap.parse_args(argv)
+    if (args.cut_words or args.owner_line) and not args.marker_labels:
+        ap.error("--cut-words and --owner-line need --marker-labels")
+    if args.cut_words < 0 or (args.owner_line and 0 < args.cut_words <= OWNER_LINE_WORDS):
+        ap.error(f"--cut-words must be 0 or, with --owner-line, above {OWNER_LINE_WORDS}")
 
     RESULTS.mkdir(exist_ok=True)
     tag = "demo" if args.demo else "_".join(args.rerankers)

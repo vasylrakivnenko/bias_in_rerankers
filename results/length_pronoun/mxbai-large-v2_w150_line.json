@@ -1,0 +1,1702 @@
+{
+  "experiment": "G3 flip rate at the margin",
+  "script_version": "g3-2026-10-16-exact-k",
+  "script_sha256": "ab199e4522c2db0256caf21f4e72c07c179e188119d0ed0a4cdc9f5fd48f34f4",
+  "validation_only": false,
+  "full_corpus": true,
+  "canary_limit_pools": 0,
+  "seed": 20260822,
+  "generated": "2026-10-22T02:41:22",
+  "config": {
+    "K": 20,
+    "pools_per_query": 8,
+    "relevant_per_pool": 5,
+    "depths": [
+      3,
+      5,
+      10
+    ],
+    "max_length": 8192,
+    "batch_size": 1,
+    "token_budget": 8192,
+    "attention_budget": 0,
+    "revision": "ca7e1ee484c37c0ddd8d178a9a5c33cec575c5e6",
+    "model_dtype": "bfloat16",
+    "female_first": false,
+    "marker_labels": "data/owner_marker_labels.json",
+    "cut_words": 150,
+    "owner_line": {
+      "male": "He is a dedicated professional, and his colleagues describe him as reliable and thorough.",
+      "female": "She is a dedicated professional, and her colleagues describe her as reliable and thorough."
+    },
+    "batching": "length-sorted, both forms of a (query, resume) in one batch, identical truncated inputs scored once",
+    "device": "cuda",
+    "ner_model": "dslim/bert-base-NER",
+    "tie_convention": "exact-k: each scoring of a pool selects exactly k candidates; members are ordered by score, and equal scores by a seeded key sha256(seed|pool_id|resume_id) that is identical in the male-form and female-form scorings of a comparison; in-top-k iff ordinal rank <= k. Mean ranks use average ranks. The earlier average-rank rule is reported per model under legacy_average_rank_rule.",
+    "tie_break": "sha256(f'{seed}|{pool_id}|{resume_id}') -> first 8 bytes / 2**64, ascending"
+  },
+  "provenance": {
+    "corpus": {
+      "source": "/workspace/repo/data/resumes/resumes.csv",
+      "n_resumes": 2483
+    },
+    "queries": {
+      "onet_file": "/workspace/repo/data/onet/Occupation Data.txt",
+      "category_to_soc": "/workspace/repo/data/category_to_soc.csv",
+      "n_queries": 24,
+      "unmatched_soc": [],
+      "include_tasks": 0,
+      "stereotype_counts": {
+        "neutral": 7,
+        "male": 7,
+        "unknown": 7,
+        "female": 3
+      }
+    },
+    "names": {
+      "source": "name table names_gender.csv (pct_female column, percent scale)",
+      "path": "/workspace/repo/data/names_gender.csv",
+      "min_confidence": 0.95,
+      "min_count": 200,
+      "n_names": 16755,
+      "n_male": 5864,
+      "n_female": 10891
+    },
+    "sampling": {
+      "n_distinct_resumes_scored": 1952,
+      "n_pools": 192,
+      "n_focal_comparisons": 3840,
+      "n_distinct_query_resume_pairs": 3570,
+      "pool_membership_sha256": "91687571c4c9dd4f78c5d442c751070ea0efc18b56e5f9713479a4532f80c400"
+    },
+    "deid_module": "code/deid_transforms.py (not used by G3; the two forms are gender counterfactuals, not de-identified text)",
+    "gender_markers_carried_by_corpus": {
+      "with_person_entity": 409,
+      "no_gender_signal": 2158,
+      "gender_from_name": 305,
+      "gender_from_pronoun": 20,
+      "n": 2483
+    },
+    "counterfactual_construction": {
+      "inject": 2182,
+      "swap": 301,
+      "swap_produced_no_change": 24,
+      "usable": 2483,
+      "n": 2483
+    },
+    "owner_only_markers": {
+      "owner_names_replaced": 75,
+      "owner_pronouns_set_to_form": 128,
+      "other_pronouns_left_as_written": 145,
+      "resumes_with_owner_marker_in_body": 62,
+      "swap_converted_to_inject": 301,
+      "unlabelled_with_markers": 75,
+      "labels_file": "data/owner_marker_labels.json",
+      "labels_sha256": "2f1e31c3f475224264c5f7ef30afa18a5a97f610fed10ecd8791a6fabc9072e2",
+      "shape": {
+        "cut_words": 150,
+        "owner_line": true,
+        "n_resumes_cut": 2478
+      }
+    },
+    "twin_mode": "auto",
+    "n_resumes_usable": 2483,
+    "ner_seconds": 0.4
+  },
+  "models": {
+    "mxbai-large-v2": {
+      "model": "mixedbread-ai/mxbai-rerank-large-v2",
+      "pairs_per_second": 42.52,
+      "n_pairs_scored": 7140,
+      "n_pairs_resumed_from_checkpoint": 0,
+      "n_pairs_identical_inputs_scored_once": 0,
+      "score_seconds": 167.9,
+      "load_seconds": 2.2,
+      "xlm_roberta_compat_shim_applied": true,
+      "summary": {
+        "overall": {
+          "n": 3840,
+          "top3": {
+            "flip_rate_pct": 3.464,
+            "n_flips": 133,
+            "male_form_in_only": 114,
+            "female_form_in_only": 19,
+            "net_male_advantage": 95,
+            "both_in": 506,
+            "both_out": 3201
+          },
+          "top5": {
+            "flip_rate_pct": 5.208,
+            "n_flips": 200,
+            "male_form_in_only": 180,
+            "female_form_in_only": 20,
+            "net_male_advantage": 160,
+            "both_in": 863,
+            "both_out": 2777
+          },
+          "top10": {
+            "flip_rate_pct": 8.177,
+            "n_flips": 314,
+            "male_form_in_only": 277,
+            "female_form_in_only": 37,
+            "net_male_advantage": 240,
+            "both_in": 1755,
+            "both_out": 1771
+          },
+          "score_gap": {
+            "mean_delta_male_minus_female": 0.013186,
+            "mean_abs_delta": 0.019523,
+            "pct_male_favored": 72.76,
+            "pct_tie": 8.75,
+            "pct_female_favored": 18.49,
+            "tie_aware_pct_male": 77.14
+          },
+          "mean_rank_male": 10.0771,
+          "mean_rank_female": 10.9339
+        },
+        "by_stereotype": {
+          "female": {
+            "n": 480,
+            "top3": {
+              "flip_rate_pct": 2.292,
+              "n_flips": 11,
+              "male_form_in_only": 10,
+              "female_form_in_only": 1,
+              "net_male_advantage": 9,
+              "both_in": 67,
+              "both_out": 402
+            },
+            "top5": {
+              "flip_rate_pct": 4.167,
+              "n_flips": 20,
+              "male_form_in_only": 19,
+              "female_form_in_only": 1,
+              "net_male_advantage": 18,
+              "both_in": 109,
+              "both_out": 351
+            },
+            "top10": {
+              "flip_rate_pct": 6.042,
+              "n_flips": 29,
+              "male_form_in_only": 23,
+              "female_form_in_only": 6,
+              "net_male_advantage": 17,
+              "both_in": 223,
+              "both_out": 228
+            },
+            "score_gap": {
+              "mean_delta_male_minus_female": 0.00479,
+              "mean_abs_delta": 0.01323,
+              "pct_male_favored": 68.12,
+              "pct_tie": 9.38,
+              "pct_female_favored": 22.5,
+              "tie_aware_pct_male": 72.81
+            },
+            "mean_rank_male": 10.2792,
+            "mean_rank_female": 10.8073
+          },
+          "male": {
+            "n": 1120,
+            "top3": {
+              "flip_rate_pct": 4.107,
+              "n_flips": 46,
+              "male_form_in_only": 43,
+              "female_form_in_only": 3,
+              "net_male_advantage": 40,
+              "both_in": 144,
+              "both_out": 930
+            },
+            "top5": {
+              "flip_rate_pct": 5.804,
+              "n_flips": 65,
+              "male_form_in_only": 62,
+              "female_form_in_only": 3,
+              "net_male_advantage": 59,
+              "both_in": 244,
+              "both_out": 811
+            },
+            "top10": {
+              "flip_rate_pct": 10.268,
+              "n_flips": 115,
+              "male_form_in_only": 114,
+              "female_form_in_only": 1,
+              "net_male_advantage": 113,
+              "both_in": 501,
+              "both_out": 504
+            },
+            "score_gap": {
+              "mean_delta_male_minus_female": 0.018893,
+              "mean_abs_delta": 0.023202,
+              "pct_male_favored": 81.79,
+              "pct_tie": 5.98,
+              "pct_female_favored": 12.23,
+              "tie_aware_pct_male": 84.78
+            },
+            "mean_rank_male": 9.8438,
+            "mean_rank_female": 11.1326
+          },
+          "neutral": {
+            "n": 1120,
+            "top3": {
+              "flip_rate_pct": 4.018,
+              "n_flips": 45,
+              "male_form_in_only": 37,
+              "female_form_in_only": 8,
+              "net_male_advantage": 29,
+              "both_in": 140,
+              "both_out": 935
+            },
+            "top5": {
+              "flip_rate_pct": 5.446,
+              "n_flips": 61,
+              "male_form_in_only": 50,
+              "female_form_in_only": 11,
+              "net_male_advantage": 39,
+              "both_in": 252,
+              "both_out": 807
+            },
+            "top10": {
+              "flip_rate_pct": 8.75,
+              "n_flips": 98,
+              "male_form_in_only": 84,
+              "female_form_in_only": 14,
+              "net_male_advantage": 70,
+              "both_in": 510,
+              "both_out": 512
+            },
+            "score_gap": {
+              "mean_delta_male_minus_female": 0.010175,
+              "mean_abs_delta": 0.013689,
+              "pct_male_favored": 70.89,
+              "pct_tie": 10.54,
+              "pct_female_favored": 18.57,
+              "tie_aware_pct_male": 76.16
+            },
+            "mean_rank_male": 10.125,
+            "mean_rank_female": 10.9335
+          },
+          "unknown": {
+            "n": 1120,
+            "top3": {
+              "flip_rate_pct": 2.768,
+              "n_flips": 31,
+              "male_form_in_only": 24,
+              "female_form_in_only": 7,
+              "net_male_advantage": 17,
+              "both_in": 155,
+              "both_out": 934
+            },
+            "top5": {
+              "flip_rate_pct": 4.821,
+              "n_flips": 54,
+              "male_form_in_only": 49,
+              "female_form_in_only": 5,
+              "net_male_advantage": 44,
+              "both_in": 258,
+              "both_out": 808
+            },
+            "top10": {
+              "flip_rate_pct": 6.429,
+              "n_flips": 72,
+              "male_form_in_only": 56,
+              "female_form_in_only": 16,
+              "net_male_advantage": 40,
+              "both_in": 521,
+              "both_out": 527
+            },
+            "score_gap": {
+              "mean_delta_male_minus_female": 0.014089,
+              "mean_abs_delta": 0.024375,
+              "pct_male_favored": 67.59,
+              "pct_tie": 9.46,
+              "pct_female_favored": 22.95,
+              "tie_aware_pct_male": 72.32
+            },
+            "mean_rank_male": 10.1759,
+            "mean_rank_female": 10.7897
+          }
+        },
+        "by_category": {
+          "ACCOUNTANT": {
+            "n": 160,
+            "top3": {
+              "flip_rate_pct": 4.375,
+              "n_flips": 7,
+              "male_form_in_only": 4,
+              "female_form_in_only": 3,
+              "net_male_advantage": 1,
+              "both_in": 21,
+              "both_out": 132
+            },
+            "top5": {
+              "flip_rate_pct": 4.375,
+              "n_flips": 7,
+              "male_form_in_only": 6,
+              "female_form_in_only": 1,
+              "net_male_advantage": 5,
+              "both_in": 36,
+              "both_out": 117
+            },
+            "top10": {
+              "flip_rate_pct": 8.125,
+              "n_flips": 13,
+              "male_form_in_only": 9,
+              "female_form_in_only": 4,
+              "net_male_advantage": 5,
+              "both_in": 72,
+              "both_out": 75
+            },
+            "score_gap": {
+              "mean_delta_male_minus_female": 0.006686,
+              "mean_abs_delta": 0.009558,
+              "pct_male_favored": 60.0,
+              "pct_tie": 14.38,
+              "pct_female_favored": 25.62,
+              "tie_aware_pct_male": 67.19
+            },
+            "mean_rank_male": 10.4187,
+            "mean_rank_female": 10.7031
+          },
+          "ADVOCATE": {
+            "n": 160,
+            "top3": {
+              "flip_rate_pct": 6.875,
+              "n_flips": 11,
+              "male_form_in_only": 11,
+              "female_form_in_only": 0,
+              "net_male_advantage": 11,
+              "both_in": 17,
+              "both_out": 132
+            },
+            "top5": {
+              "flip_rate_pct": 8.75,
+              "n_flips": 14,
+              "male_form_in_only": 13,
+              "female_form_in_only": 1,
+              "net_male_advantage": 12,
+              "both_in": 32,
+              "both_out": 114
+            },
+            "top10": {
+              "flip_rate_pct": 13.125,
+              "n_flips": 21,
+              "male_form_in_only": 21,
+              "female_form_in_only": 0,
+              "net_male_advantage": 21,
+              "both_in": 72,
+              "both_out": 67
+            },
+            "score_gap": {
+              "mean_delta_male_minus_female": 0.018276,
+              "mean_abs_delta": 0.019784,
+              "pct_male_favored": 86.88,
+              "pct_tie": 6.88,
+              "pct_female_favored": 6.25,
+              "tie_aware_pct_male": 90.31
+            },
+            "mean_rank_male": 9.6562,
+            "mean_rank_female": 11.4344
+          },
+          "AGRICULTURE": {
+            "n": 160,
+            "top3": {
+              "flip_rate_pct": 5.625,
+              "n_flips": 9,
+              "male_form_in_only": 9,
+              "female_form_in_only": 0,
+              "net_male_advantage": 9,
+              "both_in": 16,
+              "both_out": 135
+            },
+            "top5": {
+              "flip_rate_pct": 6.875,
+              "n_flips": 11,
+              "male_form_in_only": 10,
+              "female_form_in_only": 1,
+              "net_male_advantage": 9,
+              "both_in": 33,
+              "both_out": 116
+            },
+            "top10": {
+              "flip_rate_pct": 10.0,
+              "n_flips": 16,
+              "male_form_in_only": 15,
+              "female_form_in_only": 1,
+              "net_male_advantage": 14,
+              "both_in": 69,
+              "both_out": 75
+            },
+            "score_gap": {
+              "mean_delta_male_minus_female": 0.019236,
+              "mean_abs_delta": 0.024808,
+              "pct_male_favored": 75.0,
+              "pct_tie": 10.0,
+              "pct_female_favored": 15.0,
+              "tie_aware_pct_male": 80.0
+            },
+            "mean_rank_male": 10.1125,
+            "mean_rank_female": 11.15
+          },
+          "APPAREL": {
+            "n": 160,
+            "top3": {
+              "flip_rate_pct": 0.625,
+              "n_flips": 1,
+              "male_form_in_only": 1,
+              "female_form_in_only": 0,
+              "net_male_advantage": 1,
+              "both_in": 24,
+              "both_out": 135
+            },
+            "top5": {
+              "flip_rate_pct": 2.5,
+              "n_flips": 4,
+              "male_form_in_only": 4,
+              "female_form_in_only": 0,
+              "net_male_advantage": 4,
+              "both_in": 39,
+              "both_out": 117
+            },
+            "top10": {
+              "flip_rate_pct": 5.0,
+              "n_flips": 8,
+              "male_form_in_only": 7,
+              "female_form_in_only": 1,
+              "net_male_advantage": 6,
+              "both_in": 75,
+              "both_out": 77
+            },
+            "score_gap": {
+              "mean_delta_male_minus_female": 0.011021,
+              "mean_abs_delta": 0.017431,
+              "pct_male_favored": 68.12,
+              "pct_tie": 10.0,
+              "pct_female_favored": 21.88,
+              "tie_aware_pct_male": 73.12
+            },
+            "mean_rank_male": 10.2875,
+            "mean_rank_female": 10.8063
+          },
+          "ARTS": {
+            "n": 160,
+            "top3": {
+              "flip_rate_pct": 8.125,
+              "n_flips": 13,
+              "male_form_in_only": 11,
+              "female_form_in_only": 2,
+              "net_male_advantage": 9,
+              "both_in": 22,
+              "both_out": 125
+            },
+            "top5": {
+              "flip_rate_pct": 11.25,
+              "n_flips": 18,
+              "male_form_in_only": 18,
+              "female_form_in_only": 0,
+              "net_male_advantage": 18,
+              "both_in": 34,
+              "both_out": 108
+            },
+            "top10": {
+              "flip_rate_pct": 8.75,
+              "n_flips": 14,
+              "male_form_in_only": 11,
+              "female_form_in_only": 3,
+              "net_male_advantage": 8,
+              "both_in": 73,
+              "both_out": 73
+            },
+            "score_gap": {
+              "mean_delta_male_minus_female": 0.035595,
+              "mean_abs_delta": 0.041765,
+              "pct_male_favored": 86.25,
+              "pct_tie": 4.38,
+              "pct_female_favored": 9.38,
+              "tie_aware_pct_male": 88.44
+            },
+            "mean_rank_male": 9.7125,
+            "mean_rank_female": 11.0375
+          },
+          "AUTOMOBILE": {
+            "n": 160,
+            "top3": {
+              "flip_rate_pct": 5.625,
+              "n_flips": 9,
+              "male_form_in_only": 9,
+              "female_form_in_only": 0,
+              "net_male_advantage": 9,
+              "both_in": 19,
+              "both_out": 132
+            },
+            "top5": {
+              "flip_rate_pct": 11.875,
+              "n_flips": 19,
+              "male_form_in_only": 18,
+              "female_form_in_only": 1,
+              "net_male_advantage": 17,
+              "both_in": 31,
+              "both_out": 110
+            },
+            "top10": {
+              "flip_rate_pct": 16.25,
+              "n_flips": 26,
+              "male_form_in_only": 26,
+              "female_form_in_only": 0,
+              "net_male_advantage": 26,
+              "both_in": 66,
+              "both_out": 68
+            },
+            "score_gap": {
+              "mean_delta_male_minus_female": 0.040575,
+              "mean_abs_delta": 0.041203,
+              "pct_male_favored": 90.0,
+              "pct_tie": 4.38,
+              "pct_female_favored": 5.62,
+              "tie_aware_pct_male": 92.19
+            },
+            "mean_rank_male": 9.3844,
+            "mean_rank_female": 11.4969
+          },
+          "AVIATION": {
+            "n": 160,
+            "top3": {
+              "flip_rate_pct": 1.25,
+              "n_flips": 2,
+              "male_form_in_only": 2,
+              "female_form_in_only": 0,
+              "net_male_advantage": 2,
+              "both_in": 23,
+              "both_out": 135
+            },
+            "top5": {
+              "flip_rate_pct": 4.375,
+              "n_flips": 7,
+              "male_form_in_only": 6,
+              "female_form_in_only": 1,
+              "net_male_advantage": 5,
+              "both_in": 36,
+              "both_out": 117
+            },
+            "top10": {
+              "flip_rate_pct": 9.375,
+              "n_flips": 15,
+              "male_form_in_only": 15,
+              "female_form_in_only": 0,
+              "net_male_advantage": 15,
+              "both_in": 72,
+              "both_out": 73
+            },
+            "score_gap": {
+              "mean_delta_male_minus_female": 0.03163,
+              "mean_abs_delta": 0.036415,
+              "pct_male_favored": 85.0,
+              "pct_tie": 3.75,
+              "pct_female_favored": 11.25,
+              "tie_aware_pct_male": 86.88
+            },
+            "mean_rank_male": 9.9375,
+            "mean_rank_female": 11.0906
+          },
+          "BANKING": {
+            "n": 160,
+            "top3": {
+              "flip_rate_pct": 0.625,
+              "n_flips": 1,
+              "male_form_in_only": 1,
+              "female_form_in_only": 0,
+              "net_male_advantage": 1,
+              "both_in": 23,
+              "both_out": 136
+            },
+            "top5": {
+              "flip_rate_pct": 6.25,
+              "n_flips": 10,
+              "male_form_in_only": 10,
+              "female_form_in_only": 0,
+              "net_male_advantage": 10,
+              "both_in": 37,
+              "both_out": 113
+            },
+            "top10": {
+              "flip_rate_pct": 9.375,
+              "n_flips": 15,
+              "male_form_in_only": 14,
+              "female_form_in_only": 1,
+              "net_male_advantage": 13,
+              "both_in": 74,
+              "both_out": 71
+            },
+            "score_gap": {
+              "mean_delta_male_minus_female": 0.03271,
+              "mean_abs_delta": 0.036089,
+              "pct_male_favored": 87.5,
+              "pct_tie": 5.0,
+              "pct_female_favored": 7.5,
+              "tie_aware_pct_male": 90.0
+            },
+            "mean_rank_male": 9.775,
+            "mean_rank_female": 11.2
+          },
+          "BPO": {
+            "n": 160,
+            "top3": {
+              "flip_rate_pct": 3.125,
+              "n_flips": 5,
+              "male_form_in_only": 4,
+              "female_form_in_only": 1,
+              "net_male_advantage": 3,
+              "both_in": 22,
+              "both_out": 133
+            },
+            "top5": {
+              "flip_rate_pct": 1.875,
+              "n_flips": 3,
+              "male_form_in_only": 3,
+              "female_form_in_only": 0,
+              "net_male_advantage": 3,
+              "both_in": 39,
+              "both_out": 118
+            },
+            "top10": {
+              "flip_rate_pct": 6.875,
+              "n_flips": 11,
+              "male_form_in_only": 9,
+              "female_form_in_only": 2,
+              "net_male_advantage": 7,
+              "both_in": 76,
+              "both_out": 73
+            },
+            "score_gap": {
+              "mean_delta_male_minus_female": 0.011041,
+              "mean_abs_delta": 0.016423,
+              "pct_male_favored": 67.5,
+              "pct_tie": 15.0,
+              "pct_female_favored": 17.5,
+              "tie_aware_pct_male": 75.0
+            },
+            "mean_rank_male": 10.2406,
+            "mean_rank_female": 10.6719
+          },
+          "BUSINESS-DEVELOPMENT": {
+            "n": 160,
+            "top3": {
+              "flip_rate_pct": 3.75,
+              "n_flips": 6,
+              "male_form_in_only": 4,
+              "female_form_in_only": 2,
+              "net_male_advantage": 2,
+              "both_in": 20,
+              "both_out": 134
+            },
+            "top5": {
+              "flip_rate_pct": 4.375,
+              "n_flips": 7,
+              "male_form_in_only": 6,
+              "female_form_in_only": 1,
+              "net_male_advantage": 5,
+              "both_in": 36,
+              "both_out": 117
+            },
+            "top10": {
+              "flip_rate_pct": 5.0,
+              "n_flips": 8,
+              "male_form_in_only": 8,
+              "female_form_in_only": 0,
+              "net_male_advantage": 8,
+              "both_in": 75,
+              "both_out": 77
+            },
+            "score_gap": {
+              "mean_delta_male_minus_female": 0.011201,
+              "mean_abs_delta": 0.013357,
+              "pct_male_favored": 86.25,
+              "pct_tie": 3.75,
+              "pct_female_favored": 10.0,
+              "tie_aware_pct_male": 88.12
+            },
+            "mean_rank_male": 10.1813,
+            "mean_rank_female": 10.9125
+          },
+          "CHEF": {
+            "n": 160,
+            "top3": {
+              "flip_rate_pct": 2.5,
+              "n_flips": 4,
+              "male_form_in_only": 3,
+              "female_form_in_only": 1,
+              "net_male_advantage": 2,
+              "both_in": 23,
+              "both_out": 133
+            },
+            "top5": {
+              "flip_rate_pct": 0.0,
+              "n_flips": 0,
+              "male_form_in_only": 0,
+              "female_form_in_only": 0,
+              "net_male_advantage": 0,
+              "both_in": 40,
+              "both_out": 120
+            },
+            "top10": {
+              "flip_rate_pct": 3.75,
+              "n_flips": 6,
+              "male_form_in_only": 6,
+              "female_form_in_only": 0,
+              "net_male_advantage": 6,
+              "both_in": 78,
+              "both_out": 76
+            },
+            "score_gap": {
+              "mean_delta_male_minus_female": 0.010606,
+              "mean_abs_delta": 0.029077,
+              "pct_male_favored": 60.0,
+              "pct_tie": 7.5,
+              "pct_female_favored": 32.5,
+              "tie_aware_pct_male": 63.75
+            },
+            "mean_rank_male": 10.3125,
+            "mean_rank_female": 10.5125
+          },
+          "CONSTRUCTION": {
+            "n": 160,
+            "top3": {
+              "flip_rate_pct": 0.625,
+              "n_flips": 1,
+              "male_form_in_only": 0,
+              "female_form_in_only": 1,
+              "net_male_advantage": -1,
+              "both_in": 24,
+              "both_out": 135
+            },
+            "top5": {
+              "flip_rate_pct": 2.5,
+              "n_flips": 4,
+              "male_form_in_only": 4,
+              "female_form_in_only": 0,
+              "net_male_advantage": 4,
+              "both_in": 37,
+              "both_out": 119
+            },
+            "top10": {
+              "flip_rate_pct": 7.5,
+              "n_flips": 12,
+              "male_form_in_only": 12,
+              "female_form_in_only": 0,
+              "net_male_advantage": 12,
+              "both_in": 77,
+              "both_out": 71
+            },
+            "score_gap": {
+              "mean_delta_male_minus_female": 0.0173,
+              "mean_abs_delta": 0.017477,
+              "pct_male_favored": 89.38,
+              "pct_tie": 3.12,
+              "pct_female_favored": 7.5,
+              "tie_aware_pct_male": 90.94
+            },
+            "mean_rank_male": 9.7688,
+            "mean_rank_female": 10.9094
+          },
+          "CONSULTANT": {
+            "n": 160,
+            "top3": {
+              "flip_rate_pct": 3.125,
+              "n_flips": 5,
+              "male_form_in_only": 4,
+              "female_form_in_only": 1,
+              "net_male_advantage": 3,
+              "both_in": 22,
+              "both_out": 133
+            },
+            "top5": {
+              "flip_rate_pct": 5.0,
+              "n_flips": 8,
+              "male_form_in_only": 7,
+              "female_form_in_only": 1,
+              "net_male_advantage": 6,
+              "both_in": 37,
+              "both_out": 115
+            },
+            "top10": {
+              "flip_rate_pct": 13.125,
+              "n_flips": 21,
+              "male_form_in_only": 17,
+              "female_form_in_only": 4,
+              "net_male_advantage": 13,
+              "both_in": 71,
+              "both_out": 68
+            },
+            "score_gap": {
+              "mean_delta_male_minus_female": 0.005928,
+              "mean_abs_delta": 0.010602,
+              "pct_male_favored": 60.62,
+              "pct_tie": 13.12,
+              "pct_female_favored": 26.25,
+              "tie_aware_pct_male": 67.19
+            },
+            "mean_rank_male": 10.0656,
+            "mean_rank_female": 10.7656
+          },
+          "DESIGNER": {
+            "n": 160,
+            "top3": {
+              "flip_rate_pct": 3.125,
+              "n_flips": 5,
+              "male_form_in_only": 4,
+              "female_form_in_only": 1,
+              "net_male_advantage": 3,
+              "both_in": 20,
+              "both_out": 135
+            },
+            "top5": {
+              "flip_rate_pct": 2.5,
+              "n_flips": 4,
+              "male_form_in_only": 1,
+              "female_form_in_only": 3,
+              "net_male_advantage": -2,
+              "both_in": 38,
+              "both_out": 118
+            },
+            "top10": {
+              "flip_rate_pct": 5.0,
+              "n_flips": 8,
+              "male_form_in_only": 6,
+              "female_form_in_only": 2,
+              "net_male_advantage": 4,
+              "both_in": 76,
+              "both_out": 76
+            },
+            "score_gap": {
+              "mean_delta_male_minus_female": 0.007104,
+              "mean_abs_delta": 0.01096,
+              "pct_male_favored": 65.62,
+              "pct_tie": 9.38,
+              "pct_female_favored": 25.0,
+              "tie_aware_pct_male": 70.31
+            },
+            "mean_rank_male": 10.275,
+            "mean_rank_female": 10.825
+          },
+          "DIGITAL-MEDIA": {
+            "n": 160,
+            "top3": {
+              "flip_rate_pct": 0.0,
+              "n_flips": 0,
+              "male_form_in_only": 0,
+              "female_form_in_only": 0,
+              "net_male_advantage": 0,
+              "both_in": 24,
+              "both_out": 136
+            },
+            "top5": {
+              "flip_rate_pct": 4.375,
+              "n_flips": 7,
+              "male_form_in_only": 5,
+              "female_form_in_only": 2,
+              "net_male_advantage": 3,
+              "both_in": 36,
+              "both_out": 117
+            },
+            "top10": {
+              "flip_rate_pct": 2.5,
+              "n_flips": 4,
+              "male_form_in_only": 3,
+              "female_form_in_only": 1,
+              "net_male_advantage": 2,
+              "both_in": 76,
+              "both_out": 80
+            },
+            "score_gap": {
+              "mean_delta_male_minus_female": 0.002093,
+              "mean_abs_delta": 0.020617,
+              "pct_male_favored": 45.0,
+              "pct_tie": 13.12,
+              "pct_female_favored": 41.88,
+              "tie_aware_pct_male": 51.56
+            },
+            "mean_rank_male": 10.4437,
+            "mean_rank_female": 10.5469
+          },
+          "ENGINEERING": {
+            "n": 160,
+            "top3": {
+              "flip_rate_pct": 5.0,
+              "n_flips": 8,
+              "male_form_in_only": 8,
+              "female_form_in_only": 0,
+              "net_male_advantage": 8,
+              "both_in": 20,
+              "both_out": 132
+            },
+            "top5": {
+              "flip_rate_pct": 8.75,
+              "n_flips": 14,
+              "male_form_in_only": 14,
+              "female_form_in_only": 0,
+              "net_male_advantage": 14,
+              "both_in": 30,
+              "both_out": 116
+            },
+            "top10": {
+              "flip_rate_pct": 15.625,
+              "n_flips": 25,
+              "male_form_in_only": 25,
+              "female_form_in_only": 0,
+              "net_male_advantage": 25,
+              "both_in": 67,
+              "both_out": 68
+            },
+            "score_gap": {
+              "mean_delta_male_minus_female": 0.005922,
+              "mean_abs_delta": 0.00615,
+              "pct_male_favored": 88.75,
+              "pct_tie": 6.25,
+              "pct_female_favored": 5.0,
+              "tie_aware_pct_male": 91.88
+            },
+            "mean_rank_male": 9.6813,
+            "mean_rank_female": 11.6469
+          },
+          "FINANCE": {
+            "n": 160,
+            "top3": {
+              "flip_rate_pct": 3.75,
+              "n_flips": 6,
+              "male_form_in_only": 3,
+              "female_form_in_only": 3,
+              "net_male_advantage": 0,
+              "both_in": 20,
+              "both_out": 134
+            },
+            "top5": {
+              "flip_rate_pct": 8.125,
+              "n_flips": 13,
+              "male_form_in_only": 9,
+              "female_form_in_only": 4,
+              "net_male_advantage": 5,
+              "both_in": 34,
+              "both_out": 113
+            },
+            "top10": {
+              "flip_rate_pct": 6.875,
+              "n_flips": 11,
+              "male_form_in_only": 9,
+              "female_form_in_only": 2,
+              "net_male_advantage": 7,
+              "both_in": 72,
+              "both_out": 77
+            },
+            "score_gap": {
+              "mean_delta_male_minus_female": 0.010354,
+              "mean_abs_delta": 0.014208,
+              "pct_male_favored": 71.25,
+              "pct_tie": 11.25,
+              "pct_female_favored": 17.5,
+              "tie_aware_pct_male": 76.88
+            },
+            "mean_rank_male": 10.1469,
+            "mean_rank_female": 10.9187
+          },
+          "FITNESS": {
+            "n": 160,
+            "top3": {
+              "flip_rate_pct": 1.875,
+              "n_flips": 3,
+              "male_form_in_only": 3,
+              "female_form_in_only": 0,
+              "net_male_advantage": 3,
+              "both_in": 22,
+              "both_out": 135
+            },
+            "top5": {
+              "flip_rate_pct": 4.375,
+              "n_flips": 7,
+              "male_form_in_only": 5,
+              "female_form_in_only": 2,
+              "net_male_advantage": 3,
+              "both_in": 36,
+              "both_out": 117
+            },
+            "top10": {
+              "flip_rate_pct": 8.125,
+              "n_flips": 13,
+              "male_form_in_only": 7,
+              "female_form_in_only": 6,
+              "net_male_advantage": 1,
+              "both_in": 72,
+              "both_out": 75
+            },
+            "score_gap": {
+              "mean_delta_male_minus_female": 0.006764,
+              "mean_abs_delta": 0.03058,
+              "pct_male_favored": 51.88,
+              "pct_tie": 9.38,
+              "pct_female_favored": 38.75,
+              "tie_aware_pct_male": 56.56
+            },
+            "mean_rank_male": 10.4313,
+            "mean_rank_female": 10.5531
+          },
+          "HEALTHCARE": {
+            "n": 160,
+            "top3": {
+              "flip_rate_pct": 2.5,
+              "n_flips": 4,
+              "male_form_in_only": 4,
+              "female_form_in_only": 0,
+              "net_male_advantage": 4,
+              "both_in": 23,
+              "both_out": 133
+            },
+            "top5": {
+              "flip_rate_pct": 6.875,
+              "n_flips": 11,
+              "male_form_in_only": 11,
+              "female_form_in_only": 0,
+              "net_male_advantage": 11,
+              "both_in": 34,
+              "both_out": 115
+            },
+            "top10": {
+              "flip_rate_pct": 6.875,
+              "n_flips": 11,
+              "male_form_in_only": 11,
+              "female_form_in_only": 0,
+              "net_male_advantage": 11,
+              "both_in": 75,
+              "both_out": 74
+            },
+            "score_gap": {
+              "mean_delta_male_minus_female": 0.01023,
+              "mean_abs_delta": 0.011592,
+              "pct_male_favored": 81.25,
+              "pct_tie": 8.75,
+              "pct_female_favored": 10.0,
+              "tie_aware_pct_male": 85.62
+            },
+            "mean_rank_male": 10.0062,
+            "mean_rank_female": 10.9906
+          },
+          "HR": {
+            "n": 160,
+            "top3": {
+              "flip_rate_pct": 1.875,
+              "n_flips": 3,
+              "male_form_in_only": 2,
+              "female_form_in_only": 1,
+              "net_male_advantage": 1,
+              "both_in": 21,
+              "both_out": 136
+            },
+            "top5": {
+              "flip_rate_pct": 3.125,
+              "n_flips": 5,
+              "male_form_in_only": 5,
+              "female_form_in_only": 0,
+              "net_male_advantage": 5,
+              "both_in": 37,
+              "both_out": 118
+            },
+            "top10": {
+              "flip_rate_pct": 5.0,
+              "n_flips": 8,
+              "male_form_in_only": 6,
+              "female_form_in_only": 2,
+              "net_male_advantage": 4,
+              "both_in": 75,
+              "both_out": 77
+            },
+            "score_gap": {
+              "mean_delta_male_minus_female": 0.00351,
+              "mean_abs_delta": 0.005497,
+              "pct_male_favored": 65.62,
+              "pct_tie": 9.38,
+              "pct_female_favored": 25.0,
+              "tie_aware_pct_male": 70.31
+            },
+            "mean_rank_male": 10.3938,
+            "mean_rank_female": 10.7531
+          },
+          "INFORMATION-TECHNOLOGY": {
+            "n": 160,
+            "top3": {
+              "flip_rate_pct": 8.125,
+              "n_flips": 13,
+              "male_form_in_only": 12,
+              "female_form_in_only": 1,
+              "net_male_advantage": 11,
+              "both_in": 19,
+              "both_out": 128
+            },
+            "top5": {
+              "flip_rate_pct": 6.25,
+              "n_flips": 10,
+              "male_form_in_only": 10,
+              "female_form_in_only": 0,
+              "net_male_advantage": 10,
+              "both_in": 37,
+              "both_out": 113
+            },
+            "top10": {
+              "flip_rate_pct": 9.375,
+              "n_flips": 15,
+              "male_form_in_only": 15,
+              "female_form_in_only": 0,
+              "net_male_advantage": 15,
+              "both_in": 72,
+              "both_out": 73
+            },
+            "score_gap": {
+              "mean_delta_male_minus_female": 0.006984,
+              "mean_abs_delta": 0.007283,
+              "pct_male_favored": 84.38,
+              "pct_tie": 6.88,
+              "pct_female_favored": 8.75,
+              "tie_aware_pct_male": 87.81
+            },
+            "mean_rank_male": 9.7094,
+            "mean_rank_female": 11.1219
+          },
+          "PUBLIC-RELATIONS": {
+            "n": 160,
+            "top3": {
+              "flip_rate_pct": 1.875,
+              "n_flips": 3,
+              "male_form_in_only": 1,
+              "female_form_in_only": 2,
+              "net_male_advantage": -1,
+              "both_in": 22,
+              "both_out": 135
+            },
+            "top5": {
+              "flip_rate_pct": 1.25,
+              "n_flips": 2,
+              "male_form_in_only": 2,
+              "female_form_in_only": 0,
+              "net_male_advantage": 2,
+              "both_in": 40,
+              "both_out": 118
+            },
+            "top10": {
+              "flip_rate_pct": 4.375,
+              "n_flips": 7,
+              "male_form_in_only": 4,
+              "female_form_in_only": 3,
+              "net_male_advantage": 1,
+              "both_in": 75,
+              "both_out": 78
+            },
+            "score_gap": {
+              "mean_delta_male_minus_female": -0.000778,
+              "mean_abs_delta": 0.011792,
+              "pct_male_favored": 48.75,
+              "pct_tie": 15.62,
+              "pct_female_favored": 35.62,
+              "tie_aware_pct_male": 56.56
+            },
+            "mean_rank_male": 10.4469,
+            "mean_rank_female": 10.6062
+          },
+          "SALES": {
+            "n": 160,
+            "top3": {
+              "flip_rate_pct": 6.25,
+              "n_flips": 10,
+              "male_form_in_only": 10,
+              "female_form_in_only": 0,
+              "net_male_advantage": 10,
+              "both_in": 16,
+              "both_out": 134
+            },
+            "top5": {
+              "flip_rate_pct": 6.875,
+              "n_flips": 11,
+              "male_form_in_only": 10,
+              "female_form_in_only": 1,
+              "net_male_advantage": 9,
+              "both_in": 36,
+              "both_out": 113
+            },
+            "top10": {
+              "flip_rate_pct": 10.0,
+              "n_flips": 16,
+              "male_form_in_only": 15,
+              "female_form_in_only": 1,
+              "net_male_advantage": 14,
+              "both_in": 72,
+              "both_out": 72
+            },
+            "score_gap": {
+              "mean_delta_male_minus_female": 0.011859,
+              "mean_abs_delta": 0.013277,
+              "pct_male_favored": 83.75,
+              "pct_tie": 8.75,
+              "pct_female_favored": 7.5,
+              "tie_aware_pct_male": 88.12
+            },
+            "mean_rank_male": 10.025,
+            "mean_rank_female": 11.0813
+          },
+          "TEACHER": {
+            "n": 160,
+            "top3": {
+              "flip_rate_pct": 2.5,
+              "n_flips": 4,
+              "male_form_in_only": 4,
+              "female_form_in_only": 0,
+              "net_male_advantage": 4,
+              "both_in": 23,
+              "both_out": 133
+            },
+            "top5": {
+              "flip_rate_pct": 2.5,
+              "n_flips": 4,
+              "male_form_in_only": 3,
+              "female_form_in_only": 1,
+              "net_male_advantage": 2,
+              "both_in": 38,
+              "both_out": 118
+            },
+            "top10": {
+              "flip_rate_pct": 6.25,
+              "n_flips": 10,
+              "male_form_in_only": 6,
+              "female_form_in_only": 4,
+              "net_male_advantage": 2,
+              "both_in": 73,
+              "both_out": 77
+            },
+            "score_gap": {
+              "mean_delta_male_minus_female": 0.000629,
+              "mean_abs_delta": 0.022601,
+              "pct_male_favored": 57.5,
+              "pct_tie": 10.0,
+              "pct_female_favored": 32.5,
+              "tie_aware_pct_male": 62.5
+            },
+            "mean_rank_male": 10.4375,
+            "mean_rank_female": 10.6781
+          }
+        },
+        "on_category_focal": {
+          "n": 1091,
+          "top3": {
+            "flip_rate_pct": 6.416,
+            "n_flips": 70,
+            "male_form_in_only": 55,
+            "female_form_in_only": 15,
+            "net_male_advantage": 40,
+            "both_in": 371,
+            "both_out": 650
+          },
+          "top5": {
+            "flip_rate_pct": 7.058,
+            "n_flips": 77,
+            "male_form_in_only": 67,
+            "female_form_in_only": 10,
+            "net_male_advantage": 57,
+            "both_in": 576,
+            "both_out": 438
+          },
+          "top10": {
+            "flip_rate_pct": 5.225,
+            "n_flips": 57,
+            "male_form_in_only": 54,
+            "female_form_in_only": 3,
+            "net_male_advantage": 51,
+            "both_in": 866,
+            "both_out": 168
+          },
+          "score_gap": {
+            "mean_delta_male_minus_female": 0.00705,
+            "mean_abs_delta": 0.009726,
+            "pct_male_favored": 70.49,
+            "pct_tie": 11.37,
+            "pct_female_favored": 18.15,
+            "tie_aware_pct_male": 76.17
+          },
+          "mean_rank_male": 5.8405,
+          "mean_rank_female": 6.4597
+        },
+        "off_category_focal": {
+          "n": 2749,
+          "top3": {
+            "flip_rate_pct": 2.292,
+            "n_flips": 63,
+            "male_form_in_only": 59,
+            "female_form_in_only": 4,
+            "net_male_advantage": 55,
+            "both_in": 135,
+            "both_out": 2551
+          },
+          "top5": {
+            "flip_rate_pct": 4.474,
+            "n_flips": 123,
+            "male_form_in_only": 113,
+            "female_form_in_only": 10,
+            "net_male_advantage": 103,
+            "both_in": 287,
+            "both_out": 2339
+          },
+          "top10": {
+            "flip_rate_pct": 9.349,
+            "n_flips": 257,
+            "male_form_in_only": 223,
+            "female_form_in_only": 34,
+            "net_male_advantage": 189,
+            "both_in": 889,
+            "both_out": 1603
+          },
+          "score_gap": {
+            "mean_delta_male_minus_female": 0.015622,
+            "mean_abs_delta": 0.023411,
+            "pct_male_favored": 73.66,
+            "pct_tie": 7.71,
+            "pct_female_favored": 18.62,
+            "tie_aware_pct_male": 77.52
+          },
+          "mean_rank_male": 11.7585,
+          "mean_rank_female": 12.7095
+        },
+        "by_mode": {
+          "inject": {
+            "n": 3840,
+            "top3": {
+              "flip_rate_pct": 3.464,
+              "n_flips": 133,
+              "male_form_in_only": 114,
+              "female_form_in_only": 19,
+              "net_male_advantage": 95,
+              "both_in": 506,
+              "both_out": 3201
+            },
+            "top5": {
+              "flip_rate_pct": 5.208,
+              "n_flips": 200,
+              "male_form_in_only": 180,
+              "female_form_in_only": 20,
+              "net_male_advantage": 160,
+              "both_in": 863,
+              "both_out": 2777
+            },
+            "top10": {
+              "flip_rate_pct": 8.177,
+              "n_flips": 314,
+              "male_form_in_only": 277,
+              "female_form_in_only": 37,
+              "net_male_advantage": 240,
+              "both_in": 1755,
+              "both_out": 1771
+            },
+            "score_gap": {
+              "mean_delta_male_minus_female": 0.013186,
+              "mean_abs_delta": 0.019523,
+              "pct_male_favored": 72.76,
+              "pct_tie": 8.75,
+              "pct_female_favored": 18.49,
+              "tie_aware_pct_male": 77.14
+            },
+            "mean_rank_male": 10.0771,
+            "mean_rank_female": 10.9339
+          }
+        },
+        "marker_in_scored_window": {
+          "n": 3840,
+          "top3": {
+            "flip_rate_pct": 3.464,
+            "n_flips": 133,
+            "male_form_in_only": 114,
+            "female_form_in_only": 19,
+            "net_male_advantage": 95,
+            "both_in": 506,
+            "both_out": 3201
+          },
+          "top5": {
+            "flip_rate_pct": 5.208,
+            "n_flips": 200,
+            "male_form_in_only": 180,
+            "female_form_in_only": 20,
+            "net_male_advantage": 160,
+            "both_in": 863,
+            "both_out": 2777
+          },
+          "top10": {
+            "flip_rate_pct": 8.177,
+            "n_flips": 314,
+            "male_form_in_only": 277,
+            "female_form_in_only": 37,
+            "net_male_advantage": 240,
+            "both_in": 1755,
+            "both_out": 1771
+          },
+          "score_gap": {
+            "mean_delta_male_minus_female": 0.013186,
+            "mean_abs_delta": 0.019523,
+            "pct_male_favored": 72.76,
+            "pct_tie": 8.75,
+            "pct_female_favored": 18.49,
+            "tie_aware_pct_male": 77.14
+          },
+          "mean_rank_male": 10.0771,
+          "mean_rank_female": 10.9339
+        },
+        "marker_outside_scored_window": {
+          "n": 0
+        },
+        "marker_in_token_window": {
+          "n": 3840,
+          "top3": {
+            "flip_rate_pct": 3.464,
+            "n_flips": 133,
+            "male_form_in_only": 114,
+            "female_form_in_only": 19,
+            "net_male_advantage": 95,
+            "both_in": 506,
+            "both_out": 3201
+          },
+          "top5": {
+            "flip_rate_pct": 5.208,
+            "n_flips": 200,
+            "male_form_in_only": 180,
+            "female_form_in_only": 20,
+            "net_male_advantage": 160,
+            "both_in": 863,
+            "both_out": 2777
+          },
+          "top10": {
+            "flip_rate_pct": 8.177,
+            "n_flips": 314,
+            "male_form_in_only": 277,
+            "female_form_in_only": 37,
+            "net_male_advantage": 240,
+            "both_in": 1755,
+            "both_out": 1771
+          },
+          "score_gap": {
+            "mean_delta_male_minus_female": 0.013186,
+            "mean_abs_delta": 0.019523,
+            "pct_male_favored": 72.76,
+            "pct_tie": 8.75,
+            "pct_female_favored": 18.49,
+            "tie_aware_pct_male": 77.14
+          },
+          "mean_rank_male": 10.0771,
+          "mean_rank_female": 10.9339
+        },
+        "marker_outside_token_window": {
+          "n": 0
+        },
+        "by_gender_source": {
+          "inject": {
+            "n": 3335,
+            "top3": {
+              "flip_rate_pct": 3.538,
+              "n_flips": 118,
+              "male_form_in_only": 100,
+              "female_form_in_only": 18,
+              "net_male_advantage": 82,
+              "both_in": 446,
+              "both_out": 2771
+            },
+            "top5": {
+              "flip_rate_pct": 5.097,
+              "n_flips": 170,
+              "male_form_in_only": 154,
+              "female_form_in_only": 16,
+              "net_male_advantage": 138,
+              "both_in": 752,
+              "both_out": 2413
+            },
+            "top10": {
+              "flip_rate_pct": 8.426,
+              "n_flips": 281,
+              "male_form_in_only": 248,
+              "female_form_in_only": 33,
+              "net_male_advantage": 215,
+              "both_in": 1529,
+              "both_out": 1525
+            },
+            "score_gap": {
+              "mean_delta_male_minus_female": 0.013116,
+              "mean_abs_delta": 0.019266,
+              "pct_male_favored": 73.01,
+              "pct_tie": 8.64,
+              "pct_female_favored": 18.35,
+              "tie_aware_pct_male": 77.33
+            },
+            "mean_rank_male": 10.0076,
+            "mean_rank_female": 10.8729
+          },
+          "name": {
+            "n": 474,
+            "top3": {
+              "flip_rate_pct": 3.165,
+              "n_flips": 15,
+              "male_form_in_only": 14,
+              "female_form_in_only": 1,
+              "net_male_advantage": 13,
+              "both_in": 58,
+              "both_out": 401
+            },
+            "top5": {
+              "flip_rate_pct": 6.329,
+              "n_flips": 30,
+              "male_form_in_only": 26,
+              "female_form_in_only": 4,
+              "net_male_advantage": 22,
+              "both_in": 106,
+              "both_out": 338
+            },
+            "top10": {
+              "flip_rate_pct": 6.118,
+              "n_flips": 29,
+              "male_form_in_only": 25,
+              "female_form_in_only": 4,
+              "net_male_advantage": 21,
+              "both_in": 214,
+              "both_out": 231
+            },
+            "score_gap": {
+              "mean_delta_male_minus_female": 0.014035,
+              "mean_abs_delta": 0.021123,
+              "pct_male_favored": 71.94,
+              "pct_tie": 9.49,
+              "pct_female_favored": 18.57,
+              "tie_aware_pct_male": 76.69
+            },
+            "mean_rank_male": 10.5042,
+            "mean_rank_female": 11.3017
+          },
+          "pronoun": {
+            "n": 31,
+            "top3": {
+              "flip_rate_pct": 0.0,
+              "n_flips": 0,
+              "male_form_in_only": 0,
+              "female_form_in_only": 0,
+              "net_male_advantage": 0,
+              "both_in": 2,
+              "both_out": 29
+            },
+            "top5": {
+              "flip_rate_pct": 0.0,
+              "n_flips": 0,
+              "male_form_in_only": 0,
+              "female_form_in_only": 0,
+              "net_male_advantage": 0,
+              "both_in": 5,
+              "both_out": 26
+            },
+            "top10": {
+              "flip_rate_pct": 12.903,
+              "n_flips": 4,
+              "male_form_in_only": 4,
+              "female_form_in_only": 0,
+              "net_male_advantage": 4,
+              "both_in": 12,
+              "both_out": 15
+            },
+            "score_gap": {
+              "mean_delta_male_minus_female": 0.007793,
+              "mean_abs_delta": 0.022697,
+              "pct_male_favored": 58.06,
+              "pct_tie": 9.68,
+              "pct_female_favored": 32.26,
+              "tie_aware_pct_male": 62.9
+            },
+            "mean_rank_male": 11.0161,
+            "mean_rank_female": 11.871
+          }
+        }
+      },
+      "legacy_average_rank_rule": {
+        "rule": "in top-k iff average rank <= k (can select != k at a tied cutoff)",
+        "overall": {
+          "n": 3840,
+          "top3": {
+            "flip_rate_pct": 3.281,
+            "n_flips": 126,
+            "male_form_in_only": 109,
+            "female_form_in_only": 17,
+            "net_male_advantage": 92,
+            "both_in": 486,
+            "both_out": 3228
+          },
+          "top5": {
+            "flip_rate_pct": 4.818,
+            "n_flips": 185,
+            "male_form_in_only": 169,
+            "female_form_in_only": 16,
+            "net_male_advantage": 153,
+            "both_in": 850,
+            "both_out": 2805
+          },
+          "top10": {
+            "flip_rate_pct": 8.281,
+            "n_flips": 318,
+            "male_form_in_only": 280,
+            "female_form_in_only": 38,
+            "net_male_advantage": 242,
+            "both_in": 1721,
+            "both_out": 1801
+          }
+        }
+      },
+      "cutoff_ties": {
+        "top3": {
+          "n_scorings": 7680,
+          "n_scorings_with_tie_at_cutoff": 1070,
+          "pct_scorings_with_tie_at_cutoff": 13.932,
+          "n_comparisons_with_tie_at_cutoff_in_either_form": 588,
+          "n_comparisons_focal_in_cutoff_tie_in_either_form": 100,
+          "n_pools_with_any_cutoff_tie": 64,
+          "legacy_rule_shortlist_size_counts": {
+            "2": 1029,
+            "3": 6610,
+            "4": 41
+          },
+          "n_comparisons_flip_status_differs_from_legacy": 51
+        },
+        "top5": {
+          "n_scorings": 7680,
+          "n_scorings_with_tie_at_cutoff": 1084,
+          "pct_scorings_with_tie_at_cutoff": 14.115,
+          "n_comparisons_with_tie_at_cutoff_in_either_form": 612,
+          "n_comparisons_focal_in_cutoff_tie_in_either_form": 116,
+          "n_pools_with_any_cutoff_tie": 77,
+          "legacy_rule_shortlist_size_counts": {
+            "4": 930,
+            "5": 6596,
+            "6": 154
+          },
+          "n_comparisons_flip_status_differs_from_legacy": 47
+        },
+        "top10": {
+          "n_scorings": 7680,
+          "n_scorings_with_tie_at_cutoff": 1061,
+          "pct_scorings_with_tie_at_cutoff": 13.815,
+          "n_comparisons_with_tie_at_cutoff_in_either_form": 629,
+          "n_comparisons_focal_in_cutoff_tie_in_either_form": 152,
+          "n_pools_with_any_cutoff_tie": 110,
+          "legacy_rule_shortlist_size_counts": {
+            "8": 1,
+            "9": 907,
+            "10": 6619,
+            "11": 153
+          },
+          "n_comparisons_flip_status_differs_from_legacy": 68
+        }
+      },
+      "token_window": {
+        "tokenizer_model_max_length": 8192,
+        "n_comparisons": 3840,
+        "n_marker_outside_token_window": 0,
+        "n_marker_outside_token_window_by_mode": {},
+        "n_distinct_query_resume_pairs_outside": 0
+      },
+      "rows": null,
+      "rows_file": "results/length_pronoun/mxbai-large-v2_w150_line_rows.json.gz"
+    }
+  },
+  "wall_seconds": 181.9
+}

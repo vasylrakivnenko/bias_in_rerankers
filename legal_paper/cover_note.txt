@@ -1,0 +1,16 @@
+Dear Editors,
+
+I am submitting my working paper, "Gender Bias in Automated Hiring -- the Case for De-Identification," for your consideration.
+
+The paper audits 14 commercial and open-source neural re-rankers -- the component that gives final ranking to a pool of retrieved resumes -- using counterfactual pairs that differ only in candidate name and pronouns. All 14 models favor male-named candidates more often on male-typed jobs than female-typed ones, and in a simulated pipeline this compounds into a shortlist skew that would fail the four-fifths selection-ratio test used by federal enforcement agencies. I connect this to Title VII disparate-impact doctrine's "less discriminatory alternative" requirement, test de-identification as a candidate alternative, and audit what re-rankers' own vendor documentation discloses about hiring-related risk.
+
+This is a short, data-driven piece -- approximately 7,000 words including footnotes and bibliography (about 6,100 words excluding the bibliography) -- written to be legible to a non-specialist reader while resting on a fully reproducible empirical pipeline. The dataset generator, model scores, pipeline simulation, and de-identification code are publicly available at https://github.com/vasylrakivnenko/bias_in_rerankers.
+
+This builds on my prior work on bias in text embedding models (arXiv:2406.12138) and on Houser's Can AI Solve the Diversity Problem in the Tech Industry? (22 Stan. Tech. L. Rev. 290 (2019)), extending that inquiry to the re-ranking stage specifically, which prior audits of hiring AI have not examined.
+
+I would be glad to send the full manuscript or answer any questions. Thank you for your consideration.
+
+Sincerely,
+Vasyl Rakivnenko
+Stanford Law School
+vasyl@stanford.edu
