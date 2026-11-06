@@ -3110,7 +3110,190 @@
     "needs": "Owner-label hand check (2026-10-26): disagreements (all checker applicant vs model not, all settled for the model on a second look; checked)."
   },
   "RELEASE_TAG": {
-    "literal": "arxiv-v3.1",
-    "needs": "Owner-label hand check (2026-10-26): git tag this manuscript corresponds to (arxiv-v3 plus the hand check). The tag must be created when this round is committed; until then the statement is not true."
+    "literal": "arxiv-v3.2",
+    "needs": "Review round 7 (2026-11-05): git tag this manuscript corresponds to (arxiv-v3.1 plus the category-level headline and the whole-r\u00e9sum\u00e9 utility test). The tag must be created when this round is committed; until then the statement is not true."
+  },
+  "WR_CAT_N_PAT_KEEP": {
+    "file": "results/companion_whole_resume.json",
+    "path": "whole_resume.category_test.synthetic_pattern.n_male_direction",
+    "format": "d",
+    "needs": "Review round 7 (2026-11-03): of the rerankers with the synthetic pattern, those whose male-favored share falls significantly with the women's share across job categories (permutation test, categories as units): the headline count."
+  },
+  "WR_CAT_N_PAT_REVERSE": {
+    "file": "results/companion_whole_resume.json",
+    "path": "whole_resume.category_test.synthetic_pattern.n_female_direction",
+    "format": "d",
+    "needs": "Review round 7 (2026-11-03): of them, those whose male-favored share rises significantly with the women's share (reversals)."
+  },
+  "WR_CAT_PAT_KEEP_MIN": {
+    "file": "results/companion_whole_resume.json",
+    "path": "whole_resume.category_test.synthetic_pattern.male_direction_whole_min",
+    "format": ".1f",
+    "needs": "Review round 7 (2026-11-03): smallest whole-résumé M-F among the category-level keepers."
+  },
+  "WR_N_POOL_NOT_CAT": {
+    "file": "results/companion_whole_resume.json",
+    "path": "whole_resume.category_test.synthetic_pattern.n_pool_male_not_category",
+    "format": "d",
+    "needs": "Review round 7 (2026-11-03): rerankers that keep the pattern by the pool interval but not by the category-level test."
+  },
+  "WR_CONT_N_PERM": {
+    "file": "results/companion_whole_resume.json",
+    "path": "whole_resume.category_test.n_permutations",
+    "format": ",d",
+    "needs": "Review round 7 (2026-11-03): shuffles per reranker in the whole-résumé continuous check."
+  },
+  "UW_N_MODELS": {
+    "file": "results/utility_whole/summary.json",
+    "path": "n_models",
+    "format": "d",
+    "needs": "Review round 7 (2026-11-03): de-identification utility on whole résumés: rerankers scored."
+  },
+  "UW_N_SETS": {
+    "file": "results/utility_whole/summary.json",
+    "path": "design.n_sets",
+    "format": "d",
+    "needs": "Review round 7 (2026-11-03): de-identification utility on whole résumés: candidate sets."
+  },
+  "UW_N_QUERIES": {
+    "file": "results/utility_whole/summary.json",
+    "path": "design.n_queries",
+    "format": "d",
+    "needs": "Review round 7 (2026-11-03): de-identification utility on whole résumés: job queries."
+  },
+  "UW_SETS_PER_QUERY": {
+    "file": "results/utility_whole/summary.json",
+    "path": "design.sets_per_query",
+    "format": "d",
+    "needs": "Review round 7 (2026-11-03): de-identification utility on whole résumés: sets per query."
+  },
+  "UW_N_RELEVANT": {
+    "file": "results/utility_whole/summary.json",
+    "path": "design.n_relevant",
+    "format": "d",
+    "needs": "Review round 7 (2026-11-03): de-identification utility on whole résumés: résumés per set from the query's category."
+  },
+  "UW_N_OTHER": {
+    "file": "results/utility_whole/summary.json",
+    "path": "design.n_other",
+    "format": "d",
+    "needs": "Review round 7 (2026-11-03): de-identification utility on whole résumés: résumés per set from other categories."
+  },
+  "UW_N_RESUMES": {
+    "file": "results/utility_whole/summary.json",
+    "path": "n_resumes",
+    "format": ",d",
+    "needs": "Review round 7 (2026-11-03): de-identification utility on whole résumés: distinct résumés."
+  },
+  "UW_PCT_GIVEN_FOUND": {
+    "file": "results/utility_whole/summary.json",
+    "path": "pct_prepended_given_found",
+    "format": ".0f",
+    "needs": "Review round 7 (2026-11-03): de-identification utility on whole résumés: share of prepended given names the detector found on its own.",
+    "unit": "%"
+  },
+  "UW_PCT_SURNAME_FOUND": {
+    "file": "results/utility_whole/summary.json",
+    "path": "pct_prepended_surname_found",
+    "format": ".0f",
+    "needs": "Review round 7 (2026-11-03): de-identification utility on whole résumés: share of prepended surnames the detector found on its own.",
+    "unit": "%"
+  },
+  "UW_TOP1_ORIG_MIN": {
+    "file": "results/utility_whole/summary.json",
+    "path": "paper.top1_original_pct_min",
+    "format": ".0f",
+    "needs": "Review round 7 (2026-11-03): de-identification utility on whole résumés: lowest top-1 accuracy before the transform.",
+    "unit": "%"
+  },
+  "UW_TOP1_ORIG_MAX": {
+    "file": "results/utility_whole/summary.json",
+    "path": "paper.top1_original_pct_max",
+    "format": ".0f",
+    "needs": "Review round 7 (2026-11-03): de-identification utility on whole résumés: highest top-1 accuracy before the transform.",
+    "unit": "%"
+  },
+  "UW_TOP1_CHG_MIN": {
+    "file": "results/utility_whole/summary.json",
+    "path": "paper.top1_change_pts_min",
+    "format": ".1f",
+    "needs": "Review round 7 (2026-11-03): de-identification utility on whole résumés: most negative top-1 change, points."
+  },
+  "UW_TOP1_CHG_MAX": {
+    "file": "results/utility_whole/summary.json",
+    "path": "paper.top1_change_pts_max",
+    "format": ".1f",
+    "needs": "Review round 7 (2026-11-03): de-identification utility on whole résumés: most positive top-1 change, points."
+  },
+  "UW_TOP1_CI_MIN": {
+    "file": "results/utility_whole/summary.json",
+    "path": "paper.top1_ci_pts_min",
+    "format": ".1f",
+    "needs": "Review round 7 (2026-11-03): de-identification utility on whole résumés: lowest end of any top-1 change interval, points."
+  },
+  "UW_NDCG_OTHER_MAX": {
+    "file": "results/utility_whole/summary.json",
+    "path": "paper.ndcg_other_change_pts_max_abs",
+    "format": ".1f",
+    "needs": "Review round 7 (2026-11-03): de-identification utility on whole résumés: largest nDCG@10 change among the other rerankers, points (absolute)."
+  },
+  "UW_GTE_NDCG_LOSS": {
+    "expr": "-a",
+    "refs": {
+      "a": {
+        "file": "results/utility_whole/summary.json",
+        "path": "paper.ndcg_loss.change_pts"
+      }
+    },
+    "format": ".1f",
+    "needs": "Review round 7 (2026-11-03): de-identification utility on whole résumés: GTE ModernBERT's nDCG@10 loss, points."
+  },
+  "UW_GTE_NDCG_LOSS_LO": {
+    "expr": "-a",
+    "refs": {
+      "a": {
+        "file": "results/utility_whole/summary.json",
+        "path": "paper.ndcg_loss.ci_pts.1"
+      }
+    },
+    "format": ".1f",
+    "needs": "Review round 7 (2026-11-03): de-identification utility on whole résumés: its interval, smallest loss."
+  },
+  "UW_GTE_NDCG_LOSS_HI": {
+    "expr": "-a",
+    "refs": {
+      "a": {
+        "file": "results/utility_whole/summary.json",
+        "path": "paper.ndcg_loss.ci_pts.0"
+      }
+    },
+    "format": ".1f",
+    "needs": "Review round 7 (2026-11-03): de-identification utility on whole résumés: its interval, largest loss."
+  },
+  "TABLE_UTILITY_WHOLE": {
+    "tex_file": "results/tex/utility_whole.tex",
+    "needs": "Review round 7 (2026-11-03): de-identification utility on whole résumés: the per-reranker table (code/utility_whole_resume.py --summarize)."
+  },
+  "UW_PCT_GIVEN_MISSED": {
+    "expr": "100 - a",
+    "refs": {
+      "a": {
+        "file": "results/utility_whole/summary.json",
+        "path": "pct_prepended_given_found"
+      }
+    },
+    "format": ".0f",
+    "unit": "%",
+    "needs": "Review round 7 (2026-11-03): de-identification utility on whole résumés: share of prepended given names the detector missed on its own."
+  },
+  "UW_DATE_FIRST": {
+    "file": "results/utility_whole/summary.json",
+    "path": "paper.run_dates.first",
+    "needs": "Review round 7 (2026-11-03): first day a utility run was scored."
+  },
+  "UW_DATE_LAST": {
+    "file": "results/utility_whole/summary.json",
+    "path": "paper.run_dates.last",
+    "needs": "Review round 7 (2026-11-03): last day a utility run was scored (Cohere, 2026-11-05)."
   }
 }

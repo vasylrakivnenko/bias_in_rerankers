@@ -125,3 +125,4 @@ logs/
 code/runpod/id_ed25519*
 code/runpod/pod*.json
 code/runpod/milestones_seen.json
+results/utility_whole/canary_*

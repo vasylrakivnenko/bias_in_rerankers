@@ -332,7 +332,7 @@ def fig_deid():
                         edgecolor="white", linewidth=0.7)
                 left += val
             total = left - side_left
-            if total >= 7:
+            if total >= 6:
                 solid = first[0] if not first[1] else second[0]
                 ax.text(side_left + total / 2, y, f"{total:.0f}", ha="center", va="center",
                         fontsize=FONT_VALUE, color="white" if solid >= total / 2 else INK,

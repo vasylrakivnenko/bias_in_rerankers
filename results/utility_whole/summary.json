@@ -1,0 +1,303 @@
+{
+ "script_version": "utility_whole_resume.py v1.1",
+ "generated": "2026-11-05T17:01:38",
+ "design": {
+  "n_queries": 24,
+  "sets_per_query": 10,
+  "n_sets": 240,
+  "n_relevant": 3,
+  "n_other": 17,
+  "conditions": {
+   "original": "as written, with the prepended name",
+   "full": "the applicant's own (prepended) name and the person names dslim/bert-base-NER finds -> 'the candidate', gendered pronouns -> 'they', replacements in lowercase, the rest as written (deid_transforms.deidentify variant 'full', lowercase=False)"
+  },
+  "relevance": "a résumé is relevant iff its corpus category is the query's",
+  "metrics": "per set; ties at their average rank, top-1 credit shared among tied leaders",
+  "interval": "queries resampled (10,000 draws)",
+  "seed": 20260822
+ },
+ "n_resumes": 2127,
+ "detector": "dslim/bert-base-NER",
+ "detector_settings": {
+  "aggregation_strategy": "first",
+  "min_score": 0.8,
+  "min_chars": 3
+ },
+ "prepended_name_found_by_detector": {
+  "given": 1791,
+  "surname": 1782
+ },
+ "pct_prepended_given_found": 84.20310296191819,
+ "pct_prepended_surname_found": 83.77997179125529,
+ "n_models": 5,
+ "models": {
+  "voyage-rerank-3": {
+   "label": "Voyage: rerank-3",
+   "model": "rerank-3",
+   "metrics": {
+    "top1": {
+     "original": 0.7708333333333334,
+     "full": 0.7583333333333333,
+     "change": -0.012500000000000002,
+     "ci": [
+      -0.05000000000000001,
+      0.012500000000000002
+     ],
+     "n_sets_up": 1,
+     "n_sets_down": 4
+    },
+    "mrr": {
+     "original": 0.8590856481481481,
+     "full": 0.853083664021164,
+     "change": -0.006001984126984127,
+     "ci": [
+      -0.024653521825396832,
+      0.0059722222222222225
+     ],
+     "n_sets_up": 4,
+     "n_sets_down": 8
+    },
+    "ndcg@10": {
+     "original": 0.8199617092184592,
+     "full": 0.8197119054788744,
+     "change": -0.0002498037395848452,
+     "ci": [
+      -0.00860501505049777,
+      0.005118749676560333
+     ],
+     "n_sets_up": 26,
+     "n_sets_down": 19
+    }
+   },
+   "ledger": {
+    "n_requests": 480,
+    "n_failed_attempts": 0,
+    "billed": 11155127.0,
+    "warnings": {},
+    "n_coarse_responses": 0,
+    "n_requests_kept_coarse": 0
+   },
+   "n_coarse_scores": 0
+  },
+  "cohere-v5-pro": {
+   "label": "Cohere: v5 pro",
+   "model": "rerank-v5.0-pro",
+   "metrics": {
+    "top1": {
+     "original": 0.75,
+     "full": 0.7416666666666667,
+     "change": -0.008333333333333333,
+     "ci": [
+      -0.02916666666666667,
+      0.012500000000000002
+     ],
+     "n_sets_up": 2,
+     "n_sets_down": 4
+    },
+    "mrr": {
+     "original": 0.846574074074074,
+     "full": 0.842662037037037,
+     "change": -0.003912037037037038,
+     "ci": [
+      -0.014398437500000003,
+      0.006331886574074061
+     ],
+     "n_sets_up": 5,
+     "n_sets_down": 7
+    },
+    "ndcg@10": {
+     "original": 0.8146287330640083,
+     "full": 0.8174418154971228,
+     "change": 0.002813082433114464,
+     "ci": [
+      -0.004570175717734088,
+      0.010191680551367968
+     ],
+     "n_sets_up": 33,
+     "n_sets_down": 32
+    }
+   },
+   "ledger": {
+    "n_requests": 480,
+    "n_failed_attempts": 0,
+    "billed": 10368493.0,
+    "warnings": {},
+    "n_coarse_responses": 0,
+    "n_requests_kept_coarse": 0,
+    "key_tiers": [
+     "production"
+    ]
+   },
+   "n_coarse_scores": 0
+  },
+  "bge-m3": {
+   "label": "BAAI: BGE v2-m3",
+   "model": "BAAI/bge-reranker-v2-m3",
+   "metrics": {
+    "top1": {
+     "original": 0.625,
+     "full": 0.6291666666666667,
+     "change": 0.004166666666666667,
+     "ci": [
+      -0.04583333333333334,
+      0.05000000000000001
+     ],
+     "n_sets_up": 16,
+     "n_sets_down": 15
+    },
+    "mrr": {
+     "original": 0.7486641714766714,
+     "full": 0.7553471181596182,
+     "change": 0.006682946682946683,
+     "ci": [
+      -0.022384720314407816,
+      0.03504887155668404
+     ],
+     "n_sets_up": 37,
+     "n_sets_down": 37
+    },
+    "ndcg@10": {
+     "original": 0.7184395595891203,
+     "full": 0.7172241076353453,
+     "change": -0.0012154519537751294,
+     "ci": [
+      -0.015996757768419002,
+      0.013400507978952857
+     ],
+     "n_sets_up": 81,
+     "n_sets_down": 101
+    }
+   },
+   "ledger": null,
+   "n_coarse_scores": 0
+  },
+  "gte-modernbert": {
+   "label": "Alibaba: GTE ModernBERT",
+   "model": "Alibaba-NLP/gte-reranker-modernbert-base",
+   "metrics": {
+    "top1": {
+     "original": 0.625,
+     "full": 0.5875,
+     "change": -0.0375,
+     "ci": [
+      -0.07916666666666668,
+      0.004166666666666666
+     ],
+     "n_sets_up": 6,
+     "n_sets_down": 15
+    },
+    "mrr": {
+     "original": 0.7626239038739039,
+     "full": 0.7383343103655604,
+     "change": -0.024289593508343508,
+     "ci": [
+      -0.04449583301536427,
+      -0.0040144675925925955
+     ],
+     "n_sets_up": 24,
+     "n_sets_down": 31
+    },
+    "ndcg@10": {
+     "original": 0.7304986187194201,
+     "full": 0.7098267862728432,
+     "change": -0.020671832446576943,
+     "ci": [
+      -0.03304054557296213,
+      -0.008756947063930797
+     ],
+     "n_sets_up": 55,
+     "n_sets_down": 102
+    }
+   },
+   "ledger": null,
+   "n_coarse_scores": 0
+  },
+  "granite-r2": {
+   "label": "IBM: Granite r2",
+   "model": "ibm-granite/granite-embedding-reranker-english-r2",
+   "metrics": {
+    "top1": {
+     "original": 0.6875,
+     "full": 0.6583333333333333,
+     "change": -0.02916666666666667,
+     "ci": [
+      -0.075,
+      0.012500000000000002
+     ],
+     "n_sets_up": 6,
+     "n_sets_down": 13
+    },
+    "mrr": {
+     "original": 0.7978854016354017,
+     "full": 0.7831788870851372,
+     "change": -0.014706514550264551,
+     "ci": [
+      -0.03997443369708995,
+      0.008134899966931168
+     ],
+     "n_sets_up": 16,
+     "n_sets_down": 25
+    },
+    "ndcg@10": {
+     "original": 0.7681227230252109,
+     "full": 0.7656907327113226,
+     "change": -0.0024319903138882936,
+     "ci": [
+      -0.01690117639915503,
+      0.011512760272083306
+     ],
+     "n_sets_up": 65,
+     "n_sets_down": 52
+    }
+   },
+   "ledger": null,
+   "n_coarse_scores": 0
+  }
+ },
+ "summary": {
+  "top1": {
+   "min_change": -0.0375,
+   "max_change": 0.004166666666666667,
+   "max_abs_change": 0.0375,
+   "n_ci_includes_zero": 5,
+   "n_ci_below_zero": 0,
+   "n_ci_above_zero": 0
+  },
+  "mrr": {
+   "min_change": -0.024289593508343508,
+   "max_change": 0.006682946682946683,
+   "max_abs_change": 0.024289593508343508,
+   "n_ci_includes_zero": 4,
+   "n_ci_below_zero": 1,
+   "n_ci_above_zero": 0
+  },
+  "ndcg@10": {
+   "min_change": -0.020671832446576943,
+   "max_change": 0.002813082433114464,
+   "max_abs_change": 0.020671832446576943,
+   "n_ci_includes_zero": 4,
+   "n_ci_below_zero": 1,
+   "n_ci_above_zero": 0
+  }
+ },
+ "paper": {
+  "run_dates": {
+   "first": "2026-11-03",
+   "last": "2026-11-05"
+  },
+  "top1_original_pct_min": 62.5,
+  "top1_original_pct_max": 77.08333333333334,
+  "top1_change_pts_min": -3.75,
+  "top1_change_pts_max": 0.4166666666666667,
+  "top1_ci_pts_min": -7.916666666666668,
+  "ndcg_other_change_pts_max_abs": 0.28130824331144644,
+  "ndcg_loss": {
+   "label": "Alibaba: GTE ModernBERT",
+   "change_pts": -2.067183244657694,
+   "ci_pts": [
+    -3.3040545572962126,
+    -0.8756947063930798
+   ]
+  }
+ }
+}

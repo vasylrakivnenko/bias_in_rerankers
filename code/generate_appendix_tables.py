@@ -343,6 +343,17 @@ def build_documents_appendix() -> str:
     parts.append("\\end{minipage}")
     parts.append("")
 
+    # --- 4. The retained occupation words, by label -------------------------------
+    occ = load_occupations(OCC_BLS_CSV)
+    parts.append("\\bigskip")
+    parts.append("\\noindent\\textbf{Retained occupations}\\\\[4pt]")
+    for label, heading in (("male", "Male-typed"), ("female", "Female-typed"),
+                           ("neutral", "Evenly split")):
+        words = sorted(r["occupation"] for r in occ if r["label"] == label)
+        parts.append(f"\\noindent{{\\small \\emph{{{heading} ({len(words)}):}} "
+                     f"{esc(', '.join(words))}.}}\\par")
+    parts.append("")
+
     if missing:
         print(
             f"WARNING: {len(missing)} name(s) in synthetic_dataset.NAME_PAIRS did not "

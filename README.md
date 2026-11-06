@@ -256,9 +256,30 @@ jina-v3, whose listwise scores move with the other documents in a request.
 `code/companion_whole_resume.py` then writes `results/companion_whole_resume.json` and
 `results/tex/companion_whole_resume.tex` (the whole-résumé table, its comparison with the
 swap-every-marker runs above, and the numbers of the paper's whole-résumé subsection and
-Appendix E), and `legal_paper/generate_figures.py` draws `fig_length_pronoun.pdf` from it.
+Appendix E). The paper's headline counts use the correlation with each job category's share
+of women, tested with the categories as the units, because the three female-typed categories
+are too few to resample; the pool intervals, which hold the categories fixed, give the less
+cautious counts. `legal_paper/generate_figures.py` draws `fig_length_pronoun.pdf` from it.
 Fireworks' Qwen scores vary slightly between identical calls, so a re-run of that model will
 not match exactly.
+
+### De-identification utility on whole résumés
+
+`code/utility_whole_resume.py` (runner: `code/run_utility_whole.sh prepare|canary|full <model>`)
+ranks 240 sets of 20 résumés -- the 24 O\*NET job queries x 10 sets, each with 3 résumés from
+the query's category and 17 from others, 2,127 distinct résumés -- with every résumé as written
+and after the paper's full de-identification rule, and reports top-1 accuracy, MRR and nDCG@10
+per set with intervals that resample the queries. As in the companion runs, each résumé first
+gets a prepended name; the full rule removes that name from its known spelling, replaces the
+other person names that `dslim/bert-base-NER` finds (word pieces grouped into whole words: the
+default grouping returns fragments such as "Ke" for "Kelvin"), and maps every gendered pronoun
+to "they". `prepare` runs the detector once and caches its spans in `results/partial/`
+(git-ignored: they hold names from the corpus). Each model was scored after a four-set
+canary: on 2026-11-03, Voyage rerank-3 (480 requests, 11.2 M tokens, no rounded responses)
+and, on the Mac, bge-reranker-v2-m3, gte-reranker-modernbert-base and
+granite-embedding-reranker-english-r2; on 2026-11-05, Cohere Rerank 5 Pro (480 requests,
+10.4 M tokens, `max_tokens_per_doc` 32000; the longest input is under 5,000 tokens). `--summarize` then writes
+`results/utility_whole/summary.json` and `results/tex/utility_whole.tex`.
 
 ### What is and is not tracked
 

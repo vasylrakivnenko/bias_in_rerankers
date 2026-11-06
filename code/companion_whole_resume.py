@@ -6,7 +6,8 @@ Part 1 takes each of the 24 rerankers of code/companion_full_window.py's overvie
 whole-résumé name-only run with only the résumé owner's own name and pronouns changed
 (results/length_pronoun/<model>_wfull_name.json; data/owner_marker_labels.json): the
 male-typed minus female-typed tie-aware male-favored share (M-F) on whole résumés, with its
-pool-bootstrap interval and its continuous check against the BLS women's share, beside the
+pool-bootstrap interval, which holds the job categories fixed, and its continuous check against
+the BLS women's share, a permutation test with the categories as the units, beside the
 synthetic-audit M-F from the overview. jina-reranker-v3 is order-sensitive, so its pairs'
 gaps are averaged over a male-first and a female-first run, as in the overview. The
 overview's own whole-résumé run swapped every carried name and pronoun, most of them other
@@ -15,7 +16,9 @@ occupation-clustered interval:
 the audit's from results/interval_sensitivity.json, and for the models released after the
 audit the same bootstrap over their October 2026 scores of the audit's pairs. It counts the
 rerankers whose whole-résumé interval lies above zero, below zero, or covers it, overall and
-among those whose synthetic interval lies above zero ("the synthetic pattern"), and gives
+among those whose synthetic interval lies above zero ("the synthetic pattern"), and the same
+by the continuous check (falls / rises significantly with the women's share), the paper's
+headline: the female-typed group has only three categories, too few to resample. It gives
 the rank and linear correlation of the two contrasts across rerankers, with a bootstrap
 interval that resamples rerankers.
 
@@ -58,8 +61,8 @@ ROOT = CODE_DIR.parent
 sys.path.insert(0, str(CODE_DIR))
 
 from analyze_single_stage import stable_seed  # noqa: E402
-from companion_full_window import (POST_AUDIT, SYNTHETIC_KEY, bootstrap_m_minus_f,  # noqa: E402
-                                   continuous_check, model_rng, winner)
+from companion_full_window import (N_PERM, POST_AUDIT, SYNTHETIC_KEY,  # noqa: E402
+                                   bootstrap_m_minus_f, continuous_check, model_rng, winner)
 from interval_sensitivity import cell_tables, contrast_draws  # noqa: E402
 from labels import load_labels  # noqa: E402
 from companion_statistics import shares  # noqa: E402
@@ -67,7 +70,7 @@ from model_labels import model_label  # noqa: E402
 from owner_label_handcheck import tally as handcheck_tally  # noqa: E402
 from realistic_pool_experiment import _PRON_RE, OWNER_LINE, OWNER_LINE_WORDS, load_queries  # noqa: E402
 
-SCRIPT_VERSION = "companion_whole_resume.py v1.2"
+SCRIPT_VERSION = "companion_whole_resume.py v1.3"
 RESULTS = ROOT / "results"
 OVERVIEW = RESULTS / "companion_full_window.json"
 LP_DIR = RESULTS / "length_pronoun"
@@ -88,7 +91,9 @@ WINDOW_CUT = {"jina"}
 # The exceptions the paper names: rerankers with the synthetic pattern whose whole-résumé
 # M-F is not smaller, and rerankers with a direction whose continuous check has the other sign
 NAMED_IN_PAPER = {"not_smaller": ["Voyage: rerank-2.5-lite"],
-                  "rho_sign_disagrees": ["Cohere: v4 fast"]}
+                  "rho_sign_disagrees": ["Cohere: v4 fast"],
+}
+RHO_ALPHA = 0.05
 OUT = RESULTS / "companion_whole_resume.json"
 TEX = RESULTS / "tex" / "companion_whole_resume.tex"
 LP_MODELS = ["voyage-rerank-3", "cohere-v5-pro", "qwen3-8b", "voyage-rerank-2", "bge-m3",
@@ -129,6 +134,15 @@ def synthetic_intervals():
 
 def direction(ci):
     return "male" if ci[0] > 0 else "female" if ci[1] < 0 else "unclear"
+
+
+def category_direction(cont):
+    """male / female: the male-favored share falls / rises with the women's share across the job
+    categories (permutation p < RHO_ALPHA, unadjusted); unclear otherwise."""
+    if cont["permutation_p_two_sided"] >= RHO_ALPHA:
+        return "unclear"
+    return "male" if cont["spearman_rho"] < 0 else "female"
+
 
 
 def owner_only_overview(overview):
@@ -189,6 +203,7 @@ def whole_resume(overview):
                      "whole_resume": v["whole_document"],
                      "ci": [lo, hi],
                      "direction": direction(v["ci"]),
+                     "direction_category": category_direction(v["continuous"]),
                      "rho_women_share": v["continuous"]["spearman_rho"],
                      "rho_p": v["continuous"]["permutation_p_two_sided"],
                      "all_markers_run": {**old, "direction": direction(old["ci"]),
@@ -221,6 +236,7 @@ def whole_resume(overview):
     if sum(r["rho_women_share"] > 0 and r["rho_p"] < 0.05 for r in by_dir["female"]) \
             != len(by_dir["female"]):
         raise SystemExit("a reversal's continuous check is not significant: reword Appendix E")
+    cat = category_summary(rows, pat)
     return {
         "rows": rows,
         "n_models": len(rows),
@@ -274,6 +290,7 @@ def whole_resume(overview):
                                             "rho": r["rho_women_share"], "p": r["rho_p"]}
                                for r in directed if r["label"] in disagrees},
         "rho_p_note": "permutation p values are unadjusted for the number of rerankers",
+        "category_test": cat,
         "correlation": {
             "spearman_rho": float(spearmanr(syn, whole)[0]),
             "spearman_ci": [float(np.percentile(boot, 2.5)), float(np.percentile(boot, 97.5))],
@@ -284,9 +301,46 @@ def whole_resume(overview):
     }
 
 
+def category_summary(rows, pat):
+    """The counts by the continuous check, the test with job categories as the units."""
+    by = lambda rs, d: [r for r in rs if r["direction_category"] == d]
+    keep, rev = by(pat, "male"), by(pat, "female")
+    pool_keep = [r for r in pat if r["direction"] == "male"]
+    out = {
+        "test": "Spearman rho of each job category's male-favored share against its women's share, "
+                f"two-sided permutation p < {RHO_ALPHA} with the categories as the units (unadjusted)",
+        "n_permutations": N_PERM,
+        "n_male_direction": len(by(rows, "male")), "n_female_direction": len(by(rows, "female")),
+        "n_unclear": len(by(rows, "unclear")),
+        "synthetic_pattern": {
+            "n_male_direction": len(keep), "n_female_direction": len(rev),
+            "n_unclear": len(by(pat, "unclear")),
+            "male_direction_whole_min": min(r["whole_resume"] for r in keep),
+            "female_direction": [r["label"] for r in rev],
+            "unclear": [r["label"] for r in by(pat, "unclear")],
+            "not_smaller": [r["label"] for r in keep if r["whole_resume"] >= r["synthetic"]],
+            "n_pool_male_not_category": sum(r["direction_category"] != "male" for r in pool_keep)},
+        "without_pattern": [r["label"] for r in rows if not r["synthetic_pattern"]
+                            and r["direction_category"] != "unclear"]}
+    # the paper says: the contrast has the test's sign; the category-level keepers are among the
+    # pool-level ones and the reversals are the same; the exception is the one it names; and the
+    # rerankers without the synthetic pattern have no clear direction by either test
+    sp = out["synthetic_pattern"]
+    if (any((r["whole_resume"] > 0) != (r["direction_category"] == "male")
+            for r in rows if r["direction_category"] != "unclear")
+            or not {r["label"] for r in keep} <= {r["label"] for r in pool_keep}
+            or sp["female_direction"] != [r["label"] for r in pat if r["direction"] == "female"]
+            or sp["not_smaller"] != NAMED_IN_PAPER["not_smaller"]
+            or out["without_pattern"]):
+        raise SystemExit(f"the category-level counts changed: {json.dumps(out)}: "
+                         "reword the abstract, Section 3 and Appendix E")
+    return out
+
+
 def tex_table(wr):
     """Rows sorted by the synthetic contrast; marks: post-audit, 1,024-token window, both orders."""
     def num(x, d=1):
+        x = round(x, d) + 0.0                    # no "-0.00" for a value that rounds to zero
         return f"{x:.{d}f}".replace("-", "$-$")
     out = ["% Generated by code/companion_whole_resume.py -- do not edit by hand.",
            r"\begin{tabular}{lrrcr}", r"\toprule",
@@ -296,7 +350,7 @@ def tex_table(wr):
         mark = ("$^{a}$" if r["post_audit"] else "") + \
                ("$^{b}$" if not r["reads_every_resume_whole"] else "") + \
                ("$^{c}$" if r["short"] == "jina-v3" else "")
-        star = "*" if r["rho_p"] < 0.05 else ""
+        star = "*" if r["rho_p"] < RHO_ALPHA else ""
         out.append(f"{r['label']}{mark} & {num(r['synthetic'])} & {num(r['whole_resume'])} & "
                    f"[{num(r['ci'][0])}, {num(r['ci'][1])}] & {num(r['rho_women_share'], 2)}{star} \\\\")
     out += [r"\bottomrule", r"\end{tabular}"]
@@ -467,7 +521,9 @@ def main():
            "notes": {"contrast": "M-F = tie-aware male-favored share (%) in the 7 male-typed "
                                  "minus the 3 female-typed job categories, in points",
                      "direction": "male / female: the whole-résumé interval lies above / below "
-                                  "zero; unclear: it covers zero",
+                                  "zero; unclear: it covers zero. direction_category: the "
+                                  "continuous check falls / rises significantly with the women's "
+                                  "share (the paper's headline)",
                      "owner_only": "every whole-résumé and length x pronoun run changes only "
                                    "the résumé owner's own name and pronouns; all_markers_run is "
                                    "the overview's run, which swapped every carried marker",

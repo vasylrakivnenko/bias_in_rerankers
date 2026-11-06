@@ -1,6 +1,6 @@
 {
-  "script_version": "companion_whole_resume.py v1.2",
-  "generated": "2026-10-26T14:30:15",
+  "script_version": "companion_whole_resume.py v1.3",
+  "generated": "2026-11-03T14:31:46",
   "source": {
     "overview": "results/companion_full_window.json",
     "overview_script": "companion_full_window.py v1.1",
@@ -8,7 +8,7 @@
   },
   "notes": {
     "contrast": "M-F = tie-aware male-favored share (%) in the 7 male-typed minus the 3 female-typed job categories, in points",
-    "direction": "male / female: the whole-résumé interval lies above / below zero; unclear: it covers zero",
+    "direction": "male / female: the whole-résumé interval lies above / below zero; unclear: it covers zero. direction_category: the continuous check falls / rises significantly with the women's share (the paper's headline)",
     "owner_only": "every whole-résumé and length x pronoun run changes only the résumé owner's own name and pronouns; all_markers_run is the overview's run, which swapped every carried marker",
     "counterbalanced": "jina-v3: each pair's gap averaged over a male-first and a female-first run (counterbalanced)",
     "synthetic_ci": "occupation-clustered 95% interval of the synthetic M-F; for jina-v3 the audit's same-order interval, while its synthetic M-F averages both orders"
@@ -104,6 +104,7 @@
           44.94047619047619
         ],
         "direction": "male",
+        "direction_category": "male",
         "rho_women_share": -0.7452891487979206,
         "rho_p": 0.00024999750002499977,
         "all_markers_run": {
@@ -134,6 +135,7 @@
           38.27380952380952
         ],
         "direction": "male",
+        "direction_category": "male",
         "rho_women_share": -0.7749269651967173,
         "rho_p": 5.999940000599994e-05,
         "all_markers_run": {
@@ -164,6 +166,7 @@
           54.82142857142858
         ],
         "direction": "male",
+        "direction_category": "male",
         "rho_women_share": -0.7407407407407407,
         "rho_p": 0.00021999780002199978,
         "all_markers_run": {
@@ -194,6 +197,7 @@
           43.452380952380956
         ],
         "direction": "male",
+        "direction_category": "male",
         "rho_women_share": -0.7400909681611436,
         "rho_p": 0.00018999810001899982,
         "all_markers_run": {
@@ -224,6 +228,7 @@
           -0.9821428571428537
         ],
         "direction": "female",
+        "direction_category": "female",
         "rho_women_share": 0.5066716762065734,
         "rho_p": 0.02046979530204698,
         "all_markers_run": {
@@ -254,6 +259,7 @@
           19.07812499999999
         ],
         "direction": "male",
+        "direction_category": "unclear",
         "rho_women_share": -0.4058538516854007,
         "rho_p": 0.06866931330686693,
         "all_markers_run": {
@@ -284,6 +290,7 @@
           48.18452380952381
         ],
         "direction": "male",
+        "direction_category": "male",
         "rho_women_share": -0.7833008447043535,
         "rho_p": 3.999960000399996e-05,
         "all_markers_run": {
@@ -314,6 +321,7 @@
           29.226562499999996
         ],
         "direction": "male",
+        "direction_category": "male",
         "rho_women_share": -0.7430984477661732,
         "rho_p": 0.0001799982000179998,
         "all_markers_run": {
@@ -344,6 +352,7 @@
           30.074404761904756
         ],
         "direction": "male",
+        "direction_category": "male",
         "rho_women_share": -0.7313190383365822,
         "rho_p": 0.00033999660003399966,
         "all_markers_run": {
@@ -374,6 +383,7 @@
           12.961309523809522
         ],
         "direction": "male",
+        "direction_category": "unclear",
         "rho_women_share": -0.3146944748416171,
         "rho_p": 0.16338836611633883,
         "all_markers_run": {
@@ -404,6 +414,7 @@
           39.58407738095237
         ],
         "direction": "male",
+        "direction_category": "male",
         "rho_women_share": -0.7110822604965816,
         "rho_p": 0.0004599954000459995,
         "all_markers_run": {
@@ -434,6 +445,7 @@
           20.9077380952381
         ],
         "direction": "male",
+        "direction_category": "male",
         "rho_women_share": -0.6857328928920416,
         "rho_p": 0.0007899921000789992,
         "all_markers_run": {
@@ -464,6 +476,7 @@
           -7.261904761904758
         ],
         "direction": "female",
+        "direction_category": "female",
         "rho_women_share": 0.5964230480697315,
         "rho_p": 0.005349946500534995,
         "all_markers_run": {
@@ -494,6 +507,7 @@
           33.348214285714285
         ],
         "direction": "male",
+        "direction_category": "male",
         "rho_women_share": -0.6667751734505751,
         "rho_p": 0.0013299867001329987,
         "all_markers_run": {
@@ -524,6 +538,7 @@
           8.199404761904761
         ],
         "direction": "male",
+        "direction_category": "unclear",
         "rho_women_share": 0.13965573974626505,
         "rho_p": 0.5436545634543655,
         "all_markers_run": {
@@ -554,6 +569,7 @@
           11.681547619047617
         ],
         "direction": "male",
+        "direction_category": "unclear",
         "rho_women_share": -0.004548408057179987,
         "rho_p": 0.985370146298537,
         "all_markers_run": {
@@ -584,6 +600,7 @@
           12.202380952380953
         ],
         "direction": "male",
+        "direction_category": "unclear",
         "rho_women_share": -0.28246051056345906,
         "rho_p": 0.2120978790212098,
         "all_markers_run": {
@@ -614,6 +631,7 @@
           -11.368675595238093
         ],
         "direction": "female",
+        "direction_category": "female",
         "rho_women_share": 0.5986339543047432,
         "rho_p": 0.004889951100488995,
         "all_markers_run": {
@@ -644,6 +662,7 @@
           -13.034970238095248
         ],
         "direction": "female",
+        "direction_category": "female",
         "rho_women_share": 0.4644134141908661,
         "rho_p": 0.035139648603513964,
         "all_markers_run": {
@@ -674,6 +693,7 @@
           9.955357142857135
         ],
         "direction": "male",
+        "direction_category": "unclear",
         "rho_women_share": -0.3415747849509789,
         "rho_p": 0.12918870811291888,
         "all_markers_run": {
@@ -704,6 +724,7 @@
           9.49479166666666
         ],
         "direction": "male",
+        "direction_category": "unclear",
         "rho_women_share": -0.20813018035148753,
         "rho_p": 0.36230637693623063,
         "all_markers_run": {
@@ -734,6 +755,7 @@
           16.755952380952383
         ],
         "direction": "male",
+        "direction_category": "male",
         "rho_women_share": -0.4650860914340735,
         "rho_p": 0.03333966660333397,
         "all_markers_run": {
@@ -764,6 +786,7 @@
           6.845238095238104
         ],
         "direction": "unclear",
+        "direction_category": "unclear",
         "rho_women_share": 0.08913475340625546,
         "rho_p": 0.7008029919700803,
         "all_markers_run": {
@@ -794,6 +817,7 @@
           8.779761904761907
         ],
         "direction": "unclear",
+        "direction_category": "unclear",
         "rho_women_share": -0.37691797689987583,
         "rho_p": 0.0923190768092319,
         "all_markers_run": {
@@ -910,6 +934,39 @@
       }
     },
     "rho_p_note": "permutation p values are unadjusted for the number of rerankers",
+    "category_test": {
+      "test": "Spearman rho of each job category's male-favored share against its women's share, two-sided permutation p < 0.05 with the categories as the units (unadjusted)",
+      "n_permutations": 100000,
+      "n_male_direction": 11,
+      "n_female_direction": 4,
+      "n_unclear": 9,
+      "synthetic_pattern": {
+        "n_male_direction": 11,
+        "n_female_direction": 4,
+        "n_unclear": 7,
+        "male_direction_whole_min": 12.24702380952381,
+        "female_direction": [
+          "Voyage: rerank-2",
+          "Voyage: rerank-1",
+          "Mixedbread: large v2",
+          "Voyage: rerank-2-lite"
+        ],
+        "unclear": [
+          "Cohere: v5 fast",
+          "Cohere: v3.5",
+          "Cohere: v4 fast",
+          "Qwen: Qwen3 0.6B",
+          "Qwen: Qwen3 4B",
+          "IBM: Granite r2",
+          "BAAI: BGE v2-m3"
+        ],
+        "not_smaller": [
+          "Voyage: rerank-2.5-lite"
+        ],
+        "n_pool_male_not_category": 7
+      },
+      "without_pattern": []
+    },
     "correlation": {
       "spearman_rho": 0.6747826086956521,
       "spearman_ci": [
